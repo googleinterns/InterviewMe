@@ -14,8 +14,9 @@
 
 package com.google.sps.servlets;
 
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,9 +26,23 @@ import com.google.gson.Gson;
 
 @WebServlet("/register")
 public class RegistrationServlet extends HttpServlet {
+  private DatastoreService datastore;
+
+  @Override
+  public void init() {
+    datastore = DatastoreServiceFactory.getDatastoreService();
+  }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // TODO: send the request's contents to Datastore in the form of a new User
+    // Sends info from the registration form to Datastore in the form of a new user.
+    userEntity.setProperty("email", request.getParameter("user-email"));
+    userEntity.setProperty("firstName", request.getParameter("first-name"));
+    userEntity.setProperty("lastName", request.getParameter("last-name"));
+    userEntity.setProperty("company", request.getParameter("company"));
+    userEntity.setProperty("job", request.getParameter("job"));
+    userEntity.setProperty("linkedin", request.getParameter("linkedin"));
+    datastore.put(userEntity);
+    response.sendRedirect("/");
   }
 }
