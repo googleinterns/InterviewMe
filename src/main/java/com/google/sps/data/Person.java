@@ -13,6 +13,10 @@
 // limitations under the License.
 
 
+/**
+ * Represents a user on the site 
+ * The email is used as the key to the user table 
+ */
 public class Person {
   private string email, name, company, job, linkedin;
    
