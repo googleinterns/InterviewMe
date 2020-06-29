@@ -18,7 +18,7 @@ public class Availability {
   private Person person;
   private TimeRange when;
   private LocalDate date;
-  
+
   public Availability(Person person, TimeRange when, LocalDate date) {
     this.person = person;
     this.when = when;

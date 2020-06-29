@@ -14,7 +14,7 @@
 
 package com.google.sps;
 
-import java.util.LocalDate;
+import java.time.LocalDate;
 
 public class ScheduledInterview {
   private TimeRange when;
@@ -22,7 +22,8 @@ public class ScheduledInterview {
   private String interviewerEmail;
   private String intervieweeEmail;
 
-  public ScheduledInterview(TimeRange when, LocalDate date, String interviewerEmail, String intervieweeEmail) {
+  public ScheduledInterview(
+      TimeRange when, LocalDate date, String interviewerEmail, String intervieweeEmail) {
     this.when = when;
     this.date = date;
     this.interviewerEmail = interviewerEmail;
