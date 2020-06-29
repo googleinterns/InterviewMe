@@ -14,8 +14,8 @@
 
 
 /**
- * Represents a user on the site 
- * The email is used as the key to the user table 
+ * Represents a user on the site.
+ * The email is used as the key to the user table.
  */
 public class Person {
   private string email, name, company, job, linkedin;
@@ -26,5 +26,9 @@ public class Person {
     this.company = company;
     this.job = job;
     this.linkedin = linkedin; 
+  }
+
+  public string key() {
+    return email; 
   }
 }
