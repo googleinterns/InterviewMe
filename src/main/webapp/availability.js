@@ -15,3 +15,13 @@
 function onAvailabilityLoad() {
   supplyLogoutLink();
 }
+
+// Switches a tile from green to white and vice versa when clicked.
+function switchTile(id) {
+  let tile = document.getElementById(id);
+  if(tile.classList.contains('table-success')) {
+    tile.classList.remove('table-success');
+  } else {
+    tile.classList.add('table-success');
+  }
+}
