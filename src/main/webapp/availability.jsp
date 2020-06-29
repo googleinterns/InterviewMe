@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>-->
 <html>
   <head>
     <meta charset="UTF-8">
@@ -44,27 +44,9 @@
       <!--TODO: Include Timezone consideration; Check inputs for correctness: end is after start, at least an hour long;
          Add pagination; Figure out how to update the dates (dynamically); store and show inputted data; Allow for more than one
          time range per day (have a plus button)-->
-      <table class="table table-sm text-center">
-        <thead>
-          <tr>
-            <th scope="col">Monday 6/29</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td onclick="switchTile(this)">9:00 AM</td>
-          </tr>
-          <tr>
-            <td onclick="switchTile(this)">9:15 AM</td>
-          </tr>
-          <tr>
-            <td onclick="switchTile(this)">9:30 AM</td>
-          </tr>
-          <tr>
-            <td onclick="switchTile(this)">9:45 AM</td>
-          </tr>
-        </tbody>
-      </table>
+         
+      <!--TODO: Put entire table in a JSP file that will then be included here (meaning that this will need to be a jsp file too).-->
+      <jsp:include page = "availabilityTable.jsp" flush = "true"/>
       <div id="submit-button-container">
         <button type="submit" class="btn btn-primary mb-2 submit-button">Update Availability</button>
       </div>
