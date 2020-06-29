@@ -16,6 +16,8 @@ package com.google.sps;
 
 import java.time.LocalDate;
 
+/* Represents an interview scheduled and is set to happen.
+ */
 public class ScheduledInterview {
   private TimeRange when;
   private LocalDate date;
@@ -30,18 +32,26 @@ public class ScheduledInterview {
     this.intervieweeEmail = intervieweeEmail;
   }
 
+  /* Returns a TimeRange representing the time of day of when the interview is happening.
+   */
   public TimeRange getWhen() {
     return when;
   }
 
+  /* Returns a LocalDate representing the date the interview is happening.
+   */
   public LocalDate getDate() {
     return date;
   }
 
+  /* Returns the interviewer's email.
+   */
   public String getInterviewerEmail() {
     return interviewerEmail;
   }
 
+  /* Returns the interviewee's email.
+   */
   public String getIntervieweeEmail() {
     return intervieweeEmail;
   }
