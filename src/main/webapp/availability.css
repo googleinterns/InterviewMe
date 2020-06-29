@@ -16,3 +16,7 @@
 .submit-button {
   margin-top: 1rem;
 }
+
+#submit-button-container {
+  text-align: center;
+}
