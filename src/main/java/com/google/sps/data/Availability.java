@@ -19,15 +19,15 @@ import java.util.LocalDate;
 * to offer interviews as an Interviewer.
 */
 public class Availability {
-  private Person person;
+  private String personEmail;
   private TimeRange when;
   private LocalDate date;
   
   /**
   * This constructor creates a new Availability object
   */
-  public Availability(Person person, TimeRange when, LocalDate date) {
-    this.person = person;
+  public Availability(String personEmail, TimeRange when, LocalDate date) {
+    this.personEmail = personEmail;
     this.when = when;
     this.date = date;
   }
