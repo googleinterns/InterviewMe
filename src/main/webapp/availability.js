@@ -17,8 +17,7 @@ function onAvailabilityLoad() {
 }
 
 // Switches a tile from green to white and vice versa when clicked.
-function switchTile(id) {
-  let tile = document.getElementById(id);
+function switchTile(tile) {
   if(tile.classList.contains('table-success')) {
     tile.classList.remove('table-success');
   } else {
