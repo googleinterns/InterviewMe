@@ -14,11 +14,11 @@
 
 
 public class Person {
-  private string name, email, company, job, linkedin;
+  private string email, name, company, job, linkedin;
    
-  public Person(string name, string email, string company, string job, string linkedin) {
-    this.name = name;
-    this.email = email; 
+  public Person(string email, string name, string company, string job, string linkedin) {
+    this.email = email;
+    this.name = name; 
     this.company = company;
     this.job = job;
     this.linkedin = linkedin; 
