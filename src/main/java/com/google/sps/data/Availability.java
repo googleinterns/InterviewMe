@@ -14,11 +14,18 @@
 
 import java.util.LocalDate;
 
+/**
+* Availability is a time range when a given person is available
+* to offer interviews as an Interviewer.
+*/
 public class Availability {
   private Person person;
   private TimeRange when;
   private LocalDate date;
   
+  /**
+  * This constructor creates a new Availability object
+  */
   public Availability(Person person, TimeRange when, LocalDate date) {
     this.person = person;
     this.when = when;
