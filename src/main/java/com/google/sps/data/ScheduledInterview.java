@@ -29,4 +29,20 @@ public class ScheduledInterview {
     this.interviewerEmail = interviewerEmail;
     this.intervieweeEmail = intervieweeEmail;
   }
+
+  public TimeRange getWhen() {
+    return when;
+  }
+
+  public LocalDate getDate() {
+    return date;
+  }
+
+  public String getInterviewerEmail() {
+    return interviewerEmail;
+  }
+
+  public String getIntervieweeEmail() {
+    return intervieweeEmail;
+  }
 }
