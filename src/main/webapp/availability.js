@@ -14,6 +14,7 @@
 
 function onAvailabilityLoad() {
   supplyLogoutLink();
+  loadAvailabilityTable();
 }
 
 // Switches a tile from green to white and vice versa when clicked.
@@ -23,4 +24,10 @@ function switchTile(tile) {
   } else {
     tile.classList.add('table-success');
   }
+}
+
+function loadAvailabilityTable() {
+  fetch('/availabityTable.jsp').then(response => {
+    console.log(response);
+  });
 }

@@ -13,49 +13,42 @@
 // limitations under the License.
 
 /**
-* An AvailabilityTimeSlot represents a table entry on the availability page
-* that has a date and time (utcEncoding), a visual represenation of the time
-* (timeString), and a class that is set based on whether or not the slot has
-* already been selected in a previous visit to the page (green = selected =
-* 'table-success').
-*/
+ * An AvailabilityTimeSlot represents a table entry on the availability page that has a date and
+ * time (utcEncoding), a visual represenation of the time (timeString), and a class that is set
+ * based on whether or not the slot has already been selected in a previous visit to the page (green
+ * = selected = 'table-success').
+ */
 public class AvailabilityTimeSlot {
   private String utcEncoding;
   private String time;
   private String date;
-  private String class;
-  
-  /**
-  * This constructor creates a new Availability object
-  */
-  public AvailabilityTimeSlot(String utcEncoding; String class) {
+  private String className;
+
+  /** This constructor creates a new Availability object */
+  public AvailabilityTimeSlot(String utcEncoding, String className) {
     this.utcEncoding = utcEncoding;
-    this.time = setTime();
-    this.date = setDate();
-    this.class = class;
+    // this.time = setTime();
+    // this.date = setDate();
+    this.className = className;
   }
-  
+
   public String getUTCEncoding() {
     return this.utcEncoding;
   }
-  
-  private String setTime() {
-    
-  }
-  
-  private String setDate() {
-    
-  }
-  
+
+  // private String setTime() {}
+
+  // private String setDate() {}
+
   public String getTime() {
     return this.time;
   }
-  
+
   public String getDate() {
     return this.date;
   }
-  
-  public String getClass() {
-    return this.class;
+
+  public String getClassName() {
+    return this.className;
   }
 }

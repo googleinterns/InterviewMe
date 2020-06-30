@@ -15,7 +15,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.time.Instant;
-import jaba.time.ZoneId;
+import java.time.ZoneId;
 
 /**
  * A collection of AvailabilityTimeSlot Objects, which will eventually be generated with information
