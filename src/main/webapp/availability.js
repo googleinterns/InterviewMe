@@ -47,3 +47,9 @@ function switchTile(tile) {
     tile.classList.add('table-success');
   }
 }
+
+function loadAvailabilityTable() {
+  fetch('/availabityTable.jsp').then(response => {
+    console.log(response);
+  });
+}
