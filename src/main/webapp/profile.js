@@ -13,15 +13,28 @@
 // limitations under the License.
 
 function onProfileLoad() {
+  supplyLogoutLink();
   prepareFormValidation();
+  autofillForm();
+}
+
+function autofillForm() {
+  fetch('/login')
+  .then(response => response.json())
+  .then(status => fetch(`/person?email=${status.email}`))
+  .then(response => response.json())
+  .then((person) => {
+    console.log(person);
+    document.getElementById("user-email").value = person.email;
+    document.getElementById("first-name-field").value = person.firstName;
+    document.getElementById("last-name-field").value = person.lastName;
+    document.getElementById("company-field").value = person.company;
+    document.getElementById("job-field").value = person.job;
+    document.getElementById("linkedin-field").value = person.linkedIn;    
+  });
 }
 
 // Allows certain fields in the profile to be edited, hides edit button, and displays update button. 
-
-function onProfileLoad() {
-  supplyLogoutLink();
-}
-
 function makeEditable() {
   const editButton = document.getElementById("edit-button");
   const updateButton = document.getElementById("update-button");

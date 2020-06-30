@@ -23,8 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 
-@WebServlet("/register")
-public class RegistrationServlet extends HttpServlet {
+@WebServlet("/person")
+public class PersonServlet extends HttpServlet {
 
   private PersonDao personDao;
 
@@ -49,5 +49,16 @@ public class RegistrationServlet extends HttpServlet {
             request.getParameter("company"),
             request.getParameter("job"),
             request.getParameter("linkedin")));
+  }
+
+  // Returns the person the request's email belongs you
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    try {
+      Person person = personDao.get(request.getParameter("email"));
+      response.getWriter().println(new Gson().toJson(person));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }

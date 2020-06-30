@@ -32,9 +32,13 @@ public class LogInServlet extends HttpServlet {
     boolean loggedIn = userService.isUserLoggedIn();
     LoginInfo toSend;
     if (loggedIn) {
-      toSend = new LoginInfo(loggedIn, userService.createLogoutURL(ROOT_URL));
+      toSend =
+          new LoginInfo(
+              loggedIn,
+              userService.createLogoutURL(ROOT_URL),
+              userService.getCurrentUser().getEmail());
     } else {
-      toSend = new LoginInfo(loggedIn, userService.createLoginURL(ROOT_URL));
+      toSend = new LoginInfo(loggedIn, userService.createLoginURL(ROOT_URL), "");
     }
     response.getWriter().println(new Gson().toJson(toSend));
   }
@@ -42,10 +46,12 @@ public class LogInServlet extends HttpServlet {
   private static class LoginInfo {
     private final boolean loggedIn;
     private final String changeLogInStatusURL;
+    private final String email;
 
-    public LoginInfo(boolean loggedIn, String changeLogInStatusURL) {
+    public LoginInfo(boolean loggedIn, String changeLogInStatusURL, String email) {
       this.loggedIn = loggedIn;
       this.changeLogInStatusURL = changeLogInStatusURL;
+      this.email = email;
     }
   }
 }
