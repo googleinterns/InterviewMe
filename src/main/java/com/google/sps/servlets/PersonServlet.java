@@ -56,6 +56,7 @@ public class PersonServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     try {
       Person person = personDao.get(request.getParameter("email"));
+      response.setContentType("application/json;");
       response.getWriter().println(new Gson().toJson(person));
     } catch (Exception e) {
       e.printStackTrace();
