@@ -18,6 +18,7 @@ function onProfileLoad() {
   autofillForm();
 }
 
+// Fills in the profile form with data from Datastore.
 function autofillForm() {
   fetch('/login')
   .then(response => response.json())

@@ -38,7 +38,7 @@ public class PersonServlet extends HttpServlet {
     this.personDao = personDao;
   }
 
-  // Sends the request's contents to Datastore in the form of a new Person
+  // Sends the request's contents to Datastore in the form of a new Person.
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     personDao.put(
@@ -51,7 +51,7 @@ public class PersonServlet extends HttpServlet {
             request.getParameter("linkedin")));
   }
 
-  // Returns the person the request's email belongs you
+  // Returns the person the request's email belongs to.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     try {
