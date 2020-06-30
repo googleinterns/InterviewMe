@@ -27,7 +27,7 @@ function switchTile(tile) {
 }
 
 function loadAvailabilityTable() {
-  fetch('/availabityTable.jsp').then(response => {
-    console.log(response);
+  fetch('/availabilityTable.jsp').then(response => response.text()).then(table => {
+    console.log(table);
   });
 }
