@@ -29,7 +29,7 @@ public final class TimeRange {
       new Comparator<TimeRange>() {
         @Override
         public int compare(TimeRange a, TimeRange b) {
-          return (a.start.compareTo(b.start));
+          return a.start.compareTo(b.start);
         }
       };
 
@@ -50,17 +50,17 @@ public final class TimeRange {
     this.end = end;
   }
 
-  /** Returns the start of the range in minutes. */
+  /** Returns the start of the range as an instant. */
   public Instant start() {
     return start;
   }
 
-  /** Returns the number of minutes\ between the start and end. */
+  /** Returns the number of minutes between the start and end of the range. */
   public Long duration() {
     return (Long) Duration.between(start, end).toMinutes();
   }
 
-  /** Returns the end of the range. */
+  /** Returns the end of the range as an instant. */
   public Instant end() {
     return end;
   }
