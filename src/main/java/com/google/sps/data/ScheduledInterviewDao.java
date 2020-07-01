@@ -14,7 +14,10 @@
 
 package com.google.sps;
 
-/** ScheduledInterviewDao includes the basic methods anything managing ScheduledInterview entities must support. */
+/**
+ * ScheduledInterviewDao includes the basic methods anything managing ScheduledInterview entities
+ * must support.
+ */
 public interface ScheduledInterviewDao {
   // Returns a ScheduledInterview object from storage
   public ScheduledInterview get() throws com.google.appengine.api.datastore.EntityNotFoundException;
