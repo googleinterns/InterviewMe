@@ -27,7 +27,10 @@ function switchTile(tile) {
 }
 
 function loadAvailabilityTable() {
-  fetch('/availabilityTable.jsp').then(response => response.text()).then(table => {
+  let date = new Date();
+  let timeZoneOffset = date.getTimezoneOffset();
+  fetch('/availabilityTable.jsp?timeZoneOffset=' + timeZoneOffset).then(response => response.text()).then(table => {
     console.log(table);
+    document.getElementById('table-container').innerHTML = table;
   });
 }

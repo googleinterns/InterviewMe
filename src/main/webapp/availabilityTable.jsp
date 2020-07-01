@@ -1,3 +1,8 @@
+<%@ page import="availability.AvailabilityTimeSlots" %>
+<%
+  AvailabilityTimeSlots list = new AvailabilityTimeSlots(request.getParameter("timeZoneOffset"));
+%>
+
 <table class="table table-sm text-center">
   <thead>
     <tr>

@@ -46,7 +46,7 @@
          time range per day (have a plus button)-->
          
       <!--TODO: Put entire table in a JSP file that will then be included here (meaning that this will need to be a jsp file too).-->
-      <jsp:include page = "availabilityTable.jsp" flush = "true"/>
+      <div id="table-container"></div>
       <div id="submit-button-container">
         <button type="submit" class="btn btn-primary mb-2 submit-button">Update Availability</button>
       </div>

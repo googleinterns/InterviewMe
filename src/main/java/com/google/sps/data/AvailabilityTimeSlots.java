@@ -12,10 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+package availability;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 /**
  * A collection of AvailabilityTimeSlot Objects, which will eventually be generated with information
@@ -24,10 +27,19 @@ import java.time.ZoneId;
 public class AvailabilityTimeSlots {
   private List<AvailabilityTimeSlot> timeSlots = new ArrayList<AvailabilityTimeSlot>();
 
-  public AvailabilityTimeSlots() {
-    System.out.println(Instant.now().atZone(ZoneId.systemDefault()).getDayOfWeek().toString());
+  public AvailabilityTimeSlots(String timeZoneOffsetString) {
+    ZoneOffset timeZoneOffset = convertStringToOffset(timeZoneOffsetString);
+    System.out.println(
+        Instant.now().atZone(ZoneId.ofOffset("UTC", timeZoneOffset)).getDayOfWeek().toString());
     List<String> dates = generateDates();
     List<String> times = generateTimes();
+  }
+
+  private ZoneOffset convertStringToOffset(String offsetString) {
+    int offsetTotalMinutes = Integer.parseInt(offsetString);
+    int offsetHours = offsetTotalMinutes / 60;
+    int offsetMinutes = offsetTotalMinutes % 60;
+    return ZoneOffset.ofHoursMinutes(offsetHours, offsetMinutes);
   }
 
   private List<String> generateDates() {
