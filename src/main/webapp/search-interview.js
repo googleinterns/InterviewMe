@@ -32,6 +32,7 @@ function selectInterview(interviewer) {
   }
 }
 
+// Fills in the modal with interviewer info from Datastore and shows it.
 function showInterviewers() {
   fetch('/search-interview-interviewers.jsp').then(response => response.text()).then(table => {
     $('#modal-body').html(table);
