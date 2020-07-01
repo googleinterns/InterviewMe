@@ -17,11 +17,13 @@ package availability;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.time.format.DateTimeFormatter;
 
 /**
  * A collection of AvailabilityTimeSlot Objects, which will eventually be generated with information
@@ -32,16 +34,18 @@ public class AvailabilityTimeSlots {
 
   public AvailabilityTimeSlots(String timeZoneOffsetString) {
     ZoneOffset timeZoneOffset = convertStringToOffset(timeZoneOffsetString);
-    ZonedDateTime today = Instant.now().atZone(ZoneId.ofOffset("UTC", timeZoneOffset));
+    ZoneId zoneId = ZoneId.ofOffset("UTC", timeZoneOffset);
+    ZonedDateTime today = Instant.now().atZone(zoneId);
     String dayOfWeek = today.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.US);
+    int year = today.getYear();
     int month = today.getMonthValue();
     int dayOfMonth = today.getDayOfMonth();
-    System.out.println("Day of the week: " + dayOfWeek);
-    System.out.println("Month: " + month);
-    System.out.println("Day of the month: " + dayOfMonth);
+
     String date = generateDate(dayOfWeek, month, dayOfMonth);
-    // List<String> dates = generateDates();
     List<String> times = generateTimes();
+    System.out.println("Number of slots per day: " + times.size()); // Is 48
+    List<String> utcEncodings = generateUTCEncodings(year, month, dayOfMonth, zoneId);
+    List<Boolean> selectedStatuses = getSelectedStatuses();
   }
 
   private ZoneOffset convertStringToOffset(String offsetString) {
@@ -53,6 +57,24 @@ public class AvailabilityTimeSlots {
 
   private String generateDate(String dayOfWeek, int month, int dayOfMonth) {
     return dayOfWeek + " " + month + "/" + dayOfMonth;
+  }
+
+  private List<String> generateUTCEncodings(int year, int month, int dayOfMonth, ZoneId zoneId) {
+    LocalDateTime firstSlot = LocalDateTime.of(year, month, dayOfMonth, 8, 0);
+    ZonedDateTime withZone = ZonedDateTime.of(firstSlot, zoneId);
+    ZonedDateTime inUTC = withZone.withZoneSameInstant(ZoneOffset.UTC);
+    String formattedUTC = inUTC.format(DateTimeFormatter.ISO_INSTANT);
+    System.out.println("8:00 AM Eastern: " + formattedUTC);
+    return new ArrayList<String>();
+  }
+
+  // TODO: Access the time slots from data store to tell if they are selected or not.
+  private List<Boolean> getSelectedStatuses() {
+    List<Boolean> selectedStatuses = new ArrayList<Boolean>();
+    for (int i = 0; i < 48; i++) {
+      selectedStatuses.add(false);
+    }
+    return selectedStatuses;
   }
 
   // Will be changed to generate current week with calls to generateDate

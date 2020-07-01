@@ -28,7 +28,8 @@ function switchTile(tile) {
 
 function loadAvailabilityTable() {
   let date = new Date();
-  let timeZoneOffset = date.getTimezoneOffset();
+  let timeZoneOffset = (-1)*date.getTimezoneOffset();
+  console.log(timeZoneOffset);
   fetch('/availabilityTable.jsp?timeZoneOffset=' + timeZoneOffset).then(response => response.text()).then(table => {
     console.log(table);
     document.getElementById('table-container').innerHTML = table;
