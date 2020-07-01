@@ -19,6 +19,9 @@ import java.util.List;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 /**
  * A collection of AvailabilityTimeSlot Objects, which will eventually be generated with information
@@ -29,9 +32,15 @@ public class AvailabilityTimeSlots {
 
   public AvailabilityTimeSlots(String timeZoneOffsetString) {
     ZoneOffset timeZoneOffset = convertStringToOffset(timeZoneOffsetString);
-    System.out.println(
-        Instant.now().atZone(ZoneId.ofOffset("UTC", timeZoneOffset)).getDayOfWeek().toString());
-    List<String> dates = generateDates();
+    ZonedDateTime today = Instant.now().atZone(ZoneId.ofOffset("UTC", timeZoneOffset));
+    String dayOfWeek = today.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.US);
+    int month = today.getMonthValue();
+    int dayOfMonth = today.getDayOfMonth();
+    System.out.println("Day of the week: " + dayOfWeek);
+    System.out.println("Month: " + month);
+    System.out.println("Day of the month: " + dayOfMonth);
+    String date = generateDate(dayOfWeek, month, dayOfMonth);
+    // List<String> dates = generateDates();
     List<String> times = generateTimes();
   }
 
@@ -42,6 +51,11 @@ public class AvailabilityTimeSlots {
     return ZoneOffset.ofHoursMinutes(offsetHours, offsetMinutes);
   }
 
+  private String generateDate(String dayOfWeek, int month, int dayOfMonth) {
+    return dayOfWeek + " " + month + "/" + dayOfMonth;
+  }
+
+  // Will be changed to generate current week with calls to generateDate
   private List<String> generateDates() {
     List<String> dates = new ArrayList<String>();
     dates.add("Sunday 6/28");
