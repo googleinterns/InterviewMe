@@ -32,3 +32,7 @@ function selectInterview() {
     location.reload();
   }
 }
+
+function showInterviewers() {
+  $('#exampleModal').modal('show');
+}
