@@ -24,11 +24,10 @@ function loadInterviews() {
 }
 
 // Confirms interview selection with user and sends this selection to Datastore if confirmed.
-function selectInterview() {
-  // TODO: fill in with actual interview info.
-  if (confirm("You selected: Sunday 7/5 from 6:30 PM - 7:30 PM. Click OK if you wish to proceed.")) {
-    alert("You have scheduled an interview on Sunday 7/5 from 6:30 PM - 7:30 PM. Check your email for more information.");
-    // TODO: Call a servlet to handle this selection.
+function selectInterview(interviewer) {
+  if (confirm(`You selected: Sunday 7/5 from 6:30 PM - 7:30 PM with a ${interviewer.getAttribute("data-company")} ${interviewer.getAttribute("data-job")}. Click OK if you wish to proceed.`)) {
+    alert(`You have scheduled an interview on Sunday 7/5 from 6:30 PM - 7:30 PM with a ${interviewer.getAttribute("data-company")} ${interviewer.getAttribute("data-job")}. Check your email for more information.`);
+    // TODO: Call a servlet to save this selection.
     location.reload();
   }
 }
