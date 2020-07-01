@@ -88,14 +88,14 @@ public final class TimeRange {
    * they contain each other.
    */
   public boolean contains(TimeRange other) {
-    // If this range has no end, it is irrelevant.
-    if (end == null) {
+    // If this range has no duration, it is irrelevant.
+    if (Duration.between(range.start, range.end).toMinutes() == 0) {
       return false;
     }
 
     // If the other range has no end, then we must treat it like a point in time rather than a
     // range.
-    if (other.end == null) {
+    if (Duration.between(other.start, other.end) == 0) {
       return contains(this, other.start);
     }
 
@@ -117,7 +117,7 @@ public final class TimeRange {
 
   private static boolean contains(TimeRange range, Instant start2) {
     // If a range has no duration, it cannot contain anything.
-    if (range.end == null) {
+    if (Duration.between(range.start, range.end).toMinutes() == 0) {
       return false;
     }
 
@@ -131,7 +131,7 @@ public final class TimeRange {
     // range. For
     // example, if we have a range that starts at 8:00 and is 30 minutes long, it
     // would end at 8:30.
-    // But that range should on contain 8:30 because it would end just before 8:30
+    // But that range should not contain 8:30 because it would end just before 8:30
     // began.
     return start2.isAfter(range.start);
   }
