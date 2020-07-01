@@ -19,9 +19,15 @@ package com.google.sps;
  * must support.
  */
 public interface ScheduledInterviewDao {
-  // Returns a ScheduledInterview object from storage
-  public ScheduledInterview get() throws com.google.appengine.api.datastore.EntityNotFoundException;
+  // Returns a the most first ScheduledInterview object from storage using the users email as the key.
+  public ScheduledInterview get(String email) throws com.google.appengine.api.datastore.EntityNotFoundException;
 
   // Puts a ScheduledInterview object into storage.
   public void put(ScheduledInterview scheduledInterview);
+
+  // Creates a ScheduledInterview entity from scheduledInterview object. 
+  public void create(); 
+
+  // Updates a ScheduledInterview object.
+  public void update(ScheduledInterview updatedScheduledInterview);
 }
