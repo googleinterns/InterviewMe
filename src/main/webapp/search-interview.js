@@ -34,5 +34,8 @@ function selectInterview() {
 }
 
 function showInterviewers() {
-  $('#exampleModal').modal('show');
+  fetch('/search-interview-interviewers.jsp').then(response => response.text()).then(table => {
+    $('#modal-body').html(table);
+  });
+  $('#interviewer-modal').modal('show');
 }
