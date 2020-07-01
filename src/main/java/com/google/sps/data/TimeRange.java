@@ -52,7 +52,7 @@ public final class TimeRange {
 
   /** Returns the start of the range as an instant. */
   public Instant start() {
-    return start;
+    return this.start;
   }
 
   /** Returns the number of minutes between the start and end of the range. */
@@ -62,7 +62,7 @@ public final class TimeRange {
 
   /** Returns the end of the range as an instant. */
   public Instant end() {
-    return end;
+    return this.end;
   }
 
   /**
@@ -93,7 +93,7 @@ public final class TimeRange {
       return false;
     }
 
-    // If the other range has no end, then we must treat it like a point in time rather than a
+    // If the other range has no duration, then we must treat it like a point in time rather than a
     // range.
     if (Duration.between(other.start, other.end) == 0) {
       return contains(this, other.start);
