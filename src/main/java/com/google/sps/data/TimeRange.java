@@ -1,4 +1,4 @@
-package com.google.sps;
+package com.google.sps.data;
 
 /**
  * Dummy TimeRange class so other things compile.
