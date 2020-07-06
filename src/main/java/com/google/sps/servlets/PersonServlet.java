@@ -56,17 +56,13 @@ public class PersonServlet extends HttpServlet {
   // Returns the person the request's email belongs to.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    try {
-      Optional<Person> personOpt = personDao.get(request.getParameter("email"));
-      if (!personOpt.isPresent()) {
-        // TODO: apply this to all other pages when someone accesses them illegally.
-        response.sendRedirect("/register.html");
-        return;
-      }
-      response.setContentType("application/json;");
-      response.getWriter().println(new Gson().toJson(personOpt.get()));
-    } catch (Exception e) {
-      e.printStackTrace();
+    Optional<Person> personOpt = personDao.get(request.getParameter("email"));
+    if (!personOpt.isPresent()) {
+      // TODO: apply this to all other pages when someone accesses them illegally.
+      response.sendRedirect("/register.html");
+      return;
     }
+    response.setContentType("application/json;");
+    response.getWriter().println(new Gson().toJson(personOpt.get()));
   }
 }
