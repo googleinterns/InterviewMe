@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package availability;
+package com.google.sps.data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +43,9 @@ public class AvailabilityTimeSlots {
 
     String date = generateDate(dayOfWeek, month, dayOfMonth);
     List<String> times = generateTimes();
-    System.out.println("Number of slots per day: " + times.size()); // Is 48
     List<String> utcEncodings = generateUTCEncodings(year, month, dayOfMonth, zoneId);
     List<Boolean> selectedStatuses = getSelectedStatuses();
+    timeSlots = generateTimeSlots(utcEncodings, times, date, selectedStatuses);
   }
 
   private ZoneOffset convertStringToOffset(String offsetString) {
@@ -60,12 +60,18 @@ public class AvailabilityTimeSlots {
   }
 
   private List<String> generateUTCEncodings(int year, int month, int dayOfMonth, ZoneId zoneId) {
-    LocalDateTime firstSlot = LocalDateTime.of(year, month, dayOfMonth, 8, 0);
-    ZonedDateTime withZone = ZonedDateTime.of(firstSlot, zoneId);
-    ZonedDateTime inUTC = withZone.withZoneSameInstant(ZoneOffset.UTC);
-    String formattedUTC = inUTC.format(DateTimeFormatter.ISO_INSTANT);
-    System.out.println("8:00 AM Eastern: " + formattedUTC);
-    return new ArrayList<String>();
+    List<String> utcEncodings = new ArrayList<String>();
+    int[] minutes = {0, 15, 30, 45};
+    for (int i = 8; i < 20; i++) {
+      for (int j = 0; j < 4; j++) {
+        LocalDateTime localTimeSlot = LocalDateTime.of(year, month, dayOfMonth, i, minutes[j]);
+        ZonedDateTime utcTimeSlot =
+            ZonedDateTime.of(localTimeSlot, zoneId).withZoneSameInstant(ZoneOffset.UTC);
+        String formattedUTCTimeSlot = utcTimeSlot.format(DateTimeFormatter.ISO_INSTANT);
+        utcEncodings.add(formattedUTCTimeSlot);
+      }
+    }
+    return utcEncodings;
   }
 
   // TODO: Access the time slots from data store to tell if they are selected or not.
@@ -75,6 +81,17 @@ public class AvailabilityTimeSlots {
       selectedStatuses.add(false);
     }
     return selectedStatuses;
+  }
+
+  private List<AvailabilityTimeSlot> generateTimeSlots(
+      List<String> utcEncodings, List<String> times, String date, List<Boolean> selectedStatuses) {
+    List<AvailabilityTimeSlot> availabilityTimeSlots = new ArrayList<AvailabilityTimeSlot>();
+    for (int i = 0; i < 48; i++) {
+      availabilityTimeSlots.add(
+          new AvailabilityTimeSlot(
+              utcEncodings.get(i), times.get(i), date, selectedStatuses.get(i)));
+    }
+    return availabilityTimeSlots;
   }
 
   // Will be changed to generate current week with calls to generateDate
