@@ -60,20 +60,3 @@ public abstract class AvailabilityTimeSlot {
     abstract AvailabilityTimeSlot build();
   }
 }
-
-/**
- * public class AvailabilityTimeSlot { private String utcEncoding; private String time; private
- * String date; private boolean selected;
- *
- * <p>/** This constructor creates a new Availability object public AvailabilityTimeSlot(String
- * utcEncoding, String time, String date, boolean selected) { this.utcEncoding = utcEncoding;
- * this.time = time; this.date = date; this.selected = selected; }
- *
- * <p>public String getUTCEncoding() { return utcEncoding; }
- *
- * <p>public String getTime() { return time; }
- *
- * <p>public String getDate() { return date; }
- *
- * <p>public boolean getSelected() { return selected; } }
- */
