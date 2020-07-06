@@ -1,12 +1,17 @@
 <%@ page import="com.google.sps.data.AvailabilityTimeSlots" %>
 <%
   AvailabilityTimeSlots list = new AvailabilityTimeSlots(request.getParameter("timeZoneOffset"));
+  pageContext.setAttribute("list", list);
 %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 
 
 <table class="table table-sm text-center">
   <thead>
     <tr>
-      <th scope="col">Monday 6/29</th>
+      <th scope="col">
+        ${list.getTimeSlots().get(0).getDate()}
+        <!--<c:forEach items = "${pageScope.list.getTimeSlots()}" var = "timeSlot">
+          "${timeSlot.getDate()}"</c:forEach>--></th>
     </tr>
   </thead>
   <tbody>

@@ -127,4 +127,8 @@ public class AvailabilityTimeSlots {
     }
     return times;
   }
+
+  public List<AvailabilityTimeSlot> getTimeSlots() {
+    return timeSlots;
+  }
 }
