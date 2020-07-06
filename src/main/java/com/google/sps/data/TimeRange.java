@@ -17,7 +17,6 @@ package com.google.sps.data;
 import java.time.Instant;
 import java.time.Duration;
 import java.util.Comparator;
-import java.util.RandomAccess;
 
 /**
  * Class representing a span of time, enforcing properties (e.g. start comes before end) and
@@ -157,21 +156,22 @@ public final class TimeRange {
   }
 
   private static boolean contains(TimeRange range, Instant instant) {
-    // If a range has no duration, it cannot contain anything.
+    /** If a range has no duration, it cannot contain anything. */
     if (Duration.between(range.start, range.end).isZero()) {
       return false;
     }
 
-    // If the point comes before the start of the range, the range cannot contain
-    // it.
+    /** If the point comes before the start of the range, the range might not contain it. */
     if (instant.isBefore(range.start)) {
       return false;
     }
 
+    /** If the point comes after the end of the range, the range might not contain it. */
     if (instant.isAfter(range.end)) {
       return false;
     }
 
+    /** If the point is equal to the end of the range, the range might not contain it. */
     if (instant == range.end) {
       return false;
     }
