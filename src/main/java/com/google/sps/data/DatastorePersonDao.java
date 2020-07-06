@@ -65,7 +65,6 @@ public class DatastorePersonDao implements PersonDao {
    */
   @Override
   public Optional<Person> get(String email) {
-    // TODO: handle this with the profile page servlet
     Key key = KeyFactory.createKey("Person", email);
     Entity personEntity;
     try {

@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
+import java.util.Optional;
 
 @WebServlet("/person")
 public class PersonServlet extends HttpServlet {
@@ -55,9 +56,14 @@ public class PersonServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     try {
-      Person person = personDao.get(request.getParameter("email"));
+      Optional<Person> personOpt = personDao.get(request.getParameter("email"));
+      if (!personOpt.isPresent() || true) {
+        // TODO: apply this to all other pages when someone accesses them illegally
+        response.sendRedirect("/register.html");
+        return;
+      }
       response.setContentType("application/json;");
-      response.getWriter().println(new Gson().toJson(person));
+      response.getWriter().println(new Gson().toJson(personOpt.get()));
     } catch (Exception e) {
       e.printStackTrace();
     }

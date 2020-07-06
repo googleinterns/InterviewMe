@@ -13,9 +13,9 @@
 // limitations under the License.
 
 function onProfileLoad() {
+  autofillForm();  
   supplyLogoutLink();
   prepareFormValidation();
-  autofillForm();
 }
 
 // Fills in the profile form with data from Datastore.
@@ -23,7 +23,13 @@ function autofillForm() {
   fetch('/login')
   .then(response => response.json())
   .then(status => fetch(`/person?email=${status.email}`))
-  .then(response => response.json())
+  .then(response => {
+    if (response.redirected) {
+      window.location.href = response.url;
+      return;
+    }
+    return response.json();
+  })
   .then((person) => {
     console.log(person);
     document.getElementById("user-email").value = person.email;
