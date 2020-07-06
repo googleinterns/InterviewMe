@@ -23,6 +23,9 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.CompositeFilter;
+import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.sps.ScheduledInterview;
@@ -41,15 +44,19 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
    * Retrieve a scheduledInterviewEntity from Datastore
    * and return it as a scheduledInterview object.
    */
-  public Optional get(String email) {
+  public Optional<ScheduledInterview> get(String email) {
+    Key key = KeyFactory.createKey("attendee", email);
+    Entity scheduledInterviewEntity; 
     try {
-      Key key = KeyFactory.createKey("attendee", email);
-      Optional<Entity> scheduledInterviewEntity = datastore.get(key); 
-    } catch (com.google.appengine.api.datastore.EntityNotFoundException e) {
+      scheduledInterviewEntity = datastore.get(key); 
+    } catch (Exception e) {
       return Optional.empty(); 
     }
-    Filter interviewerFilter = new FilterPredicate("interviewer", FilterOperator.EQUAL, email);
-    return scheduledInterviewEntity;
+    FilterPredicate interviewerFilter = new FilterPredicate("interviewer", FilterOperator.EQUAL, email);
+    FilterPredicate intervieweeFilter = new FilterPredicate("interviewee", FilterOperator.EQUAL, email);
+    CompositeFilter compositeFilter = CompositeFilterOperator.and(interviewerFilter, intervieweeFilter);
+    Query q = new Query().setFilter(compositeFilter);
+    return Optional.of(entityToScheduledInterview(scheduledInterviewEntity));
   }
 
   /**
