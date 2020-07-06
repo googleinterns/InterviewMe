@@ -24,13 +24,13 @@ import com.google.auto.value.AutoValue;
  */
 @AutoValue
 public abstract class AvailabilityTimeSlot {
-  abstract String utcEncoding();
+  public abstract String utcEncoding();
 
-  abstract String time();
+  public abstract String time();
 
-  abstract String date();
+  public abstract String date();
 
-  abstract boolean selected();
+  public abstract boolean selected();
 
   public static AvailabilityTimeSlot create(
       String utcEncoding, String time, String date, boolean selected) {

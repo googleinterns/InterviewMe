@@ -16,7 +16,7 @@
     <c:forEach items = "${pageScope.list.getTimeSlots()}" var = "timeSlot">
       <tr>
         <td onclick="switchTile(this)" data-utc="${timeSlot.utcEncoding()}" class="${timeSlot.selected() ? 'table-success' : ''}">
-          ${timeSlot.getTime()}
+          ${timeSlot.time()}
         </td>
       </tr>
     </c:forEach>
