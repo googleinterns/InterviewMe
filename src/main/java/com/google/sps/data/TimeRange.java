@@ -17,6 +17,7 @@ package com.google.sps.data;
 import java.time.Instant;
 import java.time.Duration;
 import java.util.Comparator;
+import java.util.RandomAccess;
 
 /**
  * Class representing a span of time, enforcing properties (e.g. start comes before end) and
@@ -45,7 +46,7 @@ public final class TimeRange {
   private final Instant start, end;
 
   /** Creates a timerange with a start and end instant */
-  public TimeRange(Instant start, Instant end) {
+  private TimeRange(Instant start, Instant end) {
     this.start = start;
     this.end = end;
   }
@@ -79,7 +80,14 @@ public final class TimeRange {
     //
     // Case 3: |---------|
     //            |---|
-    return this.contains(other.start) || other.contains(this.start);
+    if (this.start.isBefore(other.start)) {
+      return this.contains(other.start);
+    }
+
+    if (this.start.equals(other.start)) {
+      return this.end.isAfter(other.end);
+    }
+    return other.contains(this.start);
   }
 
   /**
@@ -91,6 +99,30 @@ public final class TimeRange {
     /** If this range has no duration, it is irrelevant. */
     if (Duration.between(start, end).isZero()) {
       return false;
+    }
+
+    if (other.start.isAfter(this.end)) {
+      return false;
+    }
+
+    if (other.end.isBefore(this.start)) {
+      return false;
+    }
+
+    if (other.end == this.start) {
+      return other.start.isAfter(this.start);
+    }
+
+    if (other.end == this.end) {
+      return other.start.isAfter(this.start);
+    }
+
+    if (other.end.isAfter(this.end)) {
+      return false;
+    }
+
+    if (other.start == this.start) {
+      return other.end.isBefore(this.end);
     }
 
     /**
@@ -130,6 +162,14 @@ public final class TimeRange {
       return false;
     }
 
+    if (instant.isAfter(range.end)) {
+      return false;
+    }
+
+    if (instant == range.end) {
+      return false;
+    }
+
     /**
      * If the point is on the end of the range. We don't count it as included in the range. For
      * example, if we have a range that starts at 8:00 and is 30 minutes long, it would end at 8:30.
@@ -141,5 +181,9 @@ public final class TimeRange {
   /** Checks if two timeranges are the same. */
   private static boolean equals(TimeRange a, TimeRange b) {
     return a.start == b.start && a.end == b.end;
+  }
+
+  public static TimeRange fromStartEnd(Instant start, Instant end) {
+    return new TimeRange(start, end);
   }
 }
