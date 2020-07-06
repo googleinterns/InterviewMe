@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main.java.com.google.sps.data;
+package com.google.sps.data;
 
 import java.time.Instant;
 import java.time.Duration;
@@ -45,7 +45,7 @@ public final class TimeRange {
   private final Instant start, end;
 
   /** Creates a timerange with a start and end instant */
-  private TimeRange(Instant start, Instant end) {
+  public TimeRange(Instant start, Instant end) {
     this.start = start;
     this.end = end;
   }
@@ -55,14 +55,14 @@ public final class TimeRange {
     return this.start;
   }
 
-  /** Returns the number of minutes between the start and end of the range. */
-  public Long duration() {
-    return (Long) Duration.between(start, end).toMinutes();
-  }
-
   /** Returns the end of the range as an instant. */
   public Instant end() {
     return this.end;
+  }
+
+  /** Returns the duration of the range. */
+  public Duration duration() {
+    return Duration.between(start, end);
   }
 
   /**
@@ -89,13 +89,13 @@ public final class TimeRange {
    */
   public boolean contains(TimeRange other) {
     // If this range has no duration, it is irrelevant.
-    if (Duration.between(range.start, range.end).toMinutes() == 0) {
+    if (Duration.between(start, end).isZero()) {
       return false;
     }
 
     // If the other range has no duration, then we must treat it like a point in time rather than a
     // range.
-    if (Duration.between(other.start, other.end) == 0) {
+    if (Duration.between(other.start, other.end).isZero()) {
       return contains(this, other.start);
     }
 
@@ -105,6 +105,7 @@ public final class TimeRange {
     Instant otherInclusiveEnd = other.end;
     return contains(this, other.start) && contains(this, otherInclusiveEnd);
   }
+
   /** Checks if a timerange contains a certain instant. */
   public boolean contains(Instant point) {
     return contains(this, point);
@@ -115,25 +116,24 @@ public final class TimeRange {
     return other instanceof TimeRange && equals(this, (TimeRange) other);
   }
 
-  private static boolean contains(TimeRange range, Instant start2) {
+  private static boolean contains(TimeRange range, Instant instant) {
     // If a range has no duration, it cannot contain anything.
-    if (Duration.between(range.start, range.end).toMinutes() == 0) {
+    if (Duration.between(range.start, range.end).isZero()) {
       return false;
     }
 
     // If the point comes before the start of the range, the range cannot contain
     // it.
-    if (start2.isBefore(range.start)) {
+    if (instant.isBefore(range.start)) {
       return false;
     }
 
-    // If the point is on the end of the range. We don't count it as included in the
-    // range. For
-    // example, if we have a range that starts at 8:00 and is 30 minutes long, it
-    // would end at 8:30.
-    // But that range should not contain 8:30 because it would end just before 8:30
-    // began.
-    return start2.isAfter(range.start);
+    /**
+     * If the point is on the end of the range. We don't count it as included in the range. For
+     * example, if we have a range that starts at 8:00 and is 30 minutes long, it would end at 8:30.
+     * But that range should not contain 8:30 because it would end just before 8:30 began.
+     */
+    return instant.isAfter(range.start);
   }
 
   /** Checks if two timeranges are the same. */
