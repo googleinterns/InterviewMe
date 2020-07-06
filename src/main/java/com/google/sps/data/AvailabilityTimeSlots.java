@@ -25,6 +25,8 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 import java.time.format.DateTimeFormatter;
 
+// TODO: Add a test for the constructor.
+
 /**
  * A collection of AvailabilityTimeSlot Objects, which will eventually be generated with information
  * from datastore.
@@ -32,6 +34,7 @@ import java.time.format.DateTimeFormatter;
 public class AvailabilityTimeSlots {
   private List<AvailabilityTimeSlot> timeSlots = new ArrayList<AvailabilityTimeSlot>();
 
+  /** Constructs an AvailabilityTimeSlots object by generating the timeSlots list. */
   public AvailabilityTimeSlots(String timeZoneOffsetString) {
     ZoneOffset timeZoneOffset = convertStringToOffset(timeZoneOffsetString);
     ZoneId zoneId = ZoneId.ofOffset("UTC", timeZoneOffset);
@@ -41,6 +44,7 @@ public class AvailabilityTimeSlots {
     int month = today.getMonthValue();
     int dayOfMonth = today.getDayOfMonth();
 
+    // TODO: Generate a week of slots.
     String date = generateDate(dayOfWeek, month, dayOfMonth);
     List<String> times = generateTimes();
     List<String> utcEncodings = generateUTCEncodings(year, month, dayOfMonth, zoneId);
@@ -94,7 +98,7 @@ public class AvailabilityTimeSlots {
     return availabilityTimeSlots;
   }
 
-  // Will be changed to generate current week with calls to generateDate
+  // TODO: Change to generate current week with calls to generateDate
   private List<String> generateDates() {
     List<String> dates = new ArrayList<String>();
     dates.add("Sunday 6/28");

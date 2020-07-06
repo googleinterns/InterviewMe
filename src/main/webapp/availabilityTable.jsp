@@ -8,24 +8,17 @@
 <table class="table table-sm text-center">
   <thead>
     <tr>
-      <th scope="col">
-        ${list.getTimeSlots().get(0).getDate()}
-        <!--<c:forEach items = "${pageScope.list.getTimeSlots()}" var = "timeSlot">
-          "${timeSlot.getDate()}"</c:forEach>--></th>
+      <th scope="col">${list.getTimeSlots().get(0).getDate()}</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td onclick="switchTile(this)">9:00 AM</td>
-    </tr>
-    <tr>
-      <td onclick="switchTile(this)">9:15 AM</td>
-    </tr>
-    <tr>
-      <td onclick="switchTile(this)">9:30 AM</td>
-    </tr>
-    <tr>
-      <td onclick="switchTile(this)">9:45 AM</td>
-    </tr>
+    <!-- TODO: Allow clicking and scrolling over multiple slots to select them.-->
+    <c:forEach items = "${pageScope.list.getTimeSlots()}" var = "timeSlot">
+      <tr>
+        <td onclick="switchTile(this)" data-utc="${timeSlot.getUTCEncoding()}" class="${timeSlot.getClassName()}">
+          ${timeSlot.getTime()}
+        </td>
+      </tr>
+    </c:forEach>
   </tbody>
 </table>
