@@ -25,6 +25,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
+import com.google.sps.ScheduledInterview;
 import com.google.sps.ScheduledInterviewDao;
 
 import java.io.IOException;
@@ -32,6 +33,7 @@ import java.nio.file.DirectoryStream.Filter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /** Accesses Datastore to support managing ScheduledInterview entities. */
 public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
@@ -44,13 +46,16 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
   }
 
   /**
-   * Make an entity in Datastore with scheduledInterview's fields as properties.
+   * Saves an entity to datastore.
    */
-  public void put(ScheduledInterview scheduledInterview) {
-    datastore.put(scheduledInterviewToEntity(scheduledInterview));
+  public void put(Entity scheduledInterviewEntity) {
+    datastore.put(scheduledInterviewEntity);
   }
 
-  private static Entity personToEntity(ScheduledInterview scheduledInterview) {
+  /**
+   * Creates a ScheduledInterview Entity.
+   */
+  private static Entity create(ScheduledInterview scheduledInterview) {
     Entity scheduledInterviewEntity = new Entity("ScheduledInterview");
     personEntity.setProperty("when", scheduledInterview.getWhen());
     personEntity.setProperty("date", scheduledInterview.getDate());
@@ -63,12 +68,14 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
    * Retrieve a scheduledInterviewEntity from Datastore
    * and return it as a scheduledInterview object.
    */
-  public ScheduledInterview get(String interviewer, String interviewee)
-      throws com.google.appengine.api.datastore.EntityNotFoundException {
-    Filter interviewerFilter = new FilterPredicate("interviewer", FilterOperator.EQUAL, interviewer);
-    Filter intervieweeFilter = new FilterPredicate("interviewee", FilterOperator.EQUAL, interviewee);
-    Entity scheduledInterviewEntity = datastore.get();
-    return entityToScheduledInterview(scheduledInterviewEntity);
+  public Optional get(String email) {
+    try {
+      Optional<Entity> scheduledInterviewEntity = datastore.get(email); 
+    } catch (com.google.appengine.api.datastore.EntityNotFoundException e) {
+      return Optional.empty(); 
+    }
+    Filter interviewerFilter = new FilterPredicate("interviewer", FilterOperator.EQUAL, email);
+    return scheduledInterviewEntity;
   }
 
   private static ScheduledInterview entityToScheduledInterview(Entity scheduledInterviewEntity) {
