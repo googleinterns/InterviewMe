@@ -13,13 +13,14 @@
 // limitations under the License.
 
 function onProfileLoad() {
-  autofillForm();  
+  autofillForm(getUserIfRegistered());  
   supplyLogoutLink();
   prepareFormValidation();
 }
 
-// Fills in the profile form with data from Datastore.
-function autofillForm() {
+// Returns a Person if they registered in the past. If not, redirect to  
+// registration page.
+function getUserIfRegistered(){
   fetch('/login')
   .then(response => response.json())
   .then(status => fetch(`/person?email=${status.email}`))
@@ -29,16 +30,17 @@ function autofillForm() {
       return;
     }
     return response.json();
-  })
-  .then((person) => {
-    console.log(person);
-    document.getElementById("user-email").value = person.email;
-    document.getElementById("first-name-field").value = person.firstName;
-    document.getElementById("last-name-field").value = person.lastName;
-    document.getElementById("company-field").value = person.company;
-    document.getElementById("job-field").value = person.job;
-    document.getElementById("linkedin-field").value = person.linkedIn;    
   });
+}
+
+// Fills in the profile form with data from Datastore.
+function autofillForm(person) {
+  document.getElementById("user-email").value = person.email;
+  document.getElementById("first-name-field").value = person.firstName;
+  document.getElementById("last-name-field").value = person.lastName;
+  document.getElementById("company-field").value = person.company;
+  document.getElementById("job-field").value = person.job;
+  document.getElementById("linkedin-field").value = person.linkedIn;    
 }
 
 // Allows certain fields in the profile to be edited, hides edit button, and displays update button. 

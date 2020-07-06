@@ -50,6 +50,7 @@ public class PersonServlet extends HttpServlet {
             request.getParameter("company"),
             request.getParameter("job"),
             request.getParameter("linkedin")));
+    // TODO: redirect to home page and handle in JS.
   }
 
   // Returns the person the request's email belongs to.
@@ -57,8 +58,8 @@ public class PersonServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     try {
       Optional<Person> personOpt = personDao.get(request.getParameter("email"));
-      if (!personOpt.isPresent() || true) {
-        // TODO: apply this to all other pages when someone accesses them illegally
+      if (!personOpt.isPresent()) {
+        // TODO: apply this to all other pages when someone accesses them illegally.
         response.sendRedirect("/register.html");
         return;
       }
