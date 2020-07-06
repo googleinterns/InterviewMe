@@ -24,36 +24,29 @@ public class AvailabilityTimeSlot {
   private String utcEncoding;
   private String time;
   private String date;
-  private String className;
+  private boolean selected;
 
   /** This constructor creates a new Availability object */
   public AvailabilityTimeSlot(String utcEncoding, String time, String date, boolean selected) {
     this.utcEncoding = utcEncoding;
     this.time = time;
     this.date = date;
-    this.className = setClassName(selected);
-  }
-
-  private String setClassName(boolean selected) {
-    if (selected) {
-      return "table-success";
-    }
-    return "";
+    this.selected = selected;
   }
 
   public String getUTCEncoding() {
-    return this.utcEncoding;
+    return utcEncoding;
   }
 
   public String getTime() {
-    return this.time;
+    return time;
   }
 
   public String getDate() {
-    return this.date;
+    return date;
   }
 
-  public String getClassName() {
-    return this.className;
+  public boolean getSelected() {
+    return selected;
   }
 }
