@@ -23,7 +23,7 @@ import java.util.Optional;
  */
 public interface ScheduledInterviewDao {
   // Returns a the most first ScheduledInterview object from storage using the users email as the key.
-  public Optional get(String email);
+  public Optional<ScheduledInterview> get(String email);
 
   // Puts a ScheduledInterview into storage.
   public void put(ScheduledInterview scheduledInterview); 
