@@ -88,13 +88,15 @@ public final class TimeRange {
    * they contain each other.
    */
   public boolean contains(TimeRange other) {
-    // If this range has no duration, it is irrelevant.
+    /** If this range has no duration, it is irrelevant. */
     if (Duration.between(start, end).isZero()) {
       return false;
     }
 
-    // If the other range has no duration, then we must treat it like a point in time rather than a
-    // range.
+    /**
+     * If the other range has no duration, then we must treat it like a point in time rather than a
+     * range.
+     */
     if (Duration.between(other.start, other.end).isZero()) {
       return contains(this, other.start);
     }
