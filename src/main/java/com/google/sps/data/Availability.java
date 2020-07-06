@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps;
+package com.google.sps.data;
 
-import java.time.LocalDate;
 import com.google.auto.value.AutoValue;
+import java.time.LocalDate;
 
 /**
  * Availability is a time range when a given person is available to offer interviews as an
@@ -28,6 +28,10 @@ public abstract class Availability {
   abstract TimeRange when();
 
   abstract LocalDate date();
+
+  public static Availability create(String email, TimeRange when, LocalDate date) {
+    return builder().setEmail(email).setWhen(when).setDate(date).build();
+  }
 
   static Builder builder() {
     return new AutoValue_Availability.Builder();
