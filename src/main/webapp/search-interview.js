@@ -16,14 +16,16 @@ function onSearchInterviewLoad() {
   supplyLogoutLink();
 }
 
-// Should query Datastore for appropriate interviews and render them on the page.
+// Should query Datastore for appropriate interviews and render them on the
+// page.
 function loadInterviews() {
   // TODO: fetch and get all interviews instead of unhiding something hidden
   const searchResultsDiv = document.getElementById("search-results");
   searchResultsDiv.removeAttribute("hidden");
 }
 
-// Confirms interview selection with user and sends this selection to Datastore if confirmed.
+// Confirms interview selection with user and sends this selection to Datastore 
+// if confirmed.
 function selectInterview(interviewer) {
   if (confirm(
       `You selected: Sunday 7/5 from 6:30 PM - 7:30 PM with a ` +
@@ -42,7 +44,8 @@ function selectInterview(interviewer) {
 
 // Fills in the modal with interviewer info from Datastore and shows it.
 function showInterviewers() {
-  fetch('/search-interview-interviewers.jsp').then(response => response.text()).then(table => {
+  fetch('/search-interview-interviewers.jsp').then(response => response.text())
+  .then(table => {
     $('#modal-body').html(table);
   });
   $('#interviewer-modal').modal('show');
