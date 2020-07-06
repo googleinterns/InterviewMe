@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps;
+package com.google.sps.data;
 
 import java.util.Optional;
 
@@ -27,7 +27,7 @@ public interface ScheduledInterviewDao {
   public Optional get(String email);
 
   // Puts a ScheduledInterview entity into storage.
-  public void put(Entity scheduledInterviewEntity); 
+  public void put(ScheduledInterview scheduledInterview); 
 
   // Updates a ScheduledInterview entity.
   public void update(Entity oldScheduledInterview);
