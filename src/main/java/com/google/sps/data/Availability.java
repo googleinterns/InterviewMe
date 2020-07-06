@@ -35,7 +35,7 @@ public abstract class Availability {
 
   @AutoValue.Builder
   abstract static class Builder {
-    abstract Builder setName(String email);
+    abstract Builder setEmail(String email);
 
     abstract Builder setWhen(TimeRange when);
 

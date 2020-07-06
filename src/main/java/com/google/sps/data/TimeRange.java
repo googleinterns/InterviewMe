@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main.java.com.google.sps.data;
+package com.google.sps;
 
 import java.time.Instant;
 import java.time.Duration;
@@ -89,13 +89,13 @@ public final class TimeRange {
    */
   public boolean contains(TimeRange other) {
     // If this range has no duration, it is irrelevant.
-    if (Duration.between(range.start, range.end).toMinutes() == 0) {
+    if (Duration.between(start, end).toMinutes() == 0) {
       return false;
     }
 
     // If the other range has no duration, then we must treat it like a point in time rather than a
     // range.
-    if (Duration.between(other.start, other.end) == 0) {
+    if (Duration.between(other.start, other.end).toMinutes() == 0) {
       return contains(this, other.start);
     }
 
