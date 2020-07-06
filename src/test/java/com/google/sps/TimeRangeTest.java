@@ -40,6 +40,7 @@ public final class TimeRangeTest {
   Instant TIME_9PM = Instant.parse("2020-07-06T21:00:10.324978Z");
   Instant TIME_930PM = Instant.parse("2020-07-06T21:30:10.324978Z");
 
+  // Tests whether or not two TimeRanges are the same
   @Test
   public void equality() {
     Assert.assertEquals(
@@ -50,6 +51,7 @@ public final class TimeRangeTest {
         TimeRange.fromStartEnd(TIME_530PM, TIME_630PM));
   }
 
+  // Tests whether or not a timerange contains a certain instant. 
   @Test
   public void containsPoint() {
     TimeRange range = TimeRange.fromStartEnd(TIME_530PM, TIME_630PM);
@@ -57,6 +59,7 @@ public final class TimeRangeTest {
     Assert.assertTrue(range.contains(TIME_6PM));
   }
 
+  // Tests whether or not a TimeRange contains another TimeRange
   @Test
   public void containsRange() {
     TimeRange range = TimeRange.fromStartEnd(TIME_630PM, TIME_8PM);
@@ -96,6 +99,7 @@ public final class TimeRangeTest {
     Assert.assertFalse(range.contains(TimeRange.fromStartEnd(TIME_9PM, TIME_930PM)));
   }
 
+  // Tests whether or not two TimeRanges overlap
   @Test
   public void overlaps() {
     TimeRange range = TimeRange.fromStartEnd(TIME_6PM, TIME_730PM);
@@ -135,6 +139,7 @@ public final class TimeRangeTest {
     Assert.assertFalse(range.overlaps(TimeRange.fromStartEnd(TIME_830PM, TIME_9PM)));
   }
 
+  // Tests whether or not a TimeRange's duration is zero
   @Test
   public void rangeDurationIsZero() {
     TimeRange range = TimeRange.fromStartEnd(TIME_430PM, TIME_430PM);
