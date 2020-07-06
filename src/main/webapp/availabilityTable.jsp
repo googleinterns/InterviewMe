@@ -1,4 +1,4 @@
-<%@ page import="availability.AvailabilityTimeSlots" %>
+<%@ page import="com.google.sps.data.AvailabilityTimeSlots" %>
 <%
   AvailabilityTimeSlots list = new AvailabilityTimeSlots(request.getParameter("timeZoneOffset"));
 %>

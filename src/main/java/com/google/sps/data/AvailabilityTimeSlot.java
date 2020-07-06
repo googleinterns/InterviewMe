@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package availability;
+package com.google.sps.data;
 
 /**
  * An AvailabilityTimeSlot represents a table entry on the availability page that has a date and
