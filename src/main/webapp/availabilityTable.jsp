@@ -8,15 +8,15 @@
 <table class="table table-sm text-center">
   <thead>
     <tr>
-      <th scope="col">${list.getTimeSlots().get(0).getDate()}</th>
+      <th scope="col">${list.getTimeSlots().get(0).date()}</th>
     </tr>
   </thead>
   <tbody>
     <!-- TODO: Allow clicking and scrolling over multiple slots to select them.-->
     <c:forEach items = "${pageScope.list.getTimeSlots()}" var = "timeSlot">
       <tr>
-        <td onclick="switchTile(this)" data-utc="${timeSlot.getUTCEncoding()}" class="${timeSlot.getSelected() ? 'table-success' : ''}">
-          ${timeSlot.getTime()}
+        <td onclick="switchTile(this)" data-utc="${timeSlot.utcEncoding()}" class="${timeSlot.selected() ? 'table-success' : ''}">
+          ${timeSlot.time()}
         </td>
       </tr>
     </c:forEach>

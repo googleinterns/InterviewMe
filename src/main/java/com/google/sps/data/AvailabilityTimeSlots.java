@@ -92,7 +92,7 @@ public class AvailabilityTimeSlots {
     List<AvailabilityTimeSlot> availabilityTimeSlots = new ArrayList<AvailabilityTimeSlot>();
     for (int i = 0; i < 48; i++) {
       availabilityTimeSlots.add(
-          new AvailabilityTimeSlot(
+          AvailabilityTimeSlot.create(
               utcEncodings.get(i), times.get(i), date, selectedStatuses.get(i)));
     }
     return availabilityTimeSlots;
