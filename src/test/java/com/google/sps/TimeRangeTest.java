@@ -51,7 +51,7 @@ public final class TimeRangeTest {
         TimeRange.fromStartEnd(TIME_530PM, TIME_630PM));
   }
 
-  // Tests whether or not a timerange contains a certain instant. 
+  // Tests whether or not a timerange contains a certain instant.
   @Test
   public void containsPoint() {
     TimeRange range = TimeRange.fromStartEnd(TIME_530PM, TIME_630PM);

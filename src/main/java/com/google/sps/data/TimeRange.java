@@ -100,42 +100,16 @@ public final class TimeRange {
       return false;
     }
 
-    /** If the start of one range is after the end of another, the range isn't contained. */
-    if (other.start.isAfter(this.end)) {
-      return false;
-    }
-
-    /** If the the end of one range is before the start of another, the range isn't contained. */
-    if (other.end.isBefore(this.start)) {
-      return false;
-    }
-
-    /** If the end of one range is equal to the start of another, check whether the start of one range comes after the other. */
-    if (other.end == this.start) {
-      return other.start.isAfter(this.start);
-    }
-
-    /** If the ends of the range are equal, check whether the start of range comes after the other. */
+    /**
+     * If the ends of the range are equal, check whether the start of range comes after the other.
+     */
     if (other.end == this.end) {
       return other.start.isAfter(this.start);
-    }
-
-    /** If the end of one range is after the end of another the range is not contained. */
-    if (other.end.isAfter(this.end)) {
-      return false;
     }
 
     /** If the start of the ranges are the same, check if one end is before the other. */
     if (other.start == this.start) {
       return other.end.isBefore(this.end);
-    }
-
-    /**
-     * If the other range has no duration, then we must treat it like a point in time rather than a
-     * range.
-     */
-    if (Duration.between(other.start, other.end).isZero()) {
-      return contains(this, other.start);
     }
 
     // We need the inclusive end for this check in order for this case to equal true:
@@ -161,17 +135,12 @@ public final class TimeRange {
       return false;
     }
 
-    /** If the point comes before the start of the range, the range might not contain it. */
-    if (instant.isBefore(range.start)) {
+    /** If the point comes before the start of the range, the range will not contain it. */
+    if (instant.isBefore(range.start) || instant.isAfter(range.end)) {
       return false;
     }
 
-    /** If the point comes after the end of the range, the range might not contain it. */
-    if (instant.isAfter(range.end)) {
-      return false;
-    }
-
-    /** If the point is equal to the end of the range, the range might not contain it. */
+    /** If the point is equal to the end of the range, the range will not contain it. */
     if (instant == range.end) {
       return false;
     }
