@@ -34,7 +34,7 @@ public class AvailabilityTimeSlotGenerator {
   private static final int TIME_7PM = 19;
 
   /**
-   * Constructs list of AvailabilityTimeSlot objects
+   * Constructs list of AvailabilityTimeSlot objects for the current day.
    *
    * @param timezoneOffset A String that represents the difference between UTC and the user's
    *     current timezone. Example: A user in EST has a timezoneOffset of "-240" which means that
