@@ -14,6 +14,7 @@
 
 package com.google.sps.data;
 
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.Instant;
@@ -51,7 +52,7 @@ public class AvailabilityTimeSlotGenerator {
     int dayOfMonth = day.getDayOfMonth();
 
     String date = generateDate(dayOfWeek, month, dayOfMonth);
-    List<String> times = generateTimes();
+    List<String> times = availableStartTimes();
     List<String> utcEncodings = generateUTCEncodings(year, month, dayOfMonth, zoneId);
     List<Boolean> selectedStatuses = getSelectedStatuses();
     return generateTimeSlots(utcEncodings, times, date, selectedStatuses);
@@ -122,24 +123,21 @@ public class AvailabilityTimeSlotGenerator {
   }
 
   // Returns a list of readable time Strings such as "8:00 AM".
-  private static List<String> generateTimes() {
-    List<String> times = new ArrayList<String>();
-    for (int i = 8; i < 12; i++) {
-      times.add(i + ":00 AM");
-      times.add(i + ":15 AM");
-      times.add(i + ":30 AM");
-      times.add(i + ":45 AM");
+  private static List<String> availableStartTimes() {
+    ImmutableList<Integer> supportedHours =
+        ImmutableList.of(8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19);
+    ImmutableList<Integer> supportedMinutes = ImmutableList.of(0, 15, 30, 45);
+    ImmutableList.Builder<String> timesBuilder = ImmutableList.builder();
+    for (Integer hour : supportedHours) {
+      for (Integer minutes : supportedMinutes) {
+        int standardHour = hour;
+        if (hour > 12) {
+          standardHour = hour - 12;
+        }
+        timesBuilder.add(
+            String.format("%d:%02d %s", standardHour, minutes, hour < 12 ? "AM" : "PM"));
+      }
     }
-    times.add("12:00 PM");
-    times.add("12:15 PM");
-    times.add("12:30 PM");
-    times.add("12:45 PM");
-    for (int i = 1; i < 8; i++) {
-      times.add(i + ":00 PM");
-      times.add(i + ":15 PM");
-      times.add(i + ":30 PM");
-      times.add(i + ":45 PM");
-    }
-    return times;
+    return timesBuilder.build();
   }
 }
