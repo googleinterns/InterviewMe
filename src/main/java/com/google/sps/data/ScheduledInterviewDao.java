@@ -26,12 +26,11 @@ public interface ScheduledInterviewDao {
   // key.
   public Optional<ScheduledInterview> get(String email);
 
-  // Puts a ScheduledInterview into storage.
-  public void put(ScheduledInterview scheduledInterview);
+  // Creates a ScheduledInterview entity.
+  public Entity create(ScheduledInterview scheduledInterview);
 
   // Updates a ScheduledInterview in storage.
   public void update(ScheduledInterview oldScheduledInterview);
 
-  // Creates a ScheduledInterview entity.
-  public Entity create(ScheduledInterview scheduledInterview);
+  // TODO: Implement deletion for interview cancellations
 }
