@@ -14,9 +14,6 @@
 
 package com.google.sps.data;
 
-import com.google.auto.value.AutoValue;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.Instant;
@@ -28,105 +25,114 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 import java.time.format.DateTimeFormatter;
 
-/** A generator of a collection of AvailabilityTimeSlot Objects. */
+// TODO: Add a test for the constructor.
+
+/**
+ * A collection of AvailabilityTimeSlot Objects, which will eventually be generated with information
+ * from datastore.
+ */
 public class AvailabilityTimeSlotGenerator {
-  private static final int EARLIEST_HOUR = 8;
-  private static final int LATEST_HOUR = 19;
-  // A list of hours and minutes representing permitted time slots.
-  private static final ImmutableList<HoursAndMinutes> ALL_HOURS_AND_MINUTES = allHoursAndMinutes();
+  private List<AvailabilityTimeSlot> timeSlots = new ArrayList<AvailabilityTimeSlot>();
 
-  @AutoValue
-  abstract static class HoursAndMinutes {
-    abstract int hour();
+  /** Constructs an AvailabilityTimeSlotGenerator object by generating the timeSlots list. */
+  public AvailabilityTimeSlotGenerator(String timeZoneOffsetString) {
+    ZoneOffset timeZoneOffset = convertStringToOffset(timeZoneOffsetString);
+    ZoneId zoneId = ZoneId.ofOffset("UTC", timeZoneOffset);
+    ZonedDateTime today = Instant.now().atZone(zoneId);
+    String dayOfWeek = today.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.US);
+    int year = today.getYear();
+    int month = today.getMonthValue();
+    int dayOfMonth = today.getDayOfMonth();
 
-    abstract int minute();
-
-    static HoursAndMinutes create(int hour, int minute) {
-      return new AutoValue_AvailabilityTimeSlotGenerator_HoursAndMinutes(hour, minute);
-    }
+    // TODO: Generate a week of slots.
+    String date = generateDate(dayOfWeek, month, dayOfMonth);
+    List<String> times = generateTimes();
+    List<String> utcEncodings = generateUTCEncodings(year, month, dayOfMonth, zoneId);
+    List<Boolean> selectedStatuses = getSelectedStatuses();
+    timeSlots = generateTimeSlots(utcEncodings, times, date, selectedStatuses);
   }
 
-  private static ImmutableList<HoursAndMinutes> allHoursAndMinutes() {
-    ImmutableList.Builder<HoursAndMinutes> hoursAndMinutes = ImmutableList.builder();
-    for (int i = EARLIEST_HOUR; i <= LATEST_HOUR; i++) {
-      hoursAndMinutes.add(HoursAndMinutes.create(i, 0));
-      hoursAndMinutes.add(HoursAndMinutes.create(i, 15));
-      hoursAndMinutes.add(HoursAndMinutes.create(i, 30));
-      hoursAndMinutes.add(HoursAndMinutes.create(i, 45));
-    }
-    return hoursAndMinutes.build();
+  private ZoneOffset convertStringToOffset(String offsetString) {
+    int offsetTotalMinutes = Integer.parseInt(offsetString);
+    int offsetHours = offsetTotalMinutes / 60;
+    int offsetMinutes = offsetTotalMinutes % 60;
+    return ZoneOffset.ofHoursMinutes(offsetHours, offsetMinutes);
   }
 
-  /**
-   * Constructs a list of a day's worth of AvailabilityTimeSlot objects.
-   *
-   * @param instant An Instant on the day that time slots are generated for.
-   * @param timezoneOffsetMinutes An int that represents the difference between UTC and the user's
-   *     current timezone. Example: A user in EST has a timezoneOffsetMinutes of -240 which means
-   *     that EST is 240 minutes behind UTC.
-   * @throws IllegalArgumentException if the magnitude of timezoneOffsetMinutes is greater than 720.
-   */
-  // TODO: Create a timeSlotsForWeek method.
-  public static List<AvailabilityTimeSlot> timeSlotsForDay(
-      Instant instant, int timezoneOffsetMinutes) {
-    Preconditions.checkArgument(
-        Math.abs(timezoneOffsetMinutes) <= 720,
-        "Offset greater than 720 minutes (12 hours): %s",
-        timezoneOffsetMinutes);
-    ZonedDateTime day = generateDay(instant, timezoneOffsetMinutes);
-    ZoneId zoneId = day.getZone();
-    String dayOfWeek = day.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.US);
-    int year = day.getYear();
-    int month = day.getMonthValue();
-    int dayOfMonth = day.getDayOfMonth();
+  private String generateDate(String dayOfWeek, int month, int dayOfMonth) {
+    return dayOfWeek + " " + month + "/" + dayOfMonth;
+  }
 
-    String formattedDate = formatDate(dayOfWeek, month, dayOfMonth);
-
-    ImmutableList.Builder<AvailabilityTimeSlot> timeSlots = ImmutableList.builder();
-    for (HoursAndMinutes hoursAndMinutes : ALL_HOURS_AND_MINUTES) {
-      int hour = hoursAndMinutes.hour();
-      int minute = hoursAndMinutes.minute();
-      LocalDateTime localTime = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
-      ZonedDateTime utcTime =
-          ZonedDateTime.of(localTime, zoneId).withZoneSameInstant(ZoneOffset.UTC);
-      String formattedUTCTime = utcTime.format(DateTimeFormatter.ISO_INSTANT);
-
-      int standardHour = hour;
-      if (hour > 12) {
-        standardHour = hour - 12;
+  private List<String> generateUTCEncodings(int year, int month, int dayOfMonth, ZoneId zoneId) {
+    List<String> utcEncodings = new ArrayList<String>();
+    int[] minutes = {0, 15, 30, 45};
+    for (int i = 8; i < 20; i++) {
+      for (int j = 0; j < 4; j++) {
+        LocalDateTime localTimeSlot = LocalDateTime.of(year, month, dayOfMonth, i, minutes[j]);
+        ZonedDateTime utcTimeSlot =
+            ZonedDateTime.of(localTimeSlot, zoneId).withZoneSameInstant(ZoneOffset.UTC);
+        String formattedUTCTimeSlot = utcTimeSlot.format(DateTimeFormatter.ISO_INSTANT);
+        utcEncodings.add(formattedUTCTimeSlot);
       }
-      String formattedTime =
-          String.format("%d:%02d %s", standardHour, minute, hour < 12 ? "AM" : "PM");
-
-      timeSlots.add(
-          AvailabilityTimeSlot.create(
-              formattedUTCTime, formattedTime, formattedDate, getSelectedStatus(formattedUTCTime)));
     }
-
-    return timeSlots.build();
+    return utcEncodings;
   }
 
-  // Uses an Instant and a timezoneOffsetMinutes int to create a ZonedDateTime instance.
-  private static ZonedDateTime generateDay(Instant instant, int timezoneOffsetMinutes) {
-    return instant.atZone(ZoneId.ofOffset("UTC", convertIntToOffset(timezoneOffsetMinutes)));
+  // TODO: Access the time slots from data store to tell if they are selected or not.
+  private List<Boolean> getSelectedStatuses() {
+    List<Boolean> selectedStatuses = new ArrayList<Boolean>();
+    for (int i = 0; i < 48; i++) {
+      selectedStatuses.add(false);
+    }
+    return selectedStatuses;
   }
 
-  // This method takes the timezoneOffsetMinutes int and converts it
-  // into a proper ZoneOffset instance.
-  private static ZoneOffset convertIntToOffset(int timezoneOffsetMinutes) {
-    return ZoneOffset.ofHoursMinutes((timezoneOffsetMinutes / 60), (timezoneOffsetMinutes % 60));
+  private List<AvailabilityTimeSlot> generateTimeSlots(
+      List<String> utcEncodings, List<String> times, String date, List<Boolean> selectedStatuses) {
+    List<AvailabilityTimeSlot> availabilityTimeSlots = new ArrayList<AvailabilityTimeSlot>();
+    for (int i = 0; i < 48; i++) {
+      availabilityTimeSlots.add(
+          AvailabilityTimeSlot.create(
+              utcEncodings.get(i), times.get(i), date, selectedStatuses.get(i)));
+    }
+    return availabilityTimeSlots;
   }
 
-  // Returns a readable date string such as "Tue 7/7".
-  private static String formatDate(String dayOfWeek, int month, int dayOfMonth) {
-    return String.format("%s %d/%d", dayOfWeek, month, dayOfMonth);
+  // TODO: Change to generate current week with calls to generateDate
+  private List<String> generateDates() {
+    List<String> dates = new ArrayList<String>();
+    dates.add("Sunday 6/28");
+    dates.add("Monday 6/29");
+    dates.add("Tuesday 6/30");
+    dates.add("Wednesday 7/1");
+    dates.add("Thursday 7/2");
+    dates.add("Friday 7/3");
+    dates.add("Saturday 7/4");
+    return dates;
   }
 
-  // TODO: Access the time slot from data store using the utcEnconding to tell if it
-  // is selected or not.
-  // This method will tell whether or not a time slot has already been selected. (See
-  // TODO above).
-  private static boolean getSelectedStatus(String utcEncoding) {
-    return false;
+  private List<String> generateTimes() {
+    List<String> times = new ArrayList<String>();
+    for (int i = 8; i < 12; i++) {
+      times.add(i + ":00 AM");
+      times.add(i + ":15 AM");
+      times.add(i + ":30 AM");
+      times.add(i + ":45 AM");
+    }
+    times.add("12:00 PM");
+    times.add("12:15 PM");
+    times.add("12:30 PM");
+    times.add("12:45 PM");
+    for (int i = 1; i < 8; i++) {
+      times.add(i + ":00 PM");
+      times.add(i + ":15 PM");
+      times.add(i + ":30 PM");
+      times.add(i + ":45 PM");
+    }
+    return times;
+  }
+
+  public List<AvailabilityTimeSlot> getTimeSlots() {
+    return timeSlots;
   }
 }
