@@ -31,7 +31,7 @@ public interface ScheduledInterviewDao {
   // Creates a ScheduledInterview entity.
   public Entity create(ScheduledInterview scheduledInterview);
 
-  // Updates a ScheduledInterview in storage.
+  // Updates a ScheduledInterview entity.
   public void update(ScheduledInterview oldScheduledInterview);
 
   // TODO: Implement deletion for interview cancellations
