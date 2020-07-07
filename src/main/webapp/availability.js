@@ -48,10 +48,19 @@ function switchTile(tile) {
   }
 }
 
-function loadAvailabilityTable() {
+function loadAvailabilityTable(tableDiv, timezoneOffset) {
+  fetch('/availabilityTable.jsp?timeZoneOffset=' + timezoneOffset)
+    .then(response => response.text())
+    .then(tableContents => {
+    tableDiv.innerHTML = tableContents;
+    });
+}
+
+function browserTimezoneOffset() {
   let date = new Date();
-  let timeZoneOffset = (-1)*date.getTimezoneOffset();
-  fetch('/availabilityTable.jsp?timeZoneOffset=' + timeZoneOffset).then(response => response.text()).then(table => {
-    document.getElementById('table-container').innerHTML = table;
-  });
+  return (-1) * date.getTimezoneOffset();
+}
+
+function availabilityTableDiv() {
+  return document.getElementById('table-container');
 }
