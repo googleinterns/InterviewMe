@@ -45,7 +45,7 @@ public final class TimeRange {
   private final Instant start, end;
 
   /** Creates a timerange with a start and end instant */
-  private TimeRange(Instant start, Instant end) {
+  public TimeRange(Instant start, Instant end) {
     this.start = start;
     this.end = end;
   }
