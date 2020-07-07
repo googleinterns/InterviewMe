@@ -36,7 +36,6 @@ public class AvailabilityTimeSlotGenerator {
 
   /** Constructs an AvailabilityTimeSlotGenerator object by generating the timeSlots list. */
   public AvailabilityTimeSlotGenerator(String timezoneOffset) {
-    System.out.println("My timezoneOffset: " + timezoneOffset);
     ZoneOffset timeZoneOffset = convertStringToOffset(timezoneOffset);
     ZoneId zoneId = ZoneId.ofOffset("UTC", timeZoneOffset);
     ZonedDateTime today = Instant.now().atZone(zoneId);
