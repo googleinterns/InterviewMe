@@ -33,6 +33,9 @@ import java.time.format.DateTimeFormatter;
  */
 public class AvailabilityTimeSlotGenerator {
   private List<AvailabilityTimeSlot> timeSlots = new ArrayList<AvailabilityTimeSlot>();
+  private static final int numberOfSlotsPerDay = 48;
+  private static final int TIME_8AM = 8;
+  private static final int TIME_7PM = 19;
 
   /** Constructs an AvailabilityTimeSlotGenerator object by generating the timeSlots list. */
   public AvailabilityTimeSlotGenerator(String timezoneOffset) {
@@ -66,7 +69,7 @@ public class AvailabilityTimeSlotGenerator {
   private List<String> generateUTCEncodings(int year, int month, int dayOfMonth, ZoneId zoneId) {
     List<String> utcEncodings = new ArrayList<String>();
     int[] minutes = {0, 15, 30, 45};
-    for (int i = 8; i < 20; i++) {
+    for (int i = TIME_8AM; i <= TIME_7PM; i++) {
       for (int j = 0; j < 4; j++) {
         LocalDateTime localTimeSlot = LocalDateTime.of(year, month, dayOfMonth, i, minutes[j]);
         ZonedDateTime utcTimeSlot =
@@ -81,7 +84,7 @@ public class AvailabilityTimeSlotGenerator {
   // TODO: Access the time slots from data store to tell if they are selected or not.
   private List<Boolean> getSelectedStatuses() {
     List<Boolean> selectedStatuses = new ArrayList<Boolean>();
-    for (int i = 0; i < 48; i++) {
+    for (int i = 0; i < numberOfSlotsPerDay; i++) {
       selectedStatuses.add(false);
     }
     return selectedStatuses;
@@ -90,7 +93,7 @@ public class AvailabilityTimeSlotGenerator {
   private List<AvailabilityTimeSlot> generateTimeSlots(
       List<String> utcEncodings, List<String> times, String date, List<Boolean> selectedStatuses) {
     List<AvailabilityTimeSlot> availabilityTimeSlots = new ArrayList<AvailabilityTimeSlot>();
-    for (int i = 0; i < 48; i++) {
+    for (int i = 0; i < numberOfSlotsPerDay; i++) {
       availabilityTimeSlots.add(
           AvailabilityTimeSlot.create(
               utcEncodings.get(i), times.get(i), date, selectedStatuses.get(i)));
