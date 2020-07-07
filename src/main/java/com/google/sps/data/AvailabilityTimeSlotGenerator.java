@@ -48,10 +48,11 @@ public class AvailabilityTimeSlotGenerator {
     return timeSlotsForDay(today);
   }
 
-  /** 
-   * Generates a day's worth of time slots. 
+  /**
+   * Generates a day's worth of time slots.
+   *
    * @param today The day that time slots are generate for.
-  */
+   */
   public static List<AvailabilityTimeSlot> timeSlotsForDay(ZonedDateTime today) {
     ZoneId zoneId = today.getZone();
     String dayOfWeek = today.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.US);
