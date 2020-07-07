@@ -14,10 +14,6 @@
 
 package com.google.sps.data;
 
-import java.nio.file.DirectoryStream.Filter;
-import java.time.LocalDate;
-import java.util.Optional;
-
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -28,7 +24,10 @@ import com.google.appengine.api.datastore.Query.CompositeFilter;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.sps.ScheduledInterview;
+import java.nio.file.DirectoryStream.Filter;
+import java.time.LocalDate;
+import java.util.Optional;
+import java.util.List;
 
 /** Accesses Datastore to support managing ScheduledInterview entities. */
 public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
@@ -44,39 +43,38 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
    * Retrieve a scheduledInterviewEntity from Datastore
    * and return it as a scheduledInterview object.
    */
-  public Optional<ScheduledInterview> get(String email) {
-    Key key = KeyFactory.createKey("attendee", email);
+  public Optional<ScheduledInterview> get(long id) {
+    Key key = KeyFactory.createKey("id", id);
     Entity scheduledInterviewEntity; 
     try {
       scheduledInterviewEntity = datastore.get(key); 
     } catch (Exception e) {
       return Optional.empty(); 
     }
+  
+    return Optional.of(entityToScheduledInterview(scheduledInterviewEntity));
+  }
+
+  public List<ScheduledInterview> getForPerson(String email) {
     FilterPredicate interviewerFilter = new FilterPredicate("interviewer", FilterOperator.EQUAL, email);
     FilterPredicate intervieweeFilter = new FilterPredicate("interviewee", FilterOperator.EQUAL, email);
     CompositeFilter compositeFilter = CompositeFilterOperator.and(interviewerFilter, intervieweeFilter);
     Query q = new Query().setFilter(compositeFilter);
-    return Optional.of(entityToScheduledInterview(scheduledInterviewEntity));
+    return null;
   }
 
-  /**
-   * Saves an entity to datastore.
-   */
-  public void put(Entity scheduledInterviewEntity) {
-    datastore.put(scheduledInterviewEntity);
-  }
 
   /**
    * Updates an entity in datastore.
    */
-  public void update(Entity scheduledInterviewEntity) {
-    datastore.put(scheduledInterviewEntity);
+  public void update(ScheduledInterview scheduledInterview) {
+    datastore.put(create(scheduledInterview));
   }
 
   /**
    * Creates a ScheduledInterview Entity.
    */
-  private static Entity create(ScheduledInterview scheduledInterview) {
+  public Entity create(ScheduledInterview scheduledInterview) {
     Entity scheduledInterviewEntity = new Entity("ScheduledInterview");
     scheduledInterviewEntity.setProperty("when", scheduledInterview.getWhen());
     scheduledInterviewEntity.setProperty("date", scheduledInterview.getDate());
@@ -86,7 +84,7 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
   }
 
   /** Creates a ScheduledInterview object from a datastore entity */
-  private static ScheduledInterview entityToScheduledInterview(Entity scheduledInterviewEntity) {
+  public ScheduledInterview entityToScheduledInterview(Entity scheduledInterviewEntity) {
     return new ScheduledInterview(
         (TimeRange) scheduledInterviewEntity.getProperty("when"),
         (LocalDate) scheduledInterviewEntity.getProperty("date"),
