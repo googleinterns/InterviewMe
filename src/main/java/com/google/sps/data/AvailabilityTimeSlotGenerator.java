@@ -121,19 +121,6 @@ public class AvailabilityTimeSlotGenerator {
     return availabilityTimeSlots;
   }
 
-  // TODO: Change to generate current week with calls to generateDate
-  private static List<String> generateDates() {
-    List<String> dates = new ArrayList<String>();
-    dates.add("Sunday 6/28");
-    dates.add("Monday 6/29");
-    dates.add("Tuesday 6/30");
-    dates.add("Wednesday 7/1");
-    dates.add("Thursday 7/2");
-    dates.add("Friday 7/3");
-    dates.add("Saturday 7/4");
-    return dates;
-  }
-
   // Returns a list of readable time Strings such as "8:00 AM".
   private static List<String> generateTimes() {
     List<String> times = new ArrayList<String>();
