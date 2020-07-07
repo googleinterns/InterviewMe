@@ -17,13 +17,9 @@ function onAvailabilityLoad() {
   loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset());
 }
 
-// Switches a tile from green to white and vice versa when clicked.
-function switchTile(tile) {
-  if (tile.classList.contains('table-success')) {
-    tile.classList.remove('table-success');
-  } else {
-    tile.classList.add('table-success');
-  }
+// Toggles a tile from green to white and vice versa when clicked.
+function toggleTile(tile) {
+  tile.classList.toggle('table-success');
 }
 
 function loadAvailabilityTable(tableDiv, timezoneOffset) {

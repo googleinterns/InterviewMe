@@ -15,7 +15,7 @@
     <!-- TODO: Allow clicking and scrolling over multiple slots to select them.-->
     <c:forEach items = "${pageScope.list.getTimeSlots()}" var = "timeSlot">
       <tr>
-        <td onclick="switchTile(this)" data-utc="${timeSlot.utcEncoding()}" class="${timeSlot.selected() ? 'table-success' : ''}">
+        <td onclick="toggleTile(this)" data-utc="${timeSlot.utcEncoding()}" class="${timeSlot.selected() ? 'table-success' : ''}">
           ${timeSlot.time()}
         </td>
       </tr>
