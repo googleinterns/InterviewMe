@@ -166,4 +166,10 @@ public final class TimeRangeTest {
     TimeRange range = TimeRange.fromStartEnd(TIME_430PM, TIME_430PM);
     Assert.assertFalse(range.contains(range));
   }
+
+  @Test
+  public void rangeContainsSelf() {
+    TimeRange range = TimeRange.fromStartEnd(TIME_7PM, TIME_730PM);
+    Assert.assertTrue(range.contains(range));
+  }
 }

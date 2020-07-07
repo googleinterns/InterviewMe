@@ -101,15 +101,18 @@ public final class TimeRange {
     }
 
     /**
-     * If the ends of the range are equal, check whether the start of range comes after the other.
+     * If the ends of the range are equal, check whether the start of range comes after the other or
+     * are equal.
      */
     if (other.end == this.end) {
-      return other.start.isAfter(this.start);
+      return other.start.isAfter(this.start) || other.start == this.start;
     }
 
-    /** If the start of the ranges are the same, check if one end is before the other. */
+    /**
+     * If the start of the ranges are the same, check if one end is before the other or are equal.
+     */
     if (other.start == this.start) {
-      return other.end.isBefore(this.end);
+      return other.end.isBefore(this.end) || other.end == this.end;
     }
 
     // We need the inclusive end for this check in order for this case to equal true:
