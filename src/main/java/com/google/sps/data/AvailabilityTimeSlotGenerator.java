@@ -36,6 +36,7 @@ public class AvailabilityTimeSlotGenerator {
 
   /** Constructs an AvailabilityTimeSlotGenerator object by generating the timeSlots list. */
   public AvailabilityTimeSlotGenerator(String timezoneOffset) {
+    System.out.println("My timezoneOffset: " + timezoneOffset);
     ZoneOffset timeZoneOffset = convertStringToOffset(timezoneOffset);
     ZoneId zoneId = ZoneId.ofOffset("UTC", timeZoneOffset);
     ZonedDateTime today = Instant.now().atZone(zoneId);
@@ -52,17 +53,24 @@ public class AvailabilityTimeSlotGenerator {
     timeSlots = generateTimeSlots(utcEncodings, times, date, selectedStatuses);
   }
 
+  // The JavaScript request to availabilityTable.jsp delivers the timezoneOffset as a String
+  // that represents the difference between UTC and the user's current timezone.
+  // Example: A user in EST has a timezoneOffset of "-240" which means that EST is 240 minutes
+  // behind UTC. This method takes that String and converts it into a proper ZoneOffset instance.
   private ZoneOffset convertStringToOffset(String timezoneOffset) {
     int offsetTotalMinutes = Integer.parseInt(timezoneOffset);
     int offsetHours = offsetTotalMinutes / 60;
     int offsetMinutes = offsetTotalMinutes % 60;
     return ZoneOffset.ofHoursMinutes(offsetHours, offsetMinutes);
   }
-
+  
+  // Returns a readable date string such as "Tue 7/7".
   private String generateDate(String dayOfWeek, int month, int dayOfMonth) {
     return dayOfWeek + " " + month + "/" + dayOfMonth;
   }
 
+  // This method returns a list of UTC Strings for a single day, creating one String per Time
+  // Slot.
   private List<String> generateUTCEncodings(int year, int month, int dayOfMonth, ZoneId zoneId) {
     List<String> utcEncodings = new ArrayList<String>();
     int[] minutes = {0, 15, 30, 45};
@@ -79,6 +87,8 @@ public class AvailabilityTimeSlotGenerator {
   }
 
   // TODO: Access the time slots from data store to tell if they are selected or not.
+  // This method will tell whether or not a time slot has already been selected. (See
+  // TODO above).
   private List<Boolean> getSelectedStatuses() {
     List<Boolean> selectedStatuses = new ArrayList<Boolean>();
     for (int i = 0; i < numberOfSlotsPerDay; i++) {
@@ -87,6 +97,8 @@ public class AvailabilityTimeSlotGenerator {
     return selectedStatuses;
   }
 
+  // This method combines the lists of previously generated information into a list of constructed
+  // AvailabilityTimeSlot objects.
   private List<AvailabilityTimeSlot> generateTimeSlots(
       List<String> utcEncodings, List<String> times, String date, List<Boolean> selectedStatuses) {
     List<AvailabilityTimeSlot> availabilityTimeSlots = new ArrayList<AvailabilityTimeSlot>();
@@ -110,7 +122,8 @@ public class AvailabilityTimeSlotGenerator {
     dates.add("Saturday 7/4");
     return dates;
   }
-
+  
+  // Returns a list of readable time Strings such as "8:00 AM".
   private List<String> generateTimes() {
     List<String> times = new ArrayList<String>();
     for (int i = 8; i < 12; i++) {
