@@ -17,10 +17,10 @@ package com.google.sps.data;
 import com.google.auto.value.AutoValue;
 
 /**
- * An AvailabilityTimeSlot represents a table entry on the availability page that has a date and
- * time (utcEncoding), a visual represenation of the time (timeString), and a class that is set
- * based on whether or not the slot has already been selected in a previous visit to the page (green
- * = selected = 'table-success').
+ * An AvailabilityTimeSlot represents a 15 minute chunk of time that has a date and
+ * time that are expressed as readable date and time fields as well as a more
+ * all-encompassing utcEncoding. It also has a boolean that tells whether or not 
+ * the time slot has been selected.
  */
 @AutoValue
 public abstract class AvailabilityTimeSlot {
