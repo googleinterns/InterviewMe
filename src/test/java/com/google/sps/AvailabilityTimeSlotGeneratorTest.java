@@ -17,6 +17,7 @@ package com.google.sps.data;
 import java.time.ZonedDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,16 +26,32 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public final class AvailabilityTimeSlotGeneratorTest {
-  @Test
-  public void fakeTest() {
-    Assert.assertTrue(true);
-  }
+
+  private static final int numberOfSlotsPerDay = 48;
 
   @Test
-  public void createADay() {
+  public void createADayOfTimeSlots() {
     ZonedDateTime day =
         ZonedDateTime.of(2020, 7, 7, 10, 0, 0, 0, ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-4)));
     List<AvailabilityTimeSlot> actual = AvailabilityTimeSlotGenerator.timeSlotsForDay(day);
-    Assert.assertTrue(true);
+
+    List<AvailabilityTimeSlot> expected = new ArrayList<AvailabilityTimeSlot>();
+
+    int[] estHours = {8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7};
+    int[] utcHours = {12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
+    String[] minutes = {"00", "15", "30", "45"};
+
+    for (int i = 0; i < numberOfSlotsPerDay; i++) {
+      String utc = "2020-07-07T" + utcHours[i / 4] + ":" + minutes[i % 4] + ":00Z";
+      String time;
+      if (utcHours[i / 4] < 16) {
+        time = estHours[i / 4] + ":" + minutes[i % 4] + " AM";
+      } else {
+        time = estHours[i / 4] + ":" + minutes[i % 4] + " PM";
+      }
+      expected.add(AvailabilityTimeSlot.create(utc, time, "Tue 7/7", false));
+    }
+
+    Assert.assertEquals(actual, expected);
   }
 }
