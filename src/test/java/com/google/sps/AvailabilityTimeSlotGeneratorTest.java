@@ -12,8 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps;
+package com.google.sps.data;
 
+import java.time.ZonedDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +27,14 @@ import org.junit.runners.JUnit4;
 public final class AvailabilityTimeSlotGeneratorTest {
   @Test
   public void fakeTest() {
+    Assert.assertTrue(true);
+  }
+
+  @Test
+  public void createADay() {
+    ZonedDateTime day =
+        ZonedDateTime.of(2020, 7, 7, 10, 0, 0, 0, ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-4)));
+    List<AvailabilityTimeSlot> actual = AvailabilityTimeSlotGenerator.timeSlotsForDay(day);
     Assert.assertTrue(true);
   }
 }
