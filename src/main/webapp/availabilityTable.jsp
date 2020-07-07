@@ -1,9 +1,9 @@
-<%@ page import="com.google.sps.data.AvailabilityTimeSlotGenerator,java.util.List,com.google.sps.data.AvailabilityTimeSlot" %>
+<%@ page import="com.google.sps.data.AvailabilityTimeSlotGenerator,java.util.List,com.google.sps.data.AvailabilityTimeSlot,java.time.Instant" %>
 <%
-  List<AvailabilityTimeSlot> list = AvailabilityTimeSlotGenerator.getTimeSlots(request.getParameter("timeZoneOffset"));
+  List<AvailabilityTimeSlot> list = AvailabilityTimeSlotGenerator.timeSlotsForDay(Instant.now(), request.getParameter("timeZoneOffset"));
   pageContext.setAttribute("list", list);
 %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <table class="table table-sm text-center">
   <thead>

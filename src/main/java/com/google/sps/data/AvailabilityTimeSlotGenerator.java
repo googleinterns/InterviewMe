@@ -34,37 +34,35 @@ public class AvailabilityTimeSlotGenerator {
   private static final int TIME_7PM = 19;
 
   /**
-   * Constructs list of AvailabilityTimeSlot objects for the current day.
+   * Constructs a list of a day's worth of AvailabilityTimeSlot objects.
    *
+   * @param instant An instant on the day that time slots are generate for.
    * @param timezoneOffset A String that represents the difference between UTC and the user's
    *     current timezone. Example: A user in EST has a timezoneOffset of "-240" which means that
    *     EST is 240 minutes behind UTC.
    */
-  public static List<AvailabilityTimeSlot> getTimeSlots(String timezoneOffset) {
-    ZoneOffset timeZoneOffset = convertStringToOffset(timezoneOffset);
-    ZoneId zoneId = ZoneId.ofOffset("UTC", timeZoneOffset);
-    ZonedDateTime today = Instant.now().atZone(zoneId);
-    // TODO: Create a timeSlotsForWeek(today) method.
-    return timeSlotsForDay(today);
-  }
-
-  /**
-   * Generates a day's worth of time slots.
-   *
-   * @param today The day that time slots are generate for.
-   */
-  public static List<AvailabilityTimeSlot> timeSlotsForDay(ZonedDateTime today) {
-    ZoneId zoneId = today.getZone();
-    String dayOfWeek = today.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.US);
-    int year = today.getYear();
-    int month = today.getMonthValue();
-    int dayOfMonth = today.getDayOfMonth();
+   // TODO: Create a timeSlotsForWeek method.
+  public static List<AvailabilityTimeSlot> timeSlotsForDay(Instant instant, String timezoneOffset) {
+    ZonedDateTime day = generateDay(instant, timezoneOffset);
+    ZoneId zoneId = day.getZone();
+    String dayOfWeek = day.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.US);
+    int year = day.getYear();
+    int month = day.getMonthValue();
+    int dayOfMonth = day.getDayOfMonth();
 
     String date = generateDate(dayOfWeek, month, dayOfMonth);
     List<String> times = generateTimes();
     List<String> utcEncodings = generateUTCEncodings(year, month, dayOfMonth, zoneId);
     List<Boolean> selectedStatuses = getSelectedStatuses();
     return generateTimeSlots(utcEncodings, times, date, selectedStatuses);
+  }
+
+  // Uses an Instant and a timezoneOffset String to create a ZonedDateTime instance
+  // for the day specified by the Instant.
+  private static ZonedDateTime generateDay(Instant instant, String timezoneOffset) {
+    ZoneOffset timeZoneOffset = convertStringToOffset(timezoneOffset);
+    ZoneId zoneId = ZoneId.ofOffset("UTC", timeZoneOffset);
+    return instant.atZone(zoneId);
   }
 
   // This method takes the timezoneOffset String and converts it
