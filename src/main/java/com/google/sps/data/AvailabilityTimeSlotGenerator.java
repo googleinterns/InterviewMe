@@ -27,10 +27,7 @@ import java.time.format.DateTimeFormatter;
 
 // TODO: Add a test for the constructor.
 
-/**
- * A collection of AvailabilityTimeSlot Objects, which will eventually be generated with information
- * from datastore.
- */
+/** A generator of a collection of AvailabilityTimeSlot Objects. */
 public class AvailabilityTimeSlotGenerator {
   private List<AvailabilityTimeSlot> timeSlots = new ArrayList<AvailabilityTimeSlot>();
   private static final int numberOfSlotsPerDay = 48;
