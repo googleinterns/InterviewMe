@@ -14,23 +14,25 @@
 
 function onProfileLoad() {
   supplyLogoutLink();  
-  autofillForm(getUserIfRegistered());  
+  getUserIfRegistered().then((person) => {
+    autofillForm(person);      
+  });
   prepareFormValidation();
 }
 
 // Returns a Person if they registered in the past. If not, redirect to  
 // registration page.
 function getUserIfRegistered(){
-  fetch('/login')
-  .then(response => response.json())
-  .then(status => fetch(`/person?email=${status.email}`))
-  .then(response => {
-    if (response.redirected) {
-      window.location.href = response.url;
-      return;
-    }
-    return response.json();
-  });
+  return fetch('/login')
+    .then(response => response.json())
+    .then(status => fetch(`/person?email=${status.email}`))
+    .then(response => {
+      if (response.redirected) {
+        window.location.href = response.url;
+        return;
+      }
+      return response.json();
+    });
 }
 
 // Fills in the profile form with data from Datastore.
