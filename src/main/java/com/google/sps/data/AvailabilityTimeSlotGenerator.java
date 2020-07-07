@@ -29,7 +29,6 @@ import java.time.format.DateTimeFormatter;
 
 /** A generator of a collection of AvailabilityTimeSlot Objects. */
 public class AvailabilityTimeSlotGenerator {
-  private List<AvailabilityTimeSlot> timeSlots = new ArrayList<AvailabilityTimeSlot>();
   private static final int numberOfSlotsPerDay = 48;
   private static final int TIME_8AM = 8;
   private static final int TIME_7PM = 19;
