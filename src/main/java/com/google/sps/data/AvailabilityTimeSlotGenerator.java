@@ -34,7 +34,13 @@ public class AvailabilityTimeSlotGenerator {
   private static final int TIME_8AM = 8;
   private static final int TIME_7PM = 19;
 
-  /** Constructs an AvailabilityTimeSlotGenerator object by generating the timeSlots list. */
+  /** 
+   * Constructs an AvailabilityTimeSlotGenerator object by generating the timeSlots list.
+   *
+   * @param timezoneOffset A String that represents the difference between UTC and the 
+   * user's current timezone. Example: A user in EST has a timezoneOffset of "-240" 
+   * which means that EST is 240 minutes behind UTC.
+  */
   public AvailabilityTimeSlotGenerator(String timezoneOffset) {
     ZoneOffset timeZoneOffset = convertStringToOffset(timezoneOffset);
     ZoneId zoneId = ZoneId.ofOffset("UTC", timeZoneOffset);
@@ -52,10 +58,8 @@ public class AvailabilityTimeSlotGenerator {
     timeSlots = generateTimeSlots(utcEncodings, times, date, selectedStatuses);
   }
 
-  // The JavaScript request to availabilityTable.jsp delivers the timezoneOffset as a String
-  // that represents the difference between UTC and the user's current timezone.
-  // Example: A user in EST has a timezoneOffset of "-240" which means that EST is 240 minutes
-  // behind UTC. This method takes that String and converts it into a proper ZoneOffset instance.
+  // This method takes the timezoneOffset String and converts it
+  // into a proper ZoneOffset instance.
   private ZoneOffset convertStringToOffset(String timezoneOffset) {
     int offsetTotalMinutes = Integer.parseInt(timezoneOffset);
     int offsetHours = offsetTotalMinutes / 60;
