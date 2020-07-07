@@ -36,7 +36,7 @@ public class AvailabilityTimeSlotGenerator {
   /**
    * Constructs a list of a day's worth of AvailabilityTimeSlot objects.
    *
-   * @param instant An instant on the day that time slots are generate for.
+   * @param instant An instant on the day that time slots are generated for.
    * @param timezoneOffset A String that represents the difference between UTC and the user's
    *     current timezone. Example: A user in EST has a timezoneOffset of "-240" which means that
    *     EST is 240 minutes behind UTC.
