@@ -23,7 +23,7 @@ import java.util.List;
  * must support.
  */
 public interface ScheduledInterviewDao {
-  // Returns the ScheduledInterview objects that the user participates in.
+  // Returns the ScheduledInterview object.
   public Optional<ScheduledInterview> get(Long id);
 
   // Returns a list of the ScheduledInterview objects that the user participates in.
@@ -32,7 +32,7 @@ public interface ScheduledInterviewDao {
   // Creates a ScheduledInterview entity.
   public Entity create(ScheduledInterview scheduledInterview);
 
-  // Updates a ScheduledInterview entity.
+  // Updates a ScheduledInterview.
   public void update(ScheduledInterview oldScheduledInterview);
 
   // TODO: Implement deletion for interview cancellations
