@@ -60,7 +60,8 @@ public class DatastorePersonDao implements PersonDao {
   }
 
   /**
-   * Retrieve the person from Datastore from their email and wrap it in an Optional. If they aren't
+   * Retrieve the person from Datastore from their email and wrap it in an 
+   * Optional. If they aren't in Datastore, the Optional is empty.
    * in Datastore, the Optional is empty.
    */
   @Override
@@ -72,7 +73,7 @@ public class DatastorePersonDao implements PersonDao {
       personEntity = datastore.get(key);
     } catch (com.google.appengine.api.datastore.EntityNotFoundException e) {
       return Optional.empty();
-    }
+    } 
     return Optional.of(entityToPerson(personEntity));
   }
 
