@@ -63,7 +63,7 @@ public class AvailabilityTimeSlotGenerator {
     int offsetMinutes = offsetTotalMinutes % 60;
     return ZoneOffset.ofHoursMinutes(offsetHours, offsetMinutes);
   }
-  
+
   // Returns a readable date string such as "Tue 7/7".
   private String generateDate(String dayOfWeek, int month, int dayOfMonth) {
     return dayOfWeek + " " + month + "/" + dayOfMonth;
@@ -122,7 +122,7 @@ public class AvailabilityTimeSlotGenerator {
     dates.add("Saturday 7/4");
     return dates;
   }
-  
+
   // Returns a list of readable time Strings such as "8:00 AM".
   private List<String> generateTimes() {
     List<String> times = new ArrayList<String>();
