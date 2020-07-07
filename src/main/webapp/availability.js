@@ -19,7 +19,7 @@ function onAvailabilityLoad() {
 
 // Switches a tile from green to white and vice versa when clicked.
 function switchTile(tile) {
-  if(tile.classList.contains('table-success')) {
+  if (tile.classList.contains('table-success')) {
     tile.classList.remove('table-success');
   } else {
     tile.classList.add('table-success');
