@@ -23,11 +23,11 @@ import java.time.LocalDate;
  */
 @AutoValue
 public abstract class Availability {
-  abstract String email();
+  public abstract String email();
 
-  abstract TimeRange when();
+  public abstract TimeRange when();
 
-  abstract LocalDate date();
+  public abstract LocalDate date();
 
   public static Availability create(String email, TimeRange when, LocalDate date) {
     return builder()
@@ -37,18 +37,18 @@ public abstract class Availability {
         .build();
   }
 
-  static Builder builder() {
+  public static Builder builder() {
     return new AutoValue_Availability.Builder();
   }
 
   @AutoValue.Builder
-  abstract static class Builder {
-    abstract Builder setEmail(String email);
+  public abstract static class Builder {
+    public abstract Builder setEmail(String email);
 
-    abstract Builder setWhen(TimeRange when);
+    public abstract Builder setWhen(TimeRange when);
 
-    abstract Builder setDate(LocalDate date);
+    public abstract Builder setDate(LocalDate date);
 
-    abstract Availability build();
+    public abstract Availability build();
   }
 }
