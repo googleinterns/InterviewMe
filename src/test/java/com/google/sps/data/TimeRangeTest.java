@@ -146,10 +146,6 @@ public final class TimeRangeTest {
     // |--range--|
     //       |---|
     Assert.assertTrue(range.overlaps(TimeRange.fromStartEnd(TIME_7PM, TIME_730PM)));
-
-    // |--range--|
-    //         |---|
-    Assert.assertTrue(range.overlaps(TimeRange.fromStartEnd(TIME_7PM, TIME_8PM)));
   }
 
   // Tests whether or not a TimeRange's duration is zero
