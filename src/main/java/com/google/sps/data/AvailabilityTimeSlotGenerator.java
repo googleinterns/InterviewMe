@@ -35,8 +35,8 @@ public class AvailabilityTimeSlotGenerator {
   private List<AvailabilityTimeSlot> timeSlots = new ArrayList<AvailabilityTimeSlot>();
 
   /** Constructs an AvailabilityTimeSlotGenerator object by generating the timeSlots list. */
-  public AvailabilityTimeSlotGenerator(String timeZoneOffsetString) {
-    ZoneOffset timeZoneOffset = convertStringToOffset(timeZoneOffsetString);
+  public AvailabilityTimeSlotGenerator(String timezoneOffset) {
+    ZoneOffset timeZoneOffset = convertStringToOffset(timezoneOffset);
     ZoneId zoneId = ZoneId.ofOffset("UTC", timeZoneOffset);
     ZonedDateTime today = Instant.now().atZone(zoneId);
     String dayOfWeek = today.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.US);
