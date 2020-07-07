@@ -24,7 +24,7 @@ import java.util.List;
  */
 public interface ScheduledInterviewDao {
   // Returns the ScheduledInterview object.
-  public Optional<ScheduledInterview> get(Long id);
+  public Optional<ScheduledInterview> get(long id);
 
   // Returns a list of the ScheduledInterview objects that the user participates in.
   public List<ScheduledInterview> getForPerson(String email);
