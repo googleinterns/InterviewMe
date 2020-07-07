@@ -26,7 +26,7 @@ public interface ScheduledInterviewDao {
   public Optional<ScheduledInterview> get(Long id);
 
   // Returns a list of the ScheduledInterview objects that the user participates in. 
-  public List<ScheduleInterview> getForPerson(String email); 
+  public List<ScheduledInterview> getForPerson(String email); 
 
   // Creates a ScheduledInterview entity.
   public Entity create(ScheduledInterview scheduledInterview);
