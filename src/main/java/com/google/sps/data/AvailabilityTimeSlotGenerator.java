@@ -31,11 +31,11 @@ import java.time.format.DateTimeFormatter;
  * A collection of AvailabilityTimeSlot Objects, which will eventually be generated with information
  * from datastore.
  */
-public class AvailabilityTimeSlots {
+public class AvailabilityTimeSlotGenerator {
   private List<AvailabilityTimeSlot> timeSlots = new ArrayList<AvailabilityTimeSlot>();
 
-  /** Constructs an AvailabilityTimeSlots object by generating the timeSlots list. */
-  public AvailabilityTimeSlots(String timeZoneOffsetString) {
+  /** Constructs an AvailabilityTimeSlotGenerator object by generating the timeSlots list. */
+  public AvailabilityTimeSlotGenerator(String timeZoneOffsetString) {
     ZoneOffset timeZoneOffset = convertStringToOffset(timeZoneOffsetString);
     ZoneId zoneId = ZoneId.ofOffset("UTC", timeZoneOffset);
     ZonedDateTime today = Instant.now().atZone(zoneId);
