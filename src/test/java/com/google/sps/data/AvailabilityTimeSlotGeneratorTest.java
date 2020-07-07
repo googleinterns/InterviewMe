@@ -14,6 +14,7 @@
 
 package com.google.sps.data;
 
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -30,16 +31,13 @@ public final class AvailabilityTimeSlotGeneratorTest {
   private static final int numberOfSlotsPerDay = 48;
 
   @Test
-  public void fakeTest() {
-    Assert.assertTrue(true);
-  }
-
-  /*
-  @Test
   public void createADayOfTimeSlots() {
     ZonedDateTime day =
         ZonedDateTime.of(2020, 7, 7, 10, 0, 0, 0, ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-4)));
-    List<AvailabilityTimeSlot> actual = AvailabilityTimeSlotGenerator.timeSlotsForDay(day);
+    Instant instant = day.toInstant();
+    String timezoneOffset = "-240";
+    List<AvailabilityTimeSlot> actual =
+        AvailabilityTimeSlotGenerator.timeSlotsForDay(instant, timezoneOffset);
 
     List<AvailabilityTimeSlot> expected = new ArrayList<AvailabilityTimeSlot>();
 
@@ -60,5 +58,4 @@ public final class AvailabilityTimeSlotGeneratorTest {
 
     Assert.assertEquals(actual, expected);
   }
-  */
 }

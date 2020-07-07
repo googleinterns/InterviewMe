@@ -41,7 +41,7 @@ public class AvailabilityTimeSlotGenerator {
    *     current timezone. Example: A user in EST has a timezoneOffset of "-240" which means that
    *     EST is 240 minutes behind UTC.
    */
-   // TODO: Create a timeSlotsForWeek method.
+  // TODO: Create a timeSlotsForWeek method.
   public static List<AvailabilityTimeSlot> timeSlotsForDay(Instant instant, String timezoneOffset) {
     ZonedDateTime day = generateDay(instant, timezoneOffset);
     ZoneId zoneId = day.getZone();
