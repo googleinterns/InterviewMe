@@ -44,6 +44,7 @@ public class AvailabilityTimeSlotGenerator {
     ZoneOffset timeZoneOffset = convertStringToOffset(timezoneOffset);
     ZoneId zoneId = ZoneId.ofOffset("UTC", timeZoneOffset);
     ZonedDateTime today = Instant.now().atZone(zoneId);
+    // TODO: Create a timeSlotsForWeek(today) method.
     return timeSlotsForDay(today);
   }
 
@@ -58,7 +59,6 @@ public class AvailabilityTimeSlotGenerator {
     int month = today.getMonthValue();
     int dayOfMonth = today.getDayOfMonth();
 
-    // TODO: Generate a week of slots.
     String date = generateDate(dayOfWeek, month, dayOfMonth);
     List<String> times = generateTimes();
     List<String> utcEncodings = generateUTCEncodings(year, month, dayOfMonth, zoneId);
