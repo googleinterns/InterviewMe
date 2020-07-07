@@ -22,9 +22,11 @@ import java.util.Optional;
  * must support.
  */
 public interface ScheduledInterviewDao {
-  // Returns a the most first ScheduledInterview object from storage using the users email as the
-  // key.
-  public Optional<ScheduledInterview> get(String email);
+  // Returns the ScheduledInterview objects that the user participates in. 
+  public Optional<ScheduledInterview> get(Long id);
+
+  // Returns a list of the ScheduledInterview objects that the user participates in. 
+  public List<ScheduleInterview> getForPerson(String email); 
 
   // Creates a ScheduledInterview entity.
   public Entity create(ScheduledInterview scheduledInterview);
