@@ -44,12 +44,12 @@ function selectInterview(interviewer) {
 }
 
 // Fills in the modal with interviewer info from Datastore and shows it.
-function showInterviewers(button) {
+function showInterviewers(selectButton) {
   fetch('/search-interview-interviewers.jsp').then(response => response.text())
     .then(table => {
       $('#modal-body').html(table);
       // TODO: format the date as June 5, 2020 not 7/5/2020 (more readable).
-      const date = button.getAttribute("id");
+      const date = selectButton.getAttribute("id");
       const time = document.getElementById(date + '-options').value;
       $('#modal-title').text(`Interviewers Information for ${date} at ${time}`);
     });
