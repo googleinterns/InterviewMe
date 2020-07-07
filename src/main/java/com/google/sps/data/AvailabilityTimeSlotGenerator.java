@@ -52,8 +52,8 @@ public class AvailabilityTimeSlotGenerator {
     timeSlots = generateTimeSlots(utcEncodings, times, date, selectedStatuses);
   }
 
-  private ZoneOffset convertStringToOffset(String offsetString) {
-    int offsetTotalMinutes = Integer.parseInt(offsetString);
+  private ZoneOffset convertStringToOffset(String timezoneOffset) {
+    int offsetTotalMinutes = Integer.parseInt(timezoneOffset);
     int offsetHours = offsetTotalMinutes / 60;
     int offsetMinutes = offsetTotalMinutes % 60;
     return ZoneOffset.ofHoursMinutes(offsetHours, offsetMinutes);
