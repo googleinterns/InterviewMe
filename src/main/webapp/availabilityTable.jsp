@@ -1,6 +1,6 @@
-<%@ page import="com.google.sps.data.AvailabilityTimeSlotGenerator" %>
+<%@ page import="com.google.sps.data.AvailabilityTimeSlotGenerator,java.util.List,com.google.sps.data.AvailabilityTimeSlot" %>
 <%
-  AvailabilityTimeSlotGenerator list = new AvailabilityTimeSlotGenerator(request.getParameter("timeZoneOffset"));
+  List<AvailabilityTimeSlot> list = AvailabilityTimeSlotGenerator.getTimeSlots(request.getParameter("timeZoneOffset"));
   pageContext.setAttribute("list", list);
 %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 
@@ -8,12 +8,12 @@
 <table class="table table-sm text-center">
   <thead>
     <tr>
-      <th scope="col">${list.getTimeSlots().get(0).date()}</th>
+      <th scope="col">${list.get(0).date()}</th>
     </tr>
   </thead>
   <tbody>
     <!-- TODO: Allow clicking and scrolling over multiple slots to select them.-->
-    <c:forEach items = "${pageScope.list.getTimeSlots()}" var = "timeSlot">
+    <c:forEach items = "${pageScope.list}" var = "timeSlot">
       <tr>
         <td onclick="toggleTile(this)" data-utc="${timeSlot.utcEncoding()}" class="${timeSlot.selected() ? 'table-success' : ''}">
           ${timeSlot.time()}

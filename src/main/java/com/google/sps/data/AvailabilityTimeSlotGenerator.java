@@ -34,14 +34,14 @@ public class AvailabilityTimeSlotGenerator {
   private static final int TIME_8AM = 8;
   private static final int TIME_7PM = 19;
 
-  /** 
-   * Constructs an AvailabilityTimeSlotGenerator object by generating the timeSlots list.
+  /**
+   * Constructs list of AvailabilityTimeSlot objects
    *
-   * @param timezoneOffset A String that represents the difference between UTC and the 
-   * user's current timezone. Example: A user in EST has a timezoneOffset of "-240" 
-   * which means that EST is 240 minutes behind UTC.
-  */
-  public AvailabilityTimeSlotGenerator(String timezoneOffset) {
+   * @param timezoneOffset A String that represents the difference between UTC and the user's
+   *     current timezone. Example: A user in EST has a timezoneOffset of "-240" which means that
+   *     EST is 240 minutes behind UTC.
+   */
+  public static List<AvailabilityTimeSlot> getTimeSlots(String timezoneOffset) {
     ZoneOffset timeZoneOffset = convertStringToOffset(timezoneOffset);
     ZoneId zoneId = ZoneId.ofOffset("UTC", timeZoneOffset);
     ZonedDateTime today = Instant.now().atZone(zoneId);
@@ -55,12 +55,12 @@ public class AvailabilityTimeSlotGenerator {
     List<String> times = generateTimes();
     List<String> utcEncodings = generateUTCEncodings(year, month, dayOfMonth, zoneId);
     List<Boolean> selectedStatuses = getSelectedStatuses();
-    timeSlots = generateTimeSlots(utcEncodings, times, date, selectedStatuses);
+    return generateTimeSlots(utcEncodings, times, date, selectedStatuses);
   }
 
   // This method takes the timezoneOffset String and converts it
   // into a proper ZoneOffset instance.
-  private ZoneOffset convertStringToOffset(String timezoneOffset) {
+  private static ZoneOffset convertStringToOffset(String timezoneOffset) {
     int offsetTotalMinutes = Integer.parseInt(timezoneOffset);
     int offsetHours = offsetTotalMinutes / 60;
     int offsetMinutes = offsetTotalMinutes % 60;
@@ -68,13 +68,14 @@ public class AvailabilityTimeSlotGenerator {
   }
 
   // Returns a readable date string such as "Tue 7/7".
-  private String generateDate(String dayOfWeek, int month, int dayOfMonth) {
+  private static String generateDate(String dayOfWeek, int month, int dayOfMonth) {
     return dayOfWeek + " " + month + "/" + dayOfMonth;
   }
 
   // This method returns a list of UTC Strings for a single day, creating one String per Time
   // Slot.
-  private List<String> generateUTCEncodings(int year, int month, int dayOfMonth, ZoneId zoneId) {
+  private static List<String> generateUTCEncodings(
+      int year, int month, int dayOfMonth, ZoneId zoneId) {
     List<String> utcEncodings = new ArrayList<String>();
     int[] minutes = {0, 15, 30, 45};
     for (int i = TIME_8AM; i <= TIME_7PM; i++) {
@@ -92,7 +93,7 @@ public class AvailabilityTimeSlotGenerator {
   // TODO: Access the time slots from data store to tell if they are selected or not.
   // This method will tell whether or not a time slot has already been selected. (See
   // TODO above).
-  private List<Boolean> getSelectedStatuses() {
+  private static List<Boolean> getSelectedStatuses() {
     List<Boolean> selectedStatuses = new ArrayList<Boolean>();
     for (int i = 0; i < numberOfSlotsPerDay; i++) {
       selectedStatuses.add(false);
@@ -102,7 +103,7 @@ public class AvailabilityTimeSlotGenerator {
 
   // This method combines the lists of previously generated information into a list of constructed
   // AvailabilityTimeSlot objects.
-  private List<AvailabilityTimeSlot> generateTimeSlots(
+  private static List<AvailabilityTimeSlot> generateTimeSlots(
       List<String> utcEncodings, List<String> times, String date, List<Boolean> selectedStatuses) {
     List<AvailabilityTimeSlot> availabilityTimeSlots = new ArrayList<AvailabilityTimeSlot>();
     for (int i = 0; i < numberOfSlotsPerDay; i++) {
@@ -114,7 +115,7 @@ public class AvailabilityTimeSlotGenerator {
   }
 
   // TODO: Change to generate current week with calls to generateDate
-  private List<String> generateDates() {
+  private static List<String> generateDates() {
     List<String> dates = new ArrayList<String>();
     dates.add("Sunday 6/28");
     dates.add("Monday 6/29");
@@ -127,7 +128,7 @@ public class AvailabilityTimeSlotGenerator {
   }
 
   // Returns a list of readable time Strings such as "8:00 AM".
-  private List<String> generateTimes() {
+  private static List<String> generateTimes() {
     List<String> times = new ArrayList<String>();
     for (int i = 8; i < 12; i++) {
       times.add(i + ":00 AM");
@@ -146,9 +147,5 @@ public class AvailabilityTimeSlotGenerator {
       times.add(i + ":45 PM");
     }
     return times;
-  }
-
-  public List<AvailabilityTimeSlot> getTimeSlots() {
-    return timeSlots;
   }
 }

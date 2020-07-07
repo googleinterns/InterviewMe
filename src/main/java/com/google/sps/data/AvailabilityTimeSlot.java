@@ -17,10 +17,9 @@ package com.google.sps.data;
 import com.google.auto.value.AutoValue;
 
 /**
- * An AvailabilityTimeSlot represents a 15 minute chunk of time that has a date and
- * time that are expressed as readable date and time fields as well as a more
- * all-encompassing utcEncoding. It also has a boolean that tells whether or not 
- * the time slot has been selected.
+ * An AvailabilityTimeSlot represents a 15 minute chunk of time that has a date and time that are
+ * expressed as readable date and time fields as well as a more all-encompassing utcEncoding. It
+ * also has a boolean that tells whether or not the time slot has been selected.
  */
 @AutoValue
 public abstract class AvailabilityTimeSlot {
