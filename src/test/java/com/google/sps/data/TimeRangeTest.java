@@ -56,9 +56,9 @@ public final class TimeRangeTest {
     Assert.assertTrue(range.contains(TIME_6PM));
   }
 
-  // Tests whether or not a TimeRange contains another TimeRange
+  // Tests that a TimeRange does not contain another TimeRange
   @Test
-  public void containsRange() {
+  public void contains_nonContaining() {
     TimeRange range = TimeRange.fromStartEnd(TIME_630PM, TIME_8PM);
 
     // |---|   |--range--|
@@ -73,18 +73,6 @@ public final class TimeRangeTest {
     Assert.assertFalse(range.contains(TimeRange.fromStartEnd(TIME_6PM, TIME_645PM)));
 
     // |--range--|
-    // |---|
-    Assert.assertTrue(range.contains(TimeRange.fromStartEnd(TIME_630PM, TIME_7PM)));
-
-    // |--range--|
-    //    |---|
-    Assert.assertTrue(range.contains(TimeRange.fromStartEnd(TIME_7PM, TIME_730PM)));
-
-    // |--range--|
-    //       |---|
-    Assert.assertTrue(range.contains(TimeRange.fromStartEnd(TIME_730PM, TIME_8PM)));
-
-    // |--range--|
     //         |---|
     Assert.assertFalse(range.contains(TimeRange.fromStartEnd(TIME_745PM, TIME_830PM)));
 
@@ -96,7 +84,25 @@ public final class TimeRangeTest {
     Assert.assertFalse(range.contains(TimeRange.fromStartEnd(TIME_9PM, TIME_930PM)));
   }
 
-  // Tests whether or not two TimeRanges overlap
+  // Tests that a TimeRange contains another TimeRange
+  @Test
+  public void contains_Containing() {
+    TimeRange range = TimeRange.fromStartEnd(TIME_630PM, TIME_8PM);
+
+    // |--range--|
+    // |---|
+    Assert.assertTrue(range.contains(TimeRange.fromStartEnd(TIME_630PM, TIME_7PM)));
+
+    // |--range--|
+    //    |---|
+    Assert.assertTrue(range.contains(TimeRange.fromStartEnd(TIME_7PM, TIME_730PM)));
+
+    // |--range--|
+    //       |---|
+    Assert.assertTrue(range.contains(TimeRange.fromStartEnd(TIME_730PM, TIME_8PM)));
+  }
+
+  // Tests that a TimeRange does not overlap another TimeRange
   @Test
   public void overlaps_nonOverlapping() {
     TimeRange range = TimeRange.fromStartEnd(TIME_6PM, TIME_730PM);
@@ -116,25 +122,31 @@ public final class TimeRangeTest {
     Assert.assertFalse(range.overlaps(TimeRange.fromStartEnd(TIME_830PM, TIME_9PM)));
   }
 
+  // Tests that a TimeRange overlaps the start of another TimeRange
   @Test
   public void overlaps_start() {
     TimeRange range = TimeRange.fromStartEnd(TIME_6PM, TIME_730PM);
+
     //   |--range--|
     // |---|
     Assert.assertTrue(range.overlaps(TimeRange.fromStartEnd(TIME_5PM, TIME_645PM)));
   }
 
+  // Tests that a TimeRange does overlaps the end another TimeRange
   @Test
   public void overlaps_end() {
     TimeRange range = TimeRange.fromStartEnd(TIME_6PM, TIME_730PM);
+
     // |--range--|
     //         |---|
     Assert.assertTrue(range.overlaps(TimeRange.fromStartEnd(TIME_7PM, TIME_8PM)));
   }
 
+  // Tests that a TimeRange completely overlaps another TimeRange
   @Test
   public void overlaps_startAndEnd() {
     TimeRange range = TimeRange.fromStartEnd(TIME_6PM, TIME_730PM);
+
     // |--range--|
     // |---|
     Assert.assertTrue(range.overlaps(TimeRange.fromStartEnd(TIME_6PM, TIME_645PM)));
