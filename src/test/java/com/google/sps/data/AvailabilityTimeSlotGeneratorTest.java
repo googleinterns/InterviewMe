@@ -74,4 +74,20 @@ public final class AvailabilityTimeSlotGeneratorTest {
 
     Assert.assertEquals(expectedFirstEntry, actualFirstEntry);
   }
+
+  @Test
+  public void midnightReturnsNextDay() {
+    ZonedDateTime day =
+        ZonedDateTime.of(2020, 7, 7, 0, 0, 0, 0, ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-4)));
+    Instant instant = day.toInstant();
+    int timezoneOffsetMinutes = -240;
+    List<AvailabilityTimeSlot> actual =
+        AvailabilityTimeSlotGenerator.timeSlotsForDay(instant, timezoneOffsetMinutes);
+    AvailabilityTimeSlot actualFirstEntry = actual.get(0);
+
+    AvailabilityTimeSlot expectedFirstEntry =
+        AvailabilityTimeSlot.create("2020-07-07T12:00:00Z", "8:00 AM", "Tue 7/7", false);
+
+    Assert.assertEquals(expectedFirstEntry, actualFirstEntry);
+  }
 }
