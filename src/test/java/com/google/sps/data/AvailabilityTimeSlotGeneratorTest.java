@@ -28,6 +28,8 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public final class AvailabilityTimeSlotGeneratorTest {
 
+  private static final int numberOfSlotsPerDay = 48;
+
   @Test
   public void createADayOfTimeSlots() {
     ZonedDateTime day =
@@ -36,12 +38,9 @@ public final class AvailabilityTimeSlotGeneratorTest {
     int timezoneOffsetMinutes = -240;
     List<AvailabilityTimeSlot> actual =
         AvailabilityTimeSlotGenerator.timeSlotsForDay(instant, timezoneOffsetMinutes);
-    // Question: Is this ok? It's depending on the result of the call which seems sketchy.
-    int numberOfSlotsPerDay = actual.size();
 
     List<AvailabilityTimeSlot> expected = new ArrayList<AvailabilityTimeSlot>();
-    
-    // TODO: Adapt this to take in EARLIEST_HOUR and LATEST_HOUR constants.
+
     int[] estHours = {8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7};
     int[] utcHours = {12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
     String[] minutes = {"00", "15", "30", "45"};
