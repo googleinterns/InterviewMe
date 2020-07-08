@@ -14,6 +14,7 @@
 
 package com.google.sps.data;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +41,15 @@ public class AvailabilityTimeSlotGenerator {
    * @param timezoneOffsetMinutes An int that represents the difference between UTC and the user's
    *     current timezone. Example: A user in EST has a timezoneOffsetMinutes of -240 which means
    *     that EST is 240 minutes behind UTC.
+   * @throws IllegalArgumentException if the magnitude of timezoneOffsetMinutes is greater than 720.
    */
   // TODO: Create a timeSlotsForWeek method.
   public static List<AvailabilityTimeSlot> timeSlotsForDay(
       Instant instant, int timezoneOffsetMinutes) {
+    Preconditions.checkArgument(
+        Math.abs(timezoneOffsetMinutes) <= 720,
+        "Offset greater than 12 hours/720 minutes: %s",
+        timezoneOffsetMinutes);
     ZonedDateTime day = generateDay(instant, timezoneOffsetMinutes);
     ZoneId zoneId = day.getZone();
     String dayOfWeek = day.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.US);

@@ -21,6 +21,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -89,5 +90,23 @@ public final class AvailabilityTimeSlotGeneratorTest {
         AvailabilityTimeSlot.create("2020-07-07T12:00:00Z", "8:00 AM", "Tue 7/7", false);
 
     Assert.assertEquals(expectedFirstEntry, actualFirstEntry);
+  }
+
+  @Test
+  public void tooLargePositiveOffset() {
+    Assertions.assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          AvailabilityTimeSlotGenerator.timeSlotsForDay(Instant.now(), 740);
+        });
+  }
+
+  @Test
+  public void tooLargeNegativeOffset() {
+    Assertions.assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          AvailabilityTimeSlotGenerator.timeSlotsForDay(Instant.now(), -740);
+        });
   }
 }
