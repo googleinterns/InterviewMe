@@ -30,7 +30,6 @@ import java.time.format.DateTimeFormatter;
 
 /** A generator of a collection of AvailabilityTimeSlot Objects. */
 public class AvailabilityTimeSlotGenerator {
-  private static final int numberOfSlotsPerDay = 48;
   private static final int TIME_8AM = 8;
   private static final int TIME_7PM = 19;
 
@@ -53,9 +52,10 @@ public class AvailabilityTimeSlotGenerator {
 
     String date = generateDate(dayOfWeek, month, dayOfMonth);
     List<String> times = availableStartTimes();
+    int numberOfSlotsPerDay = times.size();
     List<String> utcEncodings = generateUTCEncodings(year, month, dayOfMonth, zoneId);
-    List<Boolean> selectedStatuses = getSelectedStatuses();
-    return generateTimeSlots(utcEncodings, times, date, selectedStatuses);
+    List<Boolean> selectedStatuses = getSelectedStatuses(numberOfSlotsPerDay);
+    return generateTimeSlots(numberOfSlotsPerDay, utcEncodings, times, date, selectedStatuses);
   }
 
   // Uses an Instant and a timezoneOffset String to create a ZonedDateTime instance
@@ -99,7 +99,7 @@ public class AvailabilityTimeSlotGenerator {
   // TODO: Access the time slots from data store to tell if they are selected or not.
   // This method will tell whether or not a time slot has already been selected. (See
   // TODO above).
-  private static List<Boolean> getSelectedStatuses() {
+  private static List<Boolean> getSelectedStatuses(int numberOfSlotsPerDay) {
     List<Boolean> selectedStatuses = new ArrayList<Boolean>();
     for (int i = 0; i < numberOfSlotsPerDay; i++) {
       selectedStatuses.add(false);
@@ -110,7 +110,11 @@ public class AvailabilityTimeSlotGenerator {
   // This method combines the lists of previously generated information into a list of constructed
   // AvailabilityTimeSlot objects.
   private static List<AvailabilityTimeSlot> generateTimeSlots(
-      List<String> utcEncodings, List<String> times, String date, List<Boolean> selectedStatuses) {
+      int numberOfSlotsPerDay,
+      List<String> utcEncodings,
+      List<String> times,
+      String date,
+      List<Boolean> selectedStatuses) {
     List<AvailabilityTimeSlot> availabilityTimeSlots = new ArrayList<AvailabilityTimeSlot>();
     for (int i = 0; i < numberOfSlotsPerDay; i++) {
       availabilityTimeSlots.add(
