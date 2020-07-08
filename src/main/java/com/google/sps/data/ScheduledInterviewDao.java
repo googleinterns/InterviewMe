@@ -15,6 +15,8 @@
 package com.google.sps.data;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+
 import java.util.Optional;
 import java.util.List;
 
@@ -29,11 +31,12 @@ public interface ScheduledInterviewDao {
   // Returns a list of the ScheduledInterview objects that the user participates in.
   public List<ScheduledInterview> getForPerson(String email);
 
-  // Creates a ScheduledInterview entity.
-  public Entity create(ScheduledInterview scheduledInterview);
+  // Creates a ScheduledInterview entity and stores it in Datastore.
+  public void create(ScheduledInterview scheduledInterview);
 
   // Updates a ScheduledInterview.
   public void update(ScheduledInterview oldScheduledInterview);
 
-  // TODO: Implement deletion for interview cancellations
+  // Deletes a ScheduledInterview entity
+  public void delete(long id); 
 }
