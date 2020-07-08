@@ -20,7 +20,6 @@ import java.time.LocalDate;
 /** Represents a scheduled interview. */
 @AutoValue
 public abstract class ScheduledInterview {
-
   public abstract long id();  
 
   public abstract TimeRange when();
