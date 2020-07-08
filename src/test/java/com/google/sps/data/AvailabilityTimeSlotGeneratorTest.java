@@ -35,9 +35,9 @@ public final class AvailabilityTimeSlotGeneratorTest {
     ZonedDateTime day =
         ZonedDateTime.of(2020, 7, 7, 10, 0, 0, 0, ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-4)));
     Instant instant = day.toInstant();
-    String timezoneOffset = "-240";
+    int timezoneOffsetMinutes = -240;
     List<AvailabilityTimeSlot> actual =
-        AvailabilityTimeSlotGenerator.timeSlotsForDay(instant, timezoneOffset);
+        AvailabilityTimeSlotGenerator.timeSlotsForDay(instant, timezoneOffsetMinutes);
 
     List<AvailabilityTimeSlot> expected = new ArrayList<AvailabilityTimeSlot>();
 
