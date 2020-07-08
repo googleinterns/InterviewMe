@@ -98,7 +98,8 @@ public class AvailabilityTimeSlotGenerator {
   // are selected or not. Can get rid of numberOfSlotsPerDay upon new implementation.
   // This method will tell whether or not a time slot has already been selected. (See
   // TODO above).
-  private static List<Boolean> getSelectedStatuses(int numberOfSlotsPerDay, List<String> utcEncodings) {
+  private static List<Boolean> getSelectedStatuses(
+      int numberOfSlotsPerDay, List<String> utcEncodings) {
     List<Boolean> selectedStatuses = new ArrayList<Boolean>();
     for (int i = 0; i < numberOfSlotsPerDay; i++) {
       selectedStatuses.add(false);
