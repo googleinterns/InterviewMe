@@ -14,9 +14,6 @@
 
 package com.google.sps.data;
 
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
-
 import java.util.Optional;
 import java.util.List;
 
