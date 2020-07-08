@@ -61,9 +61,7 @@ public class AvailabilityTimeSlotGenerator {
   // Uses an Instant and a timezoneOffset String to create a ZonedDateTime instance
   // for the day specified by the Instant.
   private static ZonedDateTime generateDay(Instant instant, String timezoneOffset) {
-    ZoneOffset timeZoneOffset = convertStringToOffset(timezoneOffset);
-    ZoneId zoneId = ZoneId.ofOffset("UTC", timeZoneOffset);
-    return instant.atZone(zoneId);
+    return instant.atZone(ZoneId.ofOffset("UTC", convertStringToOffset(timezoneOffset)));
   }
 
   // This method takes the timezoneOffset String and converts it
