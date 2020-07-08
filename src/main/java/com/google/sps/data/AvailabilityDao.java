@@ -31,7 +31,6 @@ public interface AvailabilityDao {
   // Puts an Availability object into storage.
   public void put(String email, ZonedDateTime time);
 
-  // Deletes an Availability object from storage if present. If not, does
-  // nothing.
+  // Deletes an Availability object from storage if present. If not, does nothing.
   public void delete(String email, ZonedDateTime time);
 }
