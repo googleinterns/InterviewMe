@@ -34,6 +34,6 @@ public interface ScheduledInterviewDao {
   // Updates a ScheduledInterview.
   public void update(ScheduledInterview scheduledInterview);
 
-  // Deletes a ScheduledInterview entity
+  // Deletes a ScheduledInterview entity.
   public void delete(long id); 
 }
