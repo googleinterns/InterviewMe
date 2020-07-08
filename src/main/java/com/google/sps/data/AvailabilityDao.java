@@ -14,7 +14,6 @@
 
 package com.google.sps.data;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
@@ -30,7 +29,7 @@ public interface AvailabilityDao {
 
   // Puts an Availability object into storage.
   public void put(Availability availability);
-  
+
   // Deletes all Availability's entities for a user ranging from minTime to maxTime.
   public void deleteInRangeForUser(String email, String minTime, String maxTime);
 }
