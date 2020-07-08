@@ -55,7 +55,7 @@ public class AvailabilityTimeSlotGenerator {
     List<String> times = availableStartTimes();
     int numberOfSlotsPerDay = times.size();
     List<String> utcEncodings = generateUTCEncodings(year, month, dayOfMonth, zoneId);
-    List<Boolean> selectedStatuses = getSelectedStatuses(numberOfSlotsPerDay);
+    List<Boolean> selectedStatuses = getSelectedStatuses(numberOfSlotsPerDay, utcEncodings);
     return generateTimeSlots(numberOfSlotsPerDay, utcEncodings, times, date, selectedStatuses);
   }
 
@@ -94,10 +94,11 @@ public class AvailabilityTimeSlotGenerator {
     return utcEncodings;
   }
 
-  // TODO: Access the time slots from data store to tell if they are selected or not.
+  // TODO: Access the time slots from data store using the utcEncondings to tell if they
+  // are selected or not. Can get rid of numberOfSlotsPerDay upon new implementation.
   // This method will tell whether or not a time slot has already been selected. (See
   // TODO above).
-  private static List<Boolean> getSelectedStatuses(int numberOfSlotsPerDay) {
+  private static List<Boolean> getSelectedStatuses(int numberOfSlotsPerDay, List<String> utcEncodings) {
     List<Boolean> selectedStatuses = new ArrayList<Boolean>();
     for (int i = 0; i < numberOfSlotsPerDay; i++) {
       selectedStatuses.add(false);
