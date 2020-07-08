@@ -45,10 +45,11 @@ public class LogInServlet extends HttpServlet {
     }
   }
 
-  private static class LoginInfo {
-    private final boolean loggedIn;
-    private final String changeLogInStatusURL;
-    private final String email;
+  // Represents the logged in status of the site.
+  public static class LoginInfo {
+    public boolean loggedIn;
+    public final String changeLogInStatusURL;
+    public final String email;
 
     public LoginInfo(boolean loggedIn, String changeLogInStatusURL, String email) {
       this.loggedIn = loggedIn;
