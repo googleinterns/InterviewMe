@@ -75,7 +75,7 @@ public class AvailabilityTimeSlotGenerator {
 
   // Returns a readable date string such as "Tue 7/7".
   private static String formatDate(String dayOfWeek, int month, int dayOfMonth) {
-    return dayOfWeek + " " + month + "/" + dayOfMonth;
+    return String.format("%s %d/%d", dayOfWeek, month, dayOfMonth);
   }
 
   // This method returns a list of UTC Strings for a single day, creating one String per Time
