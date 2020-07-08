@@ -50,7 +50,7 @@ public class AvailabilityTimeSlotGenerator {
     int month = day.getMonthValue();
     int dayOfMonth = day.getDayOfMonth();
 
-    String date = generateDate(dayOfWeek, month, dayOfMonth);
+    String date = formatDate(dayOfWeek, month, dayOfMonth);
     List<String> times = availableStartTimes();
     int numberOfSlotsPerDay = times.size();
     List<String> utcEncodings = generateUTCEncodings(year, month, dayOfMonth, zoneId);
@@ -74,7 +74,7 @@ public class AvailabilityTimeSlotGenerator {
   }
 
   // Returns a readable date string such as "Tue 7/7".
-  private static String generateDate(String dayOfWeek, int month, int dayOfMonth) {
+  private static String formatDate(String dayOfWeek, int month, int dayOfMonth) {
     return dayOfWeek + " " + month + "/" + dayOfMonth;
   }
 
