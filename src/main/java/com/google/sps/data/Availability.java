@@ -30,7 +30,11 @@ public abstract class Availability {
   public abstract LocalDate date();
 
   public static Availability create(String email, TimeRange when, LocalDate date) {
-    return builder().setEmail(email).setWhen(when).setDate(date).build();
+    return builder()
+        .setEmail(email)
+        .setWhen(when)
+        .setDate(date)
+        .build();
   }
 
   public static Builder builder() {
