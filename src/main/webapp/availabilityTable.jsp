@@ -13,6 +13,7 @@
   </thead>
   <tbody>
     <!-- TODO: Allow clicking and scrolling over multiple slots to select them.-->
+    <!-- TODO: Change page format so that it is vertically condensed.-->
     <c:forEach items = "${pageScope.list}" var = "timeSlot">
       <tr>
         <td onclick="toggleTile(this)" data-utc="${timeSlot.utcEncoding()}" class="${timeSlot.selected() ? 'table-success' : ''}">
