@@ -107,23 +107,6 @@ public class AvailabilityTimeSlotGenerator {
     return selectedStatuses;
   }
 
-  // This method combines the lists of previously generated information into a list of constructed
-  // AvailabilityTimeSlot objects.
-  private static List<AvailabilityTimeSlot> generateTimeSlots(
-      int numberOfSlotsPerDay,
-      List<String> utcEncodings,
-      List<String> times,
-      String date,
-      List<Boolean> selectedStatuses) {
-    List<AvailabilityTimeSlot> availabilityTimeSlots = new ArrayList<AvailabilityTimeSlot>();
-    for (int i = 0; i < numberOfSlotsPerDay; i++) {
-      availabilityTimeSlots.add(
-          AvailabilityTimeSlot.create(
-              utcEncodings.get(i), times.get(i), date, selectedStatuses.get(i)));
-    }
-    return availabilityTimeSlots;
-  }
-
   // Returns a list of readable time Strings such as "8:00 AM".
   private static List<String> availableStartTimes() {
     ImmutableList<Integer> supportedHours =
@@ -141,5 +124,22 @@ public class AvailabilityTimeSlotGenerator {
       }
     }
     return timesBuilder.build();
+  }
+
+  // This method combines the lists of previously generated information into a list of constructed
+  // AvailabilityTimeSlot objects.
+  private static List<AvailabilityTimeSlot> generateTimeSlots(
+      int numberOfSlotsPerDay,
+      List<String> utcEncodings,
+      List<String> times,
+      String date,
+      List<Boolean> selectedStatuses) {
+    List<AvailabilityTimeSlot> availabilityTimeSlots = new ArrayList<AvailabilityTimeSlot>();
+    for (int i = 0; i < numberOfSlotsPerDay; i++) {
+      availabilityTimeSlots.add(
+          AvailabilityTimeSlot.create(
+              utcEncodings.get(i), times.get(i), date, selectedStatuses.get(i)));
+    }
+    return availabilityTimeSlots;
   }
 }
