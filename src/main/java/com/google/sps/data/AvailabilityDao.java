@@ -18,7 +18,8 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
- * AvailabilityDao includes the basic methods anything managing Interviewer Availability entities must support.
+ * AvailabilityDao includes the basic methods anything managing Interviewer Availability entities
+ * must support.
  */
 public interface AvailabilityDao {
   // Returns a list of all Availability's ranging from minTime to maxTime of the person with email
