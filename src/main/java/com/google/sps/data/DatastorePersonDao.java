@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps;
+package com.google.sps.data;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -60,8 +60,8 @@ public class DatastorePersonDao implements PersonDao {
   }
 
   /**
-   * Since email is a personEntity's key, we retrieve the corresponding personEntity from Datastore
-   * and return it as a Person object.
+   * Retrieve the person from Datastore from their email and wrap it in an 
+   * Optional. If they aren't in Datastore, the Optional is empty.
    */
   @Override
   public Optional<Person> get(String email) {
@@ -71,9 +71,7 @@ public class DatastorePersonDao implements PersonDao {
       personEntity = datastore.get(key);
     } catch (com.google.appengine.api.datastore.EntityNotFoundException e) {
       return Optional.empty();
-    } catch (Exception e) {
-      throw e;
-    }
+    } 
     return Optional.of(entityToPerson(personEntity));
   }
 
