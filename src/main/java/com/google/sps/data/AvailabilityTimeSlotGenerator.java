@@ -107,8 +107,11 @@ public class AvailabilityTimeSlotGenerator {
 
   // Returns a list of readable time Strings such as "8:00 AM".
   private static List<String> availableStartTimes() {
-    ImmutableList<Integer> supportedHours =
-        ImmutableList.of(8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19);
+    Integer[] validHours = new Integer[LATEST_HOUR - EARLIEST_HOUR + 1];
+    for (int i = EARLIEST_HOUR; i < LATEST_HOUR + 1; i++) {
+      validHours[i - EARLIEST_HOUR] = i;
+    }
+    ImmutableList<Integer> supportedHours = ImmutableList.copyOf(validHours);
     ImmutableList<Integer> supportedMinutes = ImmutableList.of(0, 15, 30, 45);
     ImmutableList.Builder<String> timesBuilder = ImmutableList.builder();
     for (Integer hour : supportedHours) {
