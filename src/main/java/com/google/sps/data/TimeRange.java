@@ -79,15 +79,7 @@ public final class TimeRange {
     //
     // Case 3: |---------|
     //            |---|
-    if (this.end == other.start || other.end == this.start) {
-      return false;
-    }
-
-    if (this.start.isBefore(other.start)) {
-      return this.contains(other.start);
-    }
-
-    return other.contains(this.start);
+    return other.end.isAfter(this.start) && other.start.isBefore(this.end);
   }
 
   /**
