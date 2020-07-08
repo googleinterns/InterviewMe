@@ -37,13 +37,14 @@ public class AvailabilityTimeSlotGenerator {
    * Constructs a list of a day's worth of AvailabilityTimeSlot objects.
    *
    * @param instant An instant on the day that time slots are generated for.
-   * @param timezoneOffset A String that represents the difference between UTC and the user's
-   *     current timezone. Example: A user in EST has a timezoneOffset of "-240" which means that
-   *     EST is 240 minutes behind UTC.
+   * @param timezoneOffsetMinutes An int that represents the difference between UTC and the user's
+   *     current timezone. Example: A user in EST has a timezoneOffsetMinutes of -240 which means
+   *     that EST is 240 minutes behind UTC.
    */
   // TODO: Create a timeSlotsForWeek method.
-  public static List<AvailabilityTimeSlot> timeSlotsForDay(Instant instant, String timezoneOffset) {
-    ZonedDateTime day = generateDay(instant, timezoneOffset);
+  public static List<AvailabilityTimeSlot> timeSlotsForDay(
+      Instant instant, int timezoneOffsetMinutes) {
+    ZonedDateTime day = generateDay(instant, timezoneOffsetMinutes);
     ZoneId zoneId = day.getZone();
     String dayOfWeek = day.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.US);
     int year = day.getYear();
@@ -58,19 +59,16 @@ public class AvailabilityTimeSlotGenerator {
     return generateTimeSlots(numberOfSlotsPerDay, utcEncodings, times, date, selectedStatuses);
   }
 
-  // Uses an Instant and a timezoneOffset String to create a ZonedDateTime instance
+  // Uses an Instant and a timezoneOffsetMinutes int to create a ZonedDateTime instance
   // for the day specified by the Instant.
-  private static ZonedDateTime generateDay(Instant instant, String timezoneOffset) {
-    return instant.atZone(ZoneId.ofOffset("UTC", convertStringToOffset(timezoneOffset)));
+  private static ZonedDateTime generateDay(Instant instant, int timezoneOffsetMinutes) {
+    return instant.atZone(ZoneId.ofOffset("UTC", convertIntToOffset(timezoneOffsetMinutes)));
   }
 
-  // This method takes the timezoneOffset String and converts it
+  // This method takes the timezoneOffsetMinutes int and converts it
   // into a proper ZoneOffset instance.
-  private static ZoneOffset convertStringToOffset(String timezoneOffset) {
-    int offsetTotalMinutes = Integer.parseInt(timezoneOffset);
-    int offsetHours = offsetTotalMinutes / 60;
-    int offsetMinutes = offsetTotalMinutes % 60;
-    return ZoneOffset.ofHoursMinutes(offsetHours, offsetMinutes);
+  private static ZoneOffset convertIntToOffset(int timezoneOffsetMinutes) {
+    return ZoneOffset.ofHoursMinutes((timezoneOffsetMinutes / 60), (timezoneOffsetMinutes % 60));
   }
 
   // Returns a readable date string such as "Tue 7/7".
