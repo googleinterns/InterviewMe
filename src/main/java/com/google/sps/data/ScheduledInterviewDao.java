@@ -29,10 +29,10 @@ public interface ScheduledInterviewDao {
   public List<ScheduledInterview> getForPerson(String email);
 
   // Creates a ScheduledInterview entity and stores it in Datastore.
-  public void create(ScheduledInterview scheduledInterview);
+  public void put(ScheduledInterview scheduledInterview);
 
   // Updates a ScheduledInterview.
-  public void update(ScheduledInterview oldScheduledInterview);
+  public void update(ScheduledInterview scheduledInterview);
 
   // Deletes a ScheduledInterview entity
   public void delete(long id); 
