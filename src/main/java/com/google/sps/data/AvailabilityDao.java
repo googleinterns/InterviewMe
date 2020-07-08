@@ -22,16 +22,15 @@ import java.util.List;
  * must support.
  */
 public interface AvailabilityDao {
-  // Returns a list of all Availability's ranging from minTime to maxTime of the person with email
-  // as their email.
-  public List<Availability> get(String email, ZonedDateTime minTime, ZonedDateTime maxTime);
+  // Returns a list of all Availability's ranging from minTime to maxTime of a user.
+  public List<Availability> getInRangeForUser(String email, String minTime, String maxTime);
 
   // Returns all Availability's across all users ranging from minTime to maxTime.
-  public List<Availability> get(ZonedDateTime minTime, ZonedDateTime maxTime);
+  public List<Availability> getInRangeForAll(String minTime, String maxTime);
 
   // Puts an Availability object into storage.
-  public void put(String email, ZonedDateTime time);
-
-  // Deletes an Availability object from storage if present. If not, does nothing.
-  public void delete(String email, ZonedDateTime time);
+  public void put(Availability availability);
+  
+  // Deletes all Availability's entities for a user ranging from minTime to maxTime.
+  public void deleteInRangeForUser(String email, String minTime, String maxTime);
 }
