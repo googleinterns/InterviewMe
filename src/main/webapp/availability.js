@@ -49,7 +49,7 @@ function switchTile(tile) {
 }
 
 function loadAvailabilityTable(tableDiv, timezoneOffset) {
-  fetch('/availabilityTable.jsp?timeZoneOffset=' + timezoneOffset)
+  fetch(`/availabilityTable.jsp?timeZoneOffset=${timezoneOffset}`)
     .then(response => response.text())
     .then(tableContents => {
       tableDiv.innerHTML = tableContents;
