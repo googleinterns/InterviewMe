@@ -30,8 +30,8 @@ import java.time.format.DateTimeFormatter;
 
 /** A generator of a collection of AvailabilityTimeSlot Objects. */
 public class AvailabilityTimeSlotGenerator {
-  private static final int TIME_8AM = 8;
-  private static final int TIME_7PM = 19;
+  private static final int EARLIEST_HOUR = 8;
+  private static final int LATEST_HOUR = 19;
 
   /**
    * Constructs a list of a day's worth of AvailabilityTimeSlot objects.
@@ -84,7 +84,7 @@ public class AvailabilityTimeSlotGenerator {
       int year, int month, int dayOfMonth, ZoneId zoneId) {
     List<String> utcEncodings = new ArrayList<String>();
     int[] minutes = {0, 15, 30, 45};
-    for (int i = TIME_8AM; i <= TIME_7PM; i++) {
+    for (int i = EARLIEST_HOUR; i <= LATEST_HOUR; i++) {
       for (int j = 0; j < 4; j++) {
         LocalDateTime localTimeSlot = LocalDateTime.of(year, month, dayOfMonth, i, minutes[j]);
         ZonedDateTime utcTimeSlot =
