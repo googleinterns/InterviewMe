@@ -54,7 +54,7 @@
             <input type="text" readonly class="form-control-plaintext editable" id="first-name-field" placeholder="First name" value="Tess" required name="first-name">
           </div>
           <div class="col-md-6 mb-3">
-            <label for="first-name-field">Last name</label>
+            <label for="last-name-field">Last name</label>
             <input type="text" readonly class="form-control-plaintext editable" id="last-name-field" placeholder="Last name" value="Ter" required name="last-name">
           </div>
         </div>
@@ -68,7 +68,7 @@
             <p id="current-job">Product Manager</p>    
             <select hidden readonly class="form-control-plaintext editable" id="job-field" name="job">
               <option>Software Engineer</option>
-              <option>Product Manager</option>
+              <option selected>Product Manager</option>
               <option>Business Analyst</option>
               <option>Technical Consultant</option>
               <option>Software Tester</option>
@@ -87,7 +87,7 @@
         </div>
         <div class="form-group row">
           <div class="col-sm-10">
-            <button class="btn btn-primary" id="update-button" type="submit" hidden>Update</button>
+            <button class="btn btn-primary" id="update-button" type="submit" hidden>Update Profile</button>
             <button type="button" id="edit-button" onclick="makeEditable()" class="btn btn-primary">Edit</button>
           </div>
         </div>
