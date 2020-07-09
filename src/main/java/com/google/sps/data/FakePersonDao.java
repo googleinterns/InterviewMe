@@ -17,9 +17,9 @@ package com.google.sps.data;
 import java.util.HashMap;
 import java.util.Optional;
 
-/** Accesses Datastore to support managing Person entities. */
+/** Mimics accessing Datastore to support managing Person entities. */
 public class FakePersonDao implements PersonDao {
-  // @param datastore stores all data
+  // @param datastore stores all data.
   private HashMap<String, Person> datastore;
 
   /** Initializes the fields for PersonDatastoreDAO. */
