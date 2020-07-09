@@ -29,8 +29,6 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public final class AvailabilityTimeSlotGeneratorTest {
 
-  private static final int numberOfSlotsPerDay = 48;
-
   @Test
   public void createADayOfTimeSlots() {
     ZonedDateTime day =
