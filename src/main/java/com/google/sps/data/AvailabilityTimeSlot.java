@@ -23,7 +23,7 @@ import com.google.common.annotations.VisibleForTesting;
  * also has a boolean that tells whether or not the time slot has been selected.
  */
 @AutoValue
-abstract class AvailabilityTimeSlot {
+public abstract class AvailabilityTimeSlot {
   public abstract String utcEncoding();
 
   public abstract String time();

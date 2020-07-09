@@ -19,8 +19,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -35,20 +33,20 @@ public class AvailabilityTimeSlotGenerator {
   private static final int EARLIEST_HOUR = 8;
   private static final int LATEST_HOUR = 19;
   // A list of hours and minutes representing permitted time slots.
-  private static final ImmutableList<HourAndMinute> ALL_HOURS_AND_MINUTES = allHoursAndMinutes();
+  private static final ImmutableList<HoursAndMinutes> ALL_HOURS_AND_MINUTES = allHoursAndMinutes();
 
   @AutoValue
-  abstract static class HourAndMinute {
+  abstract static class HoursAndMinutes {
     abstract int hour();
 
     abstract int minute();
 
-    static HourAndMinute create(int hour, int minute) {
+    static HoursAndMinutes create(int hour, int minute) {
       return builder().setHour(hour).setMinute(minute).build();
     }
 
     static Builder builder() {
-      return new AutoValue_AvailabilityTimeSlotGenerator_HourAndMinute.Builder();
+      return new AutoValue_AvailabilityTimeSlotGenerator_HoursAndMinutes.Builder();
     }
 
     @AutoValue.Builder
@@ -57,17 +55,17 @@ public class AvailabilityTimeSlotGenerator {
 
       abstract Builder setMinute(int minute);
 
-      abstract HourAndMinute build();
+      abstract HoursAndMinutes build();
     }
   }
 
-  private static ImmutableList<HourAndMinute> allHoursAndMinutes() {
-    ImmutableList.Builder<HourAndMinute> candidateHoursAndMinutes = ImmutableList.builder();
+  private static ImmutableList<HoursAndMinutes> allHoursAndMinutes() {
+    ImmutableList.Builder<HoursAndMinutes> candidateHoursAndMinutes = ImmutableList.builder();
     for (int i = EARLIEST_HOUR; i < LATEST_HOUR + 1; i++) {
-      candidateHoursAndMinutes.add(HourAndMinute.create(i, 0));
-      candidateHoursAndMinutes.add(HourAndMinute.create(i, 15));
-      candidateHoursAndMinutes.add(HourAndMinute.create(i, 30));
-      candidateHoursAndMinutes.add(HourAndMinute.create(i, 45));
+      candidateHoursAndMinutes.add(HoursAndMinutes.create(i, 0));
+      candidateHoursAndMinutes.add(HoursAndMinutes.create(i, 15));
+      candidateHoursAndMinutes.add(HoursAndMinutes.create(i, 30));
+      candidateHoursAndMinutes.add(HoursAndMinutes.create(i, 45));
     }
     return candidateHoursAndMinutes.build();
   }
@@ -75,7 +73,7 @@ public class AvailabilityTimeSlotGenerator {
   /**
    * Constructs a list of a day's worth of AvailabilityTimeSlot objects.
    *
-   * @param instant An instant on the day that time slots are generated for.
+   * @param instant An Instant on the day that time slots are generated for.
    * @param timezoneOffsetMinutes An int that represents the difference between UTC and the user's
    *     current timezone. Example: A user in EST has a timezoneOffsetMinutes of -240 which means
    *     that EST is 240 minutes behind UTC.
@@ -98,9 +96,9 @@ public class AvailabilityTimeSlotGenerator {
     String formattedDate = formatDate(dayOfWeek, month, dayOfMonth);
 
     ImmutableList.Builder<AvailabilityTimeSlot> timeSlots = ImmutableList.builder();
-    for (HourAndMinute hourAndMinute : ALL_HOURS_AND_MINUTES) {
-      int hour = hourAndMinute.hour();
-      int minute = hourAndMinute.minute();
+    for (HoursAndMinutes hoursAndMinutes : ALL_HOURS_AND_MINUTES) {
+      int hour = hoursAndMinutes.hour();
+      int minute = hoursAndMinutes.minute();
       LocalDateTime localTime = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
       ZonedDateTime utcTime =
           ZonedDateTime.of(localTime, zoneId).withZoneSameInstant(ZoneOffset.UTC);
@@ -121,8 +119,7 @@ public class AvailabilityTimeSlotGenerator {
     return timeSlots.build();
   }
 
-  // Uses an Instant and a timezoneOffsetMinutes int to create a ZonedDateTime instance
-  // for the day specified by the Instant.
+  // Uses an Instant and a timezoneOffsetMinutes int to create a ZonedDateTime instance.
   private static ZonedDateTime generateDay(Instant instant, int timezoneOffsetMinutes) {
     return instant.atZone(ZoneId.ofOffset("UTC", convertIntToOffset(timezoneOffsetMinutes)));
   }
