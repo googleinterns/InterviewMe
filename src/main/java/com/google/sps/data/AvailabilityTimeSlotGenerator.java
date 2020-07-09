@@ -14,10 +14,16 @@
 
 package com.google.sps.data;
 
+// import com.google.common.base.Pair;
+// Package for repo I found:
+// https://github.com/google/gdata-java-client/blob/master/java/src/com/google/gdata/util/common/base/Pair.java
+import com.google.gdata.util.common.base.Pair;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -33,6 +39,14 @@ import java.time.format.DateTimeFormatter;
 public class AvailabilityTimeSlotGenerator {
   private static final int EARLIEST_HOUR = 8;
   private static final int LATEST_HOUR = 19;
+
+  // A list of hours and minutes representing permitted time slots.
+  private static final ImmutableList<Pair<Integer, Integer>> candidateHoursAndMinutes =
+      IntStream.range(EARLIEST_HOUR, LATEST_HOUR)
+          .flatMap((hour) -> Stream.of(0, 15, 30, 45).map((minute) -> Pair.of(hour, minute)))
+          .collect(ImmutableList.toImmutableList());
+
+  private static final int numberOfSlotsPerDay = candidateHoursAndMinutes.size();
 
   /**
    * Constructs a list of a day's worth of AvailabilityTimeSlot objects.
