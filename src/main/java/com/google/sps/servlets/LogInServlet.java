@@ -35,14 +35,10 @@ public class LogInServlet extends HttpServlet {
     boolean loggedIn = userService.isUserLoggedIn();
     LoginInfo toSend;
     if (loggedIn) {
-      toSend =
-          new LoginInfo(
-              loggedIn,
-              userService.createLogoutURL(ROOT_URL),
-              userService.getCurrentUser().getEmail());
-    } else {
-      toSend = new LoginInfo(loggedIn, userService.createLoginURL(ROOT_URL), "");
+      return new LoginInfo(
+          loggedIn, userService.createLogoutURL(rootUrl), userService.getCurrentUser().getEmail());
     }
+    return new LoginInfo(loggedIn, userService.createLoginURL(rootUrl), "");
   }
 
   // Represents the logged in status of the site.
