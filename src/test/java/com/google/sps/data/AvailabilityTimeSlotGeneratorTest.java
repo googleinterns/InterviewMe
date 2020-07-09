@@ -223,7 +223,7 @@ public final class AvailabilityTimeSlotGeneratorTest {
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> {
-          AvailabilityTimeSlotGenerator.timeSlotsForDay(Instant.now(), 740);
+          AvailabilityTimeSlotGenerator.timeSlotsForWeek(Instant.now(), 740);
         });
   }
 
@@ -232,7 +232,7 @@ public final class AvailabilityTimeSlotGeneratorTest {
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> {
-          AvailabilityTimeSlotGenerator.timeSlotsForDay(Instant.now(), -740);
+          AvailabilityTimeSlotGenerator.timeSlotsForWeek(Instant.now(), -740);
         });
   }
 }
