@@ -45,6 +45,7 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
    * Retrieves a scheduledInterviewEntity from Datastore and returns it as a ScheduledInterview
    * object.
    */
+  @Override
   public Optional<ScheduledInterview> get(long id) {
     Key key = KeyFactory.createKey("ScheduledInterview", id);
     Entity scheduledInterviewEntity;
@@ -60,6 +61,7 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
    * Retrieves all scheduledInterview entities from Datastore that involve a particular user and
    * returns them as a list of ScheduledInterview objects.
    */
+  @Override
   public List<ScheduledInterview> getForPerson(String email) {
     FilterPredicate interviewerFilter =
         new FilterPredicate("interviewer", FilterOperator.EQUAL, email);
@@ -78,6 +80,7 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
   }
 
   /** Creates a ScheduledInterview Entity. */
+  @Override
   public void create(ScheduledInterview scheduledInterview) {
     Entity scheduledInterviewEntity = new Entity("ScheduledInterview");
     scheduledInterviewEntity.setProperty("startTime", scheduledInterview.when().start().toString());
@@ -89,12 +92,14 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
   }
 
   /** Updates an entity in datastore. */
+  @Override
   public void update(ScheduledInterview scheduledInterview) {
     delete(scheduledInterview.id());
     create(scheduledInterview);
   }
 
   /** Deletes an entity in datastore. */
+  @Override
   public void delete(long id) {
     Key key = KeyFactory.createKey("ScheduledInterview", id);
     datastore.delete(key);
