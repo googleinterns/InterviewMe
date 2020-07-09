@@ -58,7 +58,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>19.0</version>
+      <version>21.0</version>
     </dependency>
     
     <dependency>
@@ -72,13 +72,6 @@
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <version>5.5.2</version>
-    </dependency>
-    
-    <!-- https://mvnrepository.com/artifact/com.google.gdata/core -->
-    <dependency>
-      <groupId>com.google.gdata</groupId>
-      <artifactId>core</artifactId>
-      <version>1.47.1</version>
     </dependency>
   </dependencies>
 

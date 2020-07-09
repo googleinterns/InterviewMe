@@ -14,10 +14,7 @@
 
 package com.google.sps.data;
 
-// import com.google.common.base.Pair;
-// Package for repo I found:
-// https://github.com/google/gdata-java-client/blob/master/java/src/com/google/gdata/util/common/base/Pair.java
-import com.google.gdata.util.common.base.Pair;
+import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
@@ -39,14 +36,45 @@ import java.time.format.DateTimeFormatter;
 public class AvailabilityTimeSlotGenerator {
   private static final int EARLIEST_HOUR = 8;
   private static final int LATEST_HOUR = 19;
-
   // A list of hours and minutes representing permitted time slots.
-  private static final ImmutableList<Pair<Integer, Integer>> candidateHoursAndMinutes =
-      IntStream.range(EARLIEST_HOUR, LATEST_HOUR)
-          .flatMap((hour) -> Stream.of(0, 15, 30, 45).map((minute) -> Pair.of(hour, minute)))
-          .collect(ImmutableList.toImmutableList());
+  private List<HourAndMinute> candidateHoursAndMinutes;
+  private static int numberOfSlotsPerDay;
 
-  private static final int numberOfSlotsPerDay = candidateHoursAndMinutes.size();
+  @AutoValue
+  abstract static class HourAndMinute {
+    abstract int hour();
+
+    abstract int minute();
+
+    static HourAndMinute create(int hour, int minute) {
+      return builder().setHour(hour).setMinute(minute).build();
+    }
+
+    static Builder builder() {
+      return new AutoValue_AvailabilityTimeSlotGenerator_HourAndMinute.Builder();
+    }
+
+    @AutoValue.Builder
+    abstract static class Builder {
+      abstract Builder setHour(int hour);
+
+      abstract Builder setMinute(int minute);
+
+      abstract HourAndMinute build();
+    }
+  }
+
+  public void init() {
+    candidateHoursAndMinutes = new ArrayList<HourAndMinute>();
+    for (int i = EARLIEST_HOUR; i < LATEST_HOUR + 1; i++) {
+      candidateHoursAndMinutes.add(HourAndMinute.create(i, 0));
+      candidateHoursAndMinutes.add(HourAndMinute.create(i, 15));
+      candidateHoursAndMinutes.add(HourAndMinute.create(i, 30));
+      candidateHoursAndMinutes.add(HourAndMinute.create(i, 45));
+    }
+
+    numberOfSlotsPerDay = candidateHoursAndMinutes.size();
+  }
 
   /**
    * Constructs a list of a day's worth of AvailabilityTimeSlot objects.
