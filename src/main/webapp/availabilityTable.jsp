@@ -1,4 +1,7 @@
-<%@ page import="com.google.sps.data.AvailabilityTimeSlotGenerator,com.google.sps.data.AvailabilityTimeSlot,java.util.List,java.time.Instant,java.lang.Integer" %>
+<%@ page import="com.google.sps.data.AvailabilityTimeSlotGenerator" %>
+<%@ page import="com.google.sps.data.AvailabilityTimeSlot" %>
+<%@ page import="java.util.List,java.time.Instant" %>
+<%@ page import="java.lang.Integer" %>
 <%
   List<AvailabilityTimeSlot> list = AvailabilityTimeSlotGenerator.timeSlotsForDay(Instant.now(), Integer.parseInt(request.getParameter("timeZoneOffset")));
   pageContext.setAttribute("list", list);
