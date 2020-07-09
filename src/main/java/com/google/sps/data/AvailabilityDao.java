@@ -18,8 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * AvailabilityDao includes the basic methods anything managing Availability entities
- * must support.
+ * AvailabilityDao includes the basic methods anything managing Availability entities must support.
  */
 public interface AvailabilityDao {
   // Returns a list of all Availability's ranging from minTime to maxTime of a user.
@@ -27,14 +26,17 @@ public interface AvailabilityDao {
   public List<Availability> getInRangeForUser(String email, String minTime, String maxTime);
 
   // Returns all Availability's across all users ranging from minTime to maxTime.
-  // minTime and maxTime are UTC encodings.  
+  // minTime and maxTime are UTC encodings.
   public List<Availability> getInRangeForAll(String minTime, String maxTime);
-  
-  // Returns the Availability entity with specified id.  
+
+  // Returns the Availability entity with specified id.
   public Optional<Availability> get(long id);
 
   // Adds an Availability object into storage.
   public void create(Availability availability);
+
+  // Updates the specified id with the new availability.
+  public Optional<Availability> update(long id, Availability availability);
 
   // Deletes all Availability entities for a user ranging from minTime to maxTime.
   // minTime and maxTime are UTC encodings.
