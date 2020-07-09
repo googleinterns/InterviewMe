@@ -30,8 +30,6 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 import java.time.format.DateTimeFormatter;
 
-// TODO: Add a test for the constructor.
-
 /** A generator of a collection of AvailabilityTimeSlot Objects. */
 public class AvailabilityTimeSlotGenerator {
   private static final int EARLIEST_HOUR = 8;
