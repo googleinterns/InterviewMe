@@ -42,20 +42,7 @@ public class AvailabilityTimeSlotGenerator {
     abstract int minute();
 
     static HoursAndMinutes create(int hour, int minute) {
-      return builder().setHour(hour).setMinute(minute).build();
-    }
-
-    static Builder builder() {
-      return new AutoValue_AvailabilityTimeSlotGenerator_HoursAndMinutes.Builder();
-    }
-
-    @AutoValue.Builder
-    abstract static class Builder {
-      abstract Builder setHour(int hour);
-
-      abstract Builder setMinute(int minute);
-
-      abstract HoursAndMinutes build();
+      return new AutoValue_AvailabilityTimeSlotGenerator_HoursAndMinutes(hour, minute);
     }
   }
 
