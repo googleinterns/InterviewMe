@@ -23,7 +23,7 @@ public interface PersonDao {
 
   // Adds a Person object into storage, with email as the key.
   public void create(Person person);
-  
-  // Updates a Person object into storage, with email as the key.
-  public void update(String email, Person person);
+
+  // Updates a Person object in storage, with email as the key.
+  public void update(Person person);
 }
