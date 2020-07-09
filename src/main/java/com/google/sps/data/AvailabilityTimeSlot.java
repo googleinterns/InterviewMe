@@ -15,6 +15,7 @@
 package com.google.sps.data;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.annotations.VisibleForTesting;
 
 /**
  * An AvailabilityTimeSlot represents a 15 minute chunk of time that has a date and time that are
@@ -22,7 +23,7 @@ import com.google.auto.value.AutoValue;
  * also has a boolean that tells whether or not the time slot has been selected.
  */
 @AutoValue
-public abstract class AvailabilityTimeSlot {
+abstract class AvailabilityTimeSlot {
   public abstract String utcEncoding();
 
   public abstract String time();
@@ -31,7 +32,8 @@ public abstract class AvailabilityTimeSlot {
 
   public abstract boolean selected();
 
-  public static AvailabilityTimeSlot create(
+  @VisibleForTesting
+  static AvailabilityTimeSlot create(
       String utcEncoding, String time, String date, boolean selected) {
     return builder()
         .setUtcEncoding(utcEncoding)
