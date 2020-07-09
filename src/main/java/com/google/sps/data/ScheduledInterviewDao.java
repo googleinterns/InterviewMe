@@ -29,7 +29,7 @@ public interface ScheduledInterviewDao {
   public List<ScheduledInterview> getForPerson(String email);
 
   // Creates a ScheduledInterview entity.
-  public void put(ScheduledInterview scheduledInterview);
+  public void create(ScheduledInterview scheduledInterview);
 
   // Updates a ScheduledInterview.
   public void update(ScheduledInterview scheduledInterview);
