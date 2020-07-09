@@ -91,22 +91,6 @@ public final class AvailabilityTimeSlotGeneratorTest {
     expected.add(AvailabilityTimeSlot.create("2020-07-07T23:30:00Z", "7:30 PM", "Tue 7/7", false));
     expected.add(AvailabilityTimeSlot.create("2020-07-07T23:45:00Z", "7:45 PM", "Tue 7/7", false));
 
-    /*
-    int[] estHours = {8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7};
-    int[] utcHours = {12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
-    String[] minutes = {"00", "15", "30", "45"};
-
-    for (int i = 0; i < numberOfSlotsPerDay; i++) {
-      String utc = "2020-07-07T" + utcHours[i / 4] + ":" + minutes[i % 4] + ":00Z";
-      String time;
-      if (utcHours[i / 4] < 16) {
-        time = estHours[i / 4] + ":" + minutes[i % 4] + " AM";
-      } else {
-        time = estHours[i / 4] + ":" + minutes[i % 4] + " PM";
-      }
-      expected.add(AvailabilityTimeSlot.create(utc, time, "Tue 7/7", false));
-    } */
-
     Assert.assertEquals(expected, actual);
   }
 
