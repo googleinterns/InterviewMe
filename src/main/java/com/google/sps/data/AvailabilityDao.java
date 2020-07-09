@@ -15,9 +15,10 @@
 package com.google.sps.data;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
- * AvailabilityDao includes the basic methods anything managing Interviewer Availability entities
+ * AvailabilityDao includes the basic methods anything managing Availability entities
  * must support.
  */
 public interface AvailabilityDao {
@@ -28,9 +29,12 @@ public interface AvailabilityDao {
   // Returns all Availability's across all users ranging from minTime to maxTime.
   // minTime and maxTime are UTC encodings.  
   public List<Availability> getInRangeForAll(String minTime, String maxTime);
+  
+  // Returns the Availability entity with specified id.  
+  public Optional<Availability> get(long id);
 
-  // Puts an Availability object into storage.
-  public void put(Availability availability);
+  // Adds an Availability object into storage.
+  public void create(Availability availability);
 
   // Deletes all Availability entities for a user ranging from minTime to maxTime.
   // minTime and maxTime are UTC encodings.
