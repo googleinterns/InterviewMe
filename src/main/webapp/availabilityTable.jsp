@@ -3,7 +3,9 @@
 <%@ page import="java.util.List,java.time.Instant" %>
 <%@ page import="java.lang.Integer" %>
 <%
-  List<AvailabilityTimeSlot> list = AvailabilityTimeSlotGenerator.timeSlotsForDay(Instant.now(), Integer.parseInt(request.getParameter("timeZoneOffset")));
+  List<AvailabilityTimeSlot> list = AvailabilityTimeSlotGenerator
+    .timeSlotsForDay(Instant.now(), Integer.parseInt(request
+    .getParameter("timeZoneOffset")));
   pageContext.setAttribute("list", list);
 %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -19,7 +21,8 @@
     <!-- TODO: Change page format so that it is vertically condensed.-->
     <c:forEach items = "${pageScope.list}" var = "timeSlot">
       <tr>
-        <td onclick="toggleTile(this)" data-utc="${timeSlot.utcEncoding()}" class="${timeSlot.selected() ? 'table-success' : ''}">
+        <td onclick="toggleTile(this)" data-utc="${timeSlot.utcEncoding()}" 
+          class="${timeSlot.selected() ? 'table-success' : ''}">
           ${timeSlot.time()}
         </td>
       </tr>
