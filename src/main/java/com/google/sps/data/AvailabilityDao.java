@@ -22,14 +22,17 @@ import java.util.List;
  */
 public interface AvailabilityDao {
   // Returns a list of all Availability's ranging from minTime to maxTime of a user.
+  // minTime and maxTime are UTC encodings.
   public List<Availability> getInRangeForUser(String email, String minTime, String maxTime);
 
   // Returns all Availability's across all users ranging from minTime to maxTime.
+  // minTime and maxTime are UTC encodings.  
   public List<Availability> getInRangeForAll(String minTime, String maxTime);
 
   // Puts an Availability object into storage.
   public void put(Availability availability);
 
-  // Deletes all Availability's entities for a user ranging from minTime to maxTime.
+  // Deletes all Availability entities for a user ranging from minTime to maxTime.
+  // minTime and maxTime are UTC encodings.
   public void deleteInRangeForUser(String email, String minTime, String maxTime);
 }
