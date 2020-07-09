@@ -25,7 +25,7 @@ import com.google.appengine.api.datastore.Query.CompositeFilter;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import java.nio.file.DirectoryStream.Filter;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.ArrayList;
@@ -42,24 +42,23 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
   }
 
   /**
-   * Retrieve a scheduledInterviewEntity from Datastore and return it as a scheduledInterview
+   * Retrieves a scheduledInterviewEntity from Datastore and returns it as a ScheduledInterview
    * object.
    */
   public Optional<ScheduledInterview> get(long id) {
-    Key key = KeyFactory.createKey("id", id);
+    Key key = KeyFactory.createKey("ScheduledInterview", id);
     Entity scheduledInterviewEntity;
     try {
       scheduledInterviewEntity = datastore.get(key);
     } catch (com.google.appengine.api.datastore.EntityNotFoundException e) {
       return Optional.empty();
     }
-
     return Optional.of(entityToScheduledInterview(scheduledInterviewEntity));
   }
 
   /**
-   * Retrieve all scheduledInterview entities from Datastore that involve a particular user and
-   * return them as a list of scheduledInterview objects.
+   * Retrieves all scheduledInterview entities from Datastore that involve a particular user and
+   * returns them as a list of ScheduledInterview objects.
    */
   public List<ScheduledInterview> getForPerson(String email) {
     FilterPredicate interviewerFilter =
@@ -78,26 +77,37 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
     return relevantInterviews;
   }
 
-  /** Updates an entity in datastore. */
-  public void update(ScheduledInterview scheduledInterview) {
-    datastore.put(create(scheduledInterview));
-  }
-
   /** Creates a ScheduledInterview Entity. */
-  public Entity create(ScheduledInterview scheduledInterview) {
+  public void create(ScheduledInterview scheduledInterview) {
     Entity scheduledInterviewEntity = new Entity("ScheduledInterview");
-    scheduledInterviewEntity.setProperty("when", scheduledInterview.when());
-    scheduledInterviewEntity.setProperty("date", scheduledInterview.date());
+    scheduledInterviewEntity.setProperty("startTime", scheduledInterview.when().start().toString());
+    scheduledInterviewEntity.setProperty("endTime", scheduledInterview.when().end().toString());
+    scheduledInterviewEntity.setProperty("date", scheduledInterview.date().toString());
     scheduledInterviewEntity.setProperty("interviewer", scheduledInterview.interviewerEmail());
     scheduledInterviewEntity.setProperty("interviewee", scheduledInterview.intervieweeEmail());
-    return scheduledInterviewEntity;
+    datastore.put(scheduledInterviewEntity);
   }
 
-  /** Creates a ScheduledInterview object from a datastore entity */
+  /** Updates an entity in datastore. */
+  public void update(ScheduledInterview scheduledInterview) {
+    delete(scheduledInterview.id());
+    create(scheduledInterview);
+  }
+
+  /** Deletes an entity in datastore. */
+  public void delete(long id) {
+    Key key = KeyFactory.createKey("ScheduledInterview", id);
+    datastore.delete(key);
+  }
+
+  /** Creates a ScheduledInterview object from a datastore entity. */
   public ScheduledInterview entityToScheduledInterview(Entity scheduledInterviewEntity) {
     return ScheduledInterview.create(
-        (TimeRange) scheduledInterviewEntity.getProperty("when"),
-        (LocalDate) scheduledInterviewEntity.getProperty("date"),
+        Long.valueOf(scheduledInterviewEntity.getKey().toString()),
+        new TimeRange(
+            Instant.parse(scheduledInterviewEntity.getProperty("startTime").toString()),
+            Instant.parse(scheduledInterviewEntity.getProperty("endTime").toString())),
+        LocalDate.parse(scheduledInterviewEntity.getProperty("date").toString()),
         (String) scheduledInterviewEntity.getProperty("interviewer"),
         (String) scheduledInterviewEntity.getProperty("interviewee"));
   }
