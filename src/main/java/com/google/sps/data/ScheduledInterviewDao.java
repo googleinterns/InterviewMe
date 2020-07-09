@@ -28,7 +28,7 @@ public interface ScheduledInterviewDao {
   // Returns a list of the ScheduledInterview objects that the user participates in.
   public List<ScheduledInterview> getForPerson(String email);
 
-  // Creates a ScheduledInterview entity and stores it in Datastore.
+  // Creates a ScheduledInterview entity.
   public void put(ScheduledInterview scheduledInterview);
 
   // Updates a ScheduledInterview.
