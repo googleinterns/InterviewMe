@@ -50,7 +50,7 @@ public class AvailabilityTimeSlotGenerator {
 
   private static ImmutableList<HoursAndMinutes> allHoursAndMinutes() {
     ImmutableList.Builder<HoursAndMinutes> candidateHoursAndMinutes = ImmutableList.builder();
-    for (int i = EARLIEST_HOUR; i < LATEST_HOUR + 1; i++) {
+    for (int i = EARLIEST_HOUR; i <= LATEST_HOUR; i++) {
       candidateHoursAndMinutes.add(HoursAndMinutes.create(i, 0));
       candidateHoursAndMinutes.add(HoursAndMinutes.create(i, 15));
       candidateHoursAndMinutes.add(HoursAndMinutes.create(i, 30));
