@@ -88,7 +88,7 @@ public class AvailabilityTimeSlotGenerator {
       Instant instant, int timezoneOffsetMinutes) {
     Preconditions.checkArgument(
         Math.abs(timezoneOffsetMinutes) <= 720,
-        "Offset greater than 12 hours/720 minutes: %s",
+        "Offset greater than 720 minutes (12 hours): %s",
         timezoneOffsetMinutes);
     ZonedDateTime day = generateDay(instant, timezoneOffsetMinutes);
     ZoneId zoneId = day.getZone();
