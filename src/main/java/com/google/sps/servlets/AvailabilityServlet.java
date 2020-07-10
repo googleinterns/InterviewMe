@@ -17,12 +17,8 @@ package com.google.sps.servlets;
 import com.google.gson.Gson;
 import com.google.sps.data.AvailabilityJSONConverter;
 import java.io.BufferedReader;
-// import processing.data.JSONObject;
-// import java.net.http;
 import java.io.IOException;
 import java.util.ArrayList;
-// import javax.json.JsonException;
-// import org.json.simple.JSONObject;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -42,35 +38,11 @@ public class AvailabilityServlet extends HttpServlet {
 
     String result = buffer.toString();
 
-    System.out.println("result: " + result);
+    System.out.println("DEBUG: result: " + result);
 
     Gson gson = new Gson();
 
-    // String[] utcEncodings = gson.fromJson(result, String[].class);
-    // System.out.println("Here's what we got from buffered reader: " + utcEncodings);
-
-    /*
-    StringBuffer buffer = new StringBuffer();
-    String timestamps = null;
-    try {
-      BufferedReader reader = request.getReader();
-      while ((timestamps = reader.readLine()) != null) buffer.append(timestamps);
-    } catch (Exception e) {
-      /*report an error
-    }
-
-    try {
-      JSONObject jsonObject = HTTP.toJSONObject(buffer.toString());
-    } catch (JSONException e) {
-      // crash and burn
-      throw new IOException("Error parsing JSON request string");
-    }
-    */
-
-    System.out.println("Before being converted to JSON: " + request.getParameter("body"));
-    // This is null. Need different method for converting request to JSON.
-    String jsonRequest = gson.toJson(request.getParameter("body"));
-    System.out.println("Here's the json from the request body: " + jsonRequest);
-    // System.out.println(gson.fromJson(jsonRequest, AvailabilityJSONConverter.class));
+    String[] utcEncodings = gson.fromJson(result, String[].class);
+    System.out.println("DEBUG: Here's the first entry from the gson converted String[]: " + utcEncodings[0]);
   }
 }
