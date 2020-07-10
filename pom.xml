@@ -64,6 +64,7 @@
       <version>1.9.24</version>
       <scope>test</scope>      
     </dependency>
+    <!-- End of dependencies for Datastore tests -->
     
     <dependency>
       <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
