@@ -52,5 +52,4 @@ function updateAvailability() {
   }
   console.log(requestBody);
   let request = new Request('/availability', {method:'PUT', body:requestBody});
-  
 }
