@@ -40,5 +40,5 @@ function availabilityTableDiv() {
 }
 
 function updateAvailability() {
-  
+  let selected = document.getElementsByClassName('table-success');
 }
