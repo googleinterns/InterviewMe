@@ -82,6 +82,14 @@ public class AvailabilityTimeSlotGenerator {
     return weekList.build();
   }
 
+  /**
+   * Constructs a List of a day's worth of AvailabilityTimeSlot objects.
+   *
+   * @param instant An Instant on the day for which time slots are generated.
+   * @param timezoneOffsetMinutes An int that represents the difference between UTC and the user's
+   *     current timezone. Example: A user in EST has a timezoneOffsetMinutes of -240 which means
+   *     that EST is 240 minutes behind UTC.
+   */
   @VisibleForTesting
   static List<AvailabilityTimeSlot> timeSlotsForDay(Instant instant, int timezoneOffsetMinutes) {
     ZonedDateTime day = generateDay(instant, timezoneOffsetMinutes);
