@@ -41,13 +41,14 @@ function availabilityTableDiv() {
 
 function updateAvailability() {
   let selectedSlots = document.getElementsByClassName('table-success');
-  let requestBody;
-  let firstSlot = {firstSlot : document.getElementById('first-slot').getAttrubute('data-utc')};
+  let requestBody = [];
+  let firstSlot = {firstSlot : document.getElementById('first-slot').getAttribute('data-utc')};
   let lastSlot = {lastSlot : document.getElementById('last-slot').getAttribute('data-utc')};
-  requestBody.put(firstSlot);
-  requestBody.put(lastSlot);
+  requestBody.push(firstSlot);
+  requestBody.push(lastSlot);
   for (let slot of selectedSlots) {
     utc = slot.getAttribute('data-utc');
-    requestBody.put(utc);
+    requestBody.push(utc);
   }
+  console.log(requestBody);
 }
