@@ -42,6 +42,10 @@ function availabilityTableDiv() {
 function updateAvailability() {
   let selectedSlots = document.getElementsByClassName('table-success');
   let requestBody;
+  let firstSlot = {firstSlot : document.getElementById('first-slot').getAttrubute('data-utc')};
+  let lastSlot = {lastSlot : document.getElementById('last-slot').getAttribute('data-utc')};
+  requestBody.put(firstSlot);
+  requestBody.put(lastSlot);
   for (let slot of selectedSlots) {
     utc = slot.getAttribute('data-utc');
     requestBody.put(utc);
