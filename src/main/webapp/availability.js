@@ -41,9 +41,13 @@ function availabilityTableDiv() {
 
 function updateAvailability() {
   let selectedSlots = document.getElementsByClassName('table-success');
+  let firstSlot = document.getElementsByTagName('tbody').item(0)
+    .firstElementChild.firstElementChild.getAttribute('data-utc');
+  let lastSlot = document.getElementsByTagName('tbody').item(0)
+    .lastElementChild.lastElementChild.getAttribute('data-utc');
   let requestBody = [
-    document.getElementById('first-slot').getAttribute('data-utc'),
-    document.getElementById('last-slot').getAttribute('data-utc')
+    firstSlot,
+    lastSlot
   ].concat(Array.from(selectedSlots).map(s => s.getAttribute('data-utc')));
   console.log(requestBody);
   let request = new Request('/availability', {method:'PUT', body:requestBody});
