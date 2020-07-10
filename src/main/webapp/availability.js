@@ -42,14 +42,18 @@ function availabilityTableDiv() {
 function updateAvailability() {
   let selectedSlots = document.getElementsByClassName('table-success');
   let requestBody = [];
-  let firstSlot = {firstSlot : document.getElementById('first-slot').getAttribute('data-utc')};
-  let lastSlot = {lastSlot : document.getElementById('last-slot').getAttribute('data-utc')};
-  requestBody.push(firstSlot);
-  requestBody.push(lastSlot);
+  let firstAndLastSlots = [];
+  let firstSlot = document.getElementById('first-slot').getAttribute('data-utc');
+  let lastSlot = document.getElementById('last-slot').getAttribute('data-utc');
+  firstAndLastSlots.push(firstSlot);
+  firstAndLastSlots.push(lastSlot);
+  requestBody.push(firstAndLastSlots);
+  let utcEncodings = [];
   for (let slot of selectedSlots) {
     utc = slot.getAttribute('data-utc');
-    requestBody.push(utc);
+    utcEncodings.push(utc);
   }
+  requestBody.push(utcEncodings);
   console.log(requestBody);
   let request = new Request('/availability', {method:'PUT', body:requestBody});
   fetch(request).then(unused => {loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset())});
