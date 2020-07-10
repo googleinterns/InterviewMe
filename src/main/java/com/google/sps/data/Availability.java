@@ -15,7 +15,6 @@
 package com.google.sps.data;
 
 import com.google.auto.value.AutoValue;
-import java.time.LocalDate;
 
 /**
  * Availability is a time range when a given person is available to offer interviews as an
@@ -27,12 +26,10 @@ public abstract class Availability {
 
   public abstract TimeRange when();
 
-  public abstract LocalDate date();
-
   public abstract long id();
 
-  public static Availability create(String email, TimeRange when, LocalDate date, long id) {
-    return builder().setEmail(email).setWhen(when).setDate(date).setId(id).build();
+  public static Availability create(String email, TimeRange when, long id) {
+    return builder().setEmail(email).setWhen(when).setId(id).build();
   }
 
   public static Builder builder() {
@@ -44,8 +41,6 @@ public abstract class Availability {
     public abstract Builder setEmail(String email);
 
     public abstract Builder setWhen(TimeRange when);
-
-    public abstract Builder setDate(LocalDate date);
 
     public abstract Builder setId(long id);
 
