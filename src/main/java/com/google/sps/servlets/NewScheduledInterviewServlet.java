@@ -48,10 +48,9 @@ public class NewScheduledInterviewServlet extends HttpServlet {
   // Sends the request's contents to Datastore in the form of a new ScheduledInterview.
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
     ScheduledInterview scheduledInterview =
         ScheduledInterview.create(
-            0,
+            -1,
             new TimeRange(
                 Instant.parse(request.getParameter("startTime")),
                 Instant.parse(request.getParameter("endTime"))),
