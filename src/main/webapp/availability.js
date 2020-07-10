@@ -40,5 +40,10 @@ function availabilityTableDiv() {
 }
 
 function updateAvailability() {
-  let selected = document.getElementsByClassName('table-success');
+  let selectedSlots = document.getElementsByClassName('table-success');
+  let requestBody;
+  for (let slot of selectedSlots) {
+    utc = slot.getAttribute('data-utc');
+    requestBody.put(utc);
+  }
 }
