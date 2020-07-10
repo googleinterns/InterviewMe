@@ -38,3 +38,7 @@ function browserTimezoneOffset() {
 function availabilityTableDiv() {
   return document.getElementById('table-container');
 }
+
+function updateAvailability() {
+  
+}
