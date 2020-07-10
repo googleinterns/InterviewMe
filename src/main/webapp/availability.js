@@ -44,10 +44,7 @@ function updateAvailability() {
   let requestBody = [
     document.getElementById('first-slot').getAttribute('data-utc'),
     document.getElementById('last-slot').getAttribute('data-utc')
-  ];
-  for (let slot of selectedSlots) {
-    requestBody.push(slot.getAttribute('data-utc'));
-  }
+  ].concat(Array.from(selectedSlots).map(s => s.getAttribute('data-utc')));
   console.log(requestBody);
   let request = new Request('/availability', {method:'PUT', body:requestBody});
 }
