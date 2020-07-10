@@ -51,7 +51,6 @@ public class NewScheduledInterviewServlet extends HttpServlet {
             new TimeRange(
                 Instant.parse(request.getParameter("startTime")),
                 Instant.parse(request.getParameter("endTime"))),
-            LocalDate.parse(request.getParameter("date")),
             request.getParameter("interviewer"),
             request.getParameter("interviewee"));
     scheduledInterviewDao.create(scheduledInterview);
