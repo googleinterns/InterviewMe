@@ -63,8 +63,7 @@ public class AvailabilityTimeSlotGenerator {
    * Constructs a List of lists that represents a week's worth of AvailabilityTimeSlot objects. One
    * list corresponds to one day.
    *
-   * @param instant An instant on the current day, which is the first day of the week for which time
-   *     slots are generated.
+   * @param instant An Instant on the first day of the week for which time slots are generated.
    * @param timezoneOffsetMinutes An int that represents the difference between UTC and the user's
    *     current timezone. Example: A user in EST has a timezoneOffsetMinutes of -240 which means
    *     that EST is 240 minutes behind UTC.
@@ -74,7 +73,7 @@ public class AvailabilityTimeSlotGenerator {
       Instant instant, int timezoneOffsetMinutes) {
     Preconditions.checkArgument(
         Math.abs(timezoneOffsetMinutes) <= 720,
-        "Offset greater than 12 hours/720 minutes: %s",
+        "Offset greater than 720 minutes (12 hours): %s",
         timezoneOffsetMinutes);
     ImmutableList.Builder<List<AvailabilityTimeSlot>> weekList = ImmutableList.builder();
     for (int i = 0; i < 7; i++) {
