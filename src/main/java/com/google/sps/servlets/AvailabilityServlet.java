@@ -16,6 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +27,6 @@ public class AvailabilityServlet extends HttpServlet {
   @Override
   public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
     System.out.println("MADE IT TO AVAILABILITY SERVLET");
-    System.out.println(new Gson().fromJson(request));
+    // System.out.println(new Gson().fromJson(request, ArrayList<ArrayList<String>>().class));
   }
 }
