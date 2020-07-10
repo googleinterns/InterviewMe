@@ -41,13 +41,13 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
   public DatastoreAvailabilityDao() {
     datastore = DatastoreServiceFactory.getDatastoreService();
   }
-  
+
   /**
-   * Retrieve the availability from Datastore from its id and wrap it in an Optional. If the id isn't in Datastore, the Optional is empty.
+   * Retrieve the availability from Datastore from its id and wrap it in an Optional. If the id
+   * isn't in Datastore, the Optional is empty.
    */
   @Override
   public Optional<Availability> get(long id) {
-    // TODO: handle this with the profile page servlet
     Key key = KeyFactory.createKey("Availability", id);
     Entity availabilityEntity;
     try {
@@ -61,42 +61,45 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
   // Adds an Availability object into Datastore.
   @Override
   public void create(Availability avail) {
-    datastore.put(personToEntity(person));
+    datastore.put(availabilityToEntity(avail));
   }
-  
+
   // Updates the specified id with the new availability.
   @Override
   public void update(Availability avail) {
-    datastore.put(personToEntity(person));
+    datastore.put(availabilityToEntity(avail));
   }
 
   private static Entity availabilityToEntity(Availability avail) {
     Entity availabilityEntity = new Entity("Availability", avail.id());
     availabilityEntity.setProperty("email", avail.email());
-    availabilityEntity.setProperty("startTime", getTimeInMillis(avail.date(), avail.when().start()));
-    availabilityEntity.setProperty("endTime", getTimeInMillis(avail.date(), avail.when().end()));
+    availabilityEntity.setProperty("startTime", avail.when().start().toEpochMilli());
+    availabilityEntity.setProperty("endTime", avail.when().end().toEpochMilli());
     return availabilityEntity;
-  }
-  
-  private static long getMillisFromDateAndInstant(LocalDate date, Instant instant) {
-    return 0L;
-  }
-  
-  private static LocalDate dateFromMillis(long millis) {
-    return new LocalDate();
-  }
-  
-  private static Instant instantFromMillis(long millis) {
-    return new Instant();
   }
 
   private static Availability entityToAvailability(Entity availabilityEntity) {
     return Availability.create(
         (String) availabilityEntity.getProperty("email"),
-        TimeRange.fromStartEnd(instantFromMillis())
-        (String) availabilityEntity.getProperty("lastName"),
-        (String) availabilityEntity.getProperty("company"),
-        (String) availabilityEntity.getProperty("job"),
-        (String) availabilityEntity.getProperty("linkedIn"));
+        TimeRange.fromStartEnd(
+            Instant.ofEpochMilli((long) availabilityEntity.getProperty("startTime")),
+            Instant.ofEpochMilli((long) availabilityEntity.getProperty("endTime"))),
+        availabilityEntity.getKey().getId());
+  }
+
+  // Deletes all Availability entities for a user ranging from minTime to maxTime.
+  // minTime and maxTime are in milliseconds.
+  public void deleteInRangeForUser(String email, long minTime, long maxTime) {}
+
+  // Returns a list of all Availability's ranging from minTime to maxTime of a user.
+  // minTime and maxTime are in milliseconds.
+  public List<Availability> getInRangeForUser(String email, long minTime, long maxTime) {
+    return new ArrayList<Availability>();
+  }
+
+  // Returns all Availability's across all users ranging from minTime to maxTime.
+  // minTime and maxTime are in milliseconds.
+  public List<Availability> getInRangeForAll(long minTime, long maxTime) {
+    return new ArrayList<Availability>();
   }
 }
