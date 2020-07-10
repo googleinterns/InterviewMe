@@ -45,10 +45,11 @@ function updateAvailability() {
     .firstElementChild.firstElementChild.getAttribute('data-utc');
   let lastSlot = document.getElementsByTagName('tbody').item(0)
     .lastElementChild.lastElementChild.getAttribute('data-utc');
-  let requestBody = [
+  let utcTimestamps = [
     firstSlot,
     lastSlot
   ].concat(Array.from(selectedSlots).map(s => s.getAttribute('data-utc')));
-  console.log(requestBody);
-  let request = new Request('/availability', {method:'PUT', body:requestBody});
+  console.log(utcTimestamps);
+  
+  let request = new Request('/availability', {method:'PUT', body:JSON.stringify(utcTimestamps)});
 }
