@@ -14,21 +14,18 @@
 
 package com.google.sps.servlets;
 
-import java.io.IOException;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 import com.google.sps.data.DatastoreScheduledInterviewDao;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.ScheduledInterviewDao;
 import com.google.sps.data.TimeRange;
+import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/new-scheduled-interview")
 public class NewScheduledInterviewServlet extends HttpServlet {
