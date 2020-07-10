@@ -23,6 +23,11 @@ import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.CompositeFilter;
+import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import java.io.IOException;
@@ -89,7 +94,9 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
 
   // Deletes all Availability entities for a user ranging from minTime to maxTime.
   // minTime and maxTime are in milliseconds.
-  public void deleteInRangeForUser(String email, long minTime, long maxTime) {}
+  public void deleteInRangeForUser(String email, long minTime, long maxTime) {
+    List<Entity> entities = getEntitiesInRange(minTime, maxTime, Optional.empty());
+  }
 
   // Returns a list of all Availability's ranging from minTime to maxTime of a user.
   // minTime and maxTime are in milliseconds.
@@ -101,5 +108,18 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
   // minTime and maxTime are in milliseconds.
   public List<Availability> getInRangeForAll(long minTime, long maxTime) {
     return new ArrayList<Availability>();
+  }
+
+  private List<Entity> getEntitiesInRange(long minTime, long maxTime, Optional<Filter> filterOpt) {
+    Filter
+        minFilter = new FilterPredicate("startTime", FilterOperator.GREATER_THAN_OR_EQUAL, minTime),
+        maxFilter = new FilterPredicate("startTime", FilterOperator.LESS_THAN_OR_EQUAL, maxTime);
+    CompositeFilter compFilter = CompositeFilterOperator.and(minFilter, maxFilter);
+    if (filterOpt.isPresent()) {
+      compFilter = CompositeFilterOperator.and(compFilter, filterOpt.get());
+    }
+
+    Query availQuery = new Query("Availability").setFilter(compFilter);
+    return datastore.prepare(availQuery).asList(FetchOptions.Builder.withDefaults());
   }
 }
