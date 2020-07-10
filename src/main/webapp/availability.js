@@ -52,4 +52,5 @@ function updateAvailability() {
   }
   console.log(requestBody);
   let request = new Request('/availability', {method:'PUT', body:requestBody});
+  fetch(request).then(unused => {loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset())});
 }
