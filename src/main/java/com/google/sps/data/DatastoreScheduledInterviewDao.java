@@ -68,7 +68,7 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
         new FilterPredicate("interviewee", FilterOperator.EQUAL, email);
     CompositeFilter compositeFilter =
         CompositeFilterOperator.or(interviewerFilter, intervieweeFilter);
-    Query query = new Query().setFilter(compositeFilter);
+    Query query = new Query("ScheduledInterview").setFilter(compositeFilter);
     PreparedQuery results = datastore.prepare(query);
     List<ScheduledInterview> relevantInterviews = new ArrayList<>();
 
