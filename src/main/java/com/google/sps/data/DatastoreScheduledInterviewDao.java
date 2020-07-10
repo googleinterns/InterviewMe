@@ -82,8 +82,9 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
   @Override
   public void create(ScheduledInterview scheduledInterview) {
     Entity scheduledInterviewEntity = new Entity("ScheduledInterview");
-    scheduledInterviewEntity.setProperty("startTime", scheduledInterview.when().start().toString());
-    scheduledInterviewEntity.setProperty("endTime", scheduledInterview.when().end().toString());
+    scheduledInterviewEntity.setProperty(
+        "startTime", scheduledInterview.when().start().toEpochMilli());
+    scheduledInterviewEntity.setProperty("endTime", scheduledInterview.when().end().toEpochMilli());
     scheduledInterviewEntity.setProperty("interviewer", scheduledInterview.interviewerEmail());
     scheduledInterviewEntity.setProperty("interviewee", scheduledInterview.intervieweeEmail());
     datastore.put(scheduledInterviewEntity);
@@ -108,8 +109,8 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
     return ScheduledInterview.create(
         Long.valueOf(scheduledInterviewEntity.getKey().toString()),
         new TimeRange(
-            Instant.parse(scheduledInterviewEntity.getProperty("startTime").toString()),
-            Instant.parse(scheduledInterviewEntity.getProperty("endTime").toString())),
+            Instant.ofEpochMilli((long) scheduledInterviewEntity.getProperty("startTime")),
+            Instant.ofEpochMilli((long) scheduledInterviewEntity.getProperty("endTime"))),
         (String) scheduledInterviewEntity.getProperty("interviewer"),
         (String) scheduledInterviewEntity.getProperty("interviewee"));
   }
