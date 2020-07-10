@@ -15,6 +15,7 @@
 package com.google.sps.servlets;
 
 import com.google.gson.Gson;
+import com.google.sps.data.AvailabilityJSONConverter;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
@@ -27,6 +28,11 @@ public class AvailabilityServlet extends HttpServlet {
   @Override
   public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
     System.out.println("MADE IT TO AVAILABILITY SERVLET");
-    // System.out.println(new Gson().fromJson(request, ArrayList<ArrayList<String>>().class));
+    Gson gson = new Gson();
+    System.out.println("Before being converted to JSON: " + request.getParameter("body")); 
+    // This is null. Need different method for converting request to JSON.
+    String jsonRequest = gson.toJson(request.getParameter("body"));
+    System.out.println("Here's the json from the request body: " + jsonRequest);
+    // System.out.println(gson.fromJson(jsonRequest, AvailabilityJSONConverter.class));
   }
 }
