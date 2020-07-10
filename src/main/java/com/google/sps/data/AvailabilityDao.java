@@ -22,11 +22,11 @@ import java.util.Optional;
  */
 public interface AvailabilityDao {
   // Returns a list of all Availability's ranging from minTime to maxTime of a user.
-  // minTime and maxTime are UTC encodings.
+  // minTime and maxTime are in milliseconds.
   public List<Availability> getInRangeForUser(String email, long minTime, long maxTime);
 
   // Returns all Availability's across all users ranging from minTime to maxTime.
-  // minTime and maxTime are UTC encodings.
+  // minTime and maxTime are in milliseconds.
   public List<Availability> getInRangeForAll(long minTime, long maxTime);
 
   // Returns the Availability entity with specified id.
@@ -36,9 +36,9 @@ public interface AvailabilityDao {
   public void create(Availability availability);
 
   // Updates the specified id with the new availability.
-  public Optional<Availability> update(Availability availability);
+  public void update(Availability availability);
 
   // Deletes all Availability entities for a user ranging from minTime to maxTime.
-  // minTime and maxTime are UTC encodings.
+  // minTime and maxTime are in milliseconds.
   public void deleteInRangeForUser(String email, long minTime, long maxTime);
 }
