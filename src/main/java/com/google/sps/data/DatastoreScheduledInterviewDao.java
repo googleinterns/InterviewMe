@@ -121,6 +121,6 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
     scheduledInterviewEntity.setProperty("endTime", scheduledInterview.when().end().toEpochMilli());
     scheduledInterviewEntity.setProperty("interviewer", scheduledInterview.interviewerEmail());
     scheduledInterviewEntity.setProperty("interviewee", scheduledInterview.intervieweeEmail());
-    return scheduledInterviewEntity;
+    return scheduledInterviewEntity; 
   }
 }
