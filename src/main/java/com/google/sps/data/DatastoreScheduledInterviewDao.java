@@ -81,12 +81,8 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
   /** Creates a ScheduledInterview Entity. */
   @Override
   public void create(ScheduledInterview scheduledInterview) {
-    datastore.put(scheduledInterviewToEntity(scheduledInterview)); 
+    datastore.put(scheduledInterviewToEntity(scheduledInterview));
   }
-
-  }
-
-
 
   /** Updates an entity in datastore. */
   @Override
@@ -113,6 +109,7 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
         (String) scheduledInterviewEntity.getProperty("interviewee"));
   }
 
+  /** Creates a scheduledInterview Entity from a scheduledInterview object. */
   public Entity scheduledInterviewToEntity(ScheduledInterview scheduledInterview) {
     Entity scheduledInterviewEntity = new Entity("ScheduledInterview");
     scheduledInterviewEntity.setProperty(
@@ -120,5 +117,6 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
     scheduledInterviewEntity.setProperty("endTime", scheduledInterview.when().end().toEpochMilli());
     scheduledInterviewEntity.setProperty("interviewer", scheduledInterview.interviewerEmail());
     scheduledInterviewEntity.setProperty("interviewee", scheduledInterview.intervieweeEmail());
+    return scheduledInterviewEntity;
   }
 }
