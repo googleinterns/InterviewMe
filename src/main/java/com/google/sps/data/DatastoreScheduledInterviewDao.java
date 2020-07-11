@@ -78,7 +78,7 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
     return relevantInterviews;
   }
 
-  /** Creates a ScheduledInterview Entity. */
+  /** Creates a ScheduledInterview Entity and stores it in Datastore. */
   @Override
   public void create(ScheduledInterview scheduledInterview) {
     datastore.put(scheduledInterviewToEntity(scheduledInterview));
