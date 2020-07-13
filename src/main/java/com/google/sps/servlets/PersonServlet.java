@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 
-@WebServlet("/register")
-public class RegistrationServlet extends HttpServlet {
+@WebServlet("/person")
+public class PersonServlet extends HttpServlet {
 
   private PersonDao personDao;
 
@@ -41,10 +41,23 @@ public class RegistrationServlet extends HttpServlet {
     this.personDao = personDao;
   }
 
-  // Sends the request's contents to Datastore in the form of a new Person
+  // Sends the request's contents to Datastore in the form of a new Person.
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    personDao.put(
+    personDao.create(
+        Person.create(
+            request.getParameter("user-email"),
+            request.getParameter("first-name"),
+            request.getParameter("last-name"),
+            request.getParameter("company"),
+            request.getParameter("job"),
+            request.getParameter("linkedin")));
+  }
+
+  // Updates Datastore with the Person information in request.
+  @Override
+  public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    personDao.update(
         Person.create(
             request.getParameter("user-email"),
             request.getParameter("first-name"),

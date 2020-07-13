@@ -15,14 +15,13 @@
 package com.google.sps.data;
 
 import com.google.auto.value.AutoValue;
-import java.time.LocalDate;
 
 /** Represents a scheduled interview. */
 @AutoValue
 public abstract class ScheduledInterview {
-  public abstract TimeRange when();
+  public abstract long id();
 
-  public abstract LocalDate date();
+  public abstract TimeRange when();
 
   public abstract String interviewerEmail();
 
@@ -32,10 +31,10 @@ public abstract class ScheduledInterview {
    * attendees.
    */
   public static ScheduledInterview create(
-      TimeRange when, LocalDate date, String interviewerEmail, String intervieweeEmail) {
+      long id, TimeRange when, String interviewerEmail, String intervieweeEmail) {
     return builder()
+        .setId(id)
         .setWhen(when)
-        .setDate(date)
         .setInterviewerEmail(interviewerEmail)
         .setIntervieweeEmail(intervieweeEmail)
         .build();
@@ -47,9 +46,9 @@ public abstract class ScheduledInterview {
 
   @AutoValue.Builder
   abstract static class Builder {
-    abstract Builder setWhen(TimeRange range);
+    abstract Builder setId(long id);
 
-    abstract Builder setDate(LocalDate day);
+    abstract Builder setWhen(TimeRange range);
 
     abstract Builder setInterviewerEmail(String email);
 
