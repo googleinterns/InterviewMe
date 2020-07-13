@@ -80,6 +80,7 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
     availabilityEntity.setProperty("email", avail.email());
     availabilityEntity.setProperty("startTime", avail.when().start().toEpochMilli());
     availabilityEntity.setProperty("endTime", avail.when().end().toEpochMilli());
+    availabilityEntity.setProperty("scheduled", avail.scheduled());
     return availabilityEntity;
   }
 
@@ -89,7 +90,8 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
         TimeRange.fromStartEnd(
             Instant.ofEpochMilli((long) availabilityEntity.getProperty("startTime")),
             Instant.ofEpochMilli((long) availabilityEntity.getProperty("endTime"))),
-        availabilityEntity.getKey().getId());
+        availabilityEntity.getKey().getId(),
+        availabilityEntity.getProperty("scheduled"));
   }
 
   // Deletes all Availability entities for a user ranging from minTime to maxTime.
