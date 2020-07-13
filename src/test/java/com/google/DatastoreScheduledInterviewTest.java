@@ -15,6 +15,9 @@
 package com.google.sps.data;
 
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -28,8 +31,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.TestFactory;
-import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DatastoreScheduledInterviewTest {
 
@@ -37,7 +38,7 @@ public class DatastoreScheduledInterviewTest {
 
   DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-  private final ScheduledInterview s1 =
+  private final ScheduledInterview scheduledInterview1 =
       ScheduledInterview.create(
           (long) -1,
           new TimeRange(
@@ -46,7 +47,7 @@ public class DatastoreScheduledInterviewTest {
           "user@company.org",
           "user@mail.com");
 
-  private final ScheduledInterview s2 =
+  private final ScheduledInterview scheduledInterview2 =
       ScheduledInterview.create(
           (long) -1,
           new TimeRange(
@@ -70,24 +71,38 @@ public class DatastoreScheduledInterviewTest {
     helper.tearDown();
   }
 
-  // Test whether the scheduledInterview was added to datastore
+  // Test whether the scheduledInterview was added to datastore.
   @Test
   public void createsAndStoresEntity() {
-    Entity ent = tester.scheduledInterviewToEntity(s1);
-    datastore.put(ent);
+    tester.create(scheduledInterview1);
     assertEquals(1, datastore.prepare(new Query("ScheduledInterview")).countEntities(withLimit(1)));
   }
 
-  // Tests whether all scheduledInterviews for a particular user are returned
+  // Tests whether all scheduledInterviews for a particular user are returned.
   @Test
   public void getsAllScheduledInterviews() {
-    Entity ent1 = tester.scheduledInterviewToEntity(s1);
-    Entity ent2 = tester.scheduledInterviewToEntity(s2);
-
-    datastore.put(ent1);
-    datastore.put(ent2);
-
+    tester.create(scheduledInterview1);
+    tester.create(scheduledInterview2);
     List<ScheduledInterview> result = tester.getForPerson("user@company.org");
     assertEquals(2, result.size());
+  }
+
+  // Tests deleting a user's scheduledInterview.
+  @Test
+  public void deletesScheduledInterview() {
+    tester.create(scheduledInterview1);
+    tester.create(scheduledInterview2);
+    List<ScheduledInterview> result = tester.getForPerson("user@company.org");
+    tester.delete(result.get(0).id());
+    assertEquals(1, datastore.prepare(new Query("ScheduledInterview")).countEntities(withLimit(2)));
+  }
+
+  // Tests updating a user's scheduledInterview.
+  @Test
+  public void updatesScheduledInterview() {
+    tester.create(scheduledInterview1);
+    List<ScheduledInterview> result = tester.getForPerson("user@company.org");
+    tester.update(result.get(0));
+    assertEquals(1, datastore.prepare(new Query("ScheduledInterview")).countEntities(withLimit(2)));
   }
 }
