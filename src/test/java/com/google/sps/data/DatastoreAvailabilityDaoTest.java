@@ -37,7 +37,8 @@ import org.junit.Test;
 public class DatastoreAvailabilityDaoTest {
 
   private final LocalServiceTestHelper helper =
-      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+      new LocalServiceTestHelper(
+          new LocalDatastoreServiceTestConfig().setApplyAllHighRepJobPolicy());
 
   private final DatastoreAvailabilityDao tester = new DatastoreAvailabilityDao();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -63,6 +64,14 @@ public class DatastoreAvailabilityDaoTest {
           "user2@mail.com",
           new TimeRange(
               Instant.parse("2020-07-07T17:30:00Z"), Instant.parse("2020-07-07T17:45:00Z")),
+          (long) -1,
+          true);
+
+  private final Availability availabilityFour =
+      Availability.create(
+          "user1@mail.com",
+          new TimeRange(
+              Instant.parse("2020-07-07T22:30:00Z"), Instant.parse("2020-07-07T22:45:00Z")),
           (long) -1,
           true);
 
@@ -137,6 +146,27 @@ public class DatastoreAvailabilityDaoTest {
   public void failsToGetAvailability() {
     Optional<Availability> actual = tester.get(24);
     Optional<Availability> expected = Optional.empty();
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void deletesUsersAvailabilityInRange() {
+    tester.create(availabilityOne);
+    tester.create(availabilityTwo);
+    tester.create(availabilityFour);
+    tester.deleteInRangeForUser(
+        "user1@mail.com",
+        Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
+        Instant.parse("2020-07-07T16:00:00Z").toEpochMilli());
+    Entity entity = datastore.prepare(new Query("Availability")).asSingleEntity();
+    Availability actual = tester.entityToAvailability(entity);
+    Availability expected =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T22:30:00Z"), Instant.parse("2020-07-07T22:45:00Z")),
+            actual.id(),
+            true);
     Assert.assertEquals(expected, actual);
   }
 }
