@@ -77,7 +77,7 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
   }
 
   static Entity availabilityToEntity(Availability avail) {
-    Entity availabilityEntity = new Entity("Availability", avail.id());
+    Entity availabilityEntity = new Entity("Availability");
     availabilityEntity.setProperty("email", avail.email());
     availabilityEntity.setProperty("startTime", avail.when().start().toEpochMilli());
     availabilityEntity.setProperty("endTime", avail.when().end().toEpochMilli());
