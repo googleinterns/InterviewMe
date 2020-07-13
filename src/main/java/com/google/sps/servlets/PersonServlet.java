@@ -57,7 +57,6 @@ public class PersonServlet extends HttpServlet {
   // Updates Datastore with the Person information in request.
   @Override
   public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println(request.getParameter("user-email"));
     personDao.update(
         Person.create(
             request.getParameter("user-email"),
