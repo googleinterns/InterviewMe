@@ -132,4 +132,11 @@ public class DatastoreAvailabilityDaoTest {
     Optional<Availability> expectedAvailabilityOptional = Optional.of(expectedAvailability);
     Assert.assertEquals(expectedAvailabilityOptional, actualAvailabilityOptional);
   }
+
+  @Test
+  public void failsToGetAvailability() {
+    Optional<Availability> actual = tester.get(24);
+    Optional<Availability> expected = Optional.empty();
+    Assert.assertEquals(expected, actual);
+  }
 }
