@@ -20,8 +20,6 @@ import com.google.sps.data.ScheduledInterviewDao;
 import com.google.sps.data.TimeRange;
 import java.io.IOException;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
