@@ -67,28 +67,6 @@
     <!-- End of dependencies for Datastore tests -->
     
     <dependency>
-      <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-api-stubs</artifactId>
-      <version>1.9.24</version>
-      <scope>test</scope>      
-    </dependency>
-    
-    <dependency>
-      <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-api-labs</artifactId>
-      <version>1.9.24</version>
-      <scope>test</scope>      
-    </dependency>
-    
-    <dependency>
-      <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-tools-sdk</artifactId>
-      <version>1.9.24</version>
-      <scope>test</scope>      
-    </dependency>
-    <!-- End of dependencies for Datastore tests -->
-    
-    <dependency>
       <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
       <artifactId>owasp-java-html-sanitizer</artifactId>
       <version>20180219.1</version>
