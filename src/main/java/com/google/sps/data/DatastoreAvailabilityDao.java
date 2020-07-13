@@ -20,6 +20,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Transaction;
+import com.google.appengine.api.datastore.TransactionOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
@@ -98,18 +99,36 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
   // minTime and maxTime are in milliseconds.
   public void deleteInRangeForUser(String email, long minTime, long maxTime) {
     List<Entity> entities = getEntitiesInRange(minTime, maxTime, Optional.empty());
+    List<Key> keyList = new ArrayList<>();
+    for (Entity entity : entities) {
+      keyList.add(entity.getKey());
+    }
+    Transaction txn = datastore.beginTransaction(TransactionOptions.Builder.withXG(true));
+    datastore.delete(txn, keyList);
+    txn.commit();
   }
 
   // Returns a list of all Availability's ranging from minTime to maxTime of a user.
   // minTime and maxTime are in milliseconds.
   public List<Availability> getInRangeForUser(String email, long minTime, long maxTime) {
-    return new ArrayList<Availability>();
+    Filter userFilter = new FilterPredicate("email", FilterOperator.EQUAL, email);
+    List<Entity> entities = getEntitiesInRange(minTime, maxTime, Optional.of(userFilter));
+    List<Availability> availability = new ArrayList<Availability>();
+    for (Entity entity : entities) {
+      availability.add(entityToAvailability(entity));
+    }
+    return availability;
   }
 
   // Returns all Availability's across all users ranging from minTime to maxTime.
   // minTime and maxTime are in milliseconds.
   public List<Availability> getInRangeForAll(long minTime, long maxTime) {
-    return new ArrayList<Availability>();
+    List<Entity> entities = getEntitiesInRange(minTime, maxTime, Optional.empty());
+    List<Availability> availability = new ArrayList<Availability>();
+    for (Entity entity : entities) {
+      availability.add(entityToAvailability(entity));
+    }
+    return availability;
   }
 
   private List<Entity> getEntitiesInRange(long minTime, long maxTime, Optional<Filter> filterOpt) {
