@@ -37,8 +37,7 @@ import org.junit.Test;
 public class DatastoreAvailabilityDaoTest {
 
   private final LocalServiceTestHelper helper =
-      new LocalServiceTestHelper(
-          new LocalDatastoreServiceTestConfig().setApplyAllHighRepJobPolicy());
+      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
   private final DatastoreAvailabilityDao tester = new DatastoreAvailabilityDao();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

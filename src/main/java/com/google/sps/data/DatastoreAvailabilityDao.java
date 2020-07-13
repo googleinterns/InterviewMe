@@ -105,9 +105,15 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
     for (Entity entity : entities) {
       keyList.add(entity.getKey());
     }
+    for (Key key : keyList) {
+      Transaction txn = datastore.beginTransaction();
+      datastore.delete(txn, key);
+      txn.commit();
+    }
+    /*
     Transaction txn = datastore.beginTransaction(TransactionOptions.Builder.withXG(true));
     datastore.delete(txn, keyList);
-    txn.commit();
+    txn.commit(); */
   }
 
   // Returns a list of all Availability's ranging from minTime to maxTime of a user.
