@@ -117,14 +117,10 @@ public final class TimeRange {
 
   /** Checks if two timeranges are the same. */
   private static boolean equals(TimeRange a, TimeRange b) {
-    return a.start.equals(b.start) && a.end.equals(b.end);
+    return a.start == b.start && a.end == b.end;
   }
 
   public static TimeRange fromStartEnd(Instant start, Instant end) {
     return new TimeRange(start, end);
-  }
-
-  public String toString() {
-    return String.format("%s %s%s %s", "start:", start.toString(), ", end:", end.toString());
   }
 }
