@@ -37,9 +37,5 @@ public class AvailabilityServlet extends HttpServlet {
     Gson gson = new Gson();
     AvailabilityJSONConverter utcEncodings =
         gson.fromJson(jsonString, AvailabilityJSONConverter.class);
-
-    System.out.println("DEBUG: First Time Slot = " + utcEncodings.firstSlotUTC());
-    System.out.println("DEBUG: Last Time Slot = " + utcEncodings.lastSlotUTC());
-    System.out.println("DEBUG: Selected Time Slots = " + utcEncodings.selectedSlotsUTC());
   }
 }

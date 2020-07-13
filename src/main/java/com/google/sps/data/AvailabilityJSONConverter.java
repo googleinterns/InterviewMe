@@ -14,19 +14,29 @@
 
 package com.google.sps.data;
 
-import com.google.auto.value.AutoValue;
 import java.util.ArrayList;
 
-@AutoValue
-public abstract class AvailabilityJSONConverter {
-  public abstract String firstSlotUTC();
+public class AvailabilityJSONConverter {
+  private String firstSlot;
+  private String lastSlot;
+  private ArrayList<String> selectedSlots;
 
-  public abstract String lastSlotUTC();
+  public AvailabilityJSONConverter(
+      String firstSlot, String lastSlot, ArrayList<String> selectedSlots) {
+    this.firstSlot = firstSlot;
+    this.lastSlot = lastSlot;
+    this.selectedSlots = selectedSlots;
+  }
 
-  public abstract ArrayList<String> selectedSlotsUTC();
+  public String getFirstSlot() {
+    return firstSlot;
+  }
 
-  static AvailabilityJSONConverter create(
-      String firstSlotUTC, String lastSlotUTC, ArrayList<String> selectedSlotsUTC) {
-    return new AutoValue_AvailabilityJSONConverter(firstSlotUTC, lastSlotUTC, selectedSlotsUTC);
+  public String getLastSlot() {
+    return lastSlot;
+  }
+
+  public ArrayList<String> getSelectedSlots() {
+    return selectedSlots;
   }
 }
