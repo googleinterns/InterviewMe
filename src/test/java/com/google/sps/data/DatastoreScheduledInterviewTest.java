@@ -15,7 +15,6 @@
 package com.google.sps.data;
 
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
-import static org.junit.Assert.assertEquals;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -25,7 +24,10 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import org.junit.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -87,7 +89,7 @@ public class DatastoreScheduledInterviewTest {
                 Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
             "user@company.org",
             "user@mail.com");
-    assertEquals(storedScheduledInterview, copyScheduledInterview1);
+    Assert.assertEquals(true, storedScheduledInterview.equals(copyScheduledInterview1));
   }
 
   // Tests whether all scheduledInterviews for a particular user are returned.
@@ -112,9 +114,17 @@ public class DatastoreScheduledInterviewTest {
             "user@company.org",
             "user2@mail.com");
 
-    assertEquals(2, result.size());
-    assertEquals(copyScheduledInterview1, result.get(0));
-    assertEquals(copyScheduledInterview2, result.get(1));
+    List<Boolean> actual = new ArrayList<Boolean>();
+    actual.add(copyScheduledInterview1.equals(result.get(0)));
+    actual.add(result.size() == 2);
+    actual.add(copyScheduledInterview2.equals(result.get(1)));
+
+    List<Boolean> expected = new ArrayList<Boolean>();
+    expected.add(true);
+    expected.add(true);
+    expected.add(true);
+
+    Assert.assertEquals(true, expected.equals(actual));
   }
 
   // Tests deleting a user's scheduledInterview.
@@ -133,7 +143,7 @@ public class DatastoreScheduledInterviewTest {
                 Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
             "user@company.org",
             "user2@mail.com");
-    assertEquals(storedScheduledInterview, copyScheduledInterview2);
+    Assert.assertEquals(true, storedScheduledInterview.equals(copyScheduledInterview2));
   }
 
   // Tests updating a user's scheduledInterview.
@@ -150,6 +160,26 @@ public class DatastoreScheduledInterviewTest {
             "user@company.org",
             "user3@mail.com");
     tester.update(previousStoredScheduledInterview);
-    assertEquals(false, previousStoredScheduledInterview.equals(updatedStoredScheduledInterview));
+
+    List<Boolean> actual = new ArrayList<Boolean>();
+    actual.add(previousStoredScheduledInterview.id() == updatedStoredScheduledInterview.id());
+    actual.add(
+        previousStoredScheduledInterview.when().equals(updatedStoredScheduledInterview.when()));
+    actual.add(
+        previousStoredScheduledInterview
+            .interviewerEmail()
+            .equals(updatedStoredScheduledInterview.interviewerEmail()));
+    actual.add(
+        previousStoredScheduledInterview
+            .intervieweeEmail()
+            .equals(updatedStoredScheduledInterview.intervieweeEmail()));
+
+    List<Boolean> expected = new ArrayList<Boolean>();
+    expected.add(true);
+    expected.add(false);
+    expected.add(true);
+    expected.add(false);
+
+    Assert.assertEquals(true, expected.equals(actual));
   }
 }
