@@ -16,7 +16,6 @@ package com.google.sps.data;
 
 import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -30,7 +29,6 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.TestFactory;
 
 public class DatastoreScheduledInterviewTest {
 
@@ -55,6 +53,14 @@ public class DatastoreScheduledInterviewTest {
               Instant.parse("2020-07-06T20:00:10.324978Z")),
           "user@company.org",
           "user2@mail.com");
+  private final ScheduledInterview scheduledInterview3 =
+      ScheduledInterview.create(
+          (long) -1,
+          new TimeRange(
+              Instant.parse("2020-07-06T19:00:10.324978Z"),
+              Instant.parse("2020-07-06T20:00:10.324978Z")),
+          "user3@company.org",
+          "user2@mail.com");
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
@@ -77,11 +83,15 @@ public class DatastoreScheduledInterviewTest {
     tester.create(scheduledInterview1);
     Entity entity = datastore.prepare(new Query("ScheduledInterview")).asSingleEntity();
     ScheduledInterview storedScheduledInterview = tester.entityToScheduledInterview(entity);
-    long newId = storedScheduledInterview.id();
-    scheduledInterview1.id() = newId;
-    // assertEquals(1, datastore.prepare(new
-    // Query("ScheduledInterview")).countEntities(withLimit(1)));
-    assertEquals(storedScheduledInterview, scheduledInterview1);
+    ScheduledInterview copyScheduledInterview1 =
+        ScheduledInterview.create(
+            storedScheduledInterview.id(),
+            new TimeRange(
+                Instant.parse("2020-07-06T17:00:10.324978Z"),
+                Instant.parse("2020-07-06T18:00:10.324978Z")),
+            "user@company.org",
+            "user@mail.com");
+    assertEquals(storedScheduledInterview.id(), copyScheduledInterview1.id());
   }
 
   // Tests whether all scheduledInterviews for a particular user are returned.
@@ -89,8 +99,28 @@ public class DatastoreScheduledInterviewTest {
   public void getsAllScheduledInterviews() {
     tester.create(scheduledInterview1);
     tester.create(scheduledInterview2);
+    tester.create(scheduledInterview3);
     List<ScheduledInterview> result = tester.getForPerson("user@company.org");
+    ScheduledInterview copyScheduledInterview1 =
+        ScheduledInterview.create(
+            result.get(0).id(),
+            new TimeRange(
+                Instant.parse("2020-07-06T17:00:10.324978Z"),
+                Instant.parse("2020-07-06T18:00:10.324978Z")),
+            "user@company.org",
+            "user@mail.com");
+    ScheduledInterview copyScheduledInterview2 =
+        ScheduledInterview.create(
+            result.get(1).id(),
+            new TimeRange(
+                Instant.parse("2020-07-06T19:00:10.324978Z"),
+                Instant.parse("2020-07-06T20:00:10.324978Z")),
+            "user@company.org",
+            "user2@mail.com");
+
     assertEquals(2, result.size());
+    assertEquals(copyScheduledInterview1.interviewerEmail(), result.get(0).interviewerEmail());
+    assertEquals(copyScheduledInterview2.interviewerEmail(), result.get(1).interviewerEmail());
   }
 
   // Tests deleting a user's scheduledInterview.
@@ -100,15 +130,34 @@ public class DatastoreScheduledInterviewTest {
     tester.create(scheduledInterview2);
     List<ScheduledInterview> result = tester.getForPerson("user@company.org");
     tester.delete(result.get(0).id());
-    assertEquals(1, datastore.prepare(new Query("ScheduledInterview")).countEntities(withLimit(2)));
+    Entity entity = datastore.prepare(new Query("ScheduledInterview")).asSingleEntity();
+    ScheduledInterview storedScheduledInterview = tester.entityToScheduledInterview(entity);
+    ScheduledInterview copyScheduledInterview2 =
+        ScheduledInterview.create(
+            storedScheduledInterview.id(),
+            new TimeRange(
+                Instant.parse("2020-07-06T19:00:10.324978Z"),
+                Instant.parse("2020-07-06T20:00:10.324978Z")),
+            "user@company.org",
+            "user2@mail.com");
+    assertEquals(storedScheduledInterview.id(), copyScheduledInterview2.id());
   }
 
   // Tests updating a user's scheduledInterview.
   @Test
   public void updatesScheduledInterview() {
     tester.create(scheduledInterview1);
-    List<ScheduledInterview> result = tester.getForPerson("user@company.org");
-    tester.update(result.get(0));
-    assertEquals(1, datastore.prepare(new Query("ScheduledInterview")).countEntities(withLimit(2)));
+    Entity entity = datastore.prepare(new Query("ScheduledInterview")).asSingleEntity();
+    ScheduledInterview storedScheduledInterview = tester.entityToScheduledInterview(entity);
+    ScheduledInterview updatedScheduledInterview =
+        ScheduledInterview.create(
+            storedScheduledInterview.id(),
+            new TimeRange(
+                Instant.parse("2020-07-06T19:00:10.324978Z"),
+                Instant.parse("2020-07-06T20:00:10.324978Z")),
+            "user@company.org",
+            "user3@mail.com");
+    tester.update(storedScheduledInterview);
+    assertEquals(false, storedScheduledInterview.equals(updatedScheduledInterview));
   }
 }
