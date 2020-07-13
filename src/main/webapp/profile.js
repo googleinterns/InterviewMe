@@ -13,8 +13,8 @@
 // limitations under the License.
 
 function onProfileLoad() {
-  prepareFormValidation();
   supplyLogoutLink();
+  prepareFormValidation();
 }
 
 // Submits profile form to Datastore.
@@ -22,11 +22,12 @@ function submitProfileForm(methodType, redirectUrl) {
   fetch(`/person?user-email=${$("#user-email").val()}&first-name=${$("#first-name-field").val()}`+
     `&last-name=${$("#last-name-field").val()}&company=${$("#company-field").val()}&job=`+
     `${$("#job-field").val()}&linkedin=${$("#linkedin-field").val()}`, 
-    {method: methodType});
-  window.location.replace(redirectUrl);
+    {method: methodType})
+    .then(window.location.replace(redirectUrl));
 }
 
-// Allows certain fields in the profile to be edited, hides edit button, and displays update button. 
+// Allows certain fields in the profile to be edited, hides edit button, and displays update 
+// button. 
 function makeEditable() {
   const editButton = document.getElementById("edit-button");
   const updateButton = document.getElementById("update-button");
