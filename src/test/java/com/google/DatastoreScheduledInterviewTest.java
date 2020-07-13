@@ -75,7 +75,13 @@ public class DatastoreScheduledInterviewTest {
   @Test
   public void createsAndStoresEntity() {
     tester.create(scheduledInterview1);
-    assertEquals(1, datastore.prepare(new Query("ScheduledInterview")).countEntities(withLimit(1)));
+    Entity entity = datastore.prepare(new Query("ScheduledInterview")).asSingleEntity();
+    ScheduledInterview storedScheduledInterview = tester.entityToScheduledInterview(entity);
+    long newId = storedScheduledInterview.id();
+    scheduledInterview1.id() = newId;
+    // assertEquals(1, datastore.prepare(new
+    // Query("ScheduledInterview")).countEntities(withLimit(1)));
+    assertEquals(storedScheduledInterview, scheduledInterview1);
   }
 
   // Tests whether all scheduledInterviews for a particular user are returned.
