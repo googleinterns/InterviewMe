@@ -87,7 +87,7 @@ public class DatastoreScheduledInterviewTest {
                 Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
             "user@company.org",
             "user@mail.com");
-    assertEquals(storedScheduledInterview.id(), copyScheduledInterview1.id());
+    assertEquals(storedScheduledInterview, copyScheduledInterview1);
   }
 
   // Tests whether all scheduledInterviews for a particular user are returned.
@@ -113,8 +113,8 @@ public class DatastoreScheduledInterviewTest {
             "user2@mail.com");
 
     assertEquals(2, result.size());
-    assertEquals(copyScheduledInterview1.interviewerEmail(), result.get(0).interviewerEmail());
-    assertEquals(copyScheduledInterview2.interviewerEmail(), result.get(1).interviewerEmail());
+    assertEquals(copyScheduledInterview1, result.get(0));
+    assertEquals(copyScheduledInterview2, result.get(1));
   }
 
   // Tests deleting a user's scheduledInterview.
@@ -141,15 +141,15 @@ public class DatastoreScheduledInterviewTest {
   public void updatesScheduledInterview() {
     tester.create(scheduledInterview1);
     Entity entity = datastore.prepare(new Query("ScheduledInterview")).asSingleEntity();
-    ScheduledInterview storedScheduledInterview = tester.entityToScheduledInterview(entity);
-    ScheduledInterview updatedScheduledInterview =
+    ScheduledInterview previousStoredScheduledInterview = tester.entityToScheduledInterview(entity);
+    ScheduledInterview updatedStoredScheduledInterview =
         ScheduledInterview.create(
-            storedScheduledInterview.id(),
+            previousStoredScheduledInterview.id(),
             new TimeRange(
                 Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
             "user@company.org",
             "user3@mail.com");
-    tester.update(storedScheduledInterview);
-    assertEquals(false, storedScheduledInterview.equals(updatedScheduledInterview));
+    tester.update(previousStoredScheduledInterview);
+    assertEquals(false, previousStoredScheduledInterview.equals(updatedStoredScheduledInterview));
   }
 }
