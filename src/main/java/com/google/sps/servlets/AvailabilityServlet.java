@@ -28,21 +28,13 @@ import javax.servlet.http.HttpServletResponse;
 public class AvailabilityServlet extends HttpServlet {
   @Override
   public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("MADE IT TO AVAILABILITY SERVLET");
-
     BufferedReader reader = request.getReader();
     StringBuffer buffer = new StringBuffer();
     String timestamps = null;
 
     while ((timestamps = reader.readLine()) != null) buffer.append(timestamps);
-
-    String result = buffer.toString();
-
-    System.out.println("DEBUG: result: " + result);
-
+    String jsonString = buffer.toString();
     Gson gson = new Gson();
-
-    String[] utcEncodings = gson.fromJson(result, String[].class);
-    System.out.println("DEBUG: Here's the first entry from the gson converted String[]: " + utcEncodings[0]);
+    String[] utcEncodings = gson.fromJson(jsonString, String[].class);
   }
 }
