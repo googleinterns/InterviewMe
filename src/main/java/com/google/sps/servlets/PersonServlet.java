@@ -71,7 +71,7 @@ public class PersonServlet extends HttpServlet {
   }
 
   // Returns the person the request's email belongs to. If they aren't in Datastore, redirects to
-  // registration page.
+  // registration page. If the requestee is not the logged in user, throws a
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Ensure person logged in == person being requested.
