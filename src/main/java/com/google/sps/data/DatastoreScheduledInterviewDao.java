@@ -73,7 +73,7 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
     Query query =
         new Query("ScheduledInterview")
             .setFilter(compositeFilter)
-            .addSort("startTime", SortDirection.DESCENDING);
+            .addSort("startTime", SortDirection.ASCENDING);
     PreparedQuery results = datastore.prepare(query);
     List<ScheduledInterview> relevantInterviews = new ArrayList<>();
 
