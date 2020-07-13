@@ -50,10 +50,10 @@ function updateAvailability() {
     .firstElementChild.firstElementChild.getAttribute('data-utc');
   let lastSlot = document.getElementsByTagName('tbody').item(0)
     .lastElementChild.lastElementChild.getAttribute('data-utc');
-  let utcTimestamps = [
-    firstSlot,
-    lastSlot
-  ].concat(Array.from(selectedSlots).map(s => s.getAttribute('data-utc')));
-  
-  let request = new Request('/availability', {method: 'PUT', body: JSON.stringify(utcTimestamps)});
+  let requestObject = {
+    firstSlot: firstSlot,
+    lastSlot: lastSlot,
+    selectedSlots: Array.from(selectedSlots).map(s => s.getAttribute('data-utc')),
+  };
+  let request = new Request('/availability', {method: 'PUT', body: JSON.stringify(requestObject)});
 }
