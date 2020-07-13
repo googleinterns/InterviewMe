@@ -55,6 +55,7 @@ function updateAvailability() {
     lastSlot: lastSlot,
     selectedSlots: Array.from(selectedSlots).map(s => s.getAttribute('data-utc')),
   };
+  console.log('Here is the request object: ' + requestObject);
   let request = new Request('/availability', {method: 'PUT', body: JSON.stringify(requestObject)});
   fetch(request).then(unused => {loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset())});
 }

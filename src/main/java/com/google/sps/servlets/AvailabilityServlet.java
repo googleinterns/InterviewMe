@@ -15,6 +15,7 @@
 package com.google.sps.servlets;
 
 import com.google.gson.Gson;
+import com.google.sps.data.AvailabilityJSONConverter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,6 +35,11 @@ public class AvailabilityServlet extends HttpServlet {
     while ((timestamps = reader.readLine()) != null) buffer.append(timestamps);
     String jsonString = buffer.toString();
     Gson gson = new Gson();
-    String[] utcEncodings = gson.fromJson(jsonString, String[].class);
+    AvailabilityJSONConverter utcEncodings =
+        gson.fromJson(jsonString, AvailabilityJSONConverter.class);
+
+    System.out.println("DEBUG: First Time Slot = " + utcEncodings.firstSlotUTC());
+    System.out.println("DEBUG: Last Time Slot = " + utcEncodings.lastSlotUTC());
+    System.out.println("DEBUG: Selected Time Slots = " + utcEncodings.selectedSlotsUTC());
   }
 }
