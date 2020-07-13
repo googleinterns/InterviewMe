@@ -89,7 +89,4 @@ public class DatastoreAvailabilityDaoTest {
             true);
     Assert.assertEquals(availabilityOneWithID, storedAvailability);
   }
-  
-  @Test
-  public void 
 }
