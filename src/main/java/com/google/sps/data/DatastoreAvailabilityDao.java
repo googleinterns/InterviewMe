@@ -91,7 +91,7 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
             Instant.ofEpochMilli((long) availabilityEntity.getProperty("startTime")),
             Instant.ofEpochMilli((long) availabilityEntity.getProperty("endTime"))),
         availabilityEntity.getKey().getId(),
-        availabilityEntity.getProperty("scheduled"));
+        (boolean) availabilityEntity.getProperty("scheduled"));
   }
 
   // Deletes all Availability entities for a user ranging from minTime to maxTime.
