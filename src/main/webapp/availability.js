@@ -50,5 +50,5 @@ function updateAvailability() {
     lastSlot
   ].concat(Array.from(selectedSlots).map(s => s.getAttribute('data-utc')));
   
-  let request = new Request('/availability', {method:'PUT', body:JSON.stringify(utcTimestamps)});
+  let request = new Request('/availability', {method: 'PUT', body: JSON.stringify(utcTimestamps)});
 }
