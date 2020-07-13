@@ -40,7 +40,7 @@ function availabilityTableDiv() {
 }
 
 function updateAvailability() {
-  let selectedSlots = document.getElementsByClassName('table-success');
+  let selectedSlots = document.getElementsByClassName('selected-time-slot');
   let firstSlot = document.getElementsByTagName('tbody').item(0)
     .firstElementChild.firstElementChild.getAttribute('data-utc');
   let lastSlot = document.getElementsByTagName('tbody').item(0)
