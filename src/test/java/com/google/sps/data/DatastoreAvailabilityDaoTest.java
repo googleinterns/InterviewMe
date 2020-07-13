@@ -24,6 +24,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import java.time.Instant;
+import java.util.Optional;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -76,7 +77,7 @@ public class DatastoreAvailabilityDaoTest {
   }
 
   @Test
-  public void createAvailability() {
+  public void createsAvailability() {
     tester.create(availabilityOne);
     Entity entity = datastore.prepare(new Query("Availability")).asSingleEntity();
     Availability storedAvailability = tester.entityToAvailability(entity);
@@ -88,5 +89,47 @@ public class DatastoreAvailabilityDaoTest {
             storedAvailability.id(),
             true);
     Assert.assertEquals(availabilityOneWithID, storedAvailability);
+  }
+
+  @Test
+  public void updatesAvailability() {
+    tester.create(availabilityOne);
+    Entity entity = datastore.prepare(new Query("Availability")).asSingleEntity();
+    Availability storedAvailability = tester.entityToAvailability(entity);
+    Availability update =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
+            storedAvailability.id(),
+            false);
+    tester.update(update);
+    Entity updatedEntity = datastore.prepare(new Query("Availability")).asSingleEntity();
+    Availability updatedAvailability = tester.entityToAvailability(updatedEntity);
+    Availability updateWithID =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
+            updatedAvailability.id(),
+            false);
+    Assert.assertEquals(updateWithID, updatedAvailability);
+  }
+
+  @Test
+  public void getsAvailability() {
+    tester.create(availabilityTwo);
+    Entity entity = datastore.prepare(new Query("Availability")).asSingleEntity();
+    Availability storedAvailability = tester.entityToAvailability(entity);
+    Optional<Availability> actualAvailabilityOptional = tester.get(storedAvailability.id());
+    Availability expectedAvailability =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T15:45:00Z"), Instant.parse("2020-07-07T16:00:00Z")),
+            storedAvailability.id(),
+            false);
+    Optional<Availability> expectedAvailabilityOptional = Optional.of(expectedAvailability);
+    Assert.assertEquals(expectedAvailabilityOptional, actualAvailabilityOptional);
   }
 }
