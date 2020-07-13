@@ -18,8 +18,11 @@ function onProfileLoad() {
 }
 
 // Submits profile form to Datastore.
-function submitProfileForm() {
-  fetch(`/login`)
+function submitProfileForm(methodType) {
+  fetch(`/person?user-email=${$("#user-email").val()}&first-name=${$("#first-name-field").val()}&last-name=${$("#last-name-field").val()}&company=${$("#company-field").val()}&job=${$("#job-field").val()}&linkedin=${$("#linkedin-field").val()}`, {
+    method: methodType
+  });
+  location.reload();
 }
 
 // Allows certain fields in the profile to be edited, hides edit button, and displays update button. 
