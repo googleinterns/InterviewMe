@@ -17,9 +17,14 @@ function onAvailabilityLoad() {
   loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset());
 }
 
-// Toggles a tile from green to white and vice versa when clicked.
+// Toggles a tile from selected (green) to un-selected (white) and vice versa when clicked.
 function toggleTile(tile) {
-  tile.classList.toggle('table-success');
+  let classList = tile.classList;
+  if (classList.contains('table-success') && classList.contains('selected-time-slot')) {
+    classList.remove('table-success', 'selected-time-slot');
+  } else {
+    classList.add('table-success', 'selected-time-slot');
+  }
 }
 
 function loadAvailabilityTable(tableDiv, timezoneOffset) {
