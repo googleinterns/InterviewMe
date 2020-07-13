@@ -40,8 +40,7 @@ public class DatastoreScheduledInterviewTest {
       ScheduledInterview.create(
           (long) -1,
           new TimeRange(
-              Instant.parse("2020-07-06T17:00:10.324978Z"),
-              Instant.parse("2020-07-06T18:00:10.324978Z")),
+              Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
           "user@company.org",
           "user@mail.com");
 
@@ -49,16 +48,14 @@ public class DatastoreScheduledInterviewTest {
       ScheduledInterview.create(
           (long) -1,
           new TimeRange(
-              Instant.parse("2020-07-06T19:00:10.324978Z"),
-              Instant.parse("2020-07-06T20:00:10.324978Z")),
+              Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
           "user@company.org",
           "user2@mail.com");
   private final ScheduledInterview scheduledInterview3 =
       ScheduledInterview.create(
           (long) -1,
           new TimeRange(
-              Instant.parse("2020-07-06T19:00:10.324978Z"),
-              Instant.parse("2020-07-06T20:00:10.324978Z")),
+              Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
           "user3@company.org",
           "user2@mail.com");
 
@@ -87,8 +84,7 @@ public class DatastoreScheduledInterviewTest {
         ScheduledInterview.create(
             storedScheduledInterview.id(),
             new TimeRange(
-                Instant.parse("2020-07-06T17:00:10.324978Z"),
-                Instant.parse("2020-07-06T18:00:10.324978Z")),
+                Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
             "user@company.org",
             "user@mail.com");
     assertEquals(storedScheduledInterview.id(), copyScheduledInterview1.id());
@@ -105,16 +101,14 @@ public class DatastoreScheduledInterviewTest {
         ScheduledInterview.create(
             result.get(0).id(),
             new TimeRange(
-                Instant.parse("2020-07-06T17:00:10.324978Z"),
-                Instant.parse("2020-07-06T18:00:10.324978Z")),
+                Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
             "user@company.org",
             "user@mail.com");
     ScheduledInterview copyScheduledInterview2 =
         ScheduledInterview.create(
             result.get(1).id(),
             new TimeRange(
-                Instant.parse("2020-07-06T19:00:10.324978Z"),
-                Instant.parse("2020-07-06T20:00:10.324978Z")),
+                Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
             "user@company.org",
             "user2@mail.com");
 
@@ -136,11 +130,10 @@ public class DatastoreScheduledInterviewTest {
         ScheduledInterview.create(
             storedScheduledInterview.id(),
             new TimeRange(
-                Instant.parse("2020-07-06T19:00:10.324978Z"),
-                Instant.parse("2020-07-06T20:00:10.324978Z")),
+                Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
             "user@company.org",
             "user2@mail.com");
-    assertEquals(storedScheduledInterview.id(), copyScheduledInterview2.id());
+    assertEquals(storedScheduledInterview, copyScheduledInterview2);
   }
 
   // Tests updating a user's scheduledInterview.
@@ -153,8 +146,7 @@ public class DatastoreScheduledInterviewTest {
         ScheduledInterview.create(
             storedScheduledInterview.id(),
             new TimeRange(
-                Instant.parse("2020-07-06T19:00:10.324978Z"),
-                Instant.parse("2020-07-06T20:00:10.324978Z")),
+                Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
             "user@company.org",
             "user3@mail.com");
     tester.update(storedScheduledInterview);
