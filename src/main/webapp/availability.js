@@ -17,9 +17,14 @@ function onAvailabilityLoad() {
   loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset());
 }
 
-// Toggles a tile from green to white and vice versa when clicked.
+// Toggles a tile from selected (green) to un-selected (white) and vice versa when clicked.
 function toggleTile(tile) {
-  tile.classList.toggle('table-success');
+  let classList = tile.classList;
+  if (classList.contains('table-success') && classList.contains('selected-time-slot')) {
+    classList.remove('table-success', 'selected-time-slot');
+  } else {
+    classList.add('table-success', 'selected-time-slot');
+  }
 }
 
 function loadAvailabilityTable(tableDiv, timezoneOffset) {
@@ -40,15 +45,16 @@ function availabilityTableDiv() {
 }
 
 function updateAvailability() {
-  let selectedSlots = document.getElementsByClassName('table-success');
+  let selectedSlots = document.getElementsByClassName('selected-time-slot');
   let firstSlot = document.getElementsByTagName('tbody').item(0)
     .firstElementChild.firstElementChild.getAttribute('data-utc');
   let lastSlot = document.getElementsByTagName('tbody').item(0)
     .lastElementChild.lastElementChild.getAttribute('data-utc');
-  let utcTimestamps = [
-    firstSlot,
-    lastSlot
-  ].concat(Array.from(selectedSlots).map(s => s.getAttribute('data-utc')));
-  let request = new Request('/availability', {method:'PUT', body:JSON.stringify(utcTimestamps)});
+  let requestObject = {
+    firstSlot: firstSlot,
+    lastSlot: lastSlot,
+    selectedSlots: Array.from(selectedSlots).map(s => s.getAttribute('data-utc')),
+  };
+  let request = new Request('/availability', {method: 'PUT', body: JSON.stringify(requestObject)});
   fetch(request).then(unused => {loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset())});
 }
