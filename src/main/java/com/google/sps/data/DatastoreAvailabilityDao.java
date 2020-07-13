@@ -73,7 +73,9 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
   // Updates the specified id with the new availability.
   @Override
   public void update(Availability avail) {
-    datastore.put(availabilityToEntity(avail));
+    Key key = KeyFactory.createKey("Availability", avail.id());
+    datastore.delete(key);
+    create(avail);
   }
 
   static Entity availabilityToEntity(Availability avail) {
