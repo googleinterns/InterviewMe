@@ -25,6 +25,8 @@ import com.google.appengine.api.datastore.Query.CompositeFilter;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.SortDirection;
+
 import java.time.Instant;
 import java.util.Optional;
 import java.util.ArrayList;
@@ -68,7 +70,10 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
         new FilterPredicate("interviewee", FilterOperator.EQUAL, email);
     CompositeFilter compositeFilter =
         CompositeFilterOperator.or(interviewerFilter, intervieweeFilter);
-    Query query = new Query("ScheduledInterview").setFilter(compositeFilter);
+    Query query =
+        new Query("ScheduledInterview")
+            .setFilter(compositeFilter)
+            .addSort("startTime", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
     List<ScheduledInterview> relevantInterviews = new ArrayList<>();
 
