@@ -14,24 +14,46 @@
 
 package com.google.sps.data;
 
+import com.google.sps.servlets.PersonServlet;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /** */
 @RunWith(JUnit4.class)
 public final class PersonServletTest {
 
-  // 
+  //
   @Test
-  public void equality() {
-    Assert.assertEquals(
-        TimeRange.fromStartEnd(TIME_530PM, TIME_6PM), TimeRange.fromStartEnd(TIME_530PM, TIME_6PM));
+  public void postTwo() throws IOException, UnsupportedEncodingException {
 
-    Assert.assertNotEquals(
-        TimeRange.fromStartEnd(TIME_530PM, TIME_6PM),
-        TimeRange.fromStartEnd(TIME_530PM, TIME_630PM));
+    MockHttpServletRequest postRequest = new MockHttpServletRequest();
+    postRequest.addParameter("user-email", "a@gmail.com");
+    postRequest.addParameter("first-name", "a");
+    postRequest.addParameter("last-name", "a");
+    postRequest.addParameter("company", "");
+    postRequest.addParameter("job", "");
+    postRequest.addParameter("linkedin", "");
+
+    PersonServlet personServlet = new PersonServlet();
+    personServlet.init(new FakePersonDao());
+    personServlet.doPost(postRequest, new MockHttpServletResponse());
+
+    postRequest.setParameter("user-email", "b@gmail.com");
+    postRequest.addParameter("first-name", "b");
+    postRequest.addParameter("last-name", "b");
+    personServlet.doPost(postRequest, new MockHttpServletResponse());
+
+    MockHttpServletRequest getRequest = new MockHttpServletRequest();
+    getRequest.addParameter("user-email", "b@gmail.com");
+    MockHttpServletResponse getResponse = new MockHttpServletResponse();
+    personServlet.doGet(getRequest, getResponse);
+
+    System.out.println(getResponse.getContentAsString());
   }
-
 }
