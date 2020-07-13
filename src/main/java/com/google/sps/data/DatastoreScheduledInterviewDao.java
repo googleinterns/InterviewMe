@@ -26,7 +26,6 @@ import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
-
 import java.time.Instant;
 import java.util.Optional;
 import java.util.ArrayList;
@@ -60,7 +59,7 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
 
   /**
    * Retrieves all scheduledInterview entities from Datastore that involve a particular user and
-   * returns them as a list of ScheduledInterview objects.
+   * returns them as a list of ScheduledInterview objects in the order in which they occur.
    */
   @Override
   public List<ScheduledInterview> getForPerson(String email) {
