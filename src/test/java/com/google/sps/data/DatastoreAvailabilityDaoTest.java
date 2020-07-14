@@ -20,10 +20,14 @@ import static org.junit.Assert.assertEquals;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.junit.After;
 import org.junit.Assert;
@@ -182,6 +186,126 @@ public class DatastoreAvailabilityDaoTest {
             true);
     Assert.assertEquals(expected, actual);
   }
-  
-  
+
+  @Test
+  public void getsUsersAvailabilityInRange() {
+    tester.create(availabilityOne);
+    tester.create(availabilityTwo);
+    tester.create(availabilityFour);
+    List<Availability> actual =
+        tester.getInRangeForUser(
+            "user1@mail.com",
+            Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
+            Instant.parse("2020-07-07T16:00:00Z").toEpochMilli());
+    List<Entity> entities =
+        datastore
+            .prepare(new Query("Availability").addSort("startTime", SortDirection.ASCENDING))
+            .asList(FetchOptions.Builder.withDefaults());
+    List<Availability> availabilities = new ArrayList<Availability>();
+    for (Entity entity : entities) {
+      availabilities.add(tester.entityToAvailability(entity));
+    }
+    Availability expectedAvailabilityOne =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
+            availabilities.get(0).id(),
+            true);
+    Availability expectedAvailabilityTwo =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T15:45:00Z"), Instant.parse("2020-07-07T16:00:00Z")),
+            availabilities.get(1).id(),
+            false);
+    List<Availability> expectedAvailabilities = new ArrayList<Availability>();
+    expectedAvailabilities.add(expectedAvailabilityOne);
+    expectedAvailabilities.add(expectedAvailabilityTwo);
+    Assert.assertEquals(expectedAvailabilities, actual);
+  }
+
+  @Test
+  public void onlyGetsSpecifiedUsersAvailabilityInRange() {
+    tester.create(availabilityOne);
+    tester.create(availabilityTwo);
+    tester.create(availabilityThree);
+    List<Availability> actual =
+        tester.getInRangeForUser(
+            "user1@mail.com",
+            Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
+            Instant.parse("2020-07-07T17:45:00Z").toEpochMilli());
+    List<Entity> entities =
+        datastore
+            .prepare(new Query("Availability").addSort("startTime", SortDirection.ASCENDING))
+            .asList(FetchOptions.Builder.withDefaults());
+    List<Availability> availabilities = new ArrayList<Availability>();
+    for (Entity entity : entities) {
+      availabilities.add(tester.entityToAvailability(entity));
+    }
+    Availability expectedAvailabilityOne =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
+            availabilities.get(0).id(),
+            true);
+    Availability expectedAvailabilityTwo =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T15:45:00Z"), Instant.parse("2020-07-07T16:00:00Z")),
+            availabilities.get(1).id(),
+            false);
+    List<Availability> expectedAvailabilities = new ArrayList<Availability>();
+    expectedAvailabilities.add(expectedAvailabilityOne);
+    expectedAvailabilities.add(expectedAvailabilityTwo);
+    Assert.assertEquals(expectedAvailabilities, actual);
+  }
+
+  @Test
+  public void getsAllUsersAvailabilityInRange() {
+    tester.create(availabilityOne);
+    tester.create(availabilityTwo);
+    tester.create(availabilityThree);
+    tester.create(availabilityFour);
+    List<Availability> actual =
+        tester.getInRangeForAll(
+            Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
+            Instant.parse("2020-07-07T17:45:00Z").toEpochMilli());
+    List<Entity> entities =
+        datastore
+            .prepare(new Query("Availability").addSort("startTime", SortDirection.ASCENDING))
+            .asList(FetchOptions.Builder.withDefaults());
+    List<Availability> availabilities = new ArrayList<Availability>();
+    for (Entity entity : entities) {
+      availabilities.add(tester.entityToAvailability(entity));
+    }
+    Availability expectedAvailabilityOne =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
+            availabilities.get(0).id(),
+            true);
+    Availability expectedAvailabilityTwo =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T15:45:00Z"), Instant.parse("2020-07-07T16:00:00Z")),
+            availabilities.get(1).id(),
+            false);
+    Availability expectedAvailabilityThree =
+        Availability.create(
+            "user2@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T17:30:00Z"), Instant.parse("2020-07-07T17:45:00Z")),
+            availabilities.get(2).id(),
+            true);
+    List<Availability> expectedAvailabilities = new ArrayList<Availability>();
+    expectedAvailabilities.add(expectedAvailabilityOne);
+    expectedAvailabilities.add(expectedAvailabilityTwo);
+    expectedAvailabilities.add(expectedAvailabilityThree);
+    Assert.assertEquals(expectedAvailabilities, actual);
+  }
 }
