@@ -22,18 +22,12 @@ function onScheduledInterviewsLoad() {
 function listScheduledInterviews() {
   let email = 'gswe@gmail.com'; 
   const scheduledInterviewsSection = document.getElementById('scheduled-interviews-cards');
-  scheduledInterviewsSection.innerHTML = ''; 
+  //scheduledInterviewsSection.innerHTML = ''; 
   fetch(`/scheduled-interviews?userEmail=${email}`)
     .then(response => response.json())
     .then((scheduledInterviews) => {
-      if (isEmptyObject(scheduledInterviews)){
-        const emptyEventsMessageDiv = document.createElement('div');
-        const  emptyEventsMessage = document.createElement('h2');
-        emptyEventsMessage.style.textAlign = 'center';  
-        emptyEventsMessage.innerHTML = "No Scheduled Interviews"; 
-        emptyEventsMessageDiv.appendChild(emptyEventsMessage); 
-        scheduledInterviewsSection.appendChild(emptyEventsMessage);  
-      } else { 
+      if (!isEmptyObject(scheduledInterviews)) {
+        document.getElementById('no-scheduled-interviews').style.display = 'none'; 
         scheduledInterviews.forEach((scheduledInterview) => {
           scheduledInterviewsSection.appendChild(createScheduledInterviewCard(email, scheduledInterview)); 
         })
