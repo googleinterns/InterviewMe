@@ -45,6 +45,8 @@ function listScheduledInterviews() {
 function createScheduledInterviewCard(email, scheduledInterview) {
   // Check the role of the current user for the scheduledInterview
   let role; 
+  console.log(typeof email);
+  console.log(typeof scheduledInterview.interviewerEmail); 
   if(email === scheduledInterview.interviewerEmail) {
     role = 'Interviewer'; 
   } else {
@@ -103,4 +105,3 @@ function createDateString(scheduledInterview) {
   end.setTime(scheduledInterview.when.end.seconds*1000);
   return start.toLocaleDateString() + ' from ' + start.toLocaleTimeString() + ' to ' + end.toLocaleTimeString();
 }
-
