@@ -67,19 +67,26 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
   // Adds an Availability object into Datastore.
   @Override
   public void create(Availability avail) {
-    datastore.put(availabilityToEntity(avail));
+    datastore.put(availabilityToNewEntity(avail));
   }
 
   // Updates the specified id with the new availability.
   @Override
   public void update(Availability avail) {
-    Key key = KeyFactory.createKey("Availability", avail.id());
-    datastore.delete(key);
-    create(avail);
+    datastore.put(availabilityToUpdatedEntity(avail));
   }
 
-  static Entity availabilityToEntity(Availability avail) {
+  static Entity availabilityToNewEntity(Availability avail) {
     Entity availabilityEntity = new Entity("Availability");
+    availabilityEntity.setProperty("email", avail.email());
+    availabilityEntity.setProperty("startTime", avail.when().start().toEpochMilli());
+    availabilityEntity.setProperty("endTime", avail.when().end().toEpochMilli());
+    availabilityEntity.setProperty("scheduled", avail.scheduled());
+    return availabilityEntity;
+  }
+
+  static Entity availabilityToUpdatedEntity(Availability avail) {
+    Entity availabilityEntity = new Entity("Availability", avail.id());
     availabilityEntity.setProperty("email", avail.email());
     availabilityEntity.setProperty("startTime", avail.when().start().toEpochMilli());
     availabilityEntity.setProperty("endTime", avail.when().end().toEpochMilli());
@@ -100,7 +107,8 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
   // Deletes all Availability entities for a user ranging from minTime to maxTime.
   // minTime and maxTime are in milliseconds.
   public void deleteInRangeForUser(String email, long minTime, long maxTime) {
-    List<Entity> entities = getEntitiesInRange(minTime, maxTime, Optional.empty());
+    Filter userFilter = new FilterPredicate("email", FilterOperator.EQUAL, email);
+    List<Entity> entities = getEntitiesInRange(minTime, maxTime, Optional.of(userFilter));
     List<Key> keyList = new ArrayList<>();
     for (Entity entity : entities) {
       keyList.add(entity.getKey());
@@ -110,10 +118,6 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
       datastore.delete(txn, key);
       txn.commit();
     }
-    /*
-    Transaction txn = datastore.beginTransaction(TransactionOptions.Builder.withXG(true));
-    datastore.delete(txn, keyList);
-    txn.commit(); */
   }
 
   // Returns a list of all Availability's ranging from minTime to maxTime of a user.

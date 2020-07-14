@@ -114,14 +114,7 @@ public class DatastoreAvailabilityDaoTest {
     tester.update(update);
     Entity updatedEntity = datastore.prepare(new Query("Availability")).asSingleEntity();
     Availability updatedAvailability = tester.entityToAvailability(updatedEntity);
-    Availability updateWithID =
-        Availability.create(
-            "user1@mail.com",
-            new TimeRange(
-                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
-            updatedAvailability.id(),
-            false);
-    Assert.assertEquals(updateWithID, updatedAvailability);
+    Assert.assertEquals(update, updatedAvailability);
   }
 
   @Test
@@ -168,4 +161,27 @@ public class DatastoreAvailabilityDaoTest {
             true);
     Assert.assertEquals(expected, actual);
   }
+
+  @Test
+  public void onlyDeletesSpecifiedUsersAvailabilityInRange() {
+    tester.create(availabilityOne);
+    tester.create(availabilityTwo);
+    tester.create(availabilityThree);
+    tester.deleteInRangeForUser(
+        "user1@mail.com",
+        Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
+        Instant.parse("2020-07-07T17:45:00Z").toEpochMilli());
+    Entity entity = datastore.prepare(new Query("Availability")).asSingleEntity();
+    Availability actual = tester.entityToAvailability(entity);
+    Availability expected =
+        Availability.create(
+            "user2@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T17:30:00Z"), Instant.parse("2020-07-07T17:45:00Z")),
+            actual.id(),
+            true);
+    Assert.assertEquals(expected, actual);
+  }
+  
+  
 }
