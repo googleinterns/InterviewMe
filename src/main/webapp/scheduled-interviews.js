@@ -18,8 +18,9 @@ function onScheduledInterviewsLoad() {
   listScheduledInterviews(); 
 }
 
+// Retrieves the List of scheduled interviews from Datastore and builds the scheduled Interview section
 function listScheduledInterviews() {
-  var email = "gswe@gmail.com"; 
+  let email = 'gswe@gmail.com'; 
   const scheduledInterviewsSection = document.getElementById('scheduled-interviews-cards');
   document.getElementById('scheduled-interviews-cards').innerHTML = ''; 
   fetch(`/scheduled-interviews?userEmail=${email}`)
@@ -31,24 +32,23 @@ function listScheduledInterviews() {
         emptyEventsMessage.style.textAlign = 'center';  
         emptyEventsMessage.innerHTML = "No Scheduled Interviews"; 
         emptyEventsMessageDiv.appendChild(emptyEventsMessage); 
-        scheduledInterviewsSection.appendChild(emptyEventsMessage); 
+        scheduledInterviewsSection.appendChild(emptyEventsMessage);  
       } else { 
         scheduledInterviews.forEach((scheduledInterview) => {
-          scheduledInterviewsSection.appendChild(createScheduledInterviewCard(scheduledInterview));
-          console.log(scheduledInterview); 
+          scheduledInterviewsSection.appendChild(createScheduledInterviewCard(email, scheduledInterview)); 
         })
       }
     }); 
 }
 
-function createScheduledInterviewCard(scheduledInterview) {
+// Creates a scheduledInterview card using the fields of a scheduledInterview object
+function createScheduledInterviewCard(email, scheduledInterview) {
   // Check the role of the current user for the scheduledInterview
-  var email = "gswe@gmail.com";
-  var role; 
+  let role; 
   if(email === scheduledInterview.interviewerEmail) {
-    role = "Interviewer"; 
+    role = 'Interviewer'; 
   } else {
-    role = "Interviewee";
+    role = 'Interviewee';
   }
   const scheduledInterviewElement = document.createElement('div');
   scheduledInterviewElement.className = 'row';
@@ -101,6 +101,6 @@ function createDateString(scheduledInterview) {
   var end = new Date(); 
   start.setTime(scheduledInterview.when.start.seconds*1000);
   end.setTime(scheduledInterview.when.end.seconds*1000);
-  return start.toLocaleDateString() + " @ " + start.toLocaleTimeString() + " - " + end.toLocaleTimeString();
+  return start.toLocaleDateString() + ' from ' + start.toLocaleTimeString() + ' to ' + end.toLocaleTimeString();
 }
 
