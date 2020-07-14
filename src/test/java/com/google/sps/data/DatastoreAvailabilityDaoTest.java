@@ -88,6 +88,7 @@ public class DatastoreAvailabilityDaoTest {
     helper.tearDown();
   }
 
+  // Checks that an Availability is stored in datastore.
   @Test
   public void createsAvailability() {
     tester.create(availabilityOne);
@@ -103,6 +104,7 @@ public class DatastoreAvailabilityDaoTest {
     Assert.assertEquals(availabilityOneWithID, storedAvailability);
   }
 
+  // Checks that an Availability is updated in datastore.
   @Test
   public void updatesAvailability() {
     tester.create(availabilityOne);
@@ -120,7 +122,8 @@ public class DatastoreAvailabilityDaoTest {
     Availability updatedAvailability = tester.entityToAvailability(updatedEntity);
     Assert.assertEquals(update, updatedAvailability);
   }
-
+  
+  // Checks that an Availability is returned when it exists within datastore.
   @Test
   public void getsAvailability() {
     tester.create(availabilityTwo);
@@ -138,6 +141,8 @@ public class DatastoreAvailabilityDaoTest {
     Assert.assertEquals(expectedAvailabilityOptional, actualAvailabilityOptional);
   }
 
+  // Checks that an empty Optional is returned when an Availability does not exist within
+  // datastore.
   @Test
   public void failsToGetAvailability() {
     Optional<Availability> actual = tester.get(24);
