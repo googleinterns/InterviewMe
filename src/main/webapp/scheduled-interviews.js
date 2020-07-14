@@ -22,7 +22,7 @@ function onScheduledInterviewsLoad() {
 function listScheduledInterviews() {
   let email = 'gswe@gmail.com'; 
   const scheduledInterviewsSection = document.getElementById('scheduled-interviews-cards');
-  document.getElementById('scheduled-interviews-cards').innerHTML = ''; 
+  scheduledInterviewsSection.innerHTML = ''; 
   fetch(`/scheduled-interviews?userEmail=${email}`)
     .then(response => response.json())
     .then((scheduledInterviews) => {
