@@ -30,9 +30,9 @@ public class AvailabilityServlet extends HttpServlet {
   public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
     BufferedReader reader = request.getReader();
     StringBuffer buffer = new StringBuffer();
-    String timestamps = null;
+    String payloadLine = null;
 
-    while ((timestamps = reader.readLine()) != null) buffer.append(timestamps);
+    while ((payloadLine = reader.readLine()) != null) buffer.append(payloadLine);
     String jsonString = buffer.toString();
     Gson gson = new Gson();
     AvailabilityJSONConverter utcEncodings =
