@@ -34,7 +34,7 @@ public class AvailabilityServlet extends HttpServlet {
 
     while ((payloadLine = reader.readLine()) != null) buffer.append(payloadLine);
     String jsonString = buffer.toString();
-    Gson gson = new Gson();
-    PutAvailabilityRequest utcEncodings = gson.fromJson(jsonString, PutAvailabilityRequest.class);
+    PutAvailabilityRequest utcEncodings =
+        new Gson().fromJson(jsonString, PutAvailabilityRequest.class);
   }
 }
