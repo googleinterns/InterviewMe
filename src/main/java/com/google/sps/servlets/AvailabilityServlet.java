@@ -47,5 +47,6 @@ public class AvailabilityServlet extends HttpServlet {
       response.sendError(400);
       return;
     }
+    // TODO: Use utcEncodings to generate Availabilities and store them in datastore.
   }
 }
