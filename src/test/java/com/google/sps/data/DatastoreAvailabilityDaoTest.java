@@ -122,7 +122,7 @@ public class DatastoreAvailabilityDaoTest {
     Availability updatedAvailability = tester.entityToAvailability(updatedEntity);
     Assert.assertEquals(update, updatedAvailability);
   }
-  
+
   // Checks that an Availability is returned when it exists within datastore.
   @Test
   public void getsAvailability() {
@@ -150,8 +150,10 @@ public class DatastoreAvailabilityDaoTest {
     Assert.assertEquals(expected, actual);
   }
 
+  // Checks that the Availability objects within a given time range for a specified user
+  // are deleted.
   @Test
-  public void deletesUsersAvailabilityInRange() {
+  public void deletesInRange() {
     tester.create(availabilityOne);
     tester.create(availabilityTwo);
     tester.create(availabilityFour);
@@ -171,8 +173,10 @@ public class DatastoreAvailabilityDaoTest {
     Assert.assertEquals(expected, actual);
   }
 
+  // Checks that only the Availability objects for the specified user are deleted within
+  // a given time range (and not the Availability objects of other users).
   @Test
-  public void onlyDeletesSpecifiedUsersAvailabilityInRange() {
+  public void deletesUsersAvailabilityInRange() {
     tester.create(availabilityOne);
     tester.create(availabilityTwo);
     tester.create(availabilityThree);
@@ -192,6 +196,7 @@ public class DatastoreAvailabilityDaoTest {
     Assert.assertEquals(expected, actual);
   }
 
+  // Checks that all Availability objects for a user within a given time range are returned.
   @Test
   public void getsUsersAvailabilityInRange() {
     tester.create(availabilityOne);
@@ -230,6 +235,8 @@ public class DatastoreAvailabilityDaoTest {
     Assert.assertEquals(expectedAvailabilities, actual);
   }
 
+  // Checks that only the Availability objects for the specified user are returned within
+  // a given time range (and not the Availability objects of other users).
   @Test
   public void onlyGetsSpecifiedUsersAvailabilityInRange() {
     tester.create(availabilityOne);
@@ -268,6 +275,8 @@ public class DatastoreAvailabilityDaoTest {
     Assert.assertEquals(expectedAvailabilities, actual);
   }
 
+  // Checks that all scheduled Availability objects from a specified user
+  // and within a given time range are returned.
   @Test
   public void getsScheduledAvailabilitiesForUserInRange() {
     tester.create(availabilityOne);
@@ -297,6 +306,8 @@ public class DatastoreAvailabilityDaoTest {
     Assert.assertEquals(expected, actual);
   }
 
+  // Checks that only the scheduled Availability objects for a specific user
+  // are returned (and not the scheduled Availability objects of other users).
   @Test
   public void onlyGetsSpecifiedUsersScheduledAvailabilityInRange() {
     tester.create(availabilityOne);
@@ -326,6 +337,7 @@ public class DatastoreAvailabilityDaoTest {
     Assert.assertEquals(expected, actual);
   }
 
+  // Checks that all of the Availability objects within a given time range are returned.
   @Test
   public void getsAllUsersAvailabilityInRange() {
     tester.create(availabilityOne);
