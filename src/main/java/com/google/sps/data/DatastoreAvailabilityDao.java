@@ -120,7 +120,7 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
     }
   }
 
-  // Returns a list of all Availability's ranging from minTime to maxTime of a user.
+  // Returns a list of all Availabilities ranging from minTime to maxTime of a user.
   // minTime and maxTime are in milliseconds.
   public List<Availability> getInRangeForUser(String email, long minTime, long maxTime) {
     Filter userFilter = new FilterPredicate("email", FilterOperator.EQUAL, email);
@@ -132,7 +132,23 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
     return availability;
   }
 
-  // Returns all Availability's across all users ranging from minTime to maxTime.
+  // Returns a list of Scheduled-over Availabilities ranging from minTime to maxTime of a user.
+  // minTime and maxTime are in milliseconds.
+  public List<Availability> getScheduledInRangeForUser(String email, long minTime, long maxTime) {
+    Filter userFilter = new FilterPredicate("email", FilterOperator.EQUAL, email),
+        scheduledFilter = new FilterPredicate("scheduled", FilterOperator.EQUAL, true);
+    CompositeFilter scheduledForUserFilter =
+        CompositeFilterOperator.and(userFilter, scheduledFilter);
+    List<Entity> entities =
+        getEntitiesInRange(minTime, maxTime, Optional.of(scheduledForUserFilter));
+    List<Availability> availability = new ArrayList<Availability>();
+    for (Entity entity : entities) {
+      availability.add(entityToAvailability(entity));
+    }
+    return availability;
+  }
+
+  // Returns all Availabilities across all users ranging from minTime to maxTime.
   // minTime and maxTime are in milliseconds.
   public List<Availability> getInRangeForAll(long minTime, long maxTime) {
     List<Entity> entities = getEntitiesInRange(minTime, maxTime, Optional.empty());

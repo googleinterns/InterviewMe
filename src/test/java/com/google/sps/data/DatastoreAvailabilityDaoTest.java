@@ -264,6 +264,64 @@ public class DatastoreAvailabilityDaoTest {
   }
 
   @Test
+  public void getsScheduledAvailabilitiesForUserInRange() {
+    tester.create(availabilityOne);
+    tester.create(availabilityTwo);
+    List<Availability> actual =
+        tester.getScheduledInRangeForUser(
+            "user1@mail.com",
+            Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
+            Instant.parse("2020-07-07T16:00:00Z").toEpochMilli());
+    List<Entity> entities =
+        datastore
+            .prepare(new Query("Availability").addSort("startTime", SortDirection.ASCENDING))
+            .asList(FetchOptions.Builder.withDefaults());
+    List<Availability> availabilities = new ArrayList<Availability>();
+    for (Entity entity : entities) {
+      availabilities.add(tester.entityToAvailability(entity));
+    }
+    Availability expectedAvailability =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
+            availabilities.get(0).id(),
+            true);
+    List<Availability> expected = new ArrayList<Availability>();
+    expected.add(expectedAvailability);
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void onlyGetsSpecifiedUsersScheduledAvailabilityInRange() {
+    tester.create(availabilityOne);
+    tester.create(availabilityThree);
+    List<Availability> actual =
+        tester.getScheduledInRangeForUser(
+            "user1@mail.com",
+            Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
+            Instant.parse("2020-07-07T17:45:00Z").toEpochMilli());
+    List<Entity> entities =
+        datastore
+            .prepare(new Query("Availability").addSort("startTime", SortDirection.ASCENDING))
+            .asList(FetchOptions.Builder.withDefaults());
+    List<Availability> availabilities = new ArrayList<Availability>();
+    for (Entity entity : entities) {
+      availabilities.add(tester.entityToAvailability(entity));
+    }
+    Availability expectedAvailability =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
+            availabilities.get(0).id(),
+            true);
+    List<Availability> expected = new ArrayList<Availability>();
+    expected.add(expectedAvailability);
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
   public void getsAllUsersAvailabilityInRange() {
     tester.create(availabilityOne);
     tester.create(availabilityTwo);
