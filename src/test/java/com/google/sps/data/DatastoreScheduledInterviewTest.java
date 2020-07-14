@@ -114,12 +114,10 @@ public class DatastoreScheduledInterviewTest {
                 Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
             "user@company.org",
             "user2@mail.com");
-
-    List<ScheduledInterview> actual = new ArrayList<ScheduledInterview>();
-    actual.add(copyScheduledInterview1);
-    actual.add(copyScheduledInterview2);
-
-    Assert.assertEquals(result, actual);
+    List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
+    expected.add(copyScheduledInterview1);
+    expected.add(copyScheduledInterview2);
+    Assert.assertEquals(expected, result);
   }
 
   // Tests deleting a user's scheduledInterview.
