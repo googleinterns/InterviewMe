@@ -14,6 +14,7 @@
 
 package com.google.sps.servlets;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.sps.data.PutAvailabilityRequest;
 import java.io.BufferedReader;
@@ -34,7 +35,17 @@ public class AvailabilityServlet extends HttpServlet {
 
     while ((payloadLine = reader.readLine()) != null) buffer.append(payloadLine);
     String jsonString = buffer.toString();
-    PutAvailabilityRequest utcEncodings =
-        new Gson().fromJson(jsonString, PutAvailabilityRequest.class);
+
+    PutAvailabilityRequest utcEncodings;
+    try {
+      utcEncodings = new Gson().fromJson(jsonString, PutAvailabilityRequest.class);
+    } catch (Exception JsonSyntaxException) {
+      response.sendError(400);
+      return;
+    }
+    if (!utcEncodings.allFieldsPopulated()) {
+      response.sendError(400);
+      return;
+    }
   }
 }

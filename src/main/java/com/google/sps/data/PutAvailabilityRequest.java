@@ -39,4 +39,20 @@ public class PutAvailabilityRequest {
   public ArrayList<String> getSelectedSlots() {
     return selectedSlots;
   }
+
+  public boolean allFieldsPopulated() {
+    return !(firstSlot == null || lastSlot == null || selectedSlots == null);
+  }
+
+  public String toString() {
+    return String.format(
+        "%s= %s:%s, %s:%s, %s:%s",
+        "PutAvailabilityRequest",
+        "firstSlot",
+        firstSlot,
+        "lastSlot",
+        lastSlot,
+        "selectedSlots",
+        selectedSlots);
+  }
 }
