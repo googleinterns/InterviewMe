@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.junit.Assert;
 import org.junit.After;
 import org.junit.Before;
@@ -89,7 +90,7 @@ public class DatastoreScheduledInterviewTest {
                 Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
             "user@company.org",
             "user@mail.com");
-    Assert.assertEquals(true, storedScheduledInterview.equals(copyScheduledInterview1));
+    Assert.assertEquals(copyScheduledInterview1, storedScheduledInterview);
   }
 
   // Tests whether all scheduledInterviews for a particular user are returned.
@@ -114,17 +115,11 @@ public class DatastoreScheduledInterviewTest {
             "user@company.org",
             "user2@mail.com");
 
-    List<Boolean> actual = new ArrayList<Boolean>();
-    actual.add(copyScheduledInterview1.equals(result.get(0)));
-    actual.add(result.size() == 2);
-    actual.add(copyScheduledInterview2.equals(result.get(1)));
+    List<ScheduledInterview> actual = new ArrayList<ScheduledInterview>();
+    actual.add(copyScheduledInterview1);
+    actual.add(copyScheduledInterview2);
 
-    List<Boolean> expected = new ArrayList<Boolean>();
-    expected.add(true);
-    expected.add(true);
-    expected.add(true);
-
-    Assert.assertEquals(true, expected.equals(actual));
+    Assert.assertEquals(result, actual);
   }
 
   // Tests deleting a user's scheduledInterview.
@@ -143,7 +138,7 @@ public class DatastoreScheduledInterviewTest {
                 Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
             "user@company.org",
             "user2@mail.com");
-    Assert.assertEquals(true, storedScheduledInterview.equals(copyScheduledInterview2));
+    Assert.assertEquals(copyScheduledInterview2, storedScheduledInterview);
   }
 
   // Tests updating a user's scheduledInterview.
@@ -159,27 +154,29 @@ public class DatastoreScheduledInterviewTest {
                 Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
             "user@company.org",
             "user3@mail.com");
-    tester.update(previousStoredScheduledInterview);
+    tester.update(updatedStoredScheduledInterview);
+    Entity updatedEntity = datastore.prepare(new Query("ScheduledInterview")).asSingleEntity();
+    ScheduledInterview updatedScheduledInterview = tester.entityToScheduledInterview(updatedEntity);
+    Assert.assertEquals(updatedStoredScheduledInterview, updatedScheduledInterview);
+  }
 
-    List<Boolean> actual = new ArrayList<Boolean>();
-    actual.add(previousStoredScheduledInterview.id() == updatedStoredScheduledInterview.id());
-    actual.add(
-        previousStoredScheduledInterview.when().equals(updatedStoredScheduledInterview.when()));
-    actual.add(
-        previousStoredScheduledInterview
-            .interviewerEmail()
-            .equals(updatedStoredScheduledInterview.interviewerEmail()));
-    actual.add(
-        previousStoredScheduledInterview
-            .intervieweeEmail()
-            .equals(updatedStoredScheduledInterview.intervieweeEmail()));
-
-    List<Boolean> expected = new ArrayList<Boolean>();
-    expected.add(true);
-    expected.add(false);
-    expected.add(true);
-    expected.add(false);
-
-    Assert.assertEquals(true, expected.equals(actual));
+  // Tests retrieving a scheduledInterview from Datastore.
+  @Test
+  public void getsScheduledInterview() {
+    tester.create(scheduledInterview1);
+    Entity entity = datastore.prepare(new Query("ScheduledInterview")).asSingleEntity();
+    ScheduledInterview storedScheduledInterview = tester.entityToScheduledInterview(entity);
+    Optional<ScheduledInterview> actualScheduledInterviewOptional =
+        tester.get(storedScheduledInterview.id());
+    ScheduledInterview expectedScheduledInterview =
+        ScheduledInterview.create(
+            storedScheduledInterview.id(),
+            new TimeRange(
+                Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
+            "user@company.org",
+            "user@mail.com");
+    Optional<ScheduledInterview> expectedScheduledInterviewOptional =
+        Optional.of(expectedScheduledInterview);
+    Assert.assertEquals(expectedScheduledInterviewOptional, actualScheduledInterviewOptional);
   }
 }
