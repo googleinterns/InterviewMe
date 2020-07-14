@@ -44,9 +44,7 @@ function listScheduledInterviews() {
 // Creates a scheduledInterview card using the fields of a scheduledInterview object
 function createScheduledInterviewCard(email, scheduledInterview) {
   // Check the role of the current user for the scheduledInterview
-  let role; 
-  console.log(typeof email);
-  console.log(typeof scheduledInterview.interviewerEmail); 
+  let role;  
   if(email === scheduledInterview.interviewerEmail) {
     role = 'Interviewer'; 
   } else {
