@@ -38,7 +38,18 @@ function selectInterview(interviewer) {
       `PM with a ${interviewer.getAttribute('data-company')} ` +
       `${interviewer.getAttribute('data-job')}. Check your email for more ` +
       `information.`);
-    // TODO: Call a servlet to save this selection.
+    const request = new Request(`/scheduled-interviews?startTime=2020-07-05T18:30:10Z&endTime=2020-07-05T19:30:10Z&interviewer=${interviewer.getAttribute('data-email')}&interviewee=user@gmail.com`, {
+      method: 'POST'
+    }); 
+    fetch(request)
+      .then(response => {
+        if (!response.ok) {
+          throw Error(`Status:${response.status}`); 
+        }
+      })
+      .catch((error) => {
+        console.log(error); 
+      })
     location.reload();
   }
 }
