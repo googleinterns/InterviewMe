@@ -20,6 +20,7 @@ function onScheduledInterviewsLoad() {
 
 // Retrieves the List of scheduled interviews from Datastore and builds the scheduled Interview section
 function listScheduledInterviews() {
+  // TODO: get current user's email through a servlet call
   let email = 'gswe@gmail.com'; 
   const scheduledInterviewsSection = document.getElementById('scheduled-interviews-cards');
   fetch(`/scheduled-interviews?userEmail=${email}`)
@@ -82,11 +83,12 @@ function createScheduledInterviewCard(email, scheduledInterview) {
 }
 
 function isEmptyObject(obj) {
-  if (obj.length && obj.length > 0)
+  if (obj.length && obj.length > 0) {
       return false;          
-
-  if (obj.length === 0)
-     return true;           
+  }
+  if (obj.length === 0) {
+     return true;       
+  }    
 }
 
 function createDateString(scheduledInterview) { 
