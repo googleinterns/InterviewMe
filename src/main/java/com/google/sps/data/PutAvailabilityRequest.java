@@ -16,12 +16,12 @@ package com.google.sps.data;
 
 import java.util.ArrayList;
 
-public class AvailabilityJSONConverter {
+public class PutAvailabilityRequest {
   private String firstSlot;
   private String lastSlot;
   private ArrayList<String> selectedSlots;
 
-  public AvailabilityJSONConverter(
+  public PutAvailabilityRequest(
       String firstSlot, String lastSlot, ArrayList<String> selectedSlots) {
     this.firstSlot = firstSlot;
     this.lastSlot = lastSlot;

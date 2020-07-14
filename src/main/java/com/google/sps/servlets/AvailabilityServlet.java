@@ -15,7 +15,7 @@
 package com.google.sps.servlets;
 
 import com.google.gson.Gson;
-import com.google.sps.data.AvailabilityJSONConverter;
+import com.google.sps.data.PutAvailabilityRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +35,6 @@ public class AvailabilityServlet extends HttpServlet {
     while ((payloadLine = reader.readLine()) != null) buffer.append(payloadLine);
     String jsonString = buffer.toString();
     Gson gson = new Gson();
-    AvailabilityJSONConverter utcEncodings =
-        gson.fromJson(jsonString, AvailabilityJSONConverter.class);
+    PutAvailabilityRequest utcEncodings = gson.fromJson(jsonString, PutAvailabilityRequest.class);
   }
 }
