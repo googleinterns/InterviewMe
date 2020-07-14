@@ -14,8 +14,6 @@
 
 package com.google.sps.data;
 
-import static org.junit.Assert.*;
-
 import com.google.appengine.tools.development.testing.LocalCapabilitiesServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.base.Preconditions;
