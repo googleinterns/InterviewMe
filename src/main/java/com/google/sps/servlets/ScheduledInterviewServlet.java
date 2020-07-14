@@ -52,7 +52,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(scheduledInterviews));
   }
 
-  // Send the request's contents to Datastore in the form of a new ScheduledInterview object. 
+  // Send the request's contents to Datastore in the form of a new ScheduledInterview object.
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     ScheduledInterview scheduledInterview =
