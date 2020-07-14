@@ -47,9 +47,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     List<ScheduledInterview> scheduledInterviews =
         scheduledInterviewDao.getForPerson(request.getParameter("userEmail"));
-    Gson gson = new Gson();
     response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(scheduledInterviews));
+    response.getWriter().println(new Gson().toJson(scheduledInterviews));
   }
 
   // Send the request's contents to Datastore in the form of a new ScheduledInterview object.
