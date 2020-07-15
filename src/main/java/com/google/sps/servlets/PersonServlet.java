@@ -20,11 +20,15 @@ import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.Person;
 import com.google.sps.data.PersonDao;
 import java.io.IOException;
+import java.io.BufferedReader;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 @WebServlet("/person")
 public class PersonServlet extends HttpServlet {
@@ -57,13 +61,20 @@ public class PersonServlet extends HttpServlet {
   // Updates Datastore with the Person information in request.
   @Override
   public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    personDao.update(
-        Person.create(
-            request.getParameter("user-email"),
-            request.getParameter("first-name"),
-            request.getParameter("last-name"),
-            request.getParameter("company"),
-            request.getParameter("job"),
-            request.getParameter("linkedin")));
+    System.out.println(getJsonString(request));
+    String json = "{\"firstName\": \"John\", \"lastName\": \"Smith\"}";
+    JsonElement personJson = new JsonParser().parse(json);
+    System.out.println(personJson.getAsString());
+    // JsonObject personJson = new JsonParser().parse(getJsonString(request)).getAsJsonObject();
+    // System.out.println(personJson.get("userEmail"));
+  }
+
+  private static String getJsonString(HttpServletRequest request) throws IOException {
+    BufferedReader reader = request.getReader();
+    StringBuffer buffer = new StringBuffer();
+    String payloadLine = null;
+
+    while ((payloadLine = reader.readLine()) != null) buffer.append(payloadLine);
+    return buffer.toString();
   }
 }
