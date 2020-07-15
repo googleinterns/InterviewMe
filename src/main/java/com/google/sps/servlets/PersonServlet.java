@@ -21,16 +21,13 @@ import com.google.gson.Gson;
 import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.Person;
 import com.google.sps.data.PersonDao;
+import com.google.sps.data.PersonRequest;
 import java.io.IOException;
 import java.io.BufferedReader;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import java.util.Optional;
 
 @WebServlet("/person")
@@ -47,18 +44,18 @@ public class PersonServlet extends HttpServlet {
     this.personDao = personDao;
   }
 
-  // Sends the request's contents to Datastore in the form of a new Person.
+  // Sends the request's contents to Datastore in the form of a new Person. Sends a 400 error if
+  // the JSON is malformed.
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    JsonObject personJson = new JsonParser().parse(getJsonString(request)).getAsJsonObject();
-    personDao.create(
-        Person.create(
-            personJson.get("userEmail").getAsString(),
-            personJson.get("firstName").getAsString(),
-            personJson.get("lastName").getAsString(),
-            personJson.get("company").getAsString(),
-            personJson.get("job").getAsString(),
-            personJson.get("linkedin").getAsString()));
+    try {
+      PersonRequest personRequest =
+          new Gson().fromJson(getJsonString(request), PersonRequest.class);
+      personDao.create(Person.create(personRequest));
+    } catch (Exception JsonSyntaxException) {
+      response.sendError(400);
+      return;
+    }
   }
 
   // Updates Datastore with the Person information in request.
@@ -87,7 +84,10 @@ public class PersonServlet extends HttpServlet {
     Preconditions.checkState(requesteeEmail.equals(userEmail));
 
     Optional<Person> personOpt = personDao.get(requesteeEmail);
+    System.out.println("requesteeEmail " + requesteeEmail);
+
     if (!personOpt.isPresent()) {
+      System.out.println("not in datastore");
       // TODO: apply this to all other pages when someone accesses them illegally.
       response.sendRedirect("/register.html");
       return;

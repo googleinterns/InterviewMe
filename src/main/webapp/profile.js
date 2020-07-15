@@ -23,7 +23,7 @@ function onProfileLoad() {
 // Submits profile form to Datastore.
 function submitProfileForm(methodType, redirectUrl) {
   const personJson = {
-    userEmail: $('#user-email').val(),
+    email: $('#user-email').val(),
     firstName: $('#first-name-field').val(),
     lastName: $('#last-name-field').val(),
     company: $('#company-field').val(),

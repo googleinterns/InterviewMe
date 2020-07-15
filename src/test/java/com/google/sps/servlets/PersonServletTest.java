@@ -59,9 +59,9 @@ public final class PersonServletTest {
   @Test
   public void getOneOutOfTwo() throws IOException, UnsupportedEncodingException {
     String personA =
-        "{\"userEmail\": \"a@gmail.com\", \"firstName\": \"a\", \"lastName\": \"a\", \"company\": \"\", \"job\": \"\", \"linkedin\": \"\"}";
+        "{\"email\": \"a@gmail.com\", \"firstName\": \"a\", \"lastName\": \"a\", \"company\": \"\", \"job\": \"\", \"linkedin\": \"\"}";
     String personB =
-        "{\"userEmail\": \"b@gmail.com\", \"firstName\": \"b\", \"lastName\": \"b\", \"company\": \"\", \"job\": \"\", \"linkedin\": \"\"}";
+        "{\"email\": \"b@gmail.com\", \"firstName\": \"b\", \"lastName\": \"b\", \"company\": \"\", \"job\": \"\", \"linkedin\": \"\"}";
 
     // Post person a.
     MockHttpServletRequest postRequest =
@@ -92,7 +92,7 @@ public final class PersonServletTest {
   @Test
   public void getUpdatedInfo() throws IOException, UnsupportedEncodingException {
     String personA =
-        "{\"userEmail\": \"a@gmail.com\", \"firstName\": \"old\", \"lastName\": \"old\", \"company\": \"\", \"job\": \"\", \"linkedin\": \"\"}";
+        "{\"email\": \"a@gmail.com\", \"firstName\": \"old\", \"lastName\": \"old\", \"company\": \"\", \"job\": \"\", \"linkedin\": \"\"}";
 
     // Post person a.
     MockHttpServletRequest postRequest =
@@ -103,7 +103,7 @@ public final class PersonServletTest {
 
     // Update person a.
     personA =
-        "{\"userEmail\": \"a@gmail.com\", \"firstName\": \"new\", \"lastName\": \"new\", \"company\": \"\", \"job\": \"\", \"linkedin\": \"\"}";
+        "{\"email\": \"a@gmail.com\", \"firstName\": \"new\", \"lastName\": \"new\", \"company\": \"\", \"job\": \"\", \"linkedin\": \"\"}";
     MockHttpServletRequest putRequest =
         put("/person").content(personA).buildRequest(new MockServletContext());
     personServlet.doPut(putRequest, new MockHttpServletResponse());
