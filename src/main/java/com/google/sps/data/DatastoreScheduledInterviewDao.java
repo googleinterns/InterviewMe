@@ -115,24 +115,22 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
   /** Creates a scheduledInterview Entity from a scheduledInterview object. */
   public Entity scheduledInterviewToEntity(ScheduledInterview scheduledInterview) {
     Entity scheduledInterviewEntity = new Entity("ScheduledInterview");
-    setEntityProperties(scheduledInterviewEntity, scheduledInterview);
+    scheduledInterviewEntity.setProperty(
+        "startTime", scheduledInterview.when().start().toEpochMilli());
+    scheduledInterviewEntity.setProperty("endTime", scheduledInterview.when().end().toEpochMilli());
+    scheduledInterviewEntity.setProperty("interviewer", scheduledInterview.interviewerEmail());
+    scheduledInterviewEntity.setProperty("interviewee", scheduledInterview.intervieweeEmail());
     return scheduledInterviewEntity;
   }
 
   /** Updates a scheduledInterview Entity from a scheduledInterview object. */
   public Entity scheduledInterviewToUpdateEntity(ScheduledInterview scheduledInterview) {
     Entity scheduledInterviewEntity = new Entity("ScheduledInterview", scheduledInterview.id());
-    setEntityProperties(scheduledInterviewEntity, scheduledInterview);
-    return scheduledInterviewEntity;
-  }
-
-  /** Sets the properties of a scheduledInterview Entity. */
-  static void setEntityProperties(
-      Entity scheduledInterviewEntity, ScheduledInterview scheduledInterview) {
     scheduledInterviewEntity.setProperty(
         "startTime", scheduledInterview.when().start().toEpochMilli());
     scheduledInterviewEntity.setProperty("endTime", scheduledInterview.when().end().toEpochMilli());
     scheduledInterviewEntity.setProperty("interviewer", scheduledInterview.interviewerEmail());
     scheduledInterviewEntity.setProperty("interviewee", scheduledInterview.intervieweeEmail());
+    return scheduledInterviewEntity;
   }
 }
