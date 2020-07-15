@@ -14,8 +14,7 @@
 
 function onRegisterLoad() {
   supplyLogoutLink();
-  autofillEmail();
-  prepareFormValidation();
+  autofillEmail().then(prepareFormValidation());
 }
 
 // Autofills email on the registration form of the email of the logged in user.
@@ -23,7 +22,7 @@ function autofillEmail() {
   return fetch('/login')
     .then(response => response.json())
     .then((status) => {
-      $("#user-email").val(status.email);
+      $('#user-email').val(status.email);
     });
 } 
 
