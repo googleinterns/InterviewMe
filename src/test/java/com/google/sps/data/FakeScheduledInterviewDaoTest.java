@@ -56,7 +56,7 @@ public class FakeScheduledInterviewDaoTest {
           "user3@company.org",
           "user2@mail.com");
 
-  // Checks that an ScheduledInterview is stored in datastore.
+  // Test whether the scheduledInterview was added to datastore.
   @Test
   public void createsScheduledInterview() {
     tester.create(scheduledInterview1);
@@ -71,49 +71,52 @@ public class FakeScheduledInterviewDaoTest {
             "user@mail.com");
     Assert.assertEquals(expected, storedScheduledInterviews.get(0));
   }
-  /*
-  // Checks that an Availability is updated in datastore.
+
+  // Tests updating a user's scheduledInterview.
   @Test
-  public void updatesAvailability() {
-    tester.create(availabilityOne);
-    List<Availability> storedAvailabilities =
-        new ArrayList<Availability>(tester.datastore.values());
-    Availability update =
-        Availability.create(
-            "user1@mail.com",
+  public void updatesScheduledInterview() {
+    tester.create(scheduledInterview1);
+    List<ScheduledInterview> storedScheduledInterviews =
+        new ArrayList<ScheduledInterview>(tester.datastore.values());
+    ScheduledInterview updatedScheduledInterview =
+        ScheduledInterview.create(
+            storedScheduledInterviews.get(0).id(),
             new TimeRange(
-                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
-            storedAvailabilities.get(0).id(),
-            false);
-    tester.update(update);
-    List<Availability> updatedAvailabilities =
-        new ArrayList<Availability>(tester.datastore.values());
-    Assert.assertEquals(update, updatedAvailabilities.get(0));
+                Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
+            "user@company.org",
+            "user2@mail.com");
+    tester.update(updatedScheduledInterview);
+    List<ScheduledInterview> updatedScheduledInterviews =
+        new ArrayList<ScheduledInterview>(tester.datastore.values());
+    Assert.assertEquals(updatedScheduledInterview, updatedScheduledInterviews.get(0));
   }
 
-  // Checks that an Availability is returned when it exists within datastore.
+  // Tests retrieving a scheduledInterview from Datastore.
   @Test
-  public void getsAvailability() {
-    tester.create(availabilityOne);
-    List<Availability> storedAvailabilities =
-        new ArrayList<Availability>(tester.datastore.values());
-    Availability expected =
-        Availability.create(
-            "user1@mail.com",
+  public void getsScheduledInterview() {
+    tester.create(scheduledInterview1);
+    List<ScheduledInterview> storedScheduledInterviews =
+        new ArrayList<ScheduledInterview>(tester.datastore.values());
+    ScheduledInterview expected =
+        ScheduledInterview.create(
+            storedScheduledInterviews.get(0).id(),
             new TimeRange(
-                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
-            storedAvailabilities.get(0).id(),
-            true);
+                Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
+            "user@company.org",
+            "user@mail.com");
     Assert.assertEquals(Optional.of(expected), tester.get(expected.id()));
   }
 
-  // Checks that an empty Optional is returned when an Availability does not exist within
-  // datastore.
+  // Tests retrieving a scheduledInterview that doesn't exist from Datastore.
   @Test
-  public void failsToGetAvailability() {
-    Optional<Availability> actual = tester.get(24);
-    Optional<Availability> expected = Optional.empty();
+  public void failsToGetScheduledInterview() {
+    Optional<ScheduledInterview> actual = tester.get(24);
+    Optional<ScheduledInterview> expected = Optional.empty();
     Assert.assertEquals(expected, actual);
   }
-  */
+  
+  // Tests deleting a user's scheduledInterview.
+  tester.create(scheduledInterview1); 
+  tester.create(scheduledInterview2); 
+  List<ScheduledInterview> result; 
 }
