@@ -139,8 +139,8 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
   // minTime and maxTime are in milliseconds.
   @Override
   public List<Availability> getScheduledInRangeForUser(String email, long minTime, long maxTime) {
-    Filter userFilter = new FilterPredicate("email", FilterOperator.EQUAL, email),
-        scheduledFilter = new FilterPredicate("scheduled", FilterOperator.EQUAL, true);
+    Filter userFilter = new FilterPredicate("email", FilterOperator.EQUAL, email);
+    Filter scheduledFilter = new FilterPredicate("scheduled", FilterOperator.EQUAL, true);
     CompositeFilter scheduledForUserFilter =
         CompositeFilterOperator.and(userFilter, scheduledFilter);
     List<Entity> entities =
@@ -165,9 +165,8 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
   }
 
   private List<Entity> getEntitiesInRange(long minTime, long maxTime, Optional<Filter> filterOpt) {
-    Filter
-        minFilter = new FilterPredicate("startTime", FilterOperator.GREATER_THAN_OR_EQUAL, minTime),
-        maxFilter = new FilterPredicate("startTime", FilterOperator.LESS_THAN_OR_EQUAL, maxTime);
+    Filter minFilter = new FilterPredicate("startTime", FilterOperator.GREATER_THAN_OR_EQUAL, minTime);
+    Filter maxFilter = new FilterPredicate("startTime", FilterOperator.LESS_THAN_OR_EQUAL, maxTime);
     CompositeFilter compFilter = CompositeFilterOperator.and(minFilter, maxFilter);
     if (filterOpt.isPresent()) {
       compFilter = CompositeFilterOperator.and(compFilter, filterOpt.get());
