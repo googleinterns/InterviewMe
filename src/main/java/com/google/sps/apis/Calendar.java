@@ -69,14 +69,18 @@ public class Calendar {
     }
     GoogleClientSecrets clientSecrets =
         GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
-
+    System.out.println("b1");
+    
     // Build flow and trigger user authorization request.
     GoogleAuthorizationCodeFlow flow =
         new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
             .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
             .setAccessType("offline")
             .build();
+    System.out.println("b2");
+    
     LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+    System.out.println("b3");
     return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
   }
 
@@ -87,6 +91,7 @@ public class Calendar {
         new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
             .setApplicationName(APPLICATION_NAME)
             .build();
+    System.out.println("b4");
 
     // List the next 10 events from the primary calendar.
     /*
