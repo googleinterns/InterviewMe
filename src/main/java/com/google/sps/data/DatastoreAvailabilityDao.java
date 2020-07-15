@@ -78,22 +78,20 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
 
   static Entity availabilityToNewEntity(Availability avail) {
     Entity availabilityEntity = new Entity("Availability");
-    setEntityProperties(availabilityEntity, avail);
+    availabilityEntity.setProperty("email", avail.email());
+    availabilityEntity.setProperty("startTime", avail.when().start().toEpochMilli());
+    availabilityEntity.setProperty("endTime", avail.when().end().toEpochMilli());
+    availabilityEntity.setProperty("scheduled", avail.scheduled());
     return availabilityEntity;
   }
 
   static Entity availabilityToUpdatedEntity(Availability avail) {
     Entity availabilityEntity = new Entity("Availability", avail.id());
-    setEntityProperties(availabilityEntity, avail);
-    return availabilityEntity;
-  }
-
-  static void setEntityProperties(Entity availabilityEntity, Availability avail) {
     availabilityEntity.setProperty("email", avail.email());
     availabilityEntity.setProperty("startTime", avail.when().start().toEpochMilli());
     availabilityEntity.setProperty("endTime", avail.when().end().toEpochMilli());
     availabilityEntity.setProperty("scheduled", avail.scheduled());
-    return;
+    return availabilityEntity;
   }
 
   static Availability entityToAvailability(Entity availabilityEntity) {
@@ -116,6 +114,7 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
     for (Entity entity : entities) {
       keyList.add(entity.getKey());
     }
+    // This iterative deletion avoids XG transactions, which max out at 25 root entities.
     for (Key key : keyList) {
       Transaction txn = datastore.beginTransaction();
       datastore.delete(txn, key);
@@ -140,8 +139,8 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
   // minTime and maxTime are in milliseconds.
   @Override
   public List<Availability> getScheduledInRangeForUser(String email, long minTime, long maxTime) {
-    Filter userFilter = new FilterPredicate("email", FilterOperator.EQUAL, email),
-        scheduledFilter = new FilterPredicate("scheduled", FilterOperator.EQUAL, true);
+    Filter userFilter = new FilterPredicate("email", FilterOperator.EQUAL, email);
+    Filter scheduledFilter = new FilterPredicate("scheduled", FilterOperator.EQUAL, true);
     CompositeFilter scheduledForUserFilter =
         CompositeFilterOperator.and(userFilter, scheduledFilter);
     List<Entity> entities =
@@ -166,9 +165,8 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
   }
 
   private List<Entity> getEntitiesInRange(long minTime, long maxTime, Optional<Filter> filterOpt) {
-    Filter
-        minFilter = new FilterPredicate("startTime", FilterOperator.GREATER_THAN_OR_EQUAL, minTime),
-        maxFilter = new FilterPredicate("startTime", FilterOperator.LESS_THAN_OR_EQUAL, maxTime);
+    Filter minFilter = new FilterPredicate("startTime", FilterOperator.GREATER_THAN_OR_EQUAL, minTime);
+    Filter maxFilter = new FilterPredicate("startTime", FilterOperator.LESS_THAN_OR_EQUAL, maxTime);
     CompositeFilter compFilter = CompositeFilterOperator.and(minFilter, maxFilter);
     if (filterOpt.isPresent()) {
       compFilter = CompositeFilterOperator.and(compFilter, filterOpt.get());
