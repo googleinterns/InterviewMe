@@ -35,7 +35,7 @@ import org.junit.Test;
 
 public class DatastoreScheduledInterviewTest {
 
-  DatastoreScheduledInterviewDao tester = new DatastoreScheduledInterviewDao();
+  DatastoreScheduledInterviewDao dao = new DatastoreScheduledInterviewDao();
 
   DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
@@ -80,9 +80,9 @@ public class DatastoreScheduledInterviewTest {
   // Test whether the scheduledInterview was added to datastore.
   @Test
   public void createsAndStoresEntity() {
-    tester.create(scheduledInterview1);
+    dao.create(scheduledInterview1);
     Entity entity = datastore.prepare(new Query("ScheduledInterview")).asSingleEntity();
-    ScheduledInterview storedScheduledInterview = tester.entityToScheduledInterview(entity);
+    ScheduledInterview storedScheduledInterview = dao.entityToScheduledInterview(entity);
     ScheduledInterview copyScheduledInterview1 =
         ScheduledInterview.create(
             storedScheduledInterview.id(),
@@ -96,10 +96,10 @@ public class DatastoreScheduledInterviewTest {
   // Tests whether all scheduledInterviews for a particular user are returned.
   @Test
   public void getsAllScheduledInterviews() {
-    tester.create(scheduledInterview1);
-    tester.create(scheduledInterview2);
-    tester.create(scheduledInterview3);
-    List<ScheduledInterview> result = tester.getForPerson("user@company.org");
+    dao.create(scheduledInterview1);
+    dao.create(scheduledInterview2);
+    dao.create(scheduledInterview3);
+    List<ScheduledInterview> result = dao.getForPerson("user@company.org");
     ScheduledInterview copyScheduledInterview1 =
         ScheduledInterview.create(
             result.get(0).id(),
@@ -123,12 +123,12 @@ public class DatastoreScheduledInterviewTest {
   // Tests deleting a user's scheduledInterview.
   @Test
   public void deletesScheduledInterview() {
-    tester.create(scheduledInterview1);
-    tester.create(scheduledInterview2);
-    List<ScheduledInterview> result = tester.getForPerson("user@company.org");
-    tester.delete(result.get(0).id());
+    dao.create(scheduledInterview1);
+    dao.create(scheduledInterview2);
+    List<ScheduledInterview> result = dao.getForPerson("user@company.org");
+    dao.delete(result.get(0).id());
     Entity entity = datastore.prepare(new Query("ScheduledInterview")).asSingleEntity();
-    ScheduledInterview storedScheduledInterview = tester.entityToScheduledInterview(entity);
+    ScheduledInterview storedScheduledInterview = dao.entityToScheduledInterview(entity);
     ScheduledInterview copyScheduledInterview2 =
         ScheduledInterview.create(
             storedScheduledInterview.id(),
@@ -142,9 +142,9 @@ public class DatastoreScheduledInterviewTest {
   // Tests updating a user's scheduledInterview.
   @Test
   public void updatesScheduledInterview() {
-    tester.create(scheduledInterview1);
+    dao.create(scheduledInterview1);
     Entity entity = datastore.prepare(new Query("ScheduledInterview")).asSingleEntity();
-    ScheduledInterview previousStoredScheduledInterview = tester.entityToScheduledInterview(entity);
+    ScheduledInterview previousStoredScheduledInterview = dao.entityToScheduledInterview(entity);
     ScheduledInterview updatedStoredScheduledInterview =
         ScheduledInterview.create(
             previousStoredScheduledInterview.id(),
@@ -152,20 +152,20 @@ public class DatastoreScheduledInterviewTest {
                 Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
             "user@company.org",
             "user3@mail.com");
-    tester.update(updatedStoredScheduledInterview);
+    dao.update(updatedStoredScheduledInterview);
     Entity updatedEntity = datastore.prepare(new Query("ScheduledInterview")).asSingleEntity();
-    ScheduledInterview updatedScheduledInterview = tester.entityToScheduledInterview(updatedEntity);
+    ScheduledInterview updatedScheduledInterview = dao.entityToScheduledInterview(updatedEntity);
     Assert.assertEquals(updatedStoredScheduledInterview, updatedScheduledInterview);
   }
 
   // Tests retrieving a scheduledInterview from Datastore.
   @Test
   public void getsScheduledInterview() {
-    tester.create(scheduledInterview1);
+    dao.create(scheduledInterview1);
     Entity entity = datastore.prepare(new Query("ScheduledInterview")).asSingleEntity();
-    ScheduledInterview storedScheduledInterview = tester.entityToScheduledInterview(entity);
+    ScheduledInterview storedScheduledInterview = dao.entityToScheduledInterview(entity);
     Optional<ScheduledInterview> actualScheduledInterviewOptional =
-        tester.get(storedScheduledInterview.id());
+        dao.get(storedScheduledInterview.id());
     ScheduledInterview expectedScheduledInterview =
         ScheduledInterview.create(
             storedScheduledInterview.id(),
@@ -181,7 +181,7 @@ public class DatastoreScheduledInterviewTest {
   // Tests retrieving a scheduledInterview that doesn't exist from Datastore.
   @Test
   public void failsGetScheduledInterview() {
-    Optional<ScheduledInterview> actual = tester.get(2);
+    Optional<ScheduledInterview> actual = dao.get(2);
     Optional<ScheduledInterview> expected = Optional.empty();
     Assert.assertEquals(expected, actual);
   }

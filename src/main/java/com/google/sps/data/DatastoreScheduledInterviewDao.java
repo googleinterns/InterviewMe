@@ -123,7 +123,7 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
     return scheduledInterviewEntity;
   }
 
-  /** Updates a scheduledInterview Entity from a scheduledInterview object. */
+  /** Creates a scheduledInterview Entity with the updated fields and id of a scheduledInterview */
   public Entity scheduledInterviewToUpdateEntity(ScheduledInterview scheduledInterview) {
     Entity scheduledInterviewEntity = new Entity("ScheduledInterview", scheduledInterview.id());
     scheduledInterviewEntity.setProperty(
