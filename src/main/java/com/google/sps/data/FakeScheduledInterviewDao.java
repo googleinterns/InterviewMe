@@ -29,7 +29,7 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
+import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -43,7 +43,7 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
 
   /** Initializes the fields for ScheduledInterviewDatastoreDAO. */
   public FakeScheduledInterviewDao() {
-    datastore = new LinkedHashMap<String, ScheduledInterview>();
+    datastore = new TreeMap<String, ScheduledInterview>();
   }
 
   /**
@@ -62,14 +62,32 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
    * Retrieves all scheduledInterview entities from Datastore that involve a particular user and
    * returns them as a list of ScheduledInterview objects in the order in which they occur.
    */
+  /*
   @Override
   public List<ScheduledInterview> getForPerson(String email) {
     List<ScheduledInterview> relevantInterviews = new ArrayList<>();
+    List<ScheduledInterview> unsortedInterviews =
+        new ArrayList<ScheduledInterview>(datastore.values());
     for (Map.Entry<String, ScheduledInterview> entry : datastore.entrySet()) {
       String key = entry.getKey();
       ScheduledInterview value = entry.getValue();
       if (email.equals(value.interviewerEmail()) || email.equals(value.intervieweeEmail())) {
         relevantInterviews.add(value);
+      }
+    }
+    return relevantInterviews;
+  }
+  */
+
+  @Override
+  public List<ScheduledInterview> getForPerson(String email) {
+    List<ScheduledInterview> relevantInterviews = new ArrayList<>();
+    List<ScheduledInterview> unsortedInterviews =
+        new ArrayList<ScheduledInterview>(datastore.values());
+    for (ScheduledInterview scheduledInterview : unsortedInterviews) {
+      if (email.equals(scheduledInterview.interviewerEmail())
+          || email.equals(scheduledInterview.intervieweeEmail())) {
+        relevantInterviews.add(scheduledInterview);
       }
     }
     return relevantInterviews;
