@@ -64,12 +64,15 @@ public class PersonServlet extends HttpServlet {
   // Updates Datastore with the Person information in request.
   @Override
   public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println(getJsonString(request));
-    String json = "{\"firstName\": \"John\", \"lastName\": \"Smith\"}";
-    JsonElement personJson = new JsonParser().parse(json);
-    System.out.println(personJson.getAsString());
-    // JsonObject personJson = new JsonParser().parse(getJsonString(request)).getAsJsonObject();
-    // System.out.println(personJson.get("userEmail"));
+    JsonObject personJson = new JsonParser().parse(getJsonString(request)).getAsJsonObject();
+    personDao.create(
+        Person.create(
+            personJson.get("userEmail").getAsString(),
+            personJson.get("firstName").getAsString(),
+            personJson.get("lastName").getAsString(),
+            personJson.get("company").getAsString(),
+            personJson.get("job").getAsString(),
+            personJson.get("linkedin").getAsString()));
   }
 
   private static String getJsonString(HttpServletRequest request) throws IOException {
