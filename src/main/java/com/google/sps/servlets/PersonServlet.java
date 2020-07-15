@@ -58,10 +58,18 @@ public class PersonServlet extends HttpServlet {
     }
   }
 
-  // Updates Datastore with the Person information in request.
+  // Updates Datastore with the Person information in request. Sends a 400 error if
+  // the JSON is malformed.
   @Override
   public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    doPost(request, response);
+    try {
+      PersonRequest personRequest =
+          new Gson().fromJson(getJsonString(request), PersonRequest.class);
+      personDao.update(Person.create(personRequest));
+    } catch (Exception JsonSyntaxException) {
+      response.sendError(400);
+      return;
+    }
   }
 
   // Get Json from request body.
