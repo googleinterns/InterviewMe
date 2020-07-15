@@ -43,7 +43,6 @@ public class PersonServlet extends HttpServlet {
     init(new DatastorePersonDao());
   }
 
-  // TODO: add a FakePersonDao class so this will become useful
   public void init(PersonDao personDao) {
     this.personDao = personDao;
   }
@@ -68,6 +67,7 @@ public class PersonServlet extends HttpServlet {
     doPost(request, response);
   }
 
+  // Get Json from request body.
   private static String getJsonString(HttpServletRequest request) throws IOException {
     BufferedReader reader = request.getReader();
     StringBuffer buffer = new StringBuffer();
@@ -87,7 +87,6 @@ public class PersonServlet extends HttpServlet {
     Preconditions.checkState(requesteeEmail.equals(userEmail));
 
     Optional<Person> personOpt = personDao.get(requesteeEmail);
-    System.out.println(requesteeEmail);
     if (!personOpt.isPresent()) {
       // TODO: apply this to all other pages when someone accesses them illegally.
       response.sendRedirect("/register.html");
