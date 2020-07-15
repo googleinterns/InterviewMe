@@ -72,7 +72,7 @@ public final class ScheduledInterviewServletTest {
     scheduledInterviewServlet.doPost(postRequest, postResponse);
     Assert.assertEquals(200, postResponse.getStatus());
   }
-  
+
   // Tests whether a list of scheduledInterviews was returned by the server
   @Test
   public void validScheduledInterviewServletGetRequest() throws IOException {

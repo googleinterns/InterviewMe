@@ -39,7 +39,7 @@ import java.util.Set;
 /** Accesses Datastore to support managing ScheduledInterview entities. */
 public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
   // @param datastore The DatastoreService we're using to interact with Datastore.
-  private Map<String, ScheduledInterview> datastore;
+  public Map<String, ScheduledInterview> datastore;
 
   /** Initializes the fields for ScheduledInterviewDatastoreDAO. */
   public FakeScheduledInterviewDao() {
