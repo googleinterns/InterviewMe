@@ -25,7 +25,7 @@ function autofillEmail() {
     .then((status) => {
       $("#user-email").val(status.email);
     });
-}
+} 
 
 // Finds fields that need an input and makes sure that submit won't go through if they are empty. 
 // Straight from Bootstrap.
