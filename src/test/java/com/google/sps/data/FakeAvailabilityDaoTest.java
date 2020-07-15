@@ -67,53 +67,264 @@ public class FakeAvailabilityDaoTest {
   // Checks that an Availability is stored in datastore.
   @Test
   public void createsAvailability() {
-    // tester.create(availabilityOne);
-    // Assert.assertTrue(tester.datastore.contains(availabilityOne));
+    tester.create(availabilityOne);
+    List<Availability> storedAvailabilities =
+        new ArrayList<Availability>(tester.datastore.values());
+    Availability expected =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
+            storedAvailabilities.get(0).id(),
+            true);
+    Assert.assertEquals(expected, storedAvailabilities.get(0));
   }
 
   // Checks that an Availability is updated in datastore.
   @Test
-  public void updatesAvailability() {}
+  public void updatesAvailability() {
+    tester.create(availabilityOne);
+    List<Availability> storedAvailabilities =
+        new ArrayList<Availability>(tester.datastore.values());
+    Availability update =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
+            storedAvailabilities.get(0).id(),
+            false);
+    tester.update(update);
+    List<Availability> updatedAvailabilities =
+        new ArrayList<Availability>(tester.datastore.values());
+    Assert.assertEquals(update, updatedAvailabilities.get(0));
+  }
 
   // Checks that an Availability is returned when it exists within datastore.
   @Test
-  public void getsAvailability() {}
+  public void getsAvailability() {
+    tester.create(availabilityOne);
+    List<Availability> storedAvailabilities =
+        new ArrayList<Availability>(tester.datastore.values());
+    Availability expected =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
+            storedAvailabilities.get(0).id(),
+            true);
+    Assert.assertEquals(Optional.of(expected), tester.get(expected.id()));
+  }
 
   // Checks that an empty Optional is returned when an Availability does not exist within
   // datastore.
   @Test
-  public void failsToGetAvailability() {}
+  public void failsToGetAvailability() {
+    Optional<Availability> actual = tester.get(24);
+    Optional<Availability> expected = Optional.empty();
+    Assert.assertEquals(expected, actual);
+  }
 
   // Checks that the Availability objects within a given time range for a specified user
   // are deleted.
   @Test
-  public void deletesInRange() {}
+  public void deletesInRange() {
+    tester.create(availabilityOne);
+    tester.create(availabilityTwo);
+    tester.create(availabilityFour);
+    tester.deleteInRangeForUser(
+        "user1@mail.com",
+        Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
+        Instant.parse("2020-07-07T16:00:00Z").toEpochMilli());
+    List<Availability> storedAvailabilities =
+        new ArrayList<Availability>(tester.datastore.values());
+    Availability expected =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T22:30:00Z"), Instant.parse("2020-07-07T22:45:00Z")),
+            storedAvailabilities.get(0).id(),
+            true);
+    Assert.assertEquals(expected, storedAvailabilities.get(0));
+  }
 
   // Checks that only the Availability objects for the specified user are deleted within
   // a given time range (and not the Availability objects of other users).
   @Test
-  public void deletesUsersAvailabilityInRange() {}
+  public void deletesUsersAvailabilityInRange() {
+    tester.create(availabilityOne);
+    tester.create(availabilityTwo);
+    tester.create(availabilityThree);
+    tester.deleteInRangeForUser(
+        "user1@mail.com",
+        Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
+        Instant.parse("2020-07-07T17:45:00Z").toEpochMilli());
+    List<Availability> storedAvailabilities =
+        new ArrayList<Availability>(tester.datastore.values());
+    Availability expected =
+        Availability.create(
+            "user2@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T17:30:00Z"), Instant.parse("2020-07-07T17:45:00Z")),
+            storedAvailabilities.get(0).id(),
+            true);
+    Assert.assertEquals(expected, storedAvailabilities.get(0));
+  }
 
   // Checks that all Availability objects for a user within a given time range are returned.
   @Test
-  public void getsUsersAvailabilityInRange() {}
+  public void getsUsersAvailabilityInRange() {
+    tester.create(availabilityOne);
+    tester.create(availabilityTwo);
+    tester.create(availabilityFour);
+    List<Availability> actual =
+        tester.getInRangeForUser(
+            "user1@mail.com",
+            Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
+            Instant.parse("2020-07-07T16:00:00Z").toEpochMilli());
+    List<Availability> storedAvailabilities =
+        new ArrayList<Availability>(tester.datastore.values());
+    Availability expectedAvailabilityOne =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
+            storedAvailabilities.get(0).id(),
+            true);
+    Availability expectedAvailabilityTwo =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T15:45:00Z"), Instant.parse("2020-07-07T16:00:00Z")),
+            storedAvailabilities.get(1).id(),
+            false);
+    List<Availability> expectedAvailabilities = new ArrayList<Availability>();
+    expectedAvailabilities.add(expectedAvailabilityOne);
+    expectedAvailabilities.add(expectedAvailabilityTwo);
+    Assert.assertEquals(expectedAvailabilities, actual);
+  }
 
   // Checks that only the Availability objects for the specified user are returned within
   // a given time range (and not the Availability objects of other users).
   @Test
-  public void onlyGetsSpecifiedUsersAvailabilityInRange() {}
+  public void onlyGetsSpecifiedUsersAvailabilityInRange() {
+    tester.create(availabilityOne);
+    tester.create(availabilityTwo);
+    tester.create(availabilityThree);
+    List<Availability> actual =
+        tester.getInRangeForUser(
+            "user1@mail.com",
+            Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
+            Instant.parse("2020-07-07T17:45:00Z").toEpochMilli());
+    List<Availability> storedAvailabilities =
+        new ArrayList<Availability>(tester.datastore.values());
+    Availability expectedAvailabilityOne =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
+            storedAvailabilities.get(0).id(),
+            true);
+    Availability expectedAvailabilityTwo =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T15:45:00Z"), Instant.parse("2020-07-07T16:00:00Z")),
+            storedAvailabilities.get(1).id(),
+            false);
+    List<Availability> expectedAvailabilities = new ArrayList<Availability>();
+    expectedAvailabilities.add(expectedAvailabilityOne);
+    expectedAvailabilities.add(expectedAvailabilityTwo);
+    Assert.assertEquals(expectedAvailabilities, actual);
+  }
 
   // Checks that all scheduled Availability objects from a specified user
   // and within a given time range are returned.
   @Test
-  public void getsScheduledAvailabilitiesForUserInRange() {}
+  public void getsScheduledAvailabilitiesForUserInRange() {
+    tester.create(availabilityOne);
+    tester.create(availabilityTwo);
+    List<Availability> actual =
+        tester.getScheduledInRangeForUser(
+            "user1@mail.com",
+            Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
+            Instant.parse("2020-07-07T16:00:00Z").toEpochMilli());
+    List<Availability> storedAvailabilities =
+        new ArrayList<Availability>(tester.datastore.values());
+    Availability expectedAvailability =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
+            storedAvailabilities.get(0).id(),
+            true);
+    List<Availability> expected = new ArrayList<Availability>();
+    expected.add(expectedAvailability);
+    Assert.assertEquals(expected, actual);
+  }
 
   // Checks that only the scheduled Availability objects for a specific user
   // are returned (and not the scheduled Availability objects of other users).
   @Test
-  public void onlyGetsSpecifiedUsersScheduledAvailabilityInRange() {}
+  public void onlyGetsSpecifiedUsersScheduledAvailabilityInRange() {
+    tester.create(availabilityOne);
+    tester.create(availabilityThree);
+    List<Availability> actual =
+        tester.getScheduledInRangeForUser(
+            "user1@mail.com",
+            Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
+            Instant.parse("2020-07-07T17:45:00Z").toEpochMilli());
+    List<Availability> storedAvailabilities =
+        new ArrayList<Availability>(tester.datastore.values());
+    Availability expectedAvailability =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
+            storedAvailabilities.get(0).id(),
+            true);
+    List<Availability> expected = new ArrayList<Availability>();
+    expected.add(expectedAvailability);
+    Assert.assertEquals(expected, actual);
+  }
 
   // Checks that all of the Availability objects within a given time range are returned.
   @Test
-  public void getsAllUsersAvailabilityInRange() {}
+  public void getsAllUsersAvailabilityInRange() {
+    tester.create(availabilityOne);
+    tester.create(availabilityTwo);
+    tester.create(availabilityThree);
+    tester.create(availabilityFour);
+    List<Availability> actual =
+        tester.getInRangeForAll(
+            Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
+            Instant.parse("2020-07-07T17:45:00Z").toEpochMilli());
+    List<Availability> storedAvailabilities =
+        new ArrayList<Availability>(tester.datastore.values());
+    Availability expectedAvailabilityOne =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
+            storedAvailabilities.get(0).id(),
+            true);
+    Availability expectedAvailabilityTwo =
+        Availability.create(
+            "user1@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T15:45:00Z"), Instant.parse("2020-07-07T16:00:00Z")),
+            storedAvailabilities.get(1).id(),
+            false);
+    Availability expectedAvailabilityThree =
+        Availability.create(
+            "user2@mail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T17:30:00Z"), Instant.parse("2020-07-07T17:45:00Z")),
+            storedAvailabilities.get(2).id(),
+            true);
+    List<Availability> expectedAvailabilities = new ArrayList<Availability>();
+    expectedAvailabilities.add(expectedAvailabilityOne);
+    expectedAvailabilities.add(expectedAvailabilityTwo);
+    expectedAvailabilities.add(expectedAvailabilityThree);
+    Assert.assertEquals(expectedAvailabilities, actual);
+  }
 }

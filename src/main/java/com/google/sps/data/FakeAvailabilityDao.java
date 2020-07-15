@@ -17,7 +17,7 @@ package com.google.sps.data;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -26,11 +26,11 @@ import java.util.Random;
 public class FakeAvailabilityDao implements AvailabilityDao {
   // @param datastore the fake database. Made public because it will only be used
   // while testing.
-  public HashMap<Long, Availability> datastore;
+  public LinkedHashMap<Long, Availability> datastore;
 
   /** Initializes the fields for FakeAvailabilityDao. */
   public FakeAvailabilityDao() {
-    datastore = new HashMap<Long, Availability>();
+    datastore = new LinkedHashMap<Long, Availability>();
   }
 
   /** Puts an Availability object into datastore with a randomly generated long as its id. */
