@@ -14,7 +14,9 @@
 
 package com.google.sps.data;
 
+import java.time.Instant;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -56,21 +58,79 @@ public class FakeAvailabilityDao implements AvailabilityDao {
     return Optional.empty();
   }
 
+  /**
+   * Deletes all Availability entities for a user ranging from minTime to maxTime. minTime and
+   * maxTime are in milliseconds.
+   */
   @Override
-  public void deleteInRangeForUser(String email, long minTime, long maxTime) {}
+  public void deleteInRangeForUser(String email, long minTime, long maxTime) {
+    List<Availability> userAvailability = getForUser(email);
+    List<Availability> userAvailabilityInRange = getInRange(userAvailability, minTime, maxTime);
+    for (Availability avail : userAvailabilityInRange) {
+      datastore.remove(avail.id());
+    }
+  }
 
+  /**
+   * Collects all Availabilities for the specified user within the specified time range, where
+   * minTime and maxTime are in milliseconds.
+   */
   @Override
   public List<Availability> getInRangeForUser(String email, long minTime, long maxTime) {
-    return Arrays.asList();
+    List<Availability> userAvailability = getForUser(email);
+    return getInRange(userAvailability, minTime, maxTime);
   }
 
+  /**
+   * Collects all Availabilities for the specified user within the specified time range that have
+   * been scheduled over, where minTime and maxTime are in milliseconds.
+   */
   @Override
   public List<Availability> getScheduledInRangeForUser(String email, long minTime, long maxTime) {
-    return Arrays.asList();
+    List<Availability> userAvailability = getForUser(email);
+    List<Availability> userAvailabilityInRange = getInRange(userAvailability, minTime, maxTime);
+    return getScheduled(userAvailabilityInRange);
   }
 
+  private List<Availability> getForUser(String email) {
+    List<Availability> allAvailability = datastore.values();
+    List<Availability> userAvailability = new ArrayList<Availability>();
+    for (Availability avail : allAvailability) {
+      if (avail.email().equals(email)) {
+        userAvailability.add(avail);
+      }
+    }
+    return userAvailability;
+  }
+
+  private List<Availability> getScheduled(List<Availability> allAvailability) {
+    List<Availability> scheduledAvailability = new ArrayList<Availability>();
+    for (Availability avail : allAvailability) {
+      if (avail.scheduled()) {
+        scheduledAvailability.add(avail);
+      }
+    }
+    return scheduledAvailability;
+  }
+
+  /**
+   * Collects all Availabilities within the specified time range, where minTime and maxTime are in
+   * milliseconds.
+   */
   @Override
   public List<Availability> getInRangeForAll(long minTime, long maxTime) {
-    return Arrays.asList();
+    return getInRange(datastore.values(), minTime, maxTime);
+  }
+
+  private List<Availability> getInRange(
+      List<Availability> allAvailability, long minTime, long maxTime) {
+    TimeRange range = TimeRange(Instant.ofEpochMilli(minTime), Instant.ofEpochMilli(maxTime));
+    List<Availability> inRangeAvailability = new ArrayList<Availability>();
+    for (Availability avail : allAvailability) {
+      if (range.contains(avail.when())) {
+        inRangeAvailability.add(avail);
+      }
+    }
+    return inRangeAvailability;
   }
 }
