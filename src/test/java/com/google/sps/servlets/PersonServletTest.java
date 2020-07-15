@@ -15,6 +15,8 @@
 package com.google.sps.servlets;
 
 import static org.junit.Assert.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
@@ -22,6 +24,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.sps.data.FakePersonDao;
 import com.google.sps.servlets.PersonServlet;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -31,14 +34,11 @@ import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.junit.Test;
+import org.springframework.mock.web.MockServletContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import org.springframework.mock.web.MockServletContext;
-import org.junit.Test;
-import com.google.sps.data.FakePersonDao;
 
 /** Tests PersonServlet. */
 @RunWith(JUnit4.class)
