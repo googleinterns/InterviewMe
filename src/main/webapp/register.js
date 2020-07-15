@@ -14,7 +14,16 @@
 
 function onRegisterLoad() {
   supplyLogoutLink();
+  autofillEmail();
   prepareFormValidation();
+}
+
+function autofillEmail() {
+  return fetch('/login')
+    .then(response => response.json())
+    .then((status) => {
+      $("#user-email").val(status.email);
+    });
 }
 
 // Finds fields that need an input and makes sure that submit won't go through if they are empty. 
