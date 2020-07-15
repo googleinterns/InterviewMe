@@ -16,6 +16,8 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.common.base.Preconditions;
+import com.google.gson.Gson;
 import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.Person;
 import com.google.sps.data.PersonDao;
@@ -29,6 +31,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import java.util.Optional;
 
 @WebServlet("/person")
 public class PersonServlet extends HttpServlet {
@@ -76,5 +79,25 @@ public class PersonServlet extends HttpServlet {
 
     while ((payloadLine = reader.readLine()) != null) buffer.append(payloadLine);
     return buffer.toString();
+  }
+
+  // Returns the person the request's email belongs to. If they aren't in Datastore, redirects to
+  // registration page. If the requestee is not the logged in user, throws a
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Ensure person logged in == person being requested.
+    String requesteeEmail = request.getParameter("email");
+    String userEmail = LogInServlet.getLoginInfo("/").email;
+    Preconditions.checkState(requesteeEmail.equals(userEmail));
+
+    Optional<Person> personOpt = personDao.get(requesteeEmail);
+    if (!personOpt.isPresent()) {
+      // TODO: apply this to all other pages when someone accesses them illegally.
+      response.sendRedirect("/register.html");
+      return;
+    }
+
+    response.setContentType("application/json;");
+    response.getWriter().println(new Gson().toJson(personOpt.get()));
   }
 }
