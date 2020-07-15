@@ -55,40 +55,23 @@ public final class PersonServletTest {
     helper.tearDown();
   }
 
-  @Test
-  public void putting() throws IOException, UnsupportedEncodingException {
-    String jsonString =
-        "{\"userEmail\": \"a@gmail.com\", \"firstName\": \"a\", \"lastName\": \"a\", \"firstName\": \"af\", \"company\": \"\", \"job\": \"\", \"linkedin\": \"\"}";
-
-    MockHttpServletRequest postRequest =
-        put("/person").content(jsonString).buildRequest(new MockServletContext());
-
-    // Update person a.
-    PersonServlet personServlet = new PersonServlet();
-    personServlet.init(new FakePersonDao());
-    personServlet.doPut(postRequest, new MockHttpServletResponse());
-  }
-
   // Two people, get the right one.
   @Test
   public void getOneOutOfTwo() throws IOException, UnsupportedEncodingException {
-    MockHttpServletRequest postRequest = new MockHttpServletRequest();
-    postRequest.addParameter("user-email", "a@gmail.com");
-    postRequest.addParameter("first-name", "a");
-    postRequest.addParameter("last-name", "a");
-    postRequest.addParameter("company", "");
-    postRequest.addParameter("job", "");
-    postRequest.addParameter("linkedin", "");
+    String personA =
+        "{\"userEmail\": \"a@gmail.com\", \"firstName\": \"a\", \"lastName\": \"a\", \"company\": \"\", \"job\": \"\", \"linkedin\": \"\"}";
+    String personB =
+        "{\"userEmail\": \"b@gmail.com\", \"firstName\": \"b\", \"lastName\": \"b\", \"company\": \"\", \"job\": \"\", \"linkedin\": \"\"}";
 
     // Post person a.
+    MockHttpServletRequest postRequest =
+        post("/person").content(personA).buildRequest(new MockServletContext());
     PersonServlet personServlet = new PersonServlet();
     personServlet.init(new FakePersonDao());
     personServlet.doPost(postRequest, new MockHttpServletResponse());
 
     // Post person b.
-    postRequest.setParameter("user-email", "b@gmail.com");
-    postRequest.setParameter("first-name", "b");
-    postRequest.setParameter("last-name", "b");
+    postRequest = post("/person").content(personB).buildRequest(new MockServletContext());
     personServlet.doPost(postRequest, new MockHttpServletResponse());
 
     // b is logged in and requests b.
@@ -108,23 +91,22 @@ public final class PersonServletTest {
   // Get updated info.
   @Test
   public void getUpdatedInfo() throws IOException, UnsupportedEncodingException {
-    MockHttpServletRequest postRequest = new MockHttpServletRequest();
-    postRequest.addParameter("user-email", "a@gmail.com");
-    postRequest.addParameter("first-name", "old");
-    postRequest.addParameter("last-name", "old");
-    postRequest.addParameter("company", "");
-    postRequest.addParameter("job", "");
-    postRequest.addParameter("linkedin", "");
+    String personA =
+        "{\"userEmail\": \"a@gmail.com\", \"firstName\": \"old\", \"lastName\": \"old\", \"company\": \"\", \"job\": \"\", \"linkedin\": \"\"}";
 
     // Post person a.
+    MockHttpServletRequest postRequest =
+        post("/person").content(personA).buildRequest(new MockServletContext());
     PersonServlet personServlet = new PersonServlet();
     personServlet.init(new FakePersonDao());
     personServlet.doPost(postRequest, new MockHttpServletResponse());
 
     // Update person a.
-    postRequest.setParameter("first-name", "new");
-    postRequest.setParameter("last-name", "new");
-    personServlet.doPost(postRequest, new MockHttpServletResponse());
+    personA =
+        "{\"userEmail\": \"a@gmail.com\", \"firstName\": \"new\", \"lastName\": \"new\", \"company\": \"\", \"job\": \"\", \"linkedin\": \"\"}";
+    MockHttpServletRequest putRequest =
+        put("/person").content(personA).buildRequest(new MockServletContext());
+    personServlet.doPut(putRequest, new MockHttpServletResponse());
 
     // a is logged in and requests a.
     helper.setEnvIsLoggedIn(true).setEnvEmail("a@gmail.com").setEnvAuthDomain("auth");

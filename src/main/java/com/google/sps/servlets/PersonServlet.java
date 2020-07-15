@@ -51,19 +51,6 @@ public class PersonServlet extends HttpServlet {
   // Sends the request's contents to Datastore in the form of a new Person.
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    personDao.create(
-        Person.create(
-            request.getParameter("user-email"),
-            request.getParameter("first-name"),
-            request.getParameter("last-name"),
-            request.getParameter("company"),
-            request.getParameter("job"),
-            request.getParameter("linkedin")));
-  }
-
-  // Updates Datastore with the Person information in request.
-  @Override
-  public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
     JsonObject personJson = new JsonParser().parse(getJsonString(request)).getAsJsonObject();
     personDao.create(
         Person.create(
@@ -73,6 +60,12 @@ public class PersonServlet extends HttpServlet {
             personJson.get("company").getAsString(),
             personJson.get("job").getAsString(),
             personJson.get("linkedin").getAsString()));
+  }
+
+  // Updates Datastore with the Person information in request.
+  @Override
+  public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    doPost(request, response);
   }
 
   private static String getJsonString(HttpServletRequest request) throws IOException {
@@ -94,6 +87,7 @@ public class PersonServlet extends HttpServlet {
     Preconditions.checkState(requesteeEmail.equals(userEmail));
 
     Optional<Person> personOpt = personDao.get(requesteeEmail);
+    System.out.println(requesteeEmail);
     if (!personOpt.isPresent()) {
       // TODO: apply this to all other pages when someone accesses them illegally.
       response.sendRedirect("/register.html");
