@@ -1,0 +1,11 @@
+<!-- Indices written at Wed, 15 Jul 2020 21:13:45 UTC -->
+
+<datastore-indexes>
+
+    <!-- Used 1 time in query history -->
+    <datastore-index kind="Availability" ancestor="false" source="auto">
+        <property name="email" direction="asc"/>
+        <property name="startTime" direction="asc"/>
+    </datastore-index>
+
+</datastore-indexes>

@@ -14,8 +14,8 @@
 
 package com.google.sps.data;
 
-import com.google.appengine.tools.development.testing.LocalCapabilitiesServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -39,8 +39,7 @@ import com.google.gson.JsonSyntaxException;
 
 @RunWith(JUnit4.class)
 public final class AvailabilityServletTest {
-  LocalServiceTestHelper helper =
-      new LocalServiceTestHelper(new LocalCapabilitiesServiceTestConfig());
+  LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalUserServiceTestConfig());
 
   @Before
   public void setUp() {
@@ -55,6 +54,8 @@ public final class AvailabilityServletTest {
   @Test
   public void validAvailabilityServletRequest() throws IOException {
     AvailabilityServlet availabilityServlet = new AvailabilityServlet();
+    availabilityServlet.init();
+    helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest putRequest = new MockHttpServletRequest();
     String jsonString =
         "{\"firstSlot\":\"2020-07-14T12:00:00Z\",\"lastSlot\":\"2020-07-20T23:45:00Z\",\"selectedSlots\":[\"2020-07-15T13:15:00Z\",\"2020-07-16T14:30:00Z\"]}";
@@ -67,6 +68,8 @@ public final class AvailabilityServletTest {
   @Test
   public void invalidAvailabilityServletRequest() throws IOException {
     AvailabilityServlet availabilityServlet = new AvailabilityServlet();
+    availabilityServlet.init();
+    helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest putRequest = new MockHttpServletRequest();
     String jsonString =
         "{\"firstSlot\":\"2020-07-14T12:00:00Z\",\"lastSt\":\"2020-07-20T:45:00Z\",\"selectedSlots\":[\"2020-07-15T13:15:00Z\",\"2020-07-16T14:30:00Z\"]}";
