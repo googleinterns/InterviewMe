@@ -30,7 +30,7 @@ import org.junit.Test;
 
 @RunWith(JUnit4.class)
 public class FakeScheduledInterviewDaoTest {
-  private final FakeScheduledInterviewDao tester = new FakeScheduledInterviewDao();
+  private final FakeScheduledInterviewDao dao = new FakeScheduledInterviewDao();
 
   private final ScheduledInterview scheduledInterview1 =
       ScheduledInterview.create(
@@ -38,7 +38,7 @@ public class FakeScheduledInterviewDaoTest {
           new TimeRange(
               Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
           "user@company.org",
-          "user@mail.com");
+          "user@gmail.com");
 
   private final ScheduledInterview scheduledInterview2 =
       ScheduledInterview.create(
@@ -46,7 +46,7 @@ public class FakeScheduledInterviewDaoTest {
           new TimeRange(
               Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
           "user@company.org",
-          "user2@mail.com");
+          "user2@gmail.com");
 
   private final ScheduledInterview scheduledInterview3 =
       ScheduledInterview.create(
@@ -54,69 +54,90 @@ public class FakeScheduledInterviewDaoTest {
           new TimeRange(
               Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
           "user3@company.org",
-          "user2@mail.com");
+          "user2@gmail.com");
 
   // Test whether the scheduledInterview was added to datastore.
   @Test
   public void createsScheduledInterview() {
-    tester.create(scheduledInterview1);
+    dao.create(scheduledInterview1);
     List<ScheduledInterview> storedScheduledInterviews =
-        new ArrayList<ScheduledInterview>(tester.datastore.values());
+        new ArrayList<ScheduledInterview>(dao.datastore.values());
     ScheduledInterview expected =
         ScheduledInterview.create(
             storedScheduledInterviews.get(0).id(),
             new TimeRange(
                 Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
             "user@company.org",
-            "user@mail.com");
+            "user@gmail.com");
     Assert.assertEquals(expected, storedScheduledInterviews.get(0));
   }
 
   // Tests updating a user's scheduledInterview.
   @Test
   public void updatesScheduledInterview() {
-    tester.create(scheduledInterview1);
+    dao.create(scheduledInterview1);
     List<ScheduledInterview> storedScheduledInterviews =
-        new ArrayList<ScheduledInterview>(tester.datastore.values());
+        new ArrayList<ScheduledInterview>(dao.datastore.values());
     ScheduledInterview updatedScheduledInterview =
         ScheduledInterview.create(
             storedScheduledInterviews.get(0).id(),
             new TimeRange(
                 Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
             "user@company.org",
-            "user2@mail.com");
-    tester.update(updatedScheduledInterview);
+            "user2@gmail.com");
+    dao.update(updatedScheduledInterview);
     List<ScheduledInterview> updatedScheduledInterviews =
-        new ArrayList<ScheduledInterview>(tester.datastore.values());
+        new ArrayList<ScheduledInterview>(dao.datastore.values());
     Assert.assertEquals(updatedScheduledInterview, updatedScheduledInterviews.get(0));
   }
 
   // Tests retrieving a scheduledInterview from Datastore.
   @Test
   public void getsScheduledInterview() {
-    tester.create(scheduledInterview1);
+    dao.create(scheduledInterview1);
     List<ScheduledInterview> storedScheduledInterviews =
-        new ArrayList<ScheduledInterview>(tester.datastore.values());
+        new ArrayList<ScheduledInterview>(dao.datastore.values());
     ScheduledInterview expected =
         ScheduledInterview.create(
             storedScheduledInterviews.get(0).id(),
             new TimeRange(
                 Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
             "user@company.org",
-            "user@mail.com");
-    Assert.assertEquals(Optional.of(expected), tester.get(expected.id()));
+            "user@gmail.com");
+    Assert.assertEquals(Optional.of(expected), dao.get(expected.id()));
   }
 
   // Tests retrieving a scheduledInterview that doesn't exist from Datastore.
   @Test
   public void failsToGetScheduledInterview() {
-    Optional<ScheduledInterview> actual = tester.get(24);
+    Optional<ScheduledInterview> actual = dao.get(24);
     Optional<ScheduledInterview> expected = Optional.empty();
     Assert.assertEquals(expected, actual);
   }
-  
-  // Tests deleting a user's scheduledInterview.
-  tester.create(scheduledInterview1); 
-  tester.create(scheduledInterview2); 
-  List<ScheduledInterview> result; 
+
+  // Tests retrieving scheduledInterviews in the order in which they occur
+  @Test
+  public void sortedScheduledInterviews() {
+    dao.create(scheduledInterview2);
+    dao.create(scheduledInterview1);
+    List<ScheduledInterview> actual = dao.getForPerson("user@company.org");
+    List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
+    ScheduledInterview storedScheduledInterview1 =
+        ScheduledInterview.create(
+            actual.get(0).id(),
+            new TimeRange(
+                Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
+            "user@company.org",
+            "user@gmail.com");
+    ScheduledInterview storedScheduledInterview2 =
+        ScheduledInterview.create(
+            actual.get(1).id(),
+            new TimeRange(
+                Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
+            "user@company.org",
+            "user2@gmail.com");
+    expected.add(storedScheduledInterview1);
+    expected.add(storedScheduledInterview2);
+    Assert.assertEquals(expected, actual);
+  }
 }

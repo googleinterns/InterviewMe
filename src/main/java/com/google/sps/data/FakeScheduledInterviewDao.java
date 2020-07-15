@@ -62,29 +62,15 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
    * Retrieves all scheduledInterview entities from Datastore that involve a particular user and
    * returns them as a list of ScheduledInterview objects in the order in which they occur.
    */
-  /*
   @Override
   public List<ScheduledInterview> getForPerson(String email) {
     List<ScheduledInterview> relevantInterviews = new ArrayList<>();
-    List<ScheduledInterview> unsortedInterviews =
+    List<ScheduledInterview> scheduledInterviews =
         new ArrayList<ScheduledInterview>(datastore.values());
-    for (Map.Entry<String, ScheduledInterview> entry : datastore.entrySet()) {
-      String key = entry.getKey();
-      ScheduledInterview value = entry.getValue();
-      if (email.equals(value.interviewerEmail()) || email.equals(value.intervieweeEmail())) {
-        relevantInterviews.add(value);
-      }
-    }
-    return relevantInterviews;
-  }
-  */
-
-  @Override
-  public List<ScheduledInterview> getForPerson(String email) {
-    List<ScheduledInterview> relevantInterviews = new ArrayList<>();
-    List<ScheduledInterview> unsortedInterviews =
-        new ArrayList<ScheduledInterview>(datastore.values());
-    for (ScheduledInterview scheduledInterview : unsortedInterviews) {
+    scheduledInterviews.sort(
+        (ScheduledInterview s1, ScheduledInterview s2) ->
+            s1.when().start().isBefore(s2.when().start()) ? 1 : 0);
+    for (ScheduledInterview scheduledInterview : scheduledInterviews) {
       if (email.equals(scheduledInterview.interviewerEmail())
           || email.equals(scheduledInterview.intervieweeEmail())) {
         relevantInterviews.add(scheduledInterview);
