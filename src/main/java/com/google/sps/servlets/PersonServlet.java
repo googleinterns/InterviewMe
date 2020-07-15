@@ -75,8 +75,8 @@ public class PersonServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Ensure person logged in == person being requested.
-    String requesteeEmail = request.getParameter("email"),
-        userEmail = LogInServlet.getLoginInfo("/").email;
+    String requesteeEmail = request.getParameter("email");
+    String userEmail = LogInServlet.getLoginInfo("/").email;
     Preconditions.checkState(requesteeEmail.equals(userEmail));
 
     Optional<Person> personOpt = personDao.get(requesteeEmail);
