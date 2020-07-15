@@ -83,8 +83,7 @@ public class AvailabilityServlet extends HttpServlet {
     TimeRange when =
         new TimeRange(Instant.parse(utc), Instant.parse(utc).plus(15, ChronoUnit.MINUTES));
     // TODO: Create a getScheduledInterviewsForUserInRange ScheduledInterviewDAO method to be able
-    // to tell
-    // if an Availability is scheduled over.
+    // to tell if an Availability is scheduled over.
     boolean scheduled = false;
     Availability avail = Availability.create(email, when, -1, scheduled);
     availabilityDao.create(avail);
