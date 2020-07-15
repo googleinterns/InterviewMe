@@ -24,8 +24,9 @@ import java.util.Random;
 
 /** Mimics accessing Datastore to support managing Availability entities. */
 public class FakeAvailabilityDao implements AvailabilityDao {
-  // @param datastore the fake database.
-  private HashMap<Long, Availability> datastore;
+  // @param datastore the fake database. Made public because it will only be used
+  // while testing.
+  public HashMap<Long, Availability> datastore;
 
   /** Initializes the fields for FakeAvailabilityDao. */
   public FakeAvailabilityDao() {
@@ -93,7 +94,7 @@ public class FakeAvailabilityDao implements AvailabilityDao {
   }
 
   private List<Availability> getForUser(String email) {
-    List<Availability> allAvailability = datastore.values();
+    List<Availability> allAvailability = new ArrayList<Availability>(datastore.values());
     List<Availability> userAvailability = new ArrayList<Availability>();
     for (Availability avail : allAvailability) {
       if (avail.email().equals(email)) {
@@ -119,12 +120,12 @@ public class FakeAvailabilityDao implements AvailabilityDao {
    */
   @Override
   public List<Availability> getInRangeForAll(long minTime, long maxTime) {
-    return getInRange(datastore.values(), minTime, maxTime);
+    return getInRange(new ArrayList<Availability>(datastore.values()), minTime, maxTime);
   }
 
   private List<Availability> getInRange(
       List<Availability> allAvailability, long minTime, long maxTime) {
-    TimeRange range = TimeRange(Instant.ofEpochMilli(minTime), Instant.ofEpochMilli(maxTime));
+    TimeRange range = new TimeRange(Instant.ofEpochMilli(minTime), Instant.ofEpochMilli(maxTime));
     List<Availability> inRangeAvailability = new ArrayList<Availability>();
     for (Availability avail : allAvailability) {
       if (range.contains(avail.when())) {
