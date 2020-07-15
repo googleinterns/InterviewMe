@@ -24,8 +24,8 @@ public interface AvailabilityDao {
   // Returns a list of all Availabilities ranging from minTime to maxTime of a user.
   // minTime and maxTime are in milliseconds.
   public List<Availability> getInRangeForUser(String email, long minTime, long maxTime);
-  
-  // Returns a list of all scheduled Availabilities ranging from minTim to maxTime of a 
+
+  // Returns a list of all scheduled Availabilities ranging from minTim to maxTime of a
   // user. minTime and maxTime are in milliseconds.
   public List<Availability> getScheduledInRangeForUser(String email, long minTime, long maxTime);
 
