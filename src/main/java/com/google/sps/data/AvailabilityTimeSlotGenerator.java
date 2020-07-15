@@ -75,11 +75,45 @@ public class AvailabilityTimeSlotGenerator {
         Math.abs(timezoneOffsetMinutes) <= 720,
         "Offset greater than 720 minutes (12 hours): %s",
         timezoneOffsetMinutes);
+    List<Instant> startAndEndOfWeek = getStartAndEndOfWeek(instant, timezoneOffsetMinutes);
     ImmutableList.Builder<List<AvailabilityTimeSlot>> weekList = ImmutableList.builder();
     for (int i = 0; i < 7; i++) {
       weekList.add(timeSlotsForDay(instant.plus(i, ChronoUnit.DAYS), timezoneOffsetMinutes));
     }
     return weekList.build();
+  }
+
+  private static List<Instant> getStartAndEndOfWeek(Instant instant, int timezoneOffsetMinutes) {
+    ZonedDateTime firstDay = generateDay(instant, timezoneOffsetMinutes);
+    Instant startOfWeek = getInstantForStartOrEndOfWeek(firstDay, true);
+    ZonedDateTime lastDay = firstDay.plus(6, ChronoUnit.DAYS);
+    Instant endOfWeek = getInstantForStartOrEndOfWeek(lastDay, false);
+    List<Instant> startAndEnd = new ArrayList<Instant>();
+    startAndEnd.add(startOfWeek);
+    startAndEnd.add(endOfWeek);
+    return startAndEnd;
+  }
+
+  private static Instant getInstantForStartOrEndOfWeek(ZonedDateTime day, boolean start) {
+    ZoneId zoneId = day.getZone();
+    int year = day.getYear();
+    int month = day.getMonthValue();
+    int dayOfMonth = day.getDayOfMonth();
+    if (start) {
+      int hour = ALL_HOURS_AND_MINUTES.get(0).hour();
+      int minute = ALL_HOURS_AND_MINUTES.get(0).minute();
+      LocalDateTime localTime = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
+      ZonedDateTime utcTime =
+          ZonedDateTime.of(localTime, zoneId).withZoneSameInstant(ZoneOffset.UTC);
+      return utcTime.toInstant();
+    } else {
+      int hour = ALL_HOURS_AND_MINUTES.get(ALL_HOURS_AND_MINUTES.size() - 1).hour();
+      int minute = ALL_HOURS_AND_MINUTES.get(ALL_HOURS_AND_MINUTES.size() - 1).minute();
+      LocalDateTime localTime = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
+      ZonedDateTime utcTime =
+          ZonedDateTime.of(localTime, zoneId).withZoneSameInstant(ZoneOffset.UTC);
+      return utcTime.toInstant().plus(15, ChronoUnit.MINUTES);
+    }
   }
 
   /**
