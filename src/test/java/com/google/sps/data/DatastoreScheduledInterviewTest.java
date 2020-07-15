@@ -177,4 +177,12 @@ public class DatastoreScheduledInterviewTest {
         Optional.of(expectedScheduledInterview);
     Assert.assertEquals(expectedScheduledInterviewOptional, actualScheduledInterviewOptional);
   }
+
+  // Tests retrieving a scheduledInterview that doesn't exist from Datastore.
+  @Test
+  public void failsGetScheduledInterview() {
+    Optional<ScheduledInterview> actual = tester.get(2);
+    Optional<ScheduledInterview> expected = Optional.empty();
+    Assert.assertEquals(expected, actual);
+  }
 }
