@@ -31,7 +31,7 @@ public abstract class AvailabilityTimeSlot {
   public abstract String date();
 
   public abstract boolean selected();
-  
+
   public abstract boolean scheduled();
 
   @VisibleForTesting
@@ -59,7 +59,7 @@ public abstract class AvailabilityTimeSlot {
     abstract Builder setDate(String date);
 
     abstract Builder setSelected(boolean selected);
-    
+
     abstract Builder setScheduled(boolean scheduled);
 
     abstract AvailabilityTimeSlot build();
