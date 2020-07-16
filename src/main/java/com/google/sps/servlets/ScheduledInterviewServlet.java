@@ -64,4 +64,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
             request.getParameter("interviewee"));
     scheduledInterviewDao.create(scheduledInterview);
   }
+  
+  // TODO: Make sure the user logged in == user being requested
 }
