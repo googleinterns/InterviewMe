@@ -69,8 +69,14 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
         new ArrayList<ScheduledInterview>(datastore.values());
     scheduledInterviews.sort(
         (ScheduledInterview s1, ScheduledInterview s2) -> {
-          return s1.when().start().isBefore(s2.when().start());
-        }
+          if(s1.when().start().equals(s2.when().start())) {
+            return 0; 
+          }
+          if(s1.when().start().isBefore(s2.when().start())) {
+            return -1; 
+          }
+          return 1; 
+        }); 
         
     for (ScheduledInterview scheduledInterview : scheduledInterviews) {
       if (email.equals(scheduledInterview.interviewerEmail())
