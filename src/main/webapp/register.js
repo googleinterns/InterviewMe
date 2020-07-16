@@ -14,7 +14,21 @@
 
 function onRegisterLoad() {
   supplyLogoutLink();
+  checkRegisteredBefore();
   autofillEmail().then(prepareFormValidation());
+}
+
+// If they have registered before, redirect them to profile page.
+function checkRegisteredBefore() {
+  fetch('/login')
+    .then(response => response.json())
+    .then(status => fetch(`/person?email=${status.email}`))
+    .then(response => {
+      if (!response.redirected) {
+        window.location.href = '/profile.html';
+        return;
+      }
+    });
 }
 
 // Autofills email on the registration form of the email of the logged in user.
