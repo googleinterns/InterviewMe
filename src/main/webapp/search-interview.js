@@ -14,6 +14,7 @@
 
 function onSearchInterviewLoad() {
   supplyLogoutLink();
+  getUserIfRegistered();
 }
 
 // Should query Datastore for appropriate interviews and render them on the

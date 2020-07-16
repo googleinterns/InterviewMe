@@ -14,4 +14,5 @@
 
 function onScheduledInterviewsLoad() {
   supplyLogoutLink();
+  getUserIfRegistered();
 }

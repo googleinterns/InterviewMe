@@ -14,6 +14,7 @@
 
 function onAvailabilityLoad() {
   supplyLogoutLink();
+  getUserIfRegistered();
   loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset());
 }
 
