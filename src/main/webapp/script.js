@@ -13,8 +13,20 @@
 // limitations under the License.
 
 function onIndexLoad() {
-  fetch('/calendar');
   checkLogin();
+}
+
+function testCal() {
+  fetch('/calendar', {
+    mode: 'no-cors',
+    redirect: 'manual'
+  }).then((response) => {
+    console.log(response);
+    console.log(response.url);
+    window.location.href = response.url;
+  }).catch((error) => {
+    console.log('testCal() ' + error);
+  });  
 }
 
 function checkLogin() {

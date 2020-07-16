@@ -15,6 +15,16 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <failOnMissingWebXml>false</failOnMissingWebXml>
   </properties>
+  
+  <distributionManagement>
+    <!-- <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id></id>
+      <name>Corporate Repository</name>
+      <url>http://localhost:8081/repository/maven-releases</url>
+      <layout>default</layout>
+    </repository>   -->
+  </distributionManagement>
 
   <dependencies>
   

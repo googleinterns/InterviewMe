@@ -55,26 +55,36 @@ public class Utils {
   /** Global instance of the JSON factory. */
   static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
+  private static final String APPLICATION_NAME = "Interview Me";
+
   private static GoogleClientSecrets clientSecrets = null;
 
   static GoogleClientSecrets getClientCredential() throws IOException {
+    // TODO: somehow remember who authorized in the past so they don't have to authorize again
+    // TODO: Get these credentials in a deployment situation
     if (clientSecrets == null) {
+      // System.out.println("Util getClientCredential is null");
       clientSecrets =
           GoogleClientSecrets.load(
               JSON_FACTORY,
-              new InputStreamReader(Utils.class.getResourceAsStream("/client_secrets.json")));
+              new InputStreamReader(
+                  Utils.class.getResourceAsStream("/application_default_credentials.json")));
       Preconditions.checkArgument(
           !clientSecrets.getDetails().getClientId().startsWith("Enter ")
               && !clientSecrets.getDetails().getClientSecret().startsWith("Enter "),
           "Download client_secrets.json file from https://code.google.com/apis/console/"
               + "?api=calendar into calendar-appengine-sample/src/main/resources/client_secrets.json");
     }
+    // System.out.println("Util getClientCredential is not null");
     return clientSecrets;
   }
 
   public static String getRedirectUri(HttpServletRequest req) {
-    GenericUrl url = new GenericUrl(req.getRequestURL().toString());
-    url.setRawPath("/oauth2callback");
+    // TODO: change this to the where the request was sent from
+    GenericUrl url =
+        new GenericUrl(
+            "https://8080-cd144138-6164-4978-b5a9-12129253ea46.us-central1.cloudshell.dev");
+    url.setRawPath("/calendar-callback");
     return url.build();
   }
 
@@ -85,14 +95,17 @@ public class Utils {
             getClientCredential(),
             Collections.singleton(CalendarScopes.CALENDAR))
         .setDataStoreFactory(DATA_STORE_FACTORY)
-        .setAccessType("offline")
+        .setAccessType("online")
         .build();
   }
 
-  static Calendar loadCalendarClient() throws IOException {
+  public static Calendar loadCalendarClient() throws IOException {
     String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
     Credential credential = newFlow().loadCredential(userId);
-    return new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build();
+    System.out.println("Util loadCalendarClient");
+    return new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+        .setApplicationName(APPLICATION_NAME)
+        .build();
   }
 
   /**

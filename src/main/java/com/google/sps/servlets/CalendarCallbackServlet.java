@@ -23,17 +23,26 @@ import com.google.sps.data.Utils;
 
 import java.io.IOException;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.ServletException;
+import java.security.GeneralSecurityException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.sps.data.CalendarAccess;
 
-public class OAuth2Callback extends AbstractAppEngineAuthorizationCodeCallbackServlet {
+@WebServlet("/calendar-callback")
+public class CalendarCallbackServlet extends AbstractAppEngineAuthorizationCodeCallbackServlet {
 
   private static final long serialVersionUID = 1L;
 
   @Override
   public void onSuccess(HttpServletRequest req, HttpServletResponse resp, Credential credential)
       throws ServletException, IOException {
+    System.out.println("success");
+    try {
+      CalendarAccess.addEvent(credential);
+    } catch (GeneralSecurityException e) {
+    }
     resp.sendRedirect("/");
   }
 
@@ -42,7 +51,11 @@ public class OAuth2Callback extends AbstractAppEngineAuthorizationCodeCallbackSe
       HttpServletRequest req, HttpServletResponse resp, AuthorizationCodeResponseUrl errorResponse)
       throws ServletException, IOException {
     String nickname = UserServiceFactory.getUserService().getCurrentUser().getNickname();
-    resp.getWriter().print("<h3>" + nickname + ", why don't you want to play with me?</h1>");
+    resp.getWriter()
+        .print(
+            nickname
+                + ", Calendar Authentication had an error "
+                + errorResponse.getErrorDescription());
     resp.setStatus(200);
     resp.addHeader("Content-Type", "text/html");
   }
