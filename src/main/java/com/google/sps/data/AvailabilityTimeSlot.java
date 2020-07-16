@@ -31,15 +31,18 @@ public abstract class AvailabilityTimeSlot {
   public abstract String date();
 
   public abstract boolean selected();
+  
+  public abstract boolean scheduled();
 
   @VisibleForTesting
   static AvailabilityTimeSlot create(
-      String utcEncoding, String time, String date, boolean selected) {
+      String utcEncoding, String time, String date, boolean selected, boolean scheduled) {
     return builder()
         .setUtcEncoding(utcEncoding)
         .setTime(time)
         .setDate(date)
         .setSelected(selected)
+        .setScheduled(scheduled)
         .build();
   }
 
@@ -56,6 +59,8 @@ public abstract class AvailabilityTimeSlot {
     abstract Builder setDate(String date);
 
     abstract Builder setSelected(boolean selected);
+    
+    abstract Builder setScheduled(boolean scheduled);
 
     abstract AvailabilityTimeSlot build();
   }

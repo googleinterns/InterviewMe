@@ -18,10 +18,14 @@ function onAvailabilityLoad() {
 }
 
 // Toggles a tile from selected (green) to un-selected (white) and vice versa when clicked.
+// Scheduled tiles (blue) remain unaffected.
 function toggleTile(tile) {
   let classList = tile.classList;
-  if (classList.contains('table-success') && classList.contains('selected-time-slot')) {
-    classList.remove('table-success', 'selected-time-slot');
+  if (classList.contains('selected-time-slot')) {
+    if (classList.contains('table-success')) {
+      classList.remove('table-success', 'selected-time-slot');
+    }
+    return;
   } else {
     classList.add('table-success', 'selected-time-slot');
   }
