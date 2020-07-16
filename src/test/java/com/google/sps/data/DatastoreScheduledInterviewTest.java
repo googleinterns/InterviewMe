@@ -19,7 +19,9 @@ import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import java.time.Instant;
@@ -54,12 +56,21 @@ public class DatastoreScheduledInterviewTest {
               Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
           "user@company.org",
           "user2@mail.com");
+
   private final ScheduledInterview scheduledInterview3 =
       ScheduledInterview.create(
           (long) -1,
           new TimeRange(
               Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
           "user3@company.org",
+          "user2@mail.com");
+
+  private final ScheduledInterview scheduledInterview4 =
+      ScheduledInterview.create(
+          (long) -1,
+          new TimeRange(
+              Instant.parse("2020-07-06T20:00:10Z"), Instant.parse("2020-07-06T21:00:10Z")),
+          "user@company.org",
           "user2@mail.com");
 
   private final LocalServiceTestHelper helper =
@@ -183,5 +194,47 @@ public class DatastoreScheduledInterviewTest {
   public void failsGetScheduledInterview() {
     Optional<ScheduledInterview> actual = dao.get(2);
     Assert.assertEquals(Optional.empty(), actual);
+  }
+
+  // Tests retrieving all scheduledInterviews for a particular user in a certain range
+  @Test
+  public void getsScheduledInterviewsInRange() {
+    dao.create(scheduledInterview1);
+    dao.create(scheduledInterview2);
+    dao.create(scheduledInterview3);
+    dao.create(scheduledInterview4);
+    List<ScheduledInterview> result =
+        dao.getScheduledInterviewsInRangeForUser(
+            "user@company.org",
+            Instant.parse("2020-07-06T19:00:10Z").toEpochMilli(),
+            Instant.parse("2020-07-06T21:00:10Z").toEpochMilli());
+    List<Entity> entities =
+        datastore
+            .prepare(new Query("ScheduledInterview").addSort("startTime", SortDirection.ASCENDING))
+            .asList(FetchOptions.Builder.withDefaults());
+    List<ScheduledInterview> scheduledInterviews = new ArrayList<ScheduledInterview>();
+    for (Entity entity : entities) {
+      scheduledInterviews.add(dao.entityToScheduledInterview(entity));
+    }
+    ScheduledInterview expectedScheduledInterview1 =
+        ScheduledInterview.create(
+            scheduledInterviews.get(1).id(),
+            new TimeRange(
+                Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
+            "user@company.org",
+            "user2@mail.com");
+
+    ScheduledInterview expectedScheduledInterview2 =
+        ScheduledInterview.create(
+            scheduledInterviews.get(3).id(),
+            new TimeRange(
+                Instant.parse("2020-07-06T20:00:10Z"), Instant.parse("2020-07-06T21:00:10Z")),
+            "user@company.org",
+            "user2@mail.com");
+    List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
+    expected.add(expectedScheduledInterview1);
+    expected.add(expectedScheduledInterview2);
+
+    Assert.assertEquals(expected, result);
   }
 }
