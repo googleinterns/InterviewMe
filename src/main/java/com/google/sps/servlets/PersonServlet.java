@@ -48,36 +48,36 @@ public class PersonServlet extends HttpServlet {
   // the JSON is malformed.
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    PersonRequest personRequest;
     try {
-      PersonRequest personRequest =
-          new Gson().fromJson(getJsonString(request), PersonRequest.class);
-      if (!authenticateRequest(personRequest)) {
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-        return;
-      }
-      personDao.create(Person.create(personRequest));
+      personRequest = new Gson().fromJson(getJsonString(request), PersonRequest.class);
     } catch (Exception JsonSyntaxException) {
       response.sendError(400);
       return;
     }
+    if (!authenticateRequest(personRequest)) {
+      response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+      return;
+    }
+    personDao.update(Person.create(personRequest));
   }
 
   // Updates Datastore with the Person information in request. Sends a 400 error if
   // the JSON is malformed.
   @Override
   public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    PersonRequest personRequest;
     try {
-      PersonRequest personRequest =
-          new Gson().fromJson(getJsonString(request), PersonRequest.class);
-      if (!authenticateRequest(personRequest)) {
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-        return;
-      }
-      personDao.update(Person.create(personRequest));
+      personRequest = new Gson().fromJson(getJsonString(request), PersonRequest.class);
     } catch (Exception JsonSyntaxException) {
       response.sendError(400);
       return;
     }
+    if (!authenticateRequest(personRequest)) {
+      response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+      return;
+    }
+    personDao.update(Person.create(personRequest));
   }
 
   // Get Json from request body.

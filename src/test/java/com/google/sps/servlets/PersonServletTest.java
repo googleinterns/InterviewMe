@@ -149,15 +149,17 @@ public final class PersonServletTest {
   public void postRequesteeNotLoggedInUser() throws IOException, UnsupportedEncodingException {
     // a is logged in.
     helper.setEnvIsLoggedIn(true).setEnvEmail("a@gmail.com").setEnvAuthDomain("auth");
-    MockHttpServletRequest postRequest = new MockHttpServletRequest();
 
     PersonServlet personServlet = new PersonServlet();
     personServlet.init(new FakePersonDao());
 
     // But a tries to post b's info.
-    postRequest.addParameter("email", "b@gmail.com");
+    String personB =
+        "{\"email\": \"b@gmail.com\", \"firstName\": \"b\", \"lastName\": \"b\", \"company\": \"\", \"job\": \"\", \"linkedin\": \"\"}";
+    MockHttpServletRequest postRequest =
+        put("/person").content(personB).buildRequest(new MockServletContext());
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
-    personServlet.doGet(postRequest, postResponse);
+    personServlet.doPost(postRequest, postResponse);
 
     assertEquals(postResponse.getStatus(), 401);
   }
@@ -167,15 +169,17 @@ public final class PersonServletTest {
   public void putRequesteeNotLoggedInUser() throws IOException, UnsupportedEncodingException {
     // a is logged in.
     helper.setEnvIsLoggedIn(true).setEnvEmail("a@gmail.com").setEnvAuthDomain("auth");
-    MockHttpServletRequest putRequest = new MockHttpServletRequest();
 
     PersonServlet personServlet = new PersonServlet();
     personServlet.init(new FakePersonDao());
 
     // But a tries to update b's info.
-    putRequest.addParameter("email", "b@gmail.com");
+    String personB =
+        "{\"email\": \"b@gmail.com\", \"firstName\": \"b\", \"lastName\": \"b\", \"company\": \"\", \"job\": \"\", \"linkedin\": \"\"}";
+    MockHttpServletRequest putRequest =
+        put("/person").content(personB).buildRequest(new MockServletContext());
     MockHttpServletResponse putResponse = new MockHttpServletResponse();
-    personServlet.doGet(putRequest, putResponse);
+    personServlet.doPut(putRequest, putResponse);
 
     assertEquals(putResponse.getStatus(), 401);
   }
