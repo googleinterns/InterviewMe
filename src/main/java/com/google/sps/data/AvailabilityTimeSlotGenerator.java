@@ -107,21 +107,19 @@ public class AvailabilityTimeSlotGenerator {
     int year = day.getYear();
     int month = day.getMonthValue();
     int dayOfMonth = day.getDayOfMonth();
+    int hour = 0;
+    int minute = 0;
     if (start) {
       int hour = ALL_HOURS_AND_MINUTES.get(0).hour();
       int minute = ALL_HOURS_AND_MINUTES.get(0).minute();
-      LocalDateTime localTime = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
+    } else {
+      int hour = ALL_HOURS_AND_MINUTES.get(ALL_HOURS_AND_MINUTES.size() - 1).hour() + 1;
+      int minute = 0;
+    }
+    LocalDateTime localTime = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
       ZonedDateTime utcTime =
           ZonedDateTime.of(localTime, zoneId).withZoneSameInstant(ZoneOffset.UTC);
       return utcTime.toInstant().toEpochMilli();
-    } else {
-      int hour = ALL_HOURS_AND_MINUTES.get(ALL_HOURS_AND_MINUTES.size() - 1).hour();
-      int minute = ALL_HOURS_AND_MINUTES.get(ALL_HOURS_AND_MINUTES.size() - 1).minute();
-      LocalDateTime localTime = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
-      ZonedDateTime utcTime =
-          ZonedDateTime.of(localTime, zoneId).withZoneSameInstant(ZoneOffset.UTC);
-      return utcTime.toInstant().plus(15, ChronoUnit.MINUTES).toEpochMilli();
-    }
   }
 
   /**
