@@ -69,10 +69,9 @@ public class AvailabilityServlet extends HttpServlet {
     }
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
-    long minTime = Instant.parse(utcEncodings.getFirstSlot()).toEpochMilli();
+    Instant minTime = Instant.parse(utcEncodings.getFirstSlot());
     // The last slot for the week starts 15 minutes before the true end of the week.
-    long maxTime =
-        Instant.parse(utcEncodings.getLastSlot()).plus(15, ChronoUnit.MINUTES).toEpochMilli();
+    Instant maxTime = Instant.parse(utcEncodings.getLastSlot()).plus(15, ChronoUnit.MINUTES);
     availabilityDao.deleteInRangeForUser(email, minTime, maxTime);
     for (String selectedSlot : utcEncodings.getSelectedSlots()) {
       createAndStoreAvailability(selectedSlot, email);
