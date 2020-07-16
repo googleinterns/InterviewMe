@@ -51,6 +51,10 @@ public class PersonServlet extends HttpServlet {
     try {
       PersonRequest personRequest =
           new Gson().fromJson(getJsonString(request), PersonRequest.class);
+      if (!authenticateRequest(personRequest)) {
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        return;
+      }
       personDao.create(Person.create(personRequest));
     } catch (Exception JsonSyntaxException) {
       response.sendError(400);
@@ -65,6 +69,10 @@ public class PersonServlet extends HttpServlet {
     try {
       PersonRequest personRequest =
           new Gson().fromJson(getJsonString(request), PersonRequest.class);
+      if (!authenticateRequest(personRequest)) {
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        return;
+      }
       personDao.update(Person.create(personRequest));
     } catch (Exception JsonSyntaxException) {
       response.sendError(400);
@@ -82,25 +90,25 @@ public class PersonServlet extends HttpServlet {
     return buffer.toString();
   }
 
+  // Ensure person logged in == person being requested.
+  private static boolean authenticateRequest(PersonRequest request) {
+    return request.getEmail().equals(LogInServlet.getLoginInfo("/").email);
+  }
+
   // Returns the person the request's email belongs to. If they aren't in Datastore, redirects to
   // registration page. If the requestee is not the logged in user, throws a
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Ensure person logged in == person being requested.
     String requesteeEmail = request.getParameter("email");
-    String userEmail = LogInServlet.getLoginInfo("/").email;
-    Preconditions.checkState(requesteeEmail.equals(userEmail));
-
+    if (!requesteeEmail.equals(LogInServlet.getLoginInfo("/").email)) {
+      response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+      return;
+    }
     Optional<Person> personOpt = personDao.get(requesteeEmail);
-    System.out.println("requesteeEmail " + requesteeEmail);
-
     if (!personOpt.isPresent()) {
-      System.out.println("not in datastore");
-      // TODO: apply this to all other pages when someone accesses them illegally.
       response.sendRedirect("/register.html");
       return;
     }
-
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(personOpt.get()));
   }

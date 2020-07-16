@@ -31,7 +31,6 @@ import java.io.UnsupportedEncodingException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.Test;
@@ -63,6 +62,9 @@ public final class PersonServletTest {
     String personB =
         "{\"email\": \"b@gmail.com\", \"firstName\": \"b\", \"lastName\": \"b\", \"company\": \"\", \"job\": \"\", \"linkedin\": \"\"}";
 
+    // a is logged in.
+    helper.setEnvIsLoggedIn(true).setEnvEmail("a@gmail.com").setEnvAuthDomain("auth");
+
     // Post person a.
     MockHttpServletRequest postRequest =
         post("/person").content(personA).buildRequest(new MockServletContext());
@@ -70,12 +72,13 @@ public final class PersonServletTest {
     personServlet.init(new FakePersonDao());
     personServlet.doPost(postRequest, new MockHttpServletResponse());
 
+    // b is logged in.
+    helper.setEnvIsLoggedIn(true).setEnvEmail("b@gmail.com").setEnvAuthDomain("auth");
     // Post person b.
     postRequest = post("/person").content(personB).buildRequest(new MockServletContext());
     personServlet.doPost(postRequest, new MockHttpServletResponse());
 
-    // b is logged in and requests b.
-    helper.setEnvIsLoggedIn(true).setEnvEmail("b@gmail.com").setEnvAuthDomain("auth");
+    // b requests b.
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("email", "b@gmail.com");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -94,6 +97,9 @@ public final class PersonServletTest {
     String personA =
         "{\"email\": \"a@gmail.com\", \"firstName\": \"old\", \"lastName\": \"old\", \"company\": \"\", \"job\": \"\", \"linkedin\": \"\"}";
 
+    // a is logged in.
+    helper.setEnvIsLoggedIn(true).setEnvEmail("a@gmail.com").setEnvAuthDomain("auth");
+
     // Post person a.
     MockHttpServletRequest postRequest =
         post("/person").content(personA).buildRequest(new MockServletContext());
@@ -108,8 +114,7 @@ public final class PersonServletTest {
         put("/person").content(personA).buildRequest(new MockServletContext());
     personServlet.doPut(putRequest, new MockHttpServletResponse());
 
-    // a is logged in and requests a.
-    helper.setEnvIsLoggedIn(true).setEnvEmail("a@gmail.com").setEnvAuthDomain("auth");
+    // a requests a.
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("email", "a@gmail.com");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -121,9 +126,9 @@ public final class PersonServletTest {
     assertEquals(person.get("lastName").getAsString(), "new");
   }
 
-  // Someone trying to get someone else's info. Exception should be thrown.
+  // Someone trying to get someone else's info. 401 error is expected.
   @Test
-  public void requesteeNotLoggedInUser() throws IOException, UnsupportedEncodingException {
+  public void getRequesteeNotLoggedInUser() throws IOException, UnsupportedEncodingException {
     // a is logged in.
     helper.setEnvIsLoggedIn(true).setEnvEmail("a@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
@@ -134,12 +139,45 @@ public final class PersonServletTest {
     // But a requests b's info.
     getRequest.addParameter("email", "b@gmail.com");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
+    personServlet.doGet(getRequest, getResponse);
 
-    Assertions.assertThrows(
-        IllegalStateException.class,
-        () -> {
-          personServlet.doGet(getRequest, getResponse);
-        });
+    assertEquals(getResponse.getStatus(), 401);
+  }
+
+  // Someone trying to post someone else's info. 401 error is expected.
+  @Test
+  public void postRequesteeNotLoggedInUser() throws IOException, UnsupportedEncodingException {
+    // a is logged in.
+    helper.setEnvIsLoggedIn(true).setEnvEmail("a@gmail.com").setEnvAuthDomain("auth");
+    MockHttpServletRequest postRequest = new MockHttpServletRequest();
+
+    PersonServlet personServlet = new PersonServlet();
+    personServlet.init(new FakePersonDao());
+
+    // But a tries to post b's info.
+    postRequest.addParameter("email", "b@gmail.com");
+    MockHttpServletResponse postResponse = new MockHttpServletResponse();
+    personServlet.doGet(postRequest, postResponse);
+
+    assertEquals(postResponse.getStatus(), 401);
+  }
+
+  // Someone trying to update someone else's info. 401 error is expected.
+  @Test
+  public void putRequesteeNotLoggedInUser() throws IOException, UnsupportedEncodingException {
+    // a is logged in.
+    helper.setEnvIsLoggedIn(true).setEnvEmail("a@gmail.com").setEnvAuthDomain("auth");
+    MockHttpServletRequest putRequest = new MockHttpServletRequest();
+
+    PersonServlet personServlet = new PersonServlet();
+    personServlet.init(new FakePersonDao());
+
+    // But a tries to update b's info.
+    putRequest.addParameter("email", "b@gmail.com");
+    MockHttpServletResponse putResponse = new MockHttpServletResponse();
+    personServlet.doGet(putRequest, putResponse);
+
+    assertEquals(putResponse.getStatus(), 401);
   }
 
   // First time user, not registered, not in database yet.
