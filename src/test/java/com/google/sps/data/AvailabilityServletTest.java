@@ -54,6 +54,7 @@ public final class AvailabilityServletTest {
   @Test
   public void validAvailabilityServletRequest() throws IOException {
     AvailabilityServlet availabilityServlet = new AvailabilityServlet();
+    // TODO: Change this to using a FakeAvailabilityDao
     availabilityServlet.init();
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest putRequest = new MockHttpServletRequest();
@@ -68,6 +69,7 @@ public final class AvailabilityServletTest {
   @Test
   public void invalidAvailabilityServletRequest() throws IOException {
     AvailabilityServlet availabilityServlet = new AvailabilityServlet();
+    // TODO: Change this to using a FakeAvailabilityDao
     availabilityServlet.init();
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest putRequest = new MockHttpServletRequest();

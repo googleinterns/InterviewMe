@@ -14,6 +14,8 @@
 
 package com.google.sps.data;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
@@ -70,31 +72,34 @@ public class AvailabilityTimeSlotGenerator {
    * @throws IllegalArgumentException if the magnitude of timezoneOffsetMinutes is greater than 720.
    */
   public static List<List<AvailabilityTimeSlot>> timeSlotsForWeek(
-      Instant instant, int timezoneOffsetMinutes) {
+      Instant instant, int timezoneOffsetMinutes, AvailabilityDao availabilityDao) {
     Preconditions.checkArgument(
         Math.abs(timezoneOffsetMinutes) <= 720,
         "Offset greater than 720 minutes (12 hours): %s",
         timezoneOffsetMinutes);
     List<Long> startAndEndOfWeek = getStartAndEndOfWeek(instant, timezoneOffsetMinutes);
+    UserService userService = UserServiceFactory.getUserService();
+    String email = userService.getCurrentUser().getEmail();
+    List<Availability> userAvailabilityForWeek = availabilityDao.getInRangeForUser(email, startAndEndOfWeek.get(0), startAndEndOfWeek.get(1));
     ImmutableList.Builder<List<AvailabilityTimeSlot>> weekList = ImmutableList.builder();
     for (int i = 0; i < 7; i++) {
-      weekList.add(timeSlotsForDay(instant.plus(i, ChronoUnit.DAYS), timezoneOffsetMinutes));
+      weekList.add(timeSlotsForDay(instant.plus(i, ChronoUnit.DAYS), timezoneOffsetMinutes, userAvailabilityForWeek));
     }
     return weekList.build();
   }
 
   private static List<Long> getStartAndEndOfWeek(Instant instant, int timezoneOffsetMinutes) {
     ZonedDateTime firstDay = generateDay(instant, timezoneOffsetMinutes);
-    long startOfWeek = getInstantForStartOrEndOfWeek(firstDay, true);
+    long startOfWeek = getStartOrEndOfWeek(firstDay, true);
     ZonedDateTime lastDay = firstDay.plus(6, ChronoUnit.DAYS);
-    long endOfWeek = getInstantForStartOrEndOfWeek(lastDay, false);
+    long endOfWeek = getStartOrEndOfWeek(lastDay, false);
     List<Long> startAndEnd = new ArrayList<Long>();
     startAndEnd.add(startOfWeek);
     startAndEnd.add(endOfWeek);
     return startAndEnd;
   }
 
-  private static long getInstantForStartOrEndOfWeek(ZonedDateTime day, boolean start) {
+  private static long getStartOrEndOfWeek(ZonedDateTime day, boolean start) {
     ZoneId zoneId = day.getZone();
     int year = day.getYear();
     int month = day.getMonthValue();
@@ -125,7 +130,7 @@ public class AvailabilityTimeSlotGenerator {
    *     that EST is 240 minutes behind UTC.
    */
   @VisibleForTesting
-  static List<AvailabilityTimeSlot> timeSlotsForDay(Instant instant, int timezoneOffsetMinutes) {
+  static List<AvailabilityTimeSlot> timeSlotsForDay(Instant instant, int timezoneOffsetMinutes, List<Availability> userAvailabilityForWeek) {
     ZonedDateTime day = generateDay(instant, timezoneOffsetMinutes);
     ZoneId zoneId = day.getZone();
     String dayOfWeek = day.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.US);
@@ -153,7 +158,7 @@ public class AvailabilityTimeSlotGenerator {
 
       timeSlots.add(
           AvailabilityTimeSlot.create(
-              formattedUTCTime, formattedTime, formattedDate, getSelectedStatus(formattedUTCTime)));
+              formattedUTCTime, formattedTime, formattedDate, getSelectedStatus(formattedUTCTime, userAvailabilityForWeek), getScheduledStatus(formattedUTCTime, userAvailabilityForWeek)));
     }
 
     return timeSlots.build();
@@ -175,11 +180,30 @@ public class AvailabilityTimeSlotGenerator {
     return String.format("%s %d/%d", dayOfWeek, month, dayOfMonth);
   }
 
-  // TODO: Access the time slot from data store using the utcEnconding to tell if it
-  // is selected or not.
-  // This method will tell whether or not a time slot has already been selected. (See
-  // TODO above).
-  private static boolean getSelectedStatus(String utcEncoding) {
+  // This method tells whether or not a time slot has already been selected (Whether or not
+  // it is already in datastore).
+  private static boolean getSelectedStatus(String utcEncoding, List<Availability> userAvailabilityForWeek) {
+    Instant startTime = Instant.parse(utcEncoding);
+    for (Availability avail : userAvailabilityForWeek) {
+      if (avail.when().start().equals(startTime)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  // This methods tells whether or not a time slot has already been scheduled over.
+  private static boolean getScheduledStatus(String utcEncoding, List<Availability> userAvailabilityForWeek) {
+    if(! getSelectedStatus(utcEncoding, userAvailabilityForWeek)) {
+      return false;
+    }
+    for (Availability avail : userAvailabilityForWeek) {
+      if (avail.when().start().equals(startTime)) {
+        if (avail.scheduled()) {
+          return true;
+        }
+      }
+    }
     return false;
   }
 }
