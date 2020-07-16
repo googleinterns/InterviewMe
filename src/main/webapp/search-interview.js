@@ -38,9 +38,16 @@ function selectInterview(interviewer) {
       `PM with a ${interviewer.getAttribute('data-company')} ` +
       `${interviewer.getAttribute('data-job')}. Check your email for more ` +
       `information.`);
-    const request = new Request(`/scheduled-interviews?startTime=2020-07-05T18:30:10Z&endTime=2020-07-05T19:30:10Z&interviewer=${interviewer.getAttribute('data-email')}&interviewee=user@gmail.com`, {
-      method: 'POST'
-    }); 
+      
+    let requestObject = {
+    startTime: '2020-07-05T18:30:00Z',
+    endTime: '2020-07-05T19:30:00Z',
+    interviewer: interviewer.getAttribute('data-email'),
+    interviewee: 'user@gmail.com'
+    };
+    let requestBody = JSON.stringify(requestObject); 
+    let request = new Request('/scheduledInterview', {method: 'POST', body: requestBody});
+    
     fetch(request)
       .then(response => {
         if (!response.ok) {

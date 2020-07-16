@@ -96,5 +96,5 @@ function createDateString(scheduledInterview) {
   var end = new Date(); 
   start.setTime(scheduledInterview.when.start.seconds*1000);
   end.setTime(scheduledInterview.when.end.seconds*1000);
-  return start.toLocaleDateString() + ' from ' + start.toLocaleTimeString() + ' to ' + end.toLocaleTimeString();
+  return start.toLocaleDateString() + ' from ' + start.toLocaleTimeString([], {timeStyle: 'short'}) + ' to ' + end.toLocaleTimeString([], {timeStyle: 'short'});
 }
