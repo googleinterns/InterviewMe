@@ -205,9 +205,9 @@ public class DatastoreScheduledInterviewTest {
     dao.create(scheduledInterview4);
     List<ScheduledInterview> result =
         dao.getScheduledInterviewsInRangeForUser(
-            "user@company.org",
-            Instant.parse("2020-07-06T19:00:10Z").toEpochMilli(),
-            Instant.parse("2020-07-06T21:00:10Z").toEpochMilli());
+            scheduledInterview1.interviewerEmail(),
+            scheduledInterview2.when().start().toEpochMilli(),
+            scheduledInterview4.when().end().toEpochMilli());
     List<Entity> entities =
         datastore
             .prepare(new Query("ScheduledInterview").addSort("startTime", SortDirection.ASCENDING))
@@ -219,18 +219,16 @@ public class DatastoreScheduledInterviewTest {
     ScheduledInterview expectedScheduledInterview1 =
         ScheduledInterview.create(
             scheduledInterviews.get(1).id(),
-            new TimeRange(
-                Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
-            "user@company.org",
-            "user2@mail.com");
+            scheduledInterview2.when(),
+            scheduledInterview2.interviewerEmail(),
+            scheduledInterview2.intervieweeEmail());
 
     ScheduledInterview expectedScheduledInterview2 =
         ScheduledInterview.create(
             scheduledInterviews.get(3).id(),
-            new TimeRange(
-                Instant.parse("2020-07-06T20:00:10Z"), Instant.parse("2020-07-06T21:00:10Z")),
-            "user@company.org",
-            "user2@mail.com");
+            scheduledInterview4.when(),
+            scheduledInterview4.interviewerEmail(),
+            scheduledInterview4.intervieweeEmail());
     List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
     expected.add(expectedScheduledInterview1);
     expected.add(expectedScheduledInterview2);
