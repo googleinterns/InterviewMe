@@ -159,11 +159,13 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
   private List<Entity> getEntitiesInRange(long minTime, long maxTime, Optional<Filter> filterOpt) {
     Filter minFilter =
         new FilterPredicate("startTime", FilterOperator.GREATER_THAN_OR_EQUAL, minTime);
-    Filter maxFilter = new FilterPredicate("startTime", FilterOperator.LESS_THAN_OR_EQUAL, maxTime);
+    Filter maxFilter =
+        new FilterPredicate("startTime", FilterOperator.LESS_THAN_OR_EQUAL, (maxTime - 3600000));
     CompositeFilter compFilter = CompositeFilterOperator.and(minFilter, maxFilter);
     if (filterOpt.isPresent()) {
       compFilter = CompositeFilterOperator.and(compFilter, filterOpt.get());
     }
+
     Query scheduledInterviewQuery = new Query("ScheduledInterview").setFilter(compFilter);
     return datastore.prepare(scheduledInterviewQuery).asList(FetchOptions.Builder.withDefaults());
   }

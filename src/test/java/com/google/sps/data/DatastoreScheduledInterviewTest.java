@@ -73,6 +73,14 @@ public class DatastoreScheduledInterviewTest {
           "user@company.org",
           "user2@mail.com");
 
+  private final ScheduledInterview scheduledInterview5 =
+      ScheduledInterview.create(
+          (long) -1,
+          new TimeRange(
+              Instant.parse("2020-07-06T21:00:10Z"), Instant.parse("2020-07-06T22:00:10Z")),
+          "user@company.org",
+          "user3@mail.com");
+
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
           new LocalDatastoreServiceTestConfig()
@@ -97,10 +105,9 @@ public class DatastoreScheduledInterviewTest {
     ScheduledInterview copyScheduledInterview1 =
         ScheduledInterview.create(
             storedScheduledInterview.id(),
-            new TimeRange(
-                Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
-            "user@company.org",
-            "user@mail.com");
+            scheduledInterview1.when(),
+            scheduledInterview1.interviewerEmail(),
+            scheduledInterview1.intervieweeEmail());
     Assert.assertEquals(copyScheduledInterview1, storedScheduledInterview);
   }
 
@@ -110,21 +117,19 @@ public class DatastoreScheduledInterviewTest {
     dao.create(scheduledInterview1);
     dao.create(scheduledInterview2);
     dao.create(scheduledInterview3);
-    List<ScheduledInterview> result = dao.getForPerson("user@company.org");
+    List<ScheduledInterview> result = dao.getForPerson(scheduledInterview1.interviewerEmail());
     ScheduledInterview copyScheduledInterview1 =
         ScheduledInterview.create(
             result.get(0).id(),
-            new TimeRange(
-                Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
-            "user@company.org",
-            "user@mail.com");
+            scheduledInterview1.when(),
+            scheduledInterview1.interviewerEmail(),
+            scheduledInterview1.intervieweeEmail());
     ScheduledInterview copyScheduledInterview2 =
         ScheduledInterview.create(
             result.get(1).id(),
-            new TimeRange(
-                Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
-            "user@company.org",
-            "user2@mail.com");
+            scheduledInterview2.when(),
+            scheduledInterview2.interviewerEmail(),
+            scheduledInterview2.intervieweeEmail());
     List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
     expected.add(copyScheduledInterview1);
     expected.add(copyScheduledInterview2);
@@ -143,10 +148,9 @@ public class DatastoreScheduledInterviewTest {
     ScheduledInterview copyScheduledInterview2 =
         ScheduledInterview.create(
             storedScheduledInterview.id(),
-            new TimeRange(
-                Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
-            "user@company.org",
-            "user2@mail.com");
+            scheduledInterview2.when(),
+            scheduledInterview2.interviewerEmail(),
+            scheduledInterview2.intervieweeEmail());
     Assert.assertEquals(copyScheduledInterview2, storedScheduledInterview);
   }
 
@@ -159,10 +163,9 @@ public class DatastoreScheduledInterviewTest {
     ScheduledInterview updatedStoredScheduledInterview =
         ScheduledInterview.create(
             previousStoredScheduledInterview.id(),
-            new TimeRange(
-                Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
-            "user@company.org",
-            "user3@mail.com");
+            scheduledInterview2.when(),
+            scheduledInterview2.interviewerEmail(),
+            scheduledInterview2.intervieweeEmail());
     dao.update(updatedStoredScheduledInterview);
     Entity updatedEntity = datastore.prepare(new Query("ScheduledInterview")).asSingleEntity();
     ScheduledInterview updatedScheduledInterview = dao.entityToScheduledInterview(updatedEntity);
@@ -180,10 +183,9 @@ public class DatastoreScheduledInterviewTest {
     ScheduledInterview expectedScheduledInterview =
         ScheduledInterview.create(
             storedScheduledInterview.id(),
-            new TimeRange(
-                Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
-            "user@company.org",
-            "user@mail.com");
+            scheduledInterview1.when(),
+            scheduledInterview1.interviewerEmail(),
+            scheduledInterview1.intervieweeEmail());
     Optional<ScheduledInterview> expectedScheduledInterviewOptional =
         Optional.of(expectedScheduledInterview);
     Assert.assertEquals(expectedScheduledInterviewOptional, actualScheduledInterviewOptional);
@@ -203,6 +205,7 @@ public class DatastoreScheduledInterviewTest {
     dao.create(scheduledInterview2);
     dao.create(scheduledInterview3);
     dao.create(scheduledInterview4);
+    dao.create(scheduledInterview5);
     List<ScheduledInterview> result =
         dao.getScheduledInterviewsInRangeForUser(
             scheduledInterview1.interviewerEmail(),
