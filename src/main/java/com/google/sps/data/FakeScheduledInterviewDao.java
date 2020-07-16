@@ -29,7 +29,7 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.TreeMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -43,7 +43,7 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
 
   /** Initializes the fields for ScheduledInterviewDatastoreDAO. */
   public FakeScheduledInterviewDao() {
-    datastore = new TreeMap<String, ScheduledInterview>();
+    datastore = new LinkedHashMap<String, ScheduledInterview>();
   }
 
   /**
@@ -69,7 +69,7 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
         new ArrayList<ScheduledInterview>(datastore.values());
     scheduledInterviews.sort(
         (ScheduledInterview s1, ScheduledInterview s2) ->
-            s1.when().start().isBefore(s2.when().start()) ? 1 : 0);
+            s1.when().start().isBefore(s2.when().start()) ? -1 : 0);
     for (ScheduledInterview scheduledInterview : scheduledInterviews) {
       if (email.equals(scheduledInterview.interviewerEmail())
           || email.equals(scheduledInterview.intervieweeEmail())) {

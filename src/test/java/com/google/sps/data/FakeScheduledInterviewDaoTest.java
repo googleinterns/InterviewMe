@@ -140,4 +140,23 @@ public class FakeScheduledInterviewDaoTest {
     expected.add(storedScheduledInterview2);
     Assert.assertEquals(expected, actual);
   }
+
+  // Tests deleting a scheduledInterview
+  @Test
+  public void deleteScheduledInterview() {
+    dao.create(scheduledInterview1);
+    dao.create(scheduledInterview2);
+    List<ScheduledInterview> actual = dao.getForPerson("user@company.org");
+    dao.delete(actual.get(0).id());
+    List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
+    ScheduledInterview storedScheduledInterview =
+        ScheduledInterview.create(
+            actual.get(1).id(),
+            new TimeRange(
+                Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
+            "user@company.org",
+            "user2@gmail.com");
+    expected.add(storedScheduledInterview);
+    Assert.assertEquals(storedScheduledInterview, dao.get(actual.get(1).id()).get());
+  }
 }
