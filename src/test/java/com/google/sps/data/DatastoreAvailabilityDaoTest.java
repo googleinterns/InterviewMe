@@ -43,8 +43,8 @@ public class DatastoreAvailabilityDaoTest {
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
-  private final DatastoreAvailabilityDao tester = new DatastoreAvailabilityDao();
-  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private DatastoreAvailabilityDao tester;
+  private DatastoreService datastore;
 
   private final Availability availabilityOne =
       Availability.create(
@@ -81,6 +81,8 @@ public class DatastoreAvailabilityDaoTest {
   @Before
   public void setUp() {
     helper.setUp();
+    tester = new DatastoreAvailabilityDao();
+    datastore = DatastoreServiceFactory.getDatastoreService();
   }
 
   @After
