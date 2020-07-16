@@ -13,8 +13,21 @@
 // limitations under the License.
 
 function onIndexLoad() {
-  fetch('/calendar');
   checkLogin();
+}
+
+function testCal() {
+  // document.cookie = 'same-site-cookie=foo; SameSite=Lax';
+  document.cookie = 'http://google.com/=; SameSite=None; Secure';
+  fetch('/calendar',{
+    mode: 'no-cors'
+  }).then((response) => {
+    if (response.redirected) {
+      console.log(response.url);
+      window.location.href = response.url;
+      return;
+    }
+  });  
 }
 
 function checkLogin() {

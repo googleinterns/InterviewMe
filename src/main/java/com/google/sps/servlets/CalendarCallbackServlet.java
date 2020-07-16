@@ -23,17 +23,20 @@ import com.google.sps.data.Utils;
 
 import java.io.IOException;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class OAuth2Callback extends AbstractAppEngineAuthorizationCodeCallbackServlet {
+@WebServlet("/calendar-callback")
+public class CalendarCallbackServlet extends AbstractAppEngineAuthorizationCodeCallbackServlet {
 
   private static final long serialVersionUID = 1L;
 
   @Override
   public void onSuccess(HttpServletRequest req, HttpServletResponse resp, Credential credential)
       throws ServletException, IOException {
+    System.out.println("success");
     resp.sendRedirect("/");
   }
 

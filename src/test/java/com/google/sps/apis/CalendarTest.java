@@ -48,13 +48,13 @@ public final class CalendarTest {
   @Test
   public void basic() throws IOException, GeneralSecurityException {
     // a is logged in.
-    helper.setEnvIsLoggedIn(true).setEnvEmail("a@gmail.com").setEnvAuthDomain("auth");
-    MockHttpServletRequest postRequest = new MockHttpServletRequest();
+    helper.setEnvIsLoggedIn(true).setEnvEmail("the.claire.yang@gmail.com").setEnvAuthDomain("auth");
+    MockHttpServletRequest getRequest = new MockHttpServletRequest();
 
-    CalendarAppEngineSample calServlet = new CalendarAppEngineSample();
+    CalendarServlet calServlet = new CalendarServlet();
 
-    MockHttpServletResponse postResponse = new MockHttpServletResponse();
-    calServlet.doGet(postRequest, postResponse);
-    System.out.println(postResponse.getContentAsString());
+    MockHttpServletResponse getResponse = new MockHttpServletResponse();
+    calServlet.doGet(getRequest, getResponse);
+    System.out.println(getResponse.getRedirectedUrl());
   }
 }

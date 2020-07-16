@@ -55,26 +55,32 @@ public class Utils {
   /** Global instance of the JSON factory. */
   static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
+  private static final String APPLICATION_NAME = "Interview Me";
+
   private static GoogleClientSecrets clientSecrets = null;
 
   static GoogleClientSecrets getClientCredential() throws IOException {
     if (clientSecrets == null) {
+      System.out.println("b2");
       clientSecrets =
           GoogleClientSecrets.load(
               JSON_FACTORY,
-              new InputStreamReader(Utils.class.getResourceAsStream("/client_secrets.json")));
+              new InputStreamReader(
+                  Utils.class.getResourceAsStream("/application_default_credentials.json")));
       Preconditions.checkArgument(
           !clientSecrets.getDetails().getClientId().startsWith("Enter ")
               && !clientSecrets.getDetails().getClientSecret().startsWith("Enter "),
           "Download client_secrets.json file from https://code.google.com/apis/console/"
               + "?api=calendar into calendar-appengine-sample/src/main/resources/client_secrets.json");
     }
+    System.out.println("b3");
     return clientSecrets;
   }
 
   public static String getRedirectUri(HttpServletRequest req) {
     GenericUrl url = new GenericUrl(req.getRequestURL().toString());
-    url.setRawPath("/oauth2callback");
+    url.setRawPath("/calendar-callback");
+    url.setPort(8080);
     return url.build();
   }
 
@@ -89,10 +95,14 @@ public class Utils {
         .build();
   }
 
-  static Calendar loadCalendarClient() throws IOException {
+  public static Calendar loadCalendarClient() throws IOException {
     String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
+    System.out.println("b1");
     Credential credential = newFlow().loadCredential(userId);
-    return new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build();
+    System.out.println("b4");
+    return new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+        .setApplicationName(APPLICATION_NAME)
+        .build();
   }
 
   /**
