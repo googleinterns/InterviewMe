@@ -91,7 +91,7 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
   /** Updates an entity in datastore. */
   @Override
   public void update(ScheduledInterview scheduledInterview) {
-    datastore.put(scheduledInterviewToUpdateEntity(scheduledInterview));
+    datastore.put(scheduledInterviewToEntityForUpdate(scheduledInterview));
   }
 
   /** Deletes an entity in datastore. */
@@ -124,7 +124,7 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
   }
 
   /** Creates a scheduledInterview Entity with the updated fields and id of a scheduledInterview */
-  public Entity scheduledInterviewToUpdateEntity(ScheduledInterview scheduledInterview) {
+  public Entity scheduledInterviewToEntityForUpdate(ScheduledInterview scheduledInterview) {
     Entity scheduledInterviewEntity = new Entity("ScheduledInterview", scheduledInterview.id());
     scheduledInterviewEntity.setProperty(
         "startTime", scheduledInterview.when().start().toEpochMilli());

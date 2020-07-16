@@ -182,7 +182,6 @@ public class DatastoreScheduledInterviewTest {
   @Test
   public void failsGetScheduledInterview() {
     Optional<ScheduledInterview> actual = dao.get(2);
-    Optional<ScheduledInterview> expected = Optional.empty();
-    Assert.assertEquals(expected, actual);
+    Assert.assertEquals(Optional.empty(), actual);
   }
 }
