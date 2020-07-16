@@ -38,7 +38,7 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
 
-public class Calendar {
+public class CalendarDao {
   private static final String APPLICATION_NAME = "Google Calendar API Java Quickstart";
   private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
   private static final String TOKENS_DIRECTORY_PATH = "tokens";
@@ -47,11 +47,11 @@ public class Calendar {
    * Global instance of the scopes required by this quickstart. If modifying these scopes, delete
    * your previously saved tokens/ folder.
    */
-  private static final List<String> SCOPES =
-      Collections.singletonList(CalendarScopes.CALENDAR);
+  private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR);
 
-  private static final String CREDENTIALS_FILE_PATH =
-      "/tmp/tmp.bdnDzvX4KK/application_default_credentials.json";
+  private static final String CREDENTIALS_FILE_PATH = "/application_default_credentials.json";
+
+  public CalendarDao() {}
 
   /**
    * Creates an authorized Credential object.
@@ -62,26 +62,35 @@ public class Calendar {
    */
   private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)
       throws IOException {
-    // Load client secrets.
-    InputStream in = CalendarQuickstart.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+    InputStream in = CalendarDao.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
     if (in == null) {
       throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
     }
     GoogleClientSecrets clientSecrets =
         GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
-    System.out.println("b1");
-    
-    // Build flow and trigger user authorization request.
+
+    // set up authorization code flow
     GoogleAuthorizationCodeFlow flow =
-        new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-            .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
-            .setAccessType("offline")
+        new GoogleAuthorizationCodeFlow.Builder(
+                HTTP_TRANSPORT,
+                JSON_FACTORY,
+                clientSecrets,
+                Collections.singleton(CalendarScopes.CALENDAR))
             .build();
-    System.out.println("b2");
-    
-    LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
-    System.out.println("b3");
+    // authorize
+    //
+    LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8080).build();
     return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+    // Load client secrets.
+
+    // flowb.setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)));
+    // flowb.setAccessType("online");
+    // GoogleAuthorizationCodeFlow flow = flowb.build();
+
+    // LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8080).build();
+    // Credential res = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+    // System.out.println("b3");
+    // return res;
   }
 
   public void addEvent() throws IOException, GeneralSecurityException {
@@ -89,12 +98,13 @@ public class Calendar {
     final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
     Calendar service =
         new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+            // new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, null)
             .setApplicationName(APPLICATION_NAME)
             .build();
     System.out.println("b4");
 
     // List the next 10 events from the primary calendar.
-    /*
+
     DateTime now = new DateTime(System.currentTimeMillis());
     Events events =
         service
@@ -105,6 +115,7 @@ public class Calendar {
             .setOrderBy("startTime")
             .setSingleEvents(true)
             .execute();
+    System.out.println("b5");
     List<Event> items = events.getItems();
     if (items.isEmpty()) {
       System.out.println("No upcoming events found.");
@@ -117,6 +128,6 @@ public class Calendar {
         }
         System.out.printf("%s (%s)\n", event.getSummary(), start);
       }
-    }*/
+    }
   }
 }

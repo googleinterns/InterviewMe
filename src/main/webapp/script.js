@@ -13,6 +13,7 @@
 // limitations under the License.
 
 function onIndexLoad() {
+  fetch('/calendar');
   checkLogin();
 }
 

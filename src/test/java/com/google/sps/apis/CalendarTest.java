@@ -15,17 +15,46 @@
 package com.google.sps.apis;
 
 import org.junit.Assert;
+import org.junit.After;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import com.google.sps.servlets.CalendarServlet;
 
 /** */
 @RunWith(JUnit4.class)
 public final class CalendarTest {
 
+  LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalUserServiceTestConfig());
+
+  @Before
+  public void setUp() {
+    helper.setUp();
+  }
+
+  @After
+  public void tearDown() {
+    helper.tearDown();
+  }
+
   // Tests whether or not two TimeRanges are the same
   @Test
-  public void equality() {
-    Assert.assertEquals(
+  public void basic() throws IOException, GeneralSecurityException {
+    // a is logged in.
+    helper.setEnvIsLoggedIn(true).setEnvEmail("a@gmail.com").setEnvAuthDomain("auth");
+    MockHttpServletRequest postRequest = new MockHttpServletRequest();
+
+    CalendarAppEngineSample calServlet = new CalendarAppEngineSample();
+
+    MockHttpServletResponse postResponse = new MockHttpServletResponse();
+    calServlet.doGet(postRequest, postResponse);
+    System.out.println(postResponse.getContentAsString());
   }
 }
