@@ -14,6 +14,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
       integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="register.js"></script>
+    <script src="profile.js"></script>    
     <script src="logout.js"></script>
   </head>
   <body onload="onRegisterLoad()">
@@ -45,13 +46,11 @@
       <h1 class="text-center">Register for InterviewMe</h1>
       <h5 class="text-center lead">Fill in the following fields below.</h5>
       <br>   
-      <!-- TODO: copy to profile page once this is approved so that the forms match. -->
       <form class="needs-validation" novalidate action="/person" method="POST">
         <div class="form-row">
           <div class="col-md-12 mb-3">
             <label for="user-email">Email</label>
-            <!-- TODO: replace with user's actual email -->
-            <input type="text" readonly class="form-control" id="user-email" value="tess@gmail.com" name="user-email">
+            <input type="text" readonly class="form-control" id="user-email" value="" name="user-email">
           </div>
         </div>
         <div class="form-row">
@@ -90,7 +89,9 @@
             <input type="text" class="form-control" id="linkedin-field" placeholder="https://www.linkedin.com/" value="" name="linkedin">
           </div>
         </div>
-        <button class="btn btn-primary" type="submit">Submit</button>
+        <button class="btn btn-primary" type="button" onclick="submitProfileForm('POST','/')">
+          Submit
+        </button>
       </form>
       <br><br><br>
     </div>
