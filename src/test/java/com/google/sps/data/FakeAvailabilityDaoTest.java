@@ -68,8 +68,7 @@ public class FakeAvailabilityDaoTest {
   @Test
   public void createsAvailability() {
     dao.create(availabilityOne);
-    List<Availability> storedAvailabilities =
-        new ArrayList<Availability>(dao.datastore.values());
+    List<Availability> storedAvailabilities = new ArrayList<Availability>(dao.datastore.values());
     Availability expected =
         Availability.create(
             "user1@mail.com",
@@ -84,8 +83,7 @@ public class FakeAvailabilityDaoTest {
   @Test
   public void updatesAvailability() {
     dao.create(availabilityOne);
-    List<Availability> storedAvailabilities =
-        new ArrayList<Availability>(dao.datastore.values());
+    List<Availability> storedAvailabilities = new ArrayList<Availability>(dao.datastore.values());
     Availability update =
         Availability.create(
             "user1@mail.com",
@@ -94,8 +92,7 @@ public class FakeAvailabilityDaoTest {
             storedAvailabilities.get(0).id(),
             false);
     dao.update(update);
-    List<Availability> updatedAvailabilities =
-        new ArrayList<Availability>(dao.datastore.values());
+    List<Availability> updatedAvailabilities = new ArrayList<Availability>(dao.datastore.values());
     Assert.assertEquals(update, updatedAvailabilities.get(0));
   }
 
@@ -103,8 +100,7 @@ public class FakeAvailabilityDaoTest {
   @Test
   public void getsAvailability() {
     dao.create(availabilityOne);
-    List<Availability> storedAvailabilities =
-        new ArrayList<Availability>(dao.datastore.values());
+    List<Availability> storedAvailabilities = new ArrayList<Availability>(dao.datastore.values());
     Availability expected =
         Availability.create(
             "user1@mail.com",
@@ -135,8 +131,7 @@ public class FakeAvailabilityDaoTest {
         "user1@mail.com",
         Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
         Instant.parse("2020-07-07T16:00:00Z").toEpochMilli());
-    List<Availability> storedAvailabilities =
-        new ArrayList<Availability>(dao.datastore.values());
+    List<Availability> storedAvailabilities = new ArrayList<Availability>(dao.datastore.values());
     Availability expected =
         Availability.create(
             "user1@mail.com",
@@ -158,8 +153,7 @@ public class FakeAvailabilityDaoTest {
         "user1@mail.com",
         Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
         Instant.parse("2020-07-07T17:45:00Z").toEpochMilli());
-    List<Availability> storedAvailabilities =
-        new ArrayList<Availability>(dao.datastore.values());
+    List<Availability> storedAvailabilities = new ArrayList<Availability>(dao.datastore.values());
     Availability expected =
         Availability.create(
             "user2@mail.com",
@@ -181,8 +175,7 @@ public class FakeAvailabilityDaoTest {
             "user1@mail.com",
             Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
             Instant.parse("2020-07-07T16:00:00Z").toEpochMilli());
-    List<Availability> storedAvailabilities =
-        new ArrayList<Availability>(dao.datastore.values());
+    List<Availability> storedAvailabilities = new ArrayList<Availability>(dao.datastore.values());
     Availability expectedAvailabilityOne =
         Availability.create(
             "user1@mail.com",
@@ -215,8 +208,7 @@ public class FakeAvailabilityDaoTest {
             "user1@mail.com",
             Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
             Instant.parse("2020-07-07T17:45:00Z").toEpochMilli());
-    List<Availability> storedAvailabilities =
-        new ArrayList<Availability>(dao.datastore.values());
+    List<Availability> storedAvailabilities = new ArrayList<Availability>(dao.datastore.values());
     Availability expectedAvailabilityOne =
         Availability.create(
             "user1@mail.com",
@@ -237,56 +229,6 @@ public class FakeAvailabilityDaoTest {
     Assert.assertEquals(expectedAvailabilities, actual);
   }
 
-  // Checks that all scheduled Availability objects from a specified user
-  // and within a given time range are returned.
-  @Test
-  public void getsScheduledAvailabilitiesForUserInRange() {
-    dao.create(availabilityOne);
-    dao.create(availabilityTwo);
-    List<Availability> actual =
-        dao.getScheduledInRangeForUser(
-            "user1@mail.com",
-            Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
-            Instant.parse("2020-07-07T16:00:00Z").toEpochMilli());
-    List<Availability> storedAvailabilities =
-        new ArrayList<Availability>(dao.datastore.values());
-    Availability expectedAvailability =
-        Availability.create(
-            "user1@mail.com",
-            new TimeRange(
-                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
-            storedAvailabilities.get(0).id(),
-            true);
-    List<Availability> expected = new ArrayList<Availability>();
-    expected.add(expectedAvailability);
-    Assert.assertEquals(expected, actual);
-  }
-
-  // Checks that only the scheduled Availability objects for a specific user
-  // are returned (and not the scheduled Availability objects of other users).
-  @Test
-  public void onlyGetsSpecifiedUsersScheduledAvailabilityInRange() {
-    dao.create(availabilityOne);
-    dao.create(availabilityThree);
-    List<Availability> actual =
-        dao.getScheduledInRangeForUser(
-            "user1@mail.com",
-            Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
-            Instant.parse("2020-07-07T17:45:00Z").toEpochMilli());
-    List<Availability> storedAvailabilities =
-        new ArrayList<Availability>(dao.datastore.values());
-    Availability expectedAvailability =
-        Availability.create(
-            "user1@mail.com",
-            new TimeRange(
-                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
-            storedAvailabilities.get(0).id(),
-            true);
-    List<Availability> expected = new ArrayList<Availability>();
-    expected.add(expectedAvailability);
-    Assert.assertEquals(expected, actual);
-  }
-
   // Checks that all of the Availability objects within a given time range are returned.
   @Test
   public void getsAllUsersAvailabilityInRange() {
@@ -298,8 +240,7 @@ public class FakeAvailabilityDaoTest {
         dao.getInRangeForAll(
             Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
             Instant.parse("2020-07-07T17:45:00Z").toEpochMilli());
-    List<Availability> storedAvailabilities =
-        new ArrayList<Availability>(dao.datastore.values());
+    List<Availability> storedAvailabilities = new ArrayList<Availability>(dao.datastore.values());
     Availability expectedAvailabilityOne =
         Availability.create(
             "user1@mail.com",

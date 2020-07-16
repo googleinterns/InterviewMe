@@ -82,17 +82,6 @@ public class FakeAvailabilityDao implements AvailabilityDao {
     return getInRange(userAvailability, minTime, maxTime);
   }
 
-  /**
-   * Collects all Availabilities for the specified user within the specified time range that have
-   * been scheduled over, where minTime and maxTime are in milliseconds.
-   */
-  @Override
-  public List<Availability> getScheduledInRangeForUser(String email, long minTime, long maxTime) {
-    List<Availability> userAvailability = getForUser(email);
-    List<Availability> userAvailabilityInRange = getInRange(userAvailability, minTime, maxTime);
-    return getScheduled(userAvailabilityInRange);
-  }
-
   private List<Availability> getForUser(String email) {
     List<Availability> allAvailability = new ArrayList<Availability>(datastore.values());
     List<Availability> userAvailability = new ArrayList<Availability>();
