@@ -24,37 +24,36 @@ import java.util.Random;
 
 /** Mimics accessing Datastore to support managing Availability entities. */
 public class FakeAvailabilityDao implements AvailabilityDao {
-  // @param datastore the fake database. Made public because it will only be used
-  // while testing.
-  public LinkedHashMap<Long, Availability> datastore;
+  // storedObjects is the fake database.
+  private LinkedHashMap<Long, Availability> storedObjects;
 
   /** Initializes the fields for FakeAvailabilityDao. */
   public FakeAvailabilityDao() {
-    datastore = new LinkedHashMap<Long, Availability>();
+    storedObjects = new LinkedHashMap<Long, Availability>();
   }
 
-  /** Puts an Availability object into datastore with a randomly generated long as its id. */
+  /** Puts an Availability object into storedObjects with a randomly generated long as its id. */
   @Override
   public void create(Availability avail) {
     long id = new Random().nextLong();
     Availability toStoreAvail = avail.withId(id);
-    datastore.put(id, toStoreAvail);
+    storedObjects.put(id, toStoreAvail);
   }
 
-  /** Updates an Availability in datastore based on its id. */
+  /** Updates an Availability in storedObjects based on its id. */
   @Override
   public void update(Availability avail) {
-    datastore.put(avail.id(), avail);
+    storedObjects.put(avail.id(), avail);
   }
 
   /**
-   * Retrieves the Availability from datastore from the given id and wraps it in an Optional. If the
-   * Availability does not exist in datastore, the Optional is empty.
+   * Retrieves the Availability from storedObjects from the given id and wraps it in an Optional. If
+   * the Availability does not exist in storedObjects, the Optional is empty.
    */
   @Override
   public Optional<Availability> get(long id) {
-    if (datastore.containsKey(id)) {
-      return Optional.of(datastore.get(id));
+    if (storedObjects.containsKey(id)) {
+      return Optional.of(storedObjects.get(id));
     }
     return Optional.empty();
   }
@@ -68,7 +67,7 @@ public class FakeAvailabilityDao implements AvailabilityDao {
     List<Availability> userAvailability = getForUser(email);
     List<Availability> userAvailabilityInRange = getInRange(userAvailability, minTime, maxTime);
     for (Availability avail : userAvailabilityInRange) {
-      datastore.remove(avail.id());
+      storedObjects.remove(avail.id());
     }
   }
 
@@ -83,7 +82,7 @@ public class FakeAvailabilityDao implements AvailabilityDao {
   }
 
   private List<Availability> getForUser(String email) {
-    List<Availability> allAvailability = new ArrayList<Availability>(datastore.values());
+    List<Availability> allAvailability = new ArrayList<Availability>(storedObjects.values());
     List<Availability> userAvailability = new ArrayList<Availability>();
     for (Availability avail : allAvailability) {
       if (avail.email().equals(email)) {
@@ -109,7 +108,7 @@ public class FakeAvailabilityDao implements AvailabilityDao {
    */
   @Override
   public List<Availability> getInRangeForAll(long minTime, long maxTime) {
-    return getInRange(new ArrayList<Availability>(datastore.values()), minTime, maxTime);
+    return getInRange(new ArrayList<Availability>(storedObjects.values()), minTime, maxTime);
   }
 
   private List<Availability> getInRange(
