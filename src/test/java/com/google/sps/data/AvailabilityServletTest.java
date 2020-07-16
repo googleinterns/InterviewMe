@@ -22,6 +22,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.sps.servlets.AvailabilityServlet;
+import com.google.sps.data.FakeAvailabilityDao;
 import com.google.sps.data.PutAvailabilityRequest;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -54,8 +55,7 @@ public final class AvailabilityServletTest {
   @Test
   public void validAvailabilityServletRequest() throws IOException {
     AvailabilityServlet availabilityServlet = new AvailabilityServlet();
-    // TODO: Change this to using a FakeAvailabilityDao
-    availabilityServlet.init();
+    availabilityServlet.init(new FakeAvailabilityDao());
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest putRequest = new MockHttpServletRequest();
     String jsonString =
@@ -69,8 +69,7 @@ public final class AvailabilityServletTest {
   @Test
   public void invalidAvailabilityServletRequest() throws IOException {
     AvailabilityServlet availabilityServlet = new AvailabilityServlet();
-    // TODO: Change this to using a FakeAvailabilityDao
-    availabilityServlet.init();
+    availabilityServlet.init(new FakeAvailabilityDao());
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest putRequest = new MockHttpServletRequest();
     String jsonString =
