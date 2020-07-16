@@ -30,7 +30,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public final class AvailabilityTimeSlotGeneratorTest {
   
-  // TODO: Create testing lists of Availability to feed to timeSlotsForDay to test ifSelected and ifScheduled
+  // TODO: Create tests for the timeSlotsForWeek method with the dao?
 
   @Test
   public void createADayOfUnselectedTimeSlots() {
