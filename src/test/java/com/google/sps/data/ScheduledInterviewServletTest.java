@@ -105,4 +105,63 @@ public final class ScheduledInterviewServletTest {
 
     Assert.assertEquals(200, getResponse.getStatus());
   }
+
+  @Test
+  public void orderedScheduledInterviewServletGetRequest() throws IOException {
+    ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
+    scheduledInterviewServlet.init(new FakeScheduledInterviewDao());
+    MockHttpServletRequest getRequest = new MockHttpServletRequest();
+    MockHttpServletResponse getResponse = new MockHttpServletResponse();
+    MockHttpServletRequest postRequest = new MockHttpServletRequest();
+
+    postRequest.addParameter("startTime", "2020-07-05T18:30:10Z");
+    postRequest.addParameter("endTime", "2020-07-05T19:30:10Z");
+    postRequest.addParameter("interviewer", "user@company.org");
+    postRequest.addParameter("interviewee", "user@gmail.com");
+    scheduledInterviewServlet.doPost(postRequest, new MockHttpServletResponse());
+
+    postRequest.setParameter("startTime", "2020-07-05T20:30:10Z");
+    postRequest.setParameter("endTime", "2020-07-05T21:30:10Z");
+    postRequest.setParameter("interviewer", "user2@company.org");
+    postRequest.setParameter("interviewee", "user@gmail.com");
+    scheduledInterviewServlet.doPost(postRequest, new MockHttpServletResponse());
+
+    postRequest.setParameter("startTime", "2020-07-05T18:30:10Z");
+    postRequest.setParameter("endTime", "2020-07-05T19:30:10Z");
+    postRequest.setParameter("interviewer", "user2@company.org");
+    postRequest.setParameter("interviewee", "user1@gmail.com");
+    scheduledInterviewServlet.doPost(postRequest, new MockHttpServletResponse());
+
+    getRequest.addParameter("userEmail", "user@gmail.com");
+    scheduledInterviewServlet.doGet(getRequest, getResponse);
+
+    Type scheduledInterviewListType = new TypeToken<ArrayList<ScheduledInterview>>() {}.getType();
+    JsonElement json = new JsonParser().parse(getResponse.getContentAsString());
+    System.out.println(json);
+    List<ScheduledInterview> actual = new Gson().fromJson(json, scheduledInterviewListType);
+
+    System.out.println(actual);
+
+    ScheduledInterview scheduledInterview1 =
+        ScheduledInterview.create(
+            actual.get(0).id(),
+            new TimeRange(
+                Instant.parse("2020-07-05T18:30:10Z"), Instant.parse("2020-07-05T19:30:10Z")),
+            "user@company.org",
+            "user@gmail.com");
+
+    ScheduledInterview scheduledInterview2 =
+        ScheduledInterview.create(
+            actual.get(1).id(),
+            new TimeRange(
+                Instant.parse("2020-07-05T20:30:10Z"), Instant.parse("2020-07-05T21:30:10Z")),
+            "user2@company.org",
+            "user@gmail.com");
+
+    List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
+    expected.add(scheduledInterview1);
+    expected.add(scheduledInterview2);
+
+    Assert.assertEquals(200, getResponse.getStatus());
+  }
 }
