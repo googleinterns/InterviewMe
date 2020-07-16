@@ -69,6 +69,7 @@ public class AvailabilityTimeSlotGenerator {
    * @param timezoneOffsetMinutes An int that represents the difference between UTC and the user's
    *     current timezone. Example: A user in EST has a timezoneOffsetMinutes of -240 which means
    *     that EST is 240 minutes behind UTC.
+   * @param availabilityDao The AvailabilityDao that is used to get the selected Availabilities for the week.
    * @throws IllegalArgumentException if the magnitude of timezoneOffsetMinutes is greater than 720.
    */
   public static List<List<AvailabilityTimeSlot>> timeSlotsForWeek(
@@ -88,6 +89,7 @@ public class AvailabilityTimeSlotGenerator {
     return weekList.build();
   }
 
+  // Creates longs of milliseconds for the start and end points of the specified week.
   private static List<Long> getStartAndEndOfWeek(Instant instant, int timezoneOffsetMinutes) {
     ZonedDateTime firstDay = generateDay(instant, timezoneOffsetMinutes);
     long startOfWeek = getStartOrEndOfWeek(firstDay, true);
@@ -99,6 +101,7 @@ public class AvailabilityTimeSlotGenerator {
     return startAndEnd;
   }
 
+  // Returns either the start or end point of the specified week.
   private static long getStartOrEndOfWeek(ZonedDateTime day, boolean start) {
     ZoneId zoneId = day.getZone();
     int year = day.getYear();
@@ -128,6 +131,8 @@ public class AvailabilityTimeSlotGenerator {
    * @param timezoneOffsetMinutes An int that represents the difference between UTC and the user's
    *     current timezone. Example: A user in EST has a timezoneOffsetMinutes of -240 which means
    *     that EST is 240 minutes behind UTC.
+   * @param userAvailabilityForWeek A list of the selected Availabilities for the current user during the week
+   * that the specified day is a part of.
    */
   @VisibleForTesting
   static List<AvailabilityTimeSlot> timeSlotsForDay(Instant instant, int timezoneOffsetMinutes, List<Availability> userAvailabilityForWeek) {
