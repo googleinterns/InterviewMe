@@ -92,12 +92,12 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
    */
   @Override
   public List<ScheduledInterview> getScheduledInterviewsInRangeForUser(
-      String email, long minTime, long maxTime) {
+      String email, Instant minTime, Instant maxTime) {
+    TimeRange range = new TimeRange(minTime, maxTime);
     List<ScheduledInterview> scheduledInterviews = getForPerson(email);
     List<ScheduledInterview> scheduledInterviewsInRange = new ArrayList<ScheduledInterview>();
     for (ScheduledInterview scheduledInterview : scheduledInterviews) {
-      if (scheduledInterview.when().start().toEpochMilli() >= minTime
-          && scheduledInterview.when().end().toEpochMilli() <= maxTime) {
+      if (range.contains(scheduledInterview.when())) {
         scheduledInterviewsInRange.add(scheduledInterview);
       }
     }

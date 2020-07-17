@@ -189,8 +189,8 @@ public class FakeScheduledInterviewDaoTest {
     List<ScheduledInterview> actual =
         dao.getScheduledInterviewsInRangeForUser(
             scheduledInterview1.interviewerEmail(),
-            scheduledInterview2.when().start().toEpochMilli(),
-            scheduledInterview4.when().end().toEpochMilli());
+            scheduledInterview2.when().start(),
+            scheduledInterview4.when().end());
     List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
     ScheduledInterview storedScheduledInterview1 =
         ScheduledInterview.create(
