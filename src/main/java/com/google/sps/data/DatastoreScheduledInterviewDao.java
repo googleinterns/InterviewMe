@@ -157,6 +157,10 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
     return scheduledInterviewEntity;
   }
 
+  /**
+   * Returns interviews within a desired range. For example: scheduledInterviews starting >= 2:00PM
+   * and ending <= 6:00PM on a certain date. The maxTime is 6:00PM on that day.
+   */
   private List<Entity> getEntitiesInRange(
       Instant minTime, Instant maxTime, Optional<Filter> filterOpt) {
     Filter minFilter =
