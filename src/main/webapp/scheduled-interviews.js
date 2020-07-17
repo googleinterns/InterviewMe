@@ -13,6 +13,7 @@
 // limitations under the License.
 
 function onScheduledInterviewsLoad() {
-  supplyLogoutLink();
-  getUserIfRegistered();
+  const loginInfo = getLoginInfo();
+  loginInfo.then(supplyLogoutLinkOrRedirectHome); 
+  loginInfo.then(getUserOrRedirectRegistration);
 }

@@ -13,8 +13,9 @@
 // limitations under the License.
 
 function onProfileLoad() {
-  supplyLogoutLink();  
-  getUserIfRegistered().then((person) => {
+  const loginInfo = getLoginInfo();
+  loginInfo.then(supplyLogoutLinkOrRedirectHome);  
+  loginInfo.then(getUserOrRedirectRegistration).then((person) => {
     autofillForm(person);      
   });
   prepareFormValidation();
@@ -22,10 +23,8 @@ function onProfileLoad() {
 
 // Returns a Person if they registered in the past. If not, redirect to  
 // registration page.
-function getUserIfRegistered(){
-  return fetch('/login')
-    .then(response => response.json())
-    .then(status => fetch(`/person?email=${status.email}`))
+function getUserOrRedirectRegistration(loginInfo){
+  return fetch(`/person?email=${loginInfo.email}`)
     .then(response => {
       if (response.redirected) {
         window.location.href = response.url;
