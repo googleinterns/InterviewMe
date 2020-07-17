@@ -39,11 +39,11 @@ import java.util.Set;
 /** Mimics accessing Datastore to support managing ScheduledInterview entities. */
 public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
   // data is the fake database
-  public Map<String, ScheduledInterview> data;
+  public Map<Long, ScheduledInterview> data;
 
   /** Initializes the fields for ScheduledInterviewDatastoreDAO. */
   public FakeScheduledInterviewDao() {
-    data = new LinkedHashMap<String, ScheduledInterview>();
+    data = new LinkedHashMap<Long, ScheduledInterview>();
   }
 
   /**
@@ -86,10 +86,7 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
     return relevantInterviews;
   }
 
-  /**
-   * Returns a list of all scheduledInterviews ranging from minTime to maxTime of a user. minTime
-   * and maxTime are in milliseconds.
-   */
+  /** Returns a list of all scheduledInterviews ranging from minTime to maxTime of a user. */
   @Override
   public List<ScheduledInterview> getScheduledInterviewsInRangeForUser(
       String email, Instant minTime, Instant maxTime) {
@@ -114,18 +111,18 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
             scheduledInterview.when(),
             scheduledInterview.interviewerEmail(),
             scheduledInterview.intervieweeEmail());
-    data.put(Long.toString(generatedId), storedScheduledInterview);
+    data.put(generatedId, storedScheduledInterview);
   }
 
   /** Updates an entity. */
   @Override
   public void update(ScheduledInterview scheduledInterview) {
-    data.put(Long.toString(scheduledInterview.id()), scheduledInterview);
+    data.put(scheduledInterview.id(), scheduledInterview);
   }
 
   /** Deletes an entity. */
   @Override
   public void delete(long id) {
-    data.remove(Long.toString(id));
+    data.remove(id);
   }
 }
