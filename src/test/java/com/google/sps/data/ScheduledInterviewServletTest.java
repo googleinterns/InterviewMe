@@ -119,7 +119,7 @@ public final class ScheduledInterviewServletTest {
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
 
     postRequest.addParameter("startTime", "2020-07-05T18:00:00Z");
-    postRequest.addParameter("endTime", "2020-07-05T19:00:10Z");
+    postRequest.addParameter("endTime", "2020-07-05T19:00:00Z");
     postRequest.addParameter("interviewer", "user@company.org");
     postRequest.addParameter("interviewee", "user@gmail.com");
     scheduledInterviewServlet.doPost(postRequest, new MockHttpServletResponse());
@@ -139,30 +139,29 @@ public final class ScheduledInterviewServletTest {
     getRequest.addParameter("userEmail", "user@gmail.com");
     scheduledInterviewServlet.doGet(getRequest, getResponse);
 
-    Type scheduledInterviewListType = new TypeToken<List<ScheduledInterviewRequest>>() {}.getType();
+    Type scheduledInterviewListType =
+        new TypeToken<ArrayList<ScheduledInterviewRequest>>() {}.getType();
     JsonElement json = new JsonParser().parse(getResponse.getContentAsString());
     List<ScheduledInterviewRequest> actual = new Gson().fromJson(json, scheduledInterviewListType);
 
-    ScheduledInterview scheduledInterview1 =
-        ScheduledInterview.create(
+    ScheduledInterviewRequest scheduledInterview1 =
+        new ScheduledInterviewRequest(
             actual.get(0).getId(),
             new TimeRange(
                 Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
             "user@company.org",
             "user@gmail.com");
-
-    ScheduledInterview scheduledInterview2 =
-        ScheduledInterview.create(
+    ScheduledInterviewRequest scheduledInterview2 =
+        new ScheduledInterviewRequest(
             actual.get(1).getId(),
             new TimeRange(
                 Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
             "user2@company.org",
             "user@gmail.com");
 
-    List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
+    List<ScheduledInterviewRequest> expected = new ArrayList<ScheduledInterviewRequest>();
     expected.add(scheduledInterview1);
     expected.add(scheduledInterview2);
-
-    Assert.assertEquals(200, getResponse.getStatus());
+    Assert.assertEquals(expected, actual);
   }
 }
