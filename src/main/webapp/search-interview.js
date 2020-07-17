@@ -22,6 +22,17 @@ function loadInterviews() {
   // TODO: fetch and get all interviews instead of unhiding something hidden
   const searchResultsDiv = document.getElementById("search-results");
   searchResultsDiv.removeAttribute("hidden");
+  
+  // NEW WORK
+  let timezoneOffset = browserTimezoneOffset();
+  fetch(`/search-interviews?timeZoneOffset=${timezoneOffset}`)
+    .then(response => response.text())
+    .then(tableContents => {});
+}
+
+function browserTimezoneOffset() {
+  let date = new Date();
+  return (-1) * date.getTimezoneOffset();
 }
 
 // Confirms interview selection with user and sends this selection to Datastore 
