@@ -21,19 +21,6 @@ function onProfileLoad() {
   prepareFormValidation();
 }
 
-// Returns a Person if they registered in the past. If not, redirect to  
-// registration page.
-function getUserOrRedirectRegistration(loginInfo){
-  return fetch(`/person?email=${loginInfo.email}`)
-    .then(response => {
-      if (response.redirected) {
-        window.location.href = response.url;
-        return;
-      }
-      return response.json();
-    });
-}
-
 // Fills in the profile form with data from Datastore.
 function autofillForm(person) {
   document.getElementById('user-email').value = person.email;

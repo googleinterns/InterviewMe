@@ -24,3 +24,16 @@ function supplyLogoutLinkOrRedirectHome(loginInfo) {
 function getLoginInfo() {
   return fetch('/login').then(response => response.json());
 }
+
+// Returns a Person if they registered in the past. If not, redirect to  
+// registration page.
+function getUserOrRedirectRegistration(loginInfo){
+  return fetch(`/person?email=${loginInfo.email}`)
+    .then(response => {
+      if (response.redirected) {
+        window.location.href = response.url;
+        return;
+      }
+      return response.json();
+    });
+}
