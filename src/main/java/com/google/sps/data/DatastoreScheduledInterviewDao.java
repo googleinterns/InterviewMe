@@ -29,6 +29,7 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +91,7 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
    */
   @Override
   public List<ScheduledInterview> getScheduledInterviewsInRangeForUser(
-      String email, long minTime, long maxTime) {
+      String email, Instant minTime, Instant maxTime) {
     Filter interviewerFilter = new FilterPredicate("interviewer", FilterOperator.EQUAL, email);
     Filter intervieweeFilter = new FilterPredicate("interviewee", FilterOperator.EQUAL, email);
     CompositeFilter scheduledForUserFilter =
@@ -156,13 +157,18 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
     return scheduledInterviewEntity;
   }
 
-  private List<Entity> getEntitiesInRange(long minTime, long maxTime, Optional<Filter> filterOpt) {
+  private List<Entity> getEntitiesInRange(
+      Instant minTime, Instant maxTime, Optional<Filter> filterOpt) {
     // Datastore only supports one inequality filter per query. To work around this, the max filter
     // ensures that the start time is at most 60 minutes before the maxTime.
     Filter minFilter =
-        new FilterPredicate("startTime", FilterOperator.GREATER_THAN_OR_EQUAL, minTime);
+        new FilterPredicate(
+            "startTime", FilterOperator.GREATER_THAN_OR_EQUAL, minTime.toEpochMilli());
     Filter maxFilter =
-        new FilterPredicate("startTime", FilterOperator.LESS_THAN_OR_EQUAL, (maxTime - 3600000));
+        new FilterPredicate(
+            "startTime",
+            FilterOperator.LESS_THAN_OR_EQUAL,
+            maxTime.minus(60, ChronoUnit.MINUTES).toEpochMilli());
     CompositeFilter compFilter = CompositeFilterOperator.and(minFilter, maxFilter);
     if (filterOpt.isPresent()) {
       compFilter = CompositeFilterOperator.and(compFilter, filterOpt.get());
