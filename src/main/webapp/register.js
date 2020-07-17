@@ -15,7 +15,7 @@
 function onRegisterLoad() {
   const loginInfo = getLoginInfo();
   loginInfo.then(supplyLogoutLinkOrRedirectHome); 
-  loginInfo.then(autofillEmail).then(prepareFormValidation());
+  loginInfo.then(autofillEmail).then(prepareFormValidation);
 }
 
 // Autofills email on the registration form of the email of the logged in user.
