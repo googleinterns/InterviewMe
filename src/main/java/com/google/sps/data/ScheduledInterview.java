@@ -16,21 +16,16 @@ package com.google.sps.data;
 
 import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
 
 /** Represents a scheduled interview. */
 @AutoValue
 public abstract class ScheduledInterview {
-  @SerializedName("id")
   public abstract long id();
 
-  @SerializedName("when")
   public abstract TimeRange when();
 
-  @SerializedName("interviewerEmail")
   public abstract String interviewerEmail();
 
-  @SerializedName("intervieweeEmail")
   public abstract String intervieweeEmail();
 
   /**
