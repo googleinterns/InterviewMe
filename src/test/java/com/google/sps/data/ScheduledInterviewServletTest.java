@@ -106,6 +106,7 @@ public final class ScheduledInterviewServletTest {
     Assert.assertEquals(200, getResponse.getStatus());
   }
 
+  // Tests that the list of scheduledInterviews in the correct order
   @Test
   public void orderedScheduledInterviewServletGetRequest() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();

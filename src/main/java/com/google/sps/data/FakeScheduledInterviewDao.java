@@ -68,8 +68,10 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
     List<ScheduledInterview> scheduledInterviews =
         new ArrayList<ScheduledInterview>(datastore.values());
     scheduledInterviews.sort(
-        (ScheduledInterview s1, ScheduledInterview s2) ->
-            s1.when().start().isBefore(s2.when().start()) ? -1 : 0);
+        (ScheduledInterview s1, ScheduledInterview s2) -> {
+          return s1.when().start().isBefore(s2.when().start());
+        }
+        
     for (ScheduledInterview scheduledInterview : scheduledInterviews) {
       if (email.equals(scheduledInterview.interviewerEmail())
           || email.equals(scheduledInterview.intervieweeEmail())) {
@@ -77,6 +79,24 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
       }
     }
     return relevantInterviews;
+  }
+
+  /**
+   * Returns a list of all scheduledInterviews ranging from minTime to maxTime of a user. minTime
+   * and maxTime are in milliseconds.
+   */
+  @Override
+  public List<ScheduledInterview> getScheduledInterviewsInRangeForUser(
+      String email, long minTime, long maxTime) {
+    List<ScheduledInterview> scheduledInterviews = getForPerson(email);
+    List<ScheduledInterview> scheduledInterviewsInRange = new ArrayList<ScheduledInterview>();
+    for (ScheduledInterview scheduledInterview : scheduledInterviews) {
+      if (scheduledInterview.when().start().toEpochMilli() >= minTime
+          && scheduledInterview.when().start().toEpochMilli() <= maxTime) {
+        scheduledInterviewsInRange.add(scheduledInterview);
+      }
+    }
+    return scheduledInterviewsInRange;
   }
 
   /** Creates a ScheduledInterview Entity and stores it in Datastore. */

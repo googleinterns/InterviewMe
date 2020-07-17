@@ -56,6 +56,22 @@ public class FakeScheduledInterviewDaoTest {
           "user3@company.org",
           "user2@gmail.com");
 
+  private final ScheduledInterview scheduledInterview4 =
+      ScheduledInterview.create(
+          (long) -1,
+          new TimeRange(
+              Instant.parse("2020-07-06T20:00:10Z"), Instant.parse("2020-07-06T21:00:10Z")),
+          "user@company.org",
+          "user2@mail.com");
+
+  private final ScheduledInterview scheduledInterview5 =
+      ScheduledInterview.create(
+          (long) -1,
+          new TimeRange(
+              Instant.parse("2020-07-06T22:00:10Z"), Instant.parse("2020-07-06T23:00:10Z")),
+          "user@company.org",
+          "user2@mail.com");
+
   // Test whether the scheduledInterview was added to datastore.
   @Test
   public void createsScheduledInterview() {
@@ -120,6 +136,8 @@ public class FakeScheduledInterviewDaoTest {
   public void sortedScheduledInterviews() {
     dao.create(scheduledInterview2);
     dao.create(scheduledInterview1);
+    dao.create(scheduledInterview4);
+    dao.create(scheduledInterview3);
     List<ScheduledInterview> actual = dao.getForPerson("user@company.org");
     List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
     ScheduledInterview storedScheduledInterview1 =
@@ -136,8 +154,16 @@ public class FakeScheduledInterviewDaoTest {
                 Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
             "user@company.org",
             "user2@gmail.com");
+    ScheduledInterview storedScheduledInterview4 =
+        ScheduledInterview.create(
+            (long) -1,
+            new TimeRange(
+                Instant.parse("2020-07-06T20:00:10Z"), Instant.parse("2020-07-06T21:00:10Z")),
+            "user@company.org",
+            "user2@mail.com");
     expected.add(storedScheduledInterview1);
     expected.add(storedScheduledInterview2);
+    expected.add(storedScheduledInterview4);
     Assert.assertEquals(expected, actual);
   }
 
@@ -158,5 +184,37 @@ public class FakeScheduledInterviewDaoTest {
             "user2@gmail.com");
     expected.add(storedScheduledInterview);
     Assert.assertEquals(storedScheduledInterview, dao.get(actual.get(1).id()).get());
+  }
+
+  // Tests retrieving scheduledInterviews in a certain range
+  @Test
+  public void inRangeScheduledInterviews() {
+    dao.create(scheduledInterview1);
+    dao.create(scheduledInterview2);
+    dao.create(scheduledInterview3);
+    dao.create(scheduledInterview4);
+    List<ScheduledInterview> actual =
+        dao.getScheduledInterviewsInRangeForUser(
+            "user@company.org",
+            Instant.parse("2020-07-06T19:00:10Z").toEpochMilli(),
+            Instant.parse("2020-07-06T21:00:10Z").toEpochMilli());
+    List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
+    ScheduledInterview storedScheduledInterview1 =
+        ScheduledInterview.create(
+            actual.get(0).id(),
+            new TimeRange(
+                Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
+            "user@company.org",
+            "user2@gmail.com");
+    ScheduledInterview storedScheduledInterview2 =
+        ScheduledInterview.create(
+            actual.get(1).id(),
+            new TimeRange(
+                Instant.parse("2020-07-06T20:00:10Z"), Instant.parse("2020-07-06T21:00:10Z")),
+            "user@company.org",
+            "user2@gmail.com");
+    expected.add(storedScheduledInterview1);
+    expected.add(storedScheduledInterview2);
+    Assert.assertEquals(expected, actual);
   }
 }
