@@ -140,7 +140,7 @@ public final class ScheduledInterviewServletTest {
     Type scheduledInterviewListType = new TypeToken<List<ScheduledInterview>>() {}.getType();
     JsonElement json = new JsonParser().parse(getResponse.getContentAsString());
     System.out.println(json);
-    List<ScheduledInterview> actual = new Gson().fromJson(json, scheduledInterviewListType);
+    List<ScheduledInterview> actual = new Gson().fromJson(json, ScheduledInterview.typeAdapter());
 
     System.out.println(actual);
 

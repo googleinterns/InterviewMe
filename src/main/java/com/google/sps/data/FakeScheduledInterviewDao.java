@@ -36,14 +36,14 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
-/** Accesses Datastore to support managing ScheduledInterview entities. */
+/** Mimics accessing Datastore to support managing ScheduledInterview entities. */
 public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
-  // @param datastore The DatastoreService we're using to interact with Datastore.
-  public Map<String, ScheduledInterview> datastore;
+  // data is the fake database
+  public Map<String, ScheduledInterview> data;
 
   /** Initializes the fields for ScheduledInterviewDatastoreDAO. */
   public FakeScheduledInterviewDao() {
-    datastore = new LinkedHashMap<String, ScheduledInterview>();
+    data = new LinkedHashMap<String, ScheduledInterview>();
   }
 
   /**
@@ -52,8 +52,8 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
    */
   @Override
   public Optional<ScheduledInterview> get(long id) {
-    if (datastore.containsKey(Long.toString(id))) {
-      return Optional.of(datastore.get(Long.toString(id)));
+    if (data.containsKey(Long.toString(id))) {
+      return Optional.of(data.get(Long.toString(id)));
     }
     return Optional.empty();
   }
@@ -65,8 +65,7 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
   @Override
   public List<ScheduledInterview> getForPerson(String email) {
     List<ScheduledInterview> relevantInterviews = new ArrayList<>();
-    List<ScheduledInterview> scheduledInterviews =
-        new ArrayList<ScheduledInterview>(datastore.values());
+    List<ScheduledInterview> scheduledInterviews = new ArrayList<ScheduledInterview>(data.values());
     scheduledInterviews.sort(
         (ScheduledInterview s1, ScheduledInterview s2) -> {
           if (s1.when().start().equals(s2.when().start())) {
@@ -115,18 +114,18 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
             scheduledInterview.when(),
             scheduledInterview.interviewerEmail(),
             scheduledInterview.intervieweeEmail());
-    datastore.put(Long.toString(generatedId), storedScheduledInterview);
+    data.put(Long.toString(generatedId), storedScheduledInterview);
   }
 
   /** Updates an entity in datastore. */
   @Override
   public void update(ScheduledInterview scheduledInterview) {
-    datastore.put(Long.toString(scheduledInterview.id()), scheduledInterview);
+    data.put(Long.toString(scheduledInterview.id()), scheduledInterview);
   }
 
   /** Deletes an entity in datastore. */
   @Override
   public void delete(long id) {
-    datastore.remove(Long.toString(id));
+    data.remove(Long.toString(id));
   }
 }

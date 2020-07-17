@@ -77,7 +77,7 @@ public class FakeScheduledInterviewDaoTest {
   public void createsScheduledInterview() {
     dao.create(scheduledInterview1);
     List<ScheduledInterview> storedScheduledInterviews =
-        new ArrayList<ScheduledInterview>(dao.datastore.values());
+        new ArrayList<ScheduledInterview>(dao.data.values());
     ScheduledInterview expected =
         ScheduledInterview.create(
             storedScheduledInterviews.get(0).id(),
@@ -92,7 +92,7 @@ public class FakeScheduledInterviewDaoTest {
   public void updatesScheduledInterview() {
     dao.create(scheduledInterview1);
     List<ScheduledInterview> storedScheduledInterviews =
-        new ArrayList<ScheduledInterview>(dao.datastore.values());
+        new ArrayList<ScheduledInterview>(dao.data.values());
     ScheduledInterview updatedScheduledInterview =
         ScheduledInterview.create(
             storedScheduledInterviews.get(0).id(),
@@ -101,7 +101,7 @@ public class FakeScheduledInterviewDaoTest {
             scheduledInterview2.intervieweeEmail());
     dao.update(updatedScheduledInterview);
     List<ScheduledInterview> updatedScheduledInterviews =
-        new ArrayList<ScheduledInterview>(dao.datastore.values());
+        new ArrayList<ScheduledInterview>(dao.data.values());
     Assert.assertEquals(updatedScheduledInterview, updatedScheduledInterviews.get(0));
   }
 
@@ -110,7 +110,7 @@ public class FakeScheduledInterviewDaoTest {
   public void getsScheduledInterview() {
     dao.create(scheduledInterview1);
     List<ScheduledInterview> storedScheduledInterviews =
-        new ArrayList<ScheduledInterview>(dao.datastore.values());
+        new ArrayList<ScheduledInterview>(dao.data.values());
     ScheduledInterview expected =
         ScheduledInterview.create(
             storedScheduledInterviews.get(0).id(),
