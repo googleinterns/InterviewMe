@@ -63,6 +63,7 @@ public final class ScheduledInterviewServletTest {
   public void validScheduledInterviewServletPostRequest() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
     scheduledInterviewServlet.init(new FakeScheduledInterviewDao());
+    helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
     postRequest.addParameter("startTime", "2020-07-05T18:30:10Z");
@@ -79,10 +80,10 @@ public final class ScheduledInterviewServletTest {
   public void validScheduledInterviewServletGetRequest() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
     scheduledInterviewServlet.init(new FakeScheduledInterviewDao());
+    helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
-
     postRequest.addParameter("startTime", "2020-07-05T18:30:10Z");
     postRequest.addParameter("endTime", "2020-07-05T19:30:10Z");
     postRequest.addParameter("interviewer", "user@company.org");
@@ -140,7 +141,7 @@ public final class ScheduledInterviewServletTest {
     Type scheduledInterviewListType = new TypeToken<List<ScheduledInterview>>() {}.getType();
     JsonElement json = new JsonParser().parse(getResponse.getContentAsString());
     System.out.println(json);
-    List<ScheduledInterview> actual = new Gson().fromJson(json, ScheduledInterview.typeAdapter());
+    List<ScheduledInterview> actual = new Gson().fromJson(json, scheduledInterviewListType);
 
     System.out.println(actual);
 

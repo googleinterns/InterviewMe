@@ -14,6 +14,8 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
 import com.google.sps.data.ScheduledInterview;
@@ -45,8 +47,15 @@ public class ScheduledInterviewServlet extends HttpServlet {
   // Gets the current user's email from request and returns the ScheduledInterviews for that person.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String requestedEmail = request.getParameter("userEmail");
+    UserService userService = UserServiceFactory.getUserService();
+    String userEmail = userService.getCurrentUser().getEmail();
+    if (!requestedEmail.equals(userEmail)) {
+      response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+      return;
+    }
     List<ScheduledInterview> scheduledInterviews =
-        scheduledInterviewDao.getForPerson(request.getParameter("userEmail"));
+        scheduledInterviewDao.getForPerson(requestedEmail);
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(scheduledInterviews));
   }
@@ -54,6 +63,15 @@ public class ScheduledInterviewServlet extends HttpServlet {
   // Send the request's contents to Datastore in the form of a new ScheduledInterview object.
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String requestedInterviewerEmail = request.getParameter("interviewer");
+    String requestedIntervieweeEmail = request.getParameter("interviewee");
+    UserService userService = UserServiceFactory.getUserService();
+    String userEmail = userService.getCurrentUser().getEmail();
+    if (!(requestedInterviewerEmail.equals(userEmail)
+        && requestedIntervieweeEmail.equals(userEmail))) {
+      response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+      return;
+    }
     ScheduledInterview scheduledInterview =
         ScheduledInterview.create(
             -1,
@@ -64,6 +82,4 @@ public class ScheduledInterviewServlet extends HttpServlet {
             request.getParameter("interviewee"));
     scheduledInterviewDao.create(scheduledInterview);
   }
-
-  // TODO: Make sure the user logged in == user being requested
 }
