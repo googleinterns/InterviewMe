@@ -160,8 +160,8 @@ public class DatastoreAvailabilityDaoTest {
     // the longs are turned into Instants.
     dao.deleteInRangeForUser(
         "user1@mail.com",
-        Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
-        Instant.parse("2020-07-07T16:00:00Z").toEpochMilli());
+        Instant.parse("2020-07-07T12:00:00Z"),
+        Instant.parse("2020-07-07T16:00:00Z"));
     Entity entity = datastore.prepare(new Query("Availability")).asSingleEntity();
     Availability actual = dao.entityToAvailability(entity);
     Availability expected =
@@ -184,8 +184,8 @@ public class DatastoreAvailabilityDaoTest {
     // the longs are turned into Instants.
     dao.deleteInRangeForUser(
         "user1@mail.com",
-        Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
-        Instant.parse("2020-07-07T17:45:00Z").toEpochMilli());
+        Instant.parse("2020-07-07T12:00:00Z"),
+        Instant.parse("2020-07-07T17:45:00Z"));
     Entity entity = datastore.prepare(new Query("Availability")).asSingleEntity();
     Availability actual = dao.entityToAvailability(entity);
     Availability expected =
@@ -208,8 +208,8 @@ public class DatastoreAvailabilityDaoTest {
     List<Availability> actual =
         dao.getInRangeForUser(
             "user1@mail.com",
-            Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
-            Instant.parse("2020-07-07T16:00:00Z").toEpochMilli());
+            Instant.parse("2020-07-07T12:00:00Z"),
+            Instant.parse("2020-07-07T16:00:00Z"));
     List<Entity> entities =
         datastore
             .prepare(new Query("Availability").addSort("startTime", SortDirection.ASCENDING))
@@ -248,8 +248,8 @@ public class DatastoreAvailabilityDaoTest {
     List<Availability> actual =
         dao.getInRangeForUser(
             "user1@mail.com",
-            Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
-            Instant.parse("2020-07-07T17:45:00Z").toEpochMilli());
+            Instant.parse("2020-07-07T12:00:00Z"),
+            Instant.parse("2020-07-07T17:45:00Z"));
     List<Entity> entities =
         datastore
             .prepare(new Query("Availability").addSort("startTime", SortDirection.ASCENDING))
@@ -287,8 +287,8 @@ public class DatastoreAvailabilityDaoTest {
     // the longs are turned into Instants.
     List<Availability> actual =
         dao.getInRangeForAll(
-            Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
-            Instant.parse("2020-07-07T17:45:00Z").toEpochMilli());
+            Instant.parse("2020-07-07T12:00:00Z"),
+            Instant.parse("2020-07-07T17:45:00Z"));
     List<Entity> entities =
         datastore
             .prepare(new Query("Availability").addSort("startTime", SortDirection.ASCENDING))
