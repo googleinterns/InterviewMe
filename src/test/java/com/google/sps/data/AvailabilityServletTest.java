@@ -26,6 +26,9 @@ import com.google.sps.data.FakeAvailabilityDao;
 import com.google.sps.data.PutAvailabilityRequest;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -40,11 +43,14 @@ import com.google.gson.JsonSyntaxException;
 
 @RunWith(JUnit4.class)
 public final class AvailabilityServletTest {
-  LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalUserServiceTestConfig());
+  private final LocalServiceTestHelper helper =
+      new LocalServiceTestHelper(new LocalUserServiceTestConfig());
+  private FakeAvailabilityDao fakeDao;
 
   @Before
   public void setUp() {
     helper.setUp();
+    fakeDao = new FakeAvailabilityDao();
   }
 
   @After
@@ -55,7 +61,7 @@ public final class AvailabilityServletTest {
   @Test
   public void validAvailabilityServletRequest() throws IOException {
     AvailabilityServlet availabilityServlet = new AvailabilityServlet();
-    availabilityServlet.init(new FakeAvailabilityDao());
+    availabilityServlet.init(fakeDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest putRequest = new MockHttpServletRequest();
     String jsonString =
@@ -69,7 +75,7 @@ public final class AvailabilityServletTest {
   @Test
   public void invalidAvailabilityServletRequest() throws IOException {
     AvailabilityServlet availabilityServlet = new AvailabilityServlet();
-    availabilityServlet.init(new FakeAvailabilityDao());
+    availabilityServlet.init(fakeDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest putRequest = new MockHttpServletRequest();
     String jsonString =
@@ -78,5 +84,41 @@ public final class AvailabilityServletTest {
     MockHttpServletResponse putResponse = new MockHttpServletResponse();
     availabilityServlet.doPut(putRequest, putResponse);
     Assert.assertEquals(400, putResponse.getStatus());
+  }
+
+  @Test
+  public void updates() throws IOException {
+    AvailabilityServlet availabilityServlet = new AvailabilityServlet();
+    availabilityServlet.init(fakeDao);
+    helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
+    MockHttpServletRequest putRequest = new MockHttpServletRequest();
+    String jsonString =
+        "{\"firstSlot\":\"2020-07-14T12:00:00Z\",\"lastSlot\":\"2020-07-20T23:45:00Z\",\"selectedSlots\":[\"2020-07-15T13:15:00Z\",\"2020-07-16T14:30:00Z\"]}";
+    putRequest.setContent(jsonString.getBytes(StandardCharsets.UTF_8));
+    MockHttpServletResponse putResponse = new MockHttpServletResponse();
+    availabilityServlet.doPut(putRequest, putResponse);
+    List<Availability> actual =
+        fakeDao.getInRangeForUser(
+            "user@gmail.com",
+            Instant.parse("2020-07-15T13:15:00Z"),
+            Instant.parse("2020-07-16T14:45:00Z"));
+    Availability expectedAvailabilityOne =
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-15T13:15:00Z"), Instant.parse("2020-07-15T13:30:00Z")),
+            actual.get(0).id(),
+            false);
+    Availability expectedAvailabilityTwo =
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-16T14:30:00Z"), Instant.parse("2020-07-16T14:45:00Z")),
+            actual.get(1).id(),
+            false);
+    List<Availability> expected = new ArrayList<Availability>();
+    expected.add(expectedAvailabilityOne);
+    expected.add(expectedAvailabilityTwo);
+    Assert.assertEquals(expected, actual);
   }
 }
