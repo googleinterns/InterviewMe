@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.lang.Integer;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -47,7 +48,7 @@ public class SearchInterviewServlet extends HttpServlet {
   }
 
   public void init(AvailabilityDao availabilityDao, ScheduledInterviewDao scheduledInterviewDao, Instant instant) {
-    this.avaialbilityDao = availabilityDao;
+    this.availabilityDao = availabilityDao;
     this.scheduledInterviewDao = scheduledInterviewDao;
     this.instant = instant;
   }
@@ -61,7 +62,9 @@ public class SearchInterviewServlet extends HttpServlet {
         timezoneOffsetMinutes);
     ZonedDateTime day = generateDay(instant, timezoneOffsetMinutes);
     ZonedDateTime utcTime = day.withZoneSameInstant(ZoneOffset.UTC);
-    List<Availability> availabilitiesInRange = avaialbilityDao.
+    // TODO: Decide how precise this range should be. Must start after or at now, when should end be?
+    List<Availability> availabilitiesInRange = availabilityDao.getInRangeForAll(utcTime.toInstant(), utcTime.toInstant().plus(6, ChronoUnit.DAYS));
+    List<PossibleInterview> possibleInterviews = getPossibleInterviews(availabilitiesInRange);
   }
   
   // Uses an Instant and a timezoneOffsetMinutes int to create a ZonedDateTime instance.
