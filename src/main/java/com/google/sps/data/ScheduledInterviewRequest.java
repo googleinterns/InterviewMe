@@ -64,7 +64,7 @@ public class ScheduledInterviewRequest {
     }
     if (o instanceof ScheduledInterviewRequest) {
       ScheduledInterviewRequest that = (ScheduledInterviewRequest) o;
-      return this.getId() == (that.getId())
+      return this.getId() == that.getId()
           && this.getWhen().equals(that.getWhen())
           && this.getInterviewerEmail().equals(that.getInterviewerEmail())
           && this.getIntervieweeEmail().equals(that.getIntervieweeEmail());
