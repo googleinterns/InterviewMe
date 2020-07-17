@@ -15,17 +15,30 @@
 package com.google.sps.data;
 
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.SerializedName;
+import com.ryanharter.auto.value.gson.AutoValueGsonBuilder;
 
 /** Represents a scheduled interview. */
 @AutoValue
 public abstract class ScheduledInterview {
+  @SerializedName("id")
   public abstract long id();
 
+  @SerializedName("when")
   public abstract TimeRange when();
 
+  @SerializedName("interviewerEmail")
   public abstract String interviewerEmail();
 
+  @SerializedName("intervieweeEmail")
   public abstract String intervieweeEmail();
+
+  public static TypeAdapter<ScheduledInterview> typeAdapter(Gson gson) {
+    return new AutoValue_ScheduledInterview.GsonTypeAdapter(gson);
+  }
+
   /**
    * Creates a scheduled interview that contains a timerange, the date and the emails of the
    * attendees.
@@ -42,6 +55,11 @@ public abstract class ScheduledInterview {
 
   static Builder builder() {
     return new AutoValue_ScheduledInterview.Builder();
+  }
+
+  @AutoValueGsonBuilder
+  static Builder builderWithDefaults() {
+    return builder();
   }
 
   @AutoValue.Builder

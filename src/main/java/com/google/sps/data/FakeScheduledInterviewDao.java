@@ -69,15 +69,15 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
         new ArrayList<ScheduledInterview>(datastore.values());
     scheduledInterviews.sort(
         (ScheduledInterview s1, ScheduledInterview s2) -> {
-          if(s1.when().start().equals(s2.when().start())) {
-            return 0; 
+          if (s1.when().start().equals(s2.when().start())) {
+            return 0;
           }
-          if(s1.when().start().isBefore(s2.when().start())) {
-            return -1; 
+          if (s1.when().start().isBefore(s2.when().start())) {
+            return -1;
           }
-          return 1; 
-        }); 
-        
+          return 1;
+        });
+
     for (ScheduledInterview scheduledInterview : scheduledInterviews) {
       if (email.equals(scheduledInterview.interviewerEmail())
           || email.equals(scheduledInterview.intervieweeEmail())) {
@@ -98,7 +98,7 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
     List<ScheduledInterview> scheduledInterviewsInRange = new ArrayList<ScheduledInterview>();
     for (ScheduledInterview scheduledInterview : scheduledInterviews) {
       if (scheduledInterview.when().start().toEpochMilli() >= minTime
-          && scheduledInterview.when().start().toEpochMilli() <= maxTime) {
+          && scheduledInterview.when().end().toEpochMilli() <= maxTime) {
         scheduledInterviewsInRange.add(scheduledInterview);
       }
     }

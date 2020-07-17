@@ -81,10 +81,9 @@ public class FakeScheduledInterviewDaoTest {
     ScheduledInterview expected =
         ScheduledInterview.create(
             storedScheduledInterviews.get(0).id(),
-            new TimeRange(
-                Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
-            "user@company.org",
-            "user@gmail.com");
+            scheduledInterview1.when(),
+            scheduledInterview1.interviewerEmail(),
+            scheduledInterview1.intervieweeEmail());
     Assert.assertEquals(expected, storedScheduledInterviews.get(0));
   }
 
@@ -97,10 +96,9 @@ public class FakeScheduledInterviewDaoTest {
     ScheduledInterview updatedScheduledInterview =
         ScheduledInterview.create(
             storedScheduledInterviews.get(0).id(),
-            new TimeRange(
-                Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
-            "user@company.org",
-            "user2@gmail.com");
+            scheduledInterview2.when(),
+            scheduledInterview2.interviewerEmail(),
+            scheduledInterview2.intervieweeEmail());
     dao.update(updatedScheduledInterview);
     List<ScheduledInterview> updatedScheduledInterviews =
         new ArrayList<ScheduledInterview>(dao.datastore.values());
@@ -116,10 +114,9 @@ public class FakeScheduledInterviewDaoTest {
     ScheduledInterview expected =
         ScheduledInterview.create(
             storedScheduledInterviews.get(0).id(),
-            new TimeRange(
-                Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
-            "user@company.org",
-            "user@gmail.com");
+            scheduledInterview1.when(),
+            scheduledInterview1.interviewerEmail(),
+            scheduledInterview1.intervieweeEmail());
     Assert.assertEquals(Optional.of(expected), dao.get(expected.id()));
   }
 
@@ -138,29 +135,26 @@ public class FakeScheduledInterviewDaoTest {
     dao.create(scheduledInterview1);
     dao.create(scheduledInterview4);
     dao.create(scheduledInterview3);
-    List<ScheduledInterview> actual = dao.getForPerson("user@company.org");
+    List<ScheduledInterview> actual = dao.getForPerson(scheduledInterview1.interviewerEmail());
     List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
     ScheduledInterview storedScheduledInterview1 =
         ScheduledInterview.create(
             actual.get(0).id(),
-            new TimeRange(
-                Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
-            "user@company.org",
-            "user@gmail.com");
+            scheduledInterview1.when(),
+            scheduledInterview1.interviewerEmail(),
+            scheduledInterview1.intervieweeEmail());
     ScheduledInterview storedScheduledInterview2 =
         ScheduledInterview.create(
             actual.get(1).id(),
-            new TimeRange(
-                Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
-            "user@company.org",
-            "user2@gmail.com");
+            scheduledInterview2.when(),
+            scheduledInterview2.interviewerEmail(),
+            scheduledInterview2.intervieweeEmail());
     ScheduledInterview storedScheduledInterview4 =
         ScheduledInterview.create(
-            (long) -1,
-            new TimeRange(
-                Instant.parse("2020-07-06T20:00:10Z"), Instant.parse("2020-07-06T21:00:10Z")),
-            "user@company.org",
-            "user2@mail.com");
+            actual.get(2).id(),
+            scheduledInterview4.when(),
+            scheduledInterview4.interviewerEmail(),
+            scheduledInterview4.intervieweeEmail());
     expected.add(storedScheduledInterview1);
     expected.add(storedScheduledInterview2);
     expected.add(storedScheduledInterview4);
@@ -172,16 +166,15 @@ public class FakeScheduledInterviewDaoTest {
   public void deleteScheduledInterview() {
     dao.create(scheduledInterview1);
     dao.create(scheduledInterview2);
-    List<ScheduledInterview> actual = dao.getForPerson("user@company.org");
+    List<ScheduledInterview> actual = dao.getForPerson(scheduledInterview1.interviewerEmail());
     dao.delete(actual.get(0).id());
     List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
     ScheduledInterview storedScheduledInterview =
         ScheduledInterview.create(
             actual.get(1).id(),
-            new TimeRange(
-                Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
-            "user@company.org",
-            "user2@gmail.com");
+            scheduledInterview2.when(),
+            scheduledInterview2.interviewerEmail(),
+            scheduledInterview2.intervieweeEmail());
     expected.add(storedScheduledInterview);
     Assert.assertEquals(storedScheduledInterview, dao.get(actual.get(1).id()).get());
   }
@@ -195,24 +188,22 @@ public class FakeScheduledInterviewDaoTest {
     dao.create(scheduledInterview4);
     List<ScheduledInterview> actual =
         dao.getScheduledInterviewsInRangeForUser(
-            "user@company.org",
-            Instant.parse("2020-07-06T19:00:10Z").toEpochMilli(),
-            Instant.parse("2020-07-06T21:00:10Z").toEpochMilli());
+            scheduledInterview1.interviewerEmail(),
+            scheduledInterview2.when().start().toEpochMilli(),
+            scheduledInterview4.when().end().toEpochMilli());
     List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
     ScheduledInterview storedScheduledInterview1 =
         ScheduledInterview.create(
             actual.get(0).id(),
-            new TimeRange(
-                Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
-            "user@company.org",
-            "user2@gmail.com");
+            scheduledInterview2.when(),
+            scheduledInterview2.interviewerEmail(),
+            scheduledInterview2.intervieweeEmail());
     ScheduledInterview storedScheduledInterview2 =
         ScheduledInterview.create(
             actual.get(1).id(),
-            new TimeRange(
-                Instant.parse("2020-07-06T20:00:10Z"), Instant.parse("2020-07-06T21:00:10Z")),
-            "user@company.org",
-            "user2@gmail.com");
+            scheduledInterview4.when(),
+            scheduledInterview4.interviewerEmail(),
+            scheduledInterview4.intervieweeEmail());
     expected.add(storedScheduledInterview1);
     expected.add(storedScheduledInterview2);
     Assert.assertEquals(expected, actual);

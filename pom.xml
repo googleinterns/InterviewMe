@@ -66,7 +66,6 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
       <version>5.2.7.RELEASE</version>
-    </dependency>
     <!-- End of dependencies for servlet tests -->
     
     <!-- For Datastore tests -->

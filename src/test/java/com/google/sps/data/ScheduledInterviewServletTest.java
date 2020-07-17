@@ -18,6 +18,7 @@ import com.google.appengine.tools.development.testing.LocalCapabilitiesServiceTe
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -136,7 +137,7 @@ public final class ScheduledInterviewServletTest {
     getRequest.addParameter("userEmail", "user@gmail.com");
     scheduledInterviewServlet.doGet(getRequest, getResponse);
 
-    Type scheduledInterviewListType = new TypeToken<ArrayList<ScheduledInterview>>() {}.getType();
+    Type scheduledInterviewListType = new TypeToken<List<ScheduledInterview>>() {}.getType();
     JsonElement json = new JsonParser().parse(getResponse.getContentAsString());
     System.out.println(json);
     List<ScheduledInterview> actual = new Gson().fromJson(json, scheduledInterviewListType);
