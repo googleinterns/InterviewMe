@@ -98,11 +98,10 @@ public class DatastoreAvailabilityDaoTest {
     Availability storedAvailability = dao.entityToAvailability(entity);
     Availability availabilityOneWithID =
         Availability.create(
-            "user1@mail.com",
-            new TimeRange(
-                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
+            availabilityOne.email(),
+            availabilityOne.when(),
             storedAvailability.id(),
-            true);
+            availabilityOne.scheduled());
     Assert.assertEquals(availabilityOneWithID, storedAvailability);
   }
 
@@ -114,11 +113,10 @@ public class DatastoreAvailabilityDaoTest {
     Availability storedAvailability = dao.entityToAvailability(entity);
     Availability update =
         Availability.create(
-            "user1@mail.com",
-            new TimeRange(
-                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
+            availabilityOne.email(),
+            availabilityOne.when(),
             storedAvailability.id(),
-            false);
+            !availabilityOne.scheduled());
     dao.update(update);
     Entity updatedEntity = datastore.prepare(new Query("Availability")).asSingleEntity();
     Availability updatedAvailability = dao.entityToAvailability(updatedEntity);
@@ -134,11 +132,10 @@ public class DatastoreAvailabilityDaoTest {
     Optional<Availability> actualAvailabilityOptional = dao.get(storedAvailability.id());
     Availability expectedAvailability =
         Availability.create(
-            "user1@mail.com",
-            new TimeRange(
-                Instant.parse("2020-07-07T15:45:00Z"), Instant.parse("2020-07-07T16:00:00Z")),
+            availabilityTwo.email(),
+            availabilityTwo.when(),
             storedAvailability.id(),
-            false);
+            availabilityTwo.scheduled());
     Optional<Availability> expectedAvailabilityOptional = Optional.of(expectedAvailability);
     Assert.assertEquals(expectedAvailabilityOptional, actualAvailabilityOptional);
   }
@@ -159,6 +156,8 @@ public class DatastoreAvailabilityDaoTest {
     dao.create(availabilityOne);
     dao.create(availabilityTwo);
     dao.create(availabilityFour);
+    // TODO: Replace the UTC Strings with avail.start() and avail.end()'s once
+    // the longs are turned into Instants.
     dao.deleteInRangeForUser(
         "user1@mail.com",
         Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
@@ -167,11 +166,10 @@ public class DatastoreAvailabilityDaoTest {
     Availability actual = dao.entityToAvailability(entity);
     Availability expected =
         Availability.create(
-            "user1@mail.com",
-            new TimeRange(
-                Instant.parse("2020-07-07T22:30:00Z"), Instant.parse("2020-07-07T22:45:00Z")),
+            availabilityFour.email(),
+            availabilityFour.when(),
             actual.id(),
-            true);
+            availabilityFour.scheduled());
     Assert.assertEquals(expected, actual);
   }
 
@@ -182,6 +180,8 @@ public class DatastoreAvailabilityDaoTest {
     dao.create(availabilityOne);
     dao.create(availabilityTwo);
     dao.create(availabilityThree);
+    // TODO: Replace the UTC Strings with avail.start() and avail.end()'s once
+    // the longs are turned into Instants.
     dao.deleteInRangeForUser(
         "user1@mail.com",
         Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
@@ -190,11 +190,10 @@ public class DatastoreAvailabilityDaoTest {
     Availability actual = dao.entityToAvailability(entity);
     Availability expected =
         Availability.create(
-            "user2@mail.com",
-            new TimeRange(
-                Instant.parse("2020-07-07T17:30:00Z"), Instant.parse("2020-07-07T17:45:00Z")),
+            availabilityThree.email(),
+            availabilityThree.when(),
             actual.id(),
-            true);
+            availabilityThree.scheduled());
     Assert.assertEquals(expected, actual);
   }
 
@@ -204,6 +203,8 @@ public class DatastoreAvailabilityDaoTest {
     dao.create(availabilityOne);
     dao.create(availabilityTwo);
     dao.create(availabilityFour);
+    // TODO: Replace the UTC Strings with avail.start() and avail.end()'s once
+    // the longs are turned into Instants.
     List<Availability> actual =
         dao.getInRangeForUser(
             "user1@mail.com",
@@ -219,18 +220,16 @@ public class DatastoreAvailabilityDaoTest {
     }
     Availability expectedAvailabilityOne =
         Availability.create(
-            "user1@mail.com",
-            new TimeRange(
-                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
+            availabilityOne.email(),
+            availabilityOne.when(),
             availabilities.get(0).id(),
-            true);
+            availabilityOne.scheduled());
     Availability expectedAvailabilityTwo =
         Availability.create(
-            "user1@mail.com",
-            new TimeRange(
-                Instant.parse("2020-07-07T15:45:00Z"), Instant.parse("2020-07-07T16:00:00Z")),
+            availabilityTwo.email(),
+            availabilityTwo.when(),
             availabilities.get(1).id(),
-            false);
+            availabilityTwo.scheduled());
     List<Availability> expectedAvailabilities = new ArrayList<Availability>();
     expectedAvailabilities.add(expectedAvailabilityOne);
     expectedAvailabilities.add(expectedAvailabilityTwo);
@@ -244,6 +243,8 @@ public class DatastoreAvailabilityDaoTest {
     dao.create(availabilityOne);
     dao.create(availabilityTwo);
     dao.create(availabilityThree);
+    // TODO: Replace the UTC Strings with avail.start() and avail.end()'s once
+    // the longs are turned into Instants.
     List<Availability> actual =
         dao.getInRangeForUser(
             "user1@mail.com",
@@ -259,18 +260,16 @@ public class DatastoreAvailabilityDaoTest {
     }
     Availability expectedAvailabilityOne =
         Availability.create(
-            "user1@mail.com",
-            new TimeRange(
-                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
+            availabilityOne.email(),
+            availabilityOne.when(),
             availabilities.get(0).id(),
-            true);
+            availabilityOne.scheduled());
     Availability expectedAvailabilityTwo =
         Availability.create(
-            "user1@mail.com",
-            new TimeRange(
-                Instant.parse("2020-07-07T15:45:00Z"), Instant.parse("2020-07-07T16:00:00Z")),
+            availabilityTwo.email(),
+            availabilityTwo.when(),
             availabilities.get(1).id(),
-            false);
+            availabilityTwo.scheduled());
     List<Availability> expectedAvailabilities = new ArrayList<Availability>();
     expectedAvailabilities.add(expectedAvailabilityOne);
     expectedAvailabilities.add(expectedAvailabilityTwo);
@@ -284,6 +283,8 @@ public class DatastoreAvailabilityDaoTest {
     dao.create(availabilityTwo);
     dao.create(availabilityThree);
     dao.create(availabilityFour);
+    // TODO: Replace the UTC Strings with avail.start() and avail.end()'s once
+    // the longs are turned into Instants.
     List<Availability> actual =
         dao.getInRangeForAll(
             Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
@@ -298,25 +299,22 @@ public class DatastoreAvailabilityDaoTest {
     }
     Availability expectedAvailabilityOne =
         Availability.create(
-            "user1@mail.com",
-            new TimeRange(
-                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
+            availabilityOne.email(),
+            availabilityOne.when(),
             availabilities.get(0).id(),
-            true);
+            availabilityOne.scheduled());
     Availability expectedAvailabilityTwo =
         Availability.create(
-            "user1@mail.com",
-            new TimeRange(
-                Instant.parse("2020-07-07T15:45:00Z"), Instant.parse("2020-07-07T16:00:00Z")),
+            availabilityTwo.email(),
+            availabilityTwo.when(),
             availabilities.get(1).id(),
-            false);
+            availabilityTwo.scheduled());
     Availability expectedAvailabilityThree =
         Availability.create(
-            "user2@mail.com",
-            new TimeRange(
-                Instant.parse("2020-07-07T17:30:00Z"), Instant.parse("2020-07-07T17:45:00Z")),
+            availabilityThree.email(),
+            availabilityThree.when(),
             availabilities.get(2).id(),
-            true);
+            availabilityThree.scheduled());
     List<Availability> expectedAvailabilities = new ArrayList<Availability>();
     expectedAvailabilities.add(expectedAvailabilityOne);
     expectedAvailabilities.add(expectedAvailabilityTwo);
