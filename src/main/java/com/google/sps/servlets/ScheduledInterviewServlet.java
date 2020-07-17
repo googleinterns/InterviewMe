@@ -67,19 +67,19 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String requestedIntervieweeEmail = request.getParameter("interviewee");
     UserService userService = UserServiceFactory.getUserService();
     String userEmail = userService.getCurrentUser().getEmail();
-    if (!(requestedInterviewerEmail.equals(userEmail)
-        && requestedIntervieweeEmail.equals(userEmail))) {
-      response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+    if (requestedInterviewerEmail.equals(userEmail)
+        || requestedIntervieweeEmail.equals(userEmail)) {
+      ScheduledInterview scheduledInterview =
+          ScheduledInterview.create(
+              -1,
+              new TimeRange(
+                  Instant.parse(request.getParameter("startTime")),
+                  Instant.parse(request.getParameter("endTime"))),
+              requestedInterviewerEmail,
+              requestedIntervieweeEmail);
+      scheduledInterviewDao.create(scheduledInterview);
       return;
     }
-    ScheduledInterview scheduledInterview =
-        ScheduledInterview.create(
-            -1,
-            new TimeRange(
-                Instant.parse(request.getParameter("startTime")),
-                Instant.parse(request.getParameter("endTime"))),
-            request.getParameter("interviewer"),
-            request.getParameter("interviewee"));
-    scheduledInterviewDao.create(scheduledInterview);
+    response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
   }
 }

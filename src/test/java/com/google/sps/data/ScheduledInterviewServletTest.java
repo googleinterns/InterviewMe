@@ -102,7 +102,7 @@ public final class ScheduledInterviewServletTest {
     postRequest.setParameter("interviewee", "user1@gmail.com");
     scheduledInterviewServlet.doPost(postRequest, new MockHttpServletResponse());
 
-    getRequest.addParameter("userEmail", "user@gmail.com");
+    getRequest.addParameter("userEmail", "user@company.org");
     scheduledInterviewServlet.doGet(getRequest, getResponse);
 
     Assert.assertEquals(200, getResponse.getStatus());
