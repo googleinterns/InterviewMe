@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.sps.servlets.AvailabilityServlet;
 import com.google.sps.data.FakeAvailabilityDao;
+import com.google.sps.data.FakeScheduledInterviewDao;
 import com.google.sps.data.PutAvailabilityRequest;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -45,12 +46,14 @@ import com.google.gson.JsonSyntaxException;
 public final class AvailabilityServletTest {
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig());
-  private FakeAvailabilityDao fakeDao;
+  private FakeAvailabilityDao availabilityDao;
+  private FakeScheduledInterviewDao scheduledInterviewDao;
 
   @Before
   public void setUp() {
     helper.setUp();
-    fakeDao = new FakeAvailabilityDao();
+    availabilityDao = new FakeAvailabilityDao();
+    scheduledInterviewDao = new FakeScheduledInterviewDao();
   }
 
   @After
@@ -61,7 +64,7 @@ public final class AvailabilityServletTest {
   @Test
   public void validAvailabilityServletRequest() throws IOException {
     AvailabilityServlet availabilityServlet = new AvailabilityServlet();
-    availabilityServlet.init(fakeDao);
+    availabilityServlet.init(availabilityDao, scheduledInterviewDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest putRequest = new MockHttpServletRequest();
     String jsonString =
@@ -75,7 +78,7 @@ public final class AvailabilityServletTest {
   @Test
   public void invalidAvailabilityServletRequest() throws IOException {
     AvailabilityServlet availabilityServlet = new AvailabilityServlet();
-    availabilityServlet.init(fakeDao);
+    availabilityServlet.init(availabilityDao, scheduledInterviewDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest putRequest = new MockHttpServletRequest();
     String jsonString =
@@ -89,7 +92,7 @@ public final class AvailabilityServletTest {
   @Test
   public void updates() throws IOException {
     AvailabilityServlet availabilityServlet = new AvailabilityServlet();
-    availabilityServlet.init(fakeDao);
+    availabilityServlet.init(availabilityDao, scheduledInterviewDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest putRequest = new MockHttpServletRequest();
     String jsonString =

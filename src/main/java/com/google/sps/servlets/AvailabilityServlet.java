@@ -21,7 +21,10 @@ import com.google.gson.Gson;
 import com.google.sps.data.Availability;
 import com.google.sps.data.AvailabilityDao;
 import com.google.sps.data.DatastoreAvailabilityDao;
+import com.google.sps.data.DatastoreScheduledInterviewDao;
 import com.google.sps.data.PutAvailabilityRequest;
+import com.google.sps.data.ScheduledInterview;
+import com.google.sps.data.ScheduledInterviewDao;
 import com.google.sps.data.TimeRange;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,15 +39,16 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/availability")
 public class AvailabilityServlet extends HttpServlet {
   private AvailabilityDao availabilityDao;
+  private ScheduledInterviewDao scheduledInterviewDao;
 
   @Override
   public void init() {
-    init(new DatastoreAvailabilityDao());
+    init(new DatastoreAvailabilityDao(), new DatastoreScheduledInterviewDao());
   }
 
-  // TODO: add a FakeAvailabilityDao class so this will become useful
-  public void init(AvailabilityDao availabilityDao) {
+  public void init(AvailabilityDao availabilityDao, ScheduledInterviewDao scheduledInterviewDao) {
     this.availabilityDao = availabilityDao;
+    this.scheduledInterviewDao = scheduledInterviewDao;
   }
 
   @Override
@@ -73,17 +77,21 @@ public class AvailabilityServlet extends HttpServlet {
     // The last slot for the week starts 15 minutes before the true end of the week.
     Instant maxTime = Instant.parse(utcEncodings.getLastSlot()).plus(15, ChronoUnit.MINUTES);
     availabilityDao.deleteInRangeForUser(email, minTime, maxTime);
+    List<ScheduledInterview> scheduledInterviewsForUser = scheduledInterviewDao.getScheduluedInterviewsInRangeForUser(email, minTime, maxTime);
     for (String selectedSlot : utcEncodings.getSelectedSlots()) {
-      createAndStoreAvailability(selectedSlot, email);
+      createAndStoreAvailability(selectedSlot, email, scheduledInterviewsForUser);
     }
   }
 
-  private void createAndStoreAvailability(String utc, String email) {
+  private void createAndStoreAvailability(String utc, String email, List<ScheduledInterview> scheduledInterviews) {
     TimeRange when =
         new TimeRange(Instant.parse(utc), Instant.parse(utc).plus(15, ChronoUnit.MINUTES));
-    // TODO: Create a getScheduledInterviewsForUserInRange ScheduledInterviewDAO method to be able
-    // to tell if an Availability is scheduled over.
     boolean scheduled = false;
+    for (ScheduledInterview interview : scheduledInterviews) {
+      if (interview.when().contains(Instant.parse(utc))) {
+        scheduled = true;
+      }
+    }
     Availability avail = Availability.create(email, when, -1, scheduled);
     availabilityDao.create(avail);
   }
