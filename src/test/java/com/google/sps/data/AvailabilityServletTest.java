@@ -101,7 +101,7 @@ public final class AvailabilityServletTest {
     MockHttpServletResponse putResponse = new MockHttpServletResponse();
     availabilityServlet.doPut(putRequest, putResponse);
     List<Availability> actual =
-        fakeDao.getInRangeForUser(
+        availabilityDao.getInRangeForUser(
             "user@gmail.com",
             Instant.parse("2020-07-15T13:15:00Z"),
             Instant.parse("2020-07-16T14:45:00Z"));

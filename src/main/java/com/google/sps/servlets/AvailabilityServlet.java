@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -77,13 +78,15 @@ public class AvailabilityServlet extends HttpServlet {
     // The last slot for the week starts 15 minutes before the true end of the week.
     Instant maxTime = Instant.parse(utcEncodings.getLastSlot()).plus(15, ChronoUnit.MINUTES);
     availabilityDao.deleteInRangeForUser(email, minTime, maxTime);
-    List<ScheduledInterview> scheduledInterviewsForUser = scheduledInterviewDao.getScheduluedInterviewsInRangeForUser(email, minTime, maxTime);
+    List<ScheduledInterview> scheduledInterviewsForUser =
+        scheduledInterviewDao.getScheduledInterviewsInRangeForUser(email, minTime, maxTime);
     for (String selectedSlot : utcEncodings.getSelectedSlots()) {
       createAndStoreAvailability(selectedSlot, email, scheduledInterviewsForUser);
     }
   }
 
-  private void createAndStoreAvailability(String utc, String email, List<ScheduledInterview> scheduledInterviews) {
+  private void createAndStoreAvailability(
+      String utc, String email, List<ScheduledInterview> scheduledInterviews) {
     TimeRange when =
         new TimeRange(Instant.parse(utc), Instant.parse(utc).plus(15, ChronoUnit.MINUTES));
     boolean scheduled = false;
