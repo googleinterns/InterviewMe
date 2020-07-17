@@ -52,8 +52,8 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
    */
   @Override
   public Optional<ScheduledInterview> get(long id) {
-    if (data.containsKey(Long.toString(id))) {
-      return Optional.of(data.get(Long.toString(id)));
+    if (data.containsKey(id)) {
+      return Optional.of(data.get(id));
     }
     return Optional.empty();
   }
