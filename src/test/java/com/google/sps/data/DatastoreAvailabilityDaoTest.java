@@ -43,7 +43,7 @@ public class DatastoreAvailabilityDaoTest {
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
-  private DatastoreAvailabilityDao tester;
+  private DatastoreAvailabilityDao dao;
   private DatastoreService datastore;
 
   private final Availability availabilityOne =
@@ -81,7 +81,7 @@ public class DatastoreAvailabilityDaoTest {
   @Before
   public void setUp() {
     helper.setUp();
-    tester = new DatastoreAvailabilityDao();
+    dao = new DatastoreAvailabilityDao();
     datastore = DatastoreServiceFactory.getDatastoreService();
   }
 
@@ -93,9 +93,9 @@ public class DatastoreAvailabilityDaoTest {
   // Checks that an Availability is stored in datastore.
   @Test
   public void createsAvailability() {
-    tester.create(availabilityOne);
+    dao.create(availabilityOne);
     Entity entity = datastore.prepare(new Query("Availability")).asSingleEntity();
-    Availability storedAvailability = tester.entityToAvailability(entity);
+    Availability storedAvailability = dao.entityToAvailability(entity);
     Availability availabilityOneWithID =
         Availability.create(
             "user1@mail.com",
@@ -109,9 +109,9 @@ public class DatastoreAvailabilityDaoTest {
   // Checks that an Availability is updated in datastore.
   @Test
   public void updatesAvailability() {
-    tester.create(availabilityOne);
+    dao.create(availabilityOne);
     Entity entity = datastore.prepare(new Query("Availability")).asSingleEntity();
-    Availability storedAvailability = tester.entityToAvailability(entity);
+    Availability storedAvailability = dao.entityToAvailability(entity);
     Availability update =
         Availability.create(
             "user1@mail.com",
@@ -119,19 +119,19 @@ public class DatastoreAvailabilityDaoTest {
                 Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
             storedAvailability.id(),
             false);
-    tester.update(update);
+    dao.update(update);
     Entity updatedEntity = datastore.prepare(new Query("Availability")).asSingleEntity();
-    Availability updatedAvailability = tester.entityToAvailability(updatedEntity);
+    Availability updatedAvailability = dao.entityToAvailability(updatedEntity);
     Assert.assertEquals(update, updatedAvailability);
   }
 
   // Checks that an Availability is returned when it exists within datastore.
   @Test
   public void getsAvailability() {
-    tester.create(availabilityTwo);
+    dao.create(availabilityTwo);
     Entity entity = datastore.prepare(new Query("Availability")).asSingleEntity();
-    Availability storedAvailability = tester.entityToAvailability(entity);
-    Optional<Availability> actualAvailabilityOptional = tester.get(storedAvailability.id());
+    Availability storedAvailability = dao.entityToAvailability(entity);
+    Optional<Availability> actualAvailabilityOptional = dao.get(storedAvailability.id());
     Availability expectedAvailability =
         Availability.create(
             "user1@mail.com",
@@ -147,7 +147,7 @@ public class DatastoreAvailabilityDaoTest {
   // datastore.
   @Test
   public void failsToGetAvailability() {
-    Optional<Availability> actual = tester.get(24);
+    Optional<Availability> actual = dao.get(24);
     Optional<Availability> expected = Optional.empty();
     Assert.assertEquals(expected, actual);
   }
@@ -156,15 +156,15 @@ public class DatastoreAvailabilityDaoTest {
   // are deleted.
   @Test
   public void deletesInRange() {
-    tester.create(availabilityOne);
-    tester.create(availabilityTwo);
-    tester.create(availabilityFour);
-    tester.deleteInRangeForUser(
+    dao.create(availabilityOne);
+    dao.create(availabilityTwo);
+    dao.create(availabilityFour);
+    dao.deleteInRangeForUser(
         "user1@mail.com",
         Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
         Instant.parse("2020-07-07T16:00:00Z").toEpochMilli());
     Entity entity = datastore.prepare(new Query("Availability")).asSingleEntity();
-    Availability actual = tester.entityToAvailability(entity);
+    Availability actual = dao.entityToAvailability(entity);
     Availability expected =
         Availability.create(
             "user1@mail.com",
@@ -179,15 +179,15 @@ public class DatastoreAvailabilityDaoTest {
   // a given time range (and not the Availability objects of other users).
   @Test
   public void deletesUsersAvailabilityInRange() {
-    tester.create(availabilityOne);
-    tester.create(availabilityTwo);
-    tester.create(availabilityThree);
-    tester.deleteInRangeForUser(
+    dao.create(availabilityOne);
+    dao.create(availabilityTwo);
+    dao.create(availabilityThree);
+    dao.deleteInRangeForUser(
         "user1@mail.com",
         Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
         Instant.parse("2020-07-07T17:45:00Z").toEpochMilli());
     Entity entity = datastore.prepare(new Query("Availability")).asSingleEntity();
-    Availability actual = tester.entityToAvailability(entity);
+    Availability actual = dao.entityToAvailability(entity);
     Availability expected =
         Availability.create(
             "user2@mail.com",
@@ -201,11 +201,11 @@ public class DatastoreAvailabilityDaoTest {
   // Checks that all Availability objects for a user within a given time range are returned.
   @Test
   public void getsUsersAvailabilityInRange() {
-    tester.create(availabilityOne);
-    tester.create(availabilityTwo);
-    tester.create(availabilityFour);
+    dao.create(availabilityOne);
+    dao.create(availabilityTwo);
+    dao.create(availabilityFour);
     List<Availability> actual =
-        tester.getInRangeForUser(
+        dao.getInRangeForUser(
             "user1@mail.com",
             Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
             Instant.parse("2020-07-07T16:00:00Z").toEpochMilli());
@@ -215,7 +215,7 @@ public class DatastoreAvailabilityDaoTest {
             .asList(FetchOptions.Builder.withDefaults());
     List<Availability> availabilities = new ArrayList<Availability>();
     for (Entity entity : entities) {
-      availabilities.add(tester.entityToAvailability(entity));
+      availabilities.add(dao.entityToAvailability(entity));
     }
     Availability expectedAvailabilityOne =
         Availability.create(
@@ -241,11 +241,11 @@ public class DatastoreAvailabilityDaoTest {
   // a given time range (and not the Availability objects of other users).
   @Test
   public void onlyGetsSpecifiedUsersAvailabilityInRange() {
-    tester.create(availabilityOne);
-    tester.create(availabilityTwo);
-    tester.create(availabilityThree);
+    dao.create(availabilityOne);
+    dao.create(availabilityTwo);
+    dao.create(availabilityThree);
     List<Availability> actual =
-        tester.getInRangeForUser(
+        dao.getInRangeForUser(
             "user1@mail.com",
             Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
             Instant.parse("2020-07-07T17:45:00Z").toEpochMilli());
@@ -255,7 +255,7 @@ public class DatastoreAvailabilityDaoTest {
             .asList(FetchOptions.Builder.withDefaults());
     List<Availability> availabilities = new ArrayList<Availability>();
     for (Entity entity : entities) {
-      availabilities.add(tester.entityToAvailability(entity));
+      availabilities.add(dao.entityToAvailability(entity));
     }
     Availability expectedAvailabilityOne =
         Availability.create(
@@ -280,12 +280,12 @@ public class DatastoreAvailabilityDaoTest {
   // Checks that all of the Availability objects within a given time range are returned.
   @Test
   public void getsAllUsersAvailabilityInRange() {
-    tester.create(availabilityOne);
-    tester.create(availabilityTwo);
-    tester.create(availabilityThree);
-    tester.create(availabilityFour);
+    dao.create(availabilityOne);
+    dao.create(availabilityTwo);
+    dao.create(availabilityThree);
+    dao.create(availabilityFour);
     List<Availability> actual =
-        tester.getInRangeForAll(
+        dao.getInRangeForAll(
             Instant.parse("2020-07-07T12:00:00Z").toEpochMilli(),
             Instant.parse("2020-07-07T17:45:00Z").toEpochMilli());
     List<Entity> entities =
@@ -294,7 +294,7 @@ public class DatastoreAvailabilityDaoTest {
             .asList(FetchOptions.Builder.withDefaults());
     List<Availability> availabilities = new ArrayList<Availability>();
     for (Entity entity : entities) {
-      availabilities.add(tester.entityToAvailability(entity));
+      availabilities.add(dao.entityToAvailability(entity));
     }
     Availability expectedAvailabilityOne =
         Availability.create(
