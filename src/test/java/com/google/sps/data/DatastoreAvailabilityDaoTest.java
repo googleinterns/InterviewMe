@@ -156,12 +156,8 @@ public class DatastoreAvailabilityDaoTest {
     dao.create(availabilityOne);
     dao.create(availabilityTwo);
     dao.create(availabilityFour);
-    // TODO: Replace the UTC Strings with avail.start() and avail.end()'s once
-    // the longs are turned into Instants.
     dao.deleteInRangeForUser(
-        "user1@mail.com",
-        Instant.parse("2020-07-07T12:00:00Z"),
-        Instant.parse("2020-07-07T16:00:00Z"));
+        "user1@mail.com", availabilityOne.when().start(), availabilityTwo.when().end());
     Entity entity = datastore.prepare(new Query("Availability")).asSingleEntity();
     Availability actual = dao.entityToAvailability(entity);
     Availability expected =
@@ -180,12 +176,8 @@ public class DatastoreAvailabilityDaoTest {
     dao.create(availabilityOne);
     dao.create(availabilityTwo);
     dao.create(availabilityThree);
-    // TODO: Replace the UTC Strings with avail.start() and avail.end()'s once
-    // the longs are turned into Instants.
     dao.deleteInRangeForUser(
-        "user1@mail.com",
-        Instant.parse("2020-07-07T12:00:00Z"),
-        Instant.parse("2020-07-07T17:45:00Z"));
+        "user1@mail.com", availabilityOne.when().start(), availabilityThree.when().end());
     Entity entity = datastore.prepare(new Query("Availability")).asSingleEntity();
     Availability actual = dao.entityToAvailability(entity);
     Availability expected =
@@ -203,13 +195,9 @@ public class DatastoreAvailabilityDaoTest {
     dao.create(availabilityOne);
     dao.create(availabilityTwo);
     dao.create(availabilityFour);
-    // TODO: Replace the UTC Strings with avail.start() and avail.end()'s once
-    // the longs are turned into Instants.
     List<Availability> actual =
         dao.getInRangeForUser(
-            "user1@mail.com",
-            Instant.parse("2020-07-07T12:00:00Z"),
-            Instant.parse("2020-07-07T16:00:00Z"));
+            "user1@mail.com", availabilityOne.when().start(), availabilityTwo.when().end());
     List<Entity> entities =
         datastore
             .prepare(new Query("Availability").addSort("startTime", SortDirection.ASCENDING))
@@ -243,13 +231,9 @@ public class DatastoreAvailabilityDaoTest {
     dao.create(availabilityOne);
     dao.create(availabilityTwo);
     dao.create(availabilityThree);
-    // TODO: Replace the UTC Strings with avail.start() and avail.end()'s once
-    // the longs are turned into Instants.
     List<Availability> actual =
         dao.getInRangeForUser(
-            "user1@mail.com",
-            Instant.parse("2020-07-07T12:00:00Z"),
-            Instant.parse("2020-07-07T17:45:00Z"));
+            "user1@mail.com", availabilityOne.when().start(), availabilityThree.when().end());
     List<Entity> entities =
         datastore
             .prepare(new Query("Availability").addSort("startTime", SortDirection.ASCENDING))
@@ -283,12 +267,8 @@ public class DatastoreAvailabilityDaoTest {
     dao.create(availabilityTwo);
     dao.create(availabilityThree);
     dao.create(availabilityFour);
-    // TODO: Replace the UTC Strings with avail.start() and avail.end()'s once
-    // the longs are turned into Instants.
     List<Availability> actual =
-        dao.getInRangeForAll(
-            Instant.parse("2020-07-07T12:00:00Z"),
-            Instant.parse("2020-07-07T17:45:00Z"));
+        dao.getInRangeForAll(availabilityOne.when().start(), availabilityThree.when().end());
     List<Entity> entities =
         datastore
             .prepare(new Query("Availability").addSort("startTime", SortDirection.ASCENDING))
