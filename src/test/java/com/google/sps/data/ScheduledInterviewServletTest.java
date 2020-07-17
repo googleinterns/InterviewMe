@@ -141,14 +141,11 @@ public final class ScheduledInterviewServletTest {
 
     Type scheduledInterviewListType = new TypeToken<List<ScheduledInterviewRequest>>() {}.getType();
     JsonElement json = new JsonParser().parse(getResponse.getContentAsString());
-    System.out.println(json);
-    List<ScheduledInterview> actual = new Gson().fromJson(json, scheduledInterviewListType);
-
-    System.out.println(actual);
+    List<ScheduledInterviewRequest> actual = new Gson().fromJson(json, scheduledInterviewListType);
 
     ScheduledInterview scheduledInterview1 =
         ScheduledInterview.create(
-            actual.get(0).id(),
+            actual.get(0).getId(),
             new TimeRange(
                 Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
             "user@company.org",
@@ -156,7 +153,7 @@ public final class ScheduledInterviewServletTest {
 
     ScheduledInterview scheduledInterview2 =
         ScheduledInterview.create(
-            actual.get(1).id(),
+            actual.get(1).getId(),
             new TimeRange(
                 Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
             "user2@company.org",
