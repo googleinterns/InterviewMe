@@ -159,11 +159,12 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
 
   private List<Entity> getEntitiesInRange(
       Instant minTime, Instant maxTime, Optional<Filter> filterOpt) {
-    // Datastore only supports one inequality filter per query. To work around this, the max filter
-    // ensures that the start time is at most 60 minutes before the maxTime.
     Filter minFilter =
         new FilterPredicate(
             "startTime", FilterOperator.GREATER_THAN_OR_EQUAL, minTime.toEpochMilli());
+    // Queries can only perform inequality filters on one parameter, and so instead
+    // of using endTime for the maxFilter, startTime is used and the maxTime has 60
+    // minutes subtracted from it to be equal to the latest possible startTime.
     Filter maxFilter =
         new FilterPredicate(
             "startTime",
