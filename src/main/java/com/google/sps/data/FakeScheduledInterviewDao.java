@@ -47,7 +47,7 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
   }
 
   /**
-   * Retrieves a scheduledInterviewEntity from Datastore and returns it as a ScheduledInterview
+   * Retrieves a scheduledInterviewEntity from storage and returns it as a ScheduledInterview
    * object.
    */
   @Override
@@ -59,7 +59,7 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
   }
 
   /**
-   * Retrieves all scheduledInterview entities from Datastore that involve a particular user and
+   * Retrieves all scheduledInterview entities from storage that involve a particular user and
    * returns them as a list of ScheduledInterview objects in the order in which they occur.
    */
   @Override
@@ -104,7 +104,7 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
     return scheduledInterviewsInRange;
   }
 
-  /** Creates a ScheduledInterview Entity and stores it in Datastore. */
+  /** Creates a ScheduledInterview Entity and stores it. */
   @Override
   public void create(ScheduledInterview scheduledInterview) {
     long generatedId = new Random().nextLong();
@@ -117,13 +117,13 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
     data.put(Long.toString(generatedId), storedScheduledInterview);
   }
 
-  /** Updates an entity in datastore. */
+  /** Updates an entity. */
   @Override
   public void update(ScheduledInterview scheduledInterview) {
     data.put(Long.toString(scheduledInterview.id()), scheduledInterview);
   }
 
-  /** Deletes an entity in datastore. */
+  /** Deletes an entity. */
   @Override
   public void delete(long id) {
     data.remove(Long.toString(id));
