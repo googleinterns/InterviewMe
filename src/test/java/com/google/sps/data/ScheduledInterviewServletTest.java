@@ -139,7 +139,7 @@ public final class ScheduledInterviewServletTest {
     getRequest.addParameter("userEmail", "user@gmail.com");
     scheduledInterviewServlet.doGet(getRequest, getResponse);
 
-    Type scheduledInterviewListType = new TypeToken<List<ScheduledInterview>>() {}.getType();
+    Type scheduledInterviewListType = new TypeToken<List<ScheduledInterviewRequest>>() {}.getType();
     JsonElement json = new JsonParser().parse(getResponse.getContentAsString());
     System.out.println(json);
     List<ScheduledInterview> actual = new Gson().fromJson(json, scheduledInterviewListType);
