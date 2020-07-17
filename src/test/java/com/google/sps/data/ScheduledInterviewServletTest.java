@@ -66,8 +66,8 @@ public final class ScheduledInterviewServletTest {
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
-    postRequest.addParameter("startTime", "2020-07-05T18:30:10Z");
-    postRequest.addParameter("endTime", "2020-07-05T19:30:10Z");
+    postRequest.addParameter("startTime", "2020-07-05T18:00:00Z");
+    postRequest.addParameter("endTime", "2020-07-05T19:00:10Z");
     postRequest.addParameter("interviewer", "user@company.org");
     postRequest.addParameter("interviewee", "user@gmail.com");
 
@@ -84,20 +84,20 @@ public final class ScheduledInterviewServletTest {
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
-    postRequest.addParameter("startTime", "2020-07-05T18:30:10Z");
-    postRequest.addParameter("endTime", "2020-07-05T19:30:10Z");
+    postRequest.addParameter("startTime", "2020-07-05T18:00:00Z");
+    postRequest.addParameter("endTime", "2020-07-05T19:00:00Z");
     postRequest.addParameter("interviewer", "user@company.org");
     postRequest.addParameter("interviewee", "user@gmail.com");
     scheduledInterviewServlet.doPost(postRequest, new MockHttpServletResponse());
 
-    postRequest.setParameter("startTime", "2020-07-05T20:30:10Z");
-    postRequest.setParameter("endTime", "2020-07-05T21:30:10Z");
+    postRequest.setParameter("startTime", "2020-07-05T20:00:00Z");
+    postRequest.setParameter("endTime", "2020-07-05T21:00:00Z");
     postRequest.setParameter("interviewer", "user2@company.org");
     postRequest.setParameter("interviewee", "user@gmail.com");
     scheduledInterviewServlet.doPost(postRequest, new MockHttpServletResponse());
 
-    postRequest.setParameter("startTime", "2020-07-05T18:30:10Z");
-    postRequest.setParameter("endTime", "2020-07-05T19:30:10Z");
+    postRequest.setParameter("startTime", "2020-07-05T18:00:00Z");
+    postRequest.setParameter("endTime", "2020-07-05T19:00:00Z");
     postRequest.setParameter("interviewer", "user2@company.org");
     postRequest.setParameter("interviewee", "user1@gmail.com");
     scheduledInterviewServlet.doPost(postRequest, new MockHttpServletResponse());
@@ -113,24 +113,25 @@ public final class ScheduledInterviewServletTest {
   public void orderedScheduledInterviewServletGetRequest() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
     scheduledInterviewServlet.init(new FakeScheduledInterviewDao());
+    helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
 
-    postRequest.addParameter("startTime", "2020-07-05T18:30:10Z");
-    postRequest.addParameter("endTime", "2020-07-05T19:30:10Z");
+    postRequest.addParameter("startTime", "2020-07-05T18:00:00Z");
+    postRequest.addParameter("endTime", "2020-07-05T19:00:10Z");
     postRequest.addParameter("interviewer", "user@company.org");
     postRequest.addParameter("interviewee", "user@gmail.com");
     scheduledInterviewServlet.doPost(postRequest, new MockHttpServletResponse());
 
-    postRequest.setParameter("startTime", "2020-07-05T20:30:10Z");
-    postRequest.setParameter("endTime", "2020-07-05T21:30:10Z");
+    postRequest.setParameter("startTime", "2020-07-05T20:00:00Z");
+    postRequest.setParameter("endTime", "2020-07-05T21:00:00Z");
     postRequest.setParameter("interviewer", "user2@company.org");
     postRequest.setParameter("interviewee", "user@gmail.com");
     scheduledInterviewServlet.doPost(postRequest, new MockHttpServletResponse());
 
-    postRequest.setParameter("startTime", "2020-07-05T18:30:10Z");
-    postRequest.setParameter("endTime", "2020-07-05T19:30:10Z");
+    postRequest.setParameter("startTime", "2020-07-05T18:00:00Z");
+    postRequest.setParameter("endTime", "2020-07-05T19:00:00Z");
     postRequest.setParameter("interviewer", "user2@company.org");
     postRequest.setParameter("interviewee", "user1@gmail.com");
     scheduledInterviewServlet.doPost(postRequest, new MockHttpServletResponse());
@@ -149,7 +150,7 @@ public final class ScheduledInterviewServletTest {
         ScheduledInterview.create(
             actual.get(0).id(),
             new TimeRange(
-                Instant.parse("2020-07-05T18:30:10Z"), Instant.parse("2020-07-05T19:30:10Z")),
+                Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
             "user@company.org",
             "user@gmail.com");
 
@@ -157,7 +158,7 @@ public final class ScheduledInterviewServletTest {
         ScheduledInterview.create(
             actual.get(1).id(),
             new TimeRange(
-                Instant.parse("2020-07-05T20:30:10Z"), Instant.parse("2020-07-05T21:30:10Z")),
+                Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
             "user2@company.org",
             "user@gmail.com");
 
