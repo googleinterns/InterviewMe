@@ -173,8 +173,8 @@ public final class ScheduledInterviewServletTest {
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
-    postRequest.addParameter("startTime", "22020-07-0518:00:00Z");
-    postRequest.addParameter("endTime", "22020-07-0519:00:10Z");
+    postRequest.addParameter("startTime", "2020-07-0518:00:00Z");
+    postRequest.addParameter("endTime", "2020-07-0519:00:10Z");
     postRequest.addParameter("interviewer", "user@company.org");
     postRequest.addParameter("interviewee", "user@gmail.com");
 
