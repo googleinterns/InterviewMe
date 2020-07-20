@@ -45,11 +45,12 @@ public class ScheduledInterviewServlet extends HttpServlet {
   }
 
   // Gets the current user's email from request and returns the ScheduledInterviews for that person.
+  // If the email that is requested matches the email that is logged in, then the scheduled
+  // interviews are returned, otherwise SC_UNAUTHORIZED is returned.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String requestedEmail = request.getParameter("userEmail");
-    UserService userService = UserServiceFactory.getUserService();
-    String userEmail = userService.getCurrentUser().getEmail();
+    String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     if (!requestedEmail.equals(userEmail)) {
       response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
       return;
@@ -60,13 +61,14 @@ public class ScheduledInterviewServlet extends HttpServlet {
     response.getWriter().println(new Gson().toJson(scheduledInterviews));
   }
 
-  // Send the request's contents to Datastore in the form of a new ScheduledInterview object.
+  // Send the request's contents to Datastore in the form of a new ScheduledInterview object. If the
+  // email that is requested matches the email that is logged in, then the scheduled interview is
+  // stored, otherwise SC_UNAUTHORIZED is returned.
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String requestedInterviewerEmail = request.getParameter("interviewer");
     String requestedIntervieweeEmail = request.getParameter("interviewee");
-    UserService userService = UserServiceFactory.getUserService();
-    String userEmail = userService.getCurrentUser().getEmail();
+    String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     if (requestedInterviewerEmail.equals(userEmail)
         || requestedIntervieweeEmail.equals(userEmail)) {
       ScheduledInterview scheduledInterview =
