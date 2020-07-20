@@ -15,7 +15,6 @@
 package com.google.sps.data;
 
 import com.google.auto.value.AutoValue;
-import com.google.gson.Gson;
 
 /** Represents a scheduled interview. */
 @AutoValue

@@ -28,6 +28,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.format.DateTimeParseException;
 
 @WebServlet("/scheduled-interviews")
 public class ScheduledInterviewServlet extends HttpServlet {
@@ -62,7 +63,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
   }
 
   // Send the request's contents to Datastore in the form of a new ScheduledInterview object. If the
-  // email that is requested as either an interviewer or interviewee matches the email that is logged in, then the scheduled interview is
+  // email that is requested as either an interviewer or interviewee matches the email that is
+  // logged in, then the scheduled interview is
   // stored, otherwise SC_UNAUTHORIZED is returned.
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -71,16 +73,21 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     if (requestedInterviewerEmail.equals(userEmail)
         || requestedIntervieweeEmail.equals(userEmail)) {
-      ScheduledInterview scheduledInterview =
-          ScheduledInterview.create(
-              -1,
-              new TimeRange(
-                  Instant.parse(request.getParameter("startTime")),
-                  Instant.parse(request.getParameter("endTime"))),
-              requestedInterviewerEmail,
-              requestedIntervieweeEmail);
-      scheduledInterviewDao.create(scheduledInterview);
-      return;
+      try {
+        ScheduledInterview scheduledInterview =
+            ScheduledInterview.create(
+                -1,
+                new TimeRange(
+                    Instant.parse(request.getParameter("startTime")),
+                    Instant.parse(request.getParameter("endTime"))),
+                requestedInterviewerEmail,
+                requestedIntervieweeEmail);
+        scheduledInterviewDao.create(scheduledInterview);
+        return;
+      } catch (DateTimeParseException e) {
+        response.sendError(400);
+        return;
+      }
     }
     response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
   }

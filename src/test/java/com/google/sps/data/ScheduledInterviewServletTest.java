@@ -108,7 +108,7 @@ public final class ScheduledInterviewServletTest {
     Assert.assertEquals(200, getResponse.getStatus());
   }
 
-  // Tests that the list of scheduledInterviews in the correct order
+  // Tests that the list of scheduledInterviews is in the correct order
   @Test
   public void orderedScheduledInterviewServletGetRequest() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
@@ -163,5 +163,22 @@ public final class ScheduledInterviewServletTest {
     expected.add(scheduledInterview1);
     expected.add(scheduledInterview2);
     Assert.assertEquals(expected, actual);
+  }
+
+  // Tests errors with Instant parsing.
+  @Test
+  public void bad() throws IOException {
+    ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
+    scheduledInterviewServlet.init(new FakeScheduledInterviewDao());
+    helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
+    MockHttpServletRequest postRequest = new MockHttpServletRequest();
+    MockHttpServletResponse postResponse = new MockHttpServletResponse();
+    postRequest.addParameter("startTime", "22020-07-0518:00:00Z");
+    postRequest.addParameter("endTime", "22020-07-0519:00:10Z");
+    postRequest.addParameter("interviewer", "user@company.org");
+    postRequest.addParameter("interviewee", "user@gmail.com");
+
+    scheduledInterviewServlet.doPost(postRequest, postResponse);
+    Assert.assertEquals(400, postResponse.getStatus());
   }
 }
