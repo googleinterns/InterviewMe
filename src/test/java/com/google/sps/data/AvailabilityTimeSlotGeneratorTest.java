@@ -46,8 +46,6 @@ public final class AvailabilityTimeSlotGeneratorTest {
     helper.tearDown();
   }
 
-  // TODO: Create tests for the timeSlotsForWeek method with the dao?
-
   @Test
   public void createADayOfUnselectedTimeSlots() {
     ZonedDateTime day =
@@ -821,6 +819,56 @@ public final class AvailabilityTimeSlotGeneratorTest {
         AvailabilityTimeSlot.create("2020-07-08T12:00:00Z", "8:00 AM", "Wed 7/8", false, false));
     expectedFirstSlotsOfEachDay.add(
         AvailabilityTimeSlot.create("2020-07-09T12:00:00Z", "8:00 AM", "Thu 7/9", false, false));
+    expectedFirstSlotsOfEachDay.add(
+        AvailabilityTimeSlot.create("2020-07-10T12:00:00Z", "8:00 AM", "Fri 7/10", false, false));
+    expectedFirstSlotsOfEachDay.add(
+        AvailabilityTimeSlot.create("2020-07-11T12:00:00Z", "8:00 AM", "Sat 7/11", false, false));
+    expectedFirstSlotsOfEachDay.add(
+        AvailabilityTimeSlot.create("2020-07-12T12:00:00Z", "8:00 AM", "Sun 7/12", false, false));
+    expectedFirstSlotsOfEachDay.add(
+        AvailabilityTimeSlot.create("2020-07-13T12:00:00Z", "8:00 AM", "Mon 7/13", false, false));
+
+    Assert.assertEquals(expectedFirstSlotsOfEachDay, actualFirstSlotsOfEachDay);
+  }
+
+  @Test
+  public void createAWeekOfSelectedAndScheduledTimeSlots() {
+    ZonedDateTime day =
+        ZonedDateTime.of(2020, 7, 7, 10, 0, 0, 0, ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-4)));
+    Instant instant = day.toInstant();
+    int timezoneOffsetMinutes = -240;
+    // This is necessary for accessing the current user's Availability for the week.
+    helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
+    FakeAvailabilityDao dao = new FakeAvailabilityDao();
+    dao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
+            -1,
+            true));
+    dao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-09T12:00:00Z"), Instant.parse("2020-07-09T12:15:00Z")),
+            -1,
+            false));
+    List<List<AvailabilityTimeSlot>> actual =
+        AvailabilityTimeSlotGenerator.timeSlotsForWeek(instant, timezoneOffsetMinutes, dao);
+
+    List<AvailabilityTimeSlot> actualFirstSlotsOfEachDay = new ArrayList<AvailabilityTimeSlot>();
+    for (int i = 0; i < 7; i++) {
+      actualFirstSlotsOfEachDay.add(actual.get(i).get(0));
+    }
+
+    List<AvailabilityTimeSlot> expectedFirstSlotsOfEachDay = new ArrayList<AvailabilityTimeSlot>();
+    expectedFirstSlotsOfEachDay.add(
+        AvailabilityTimeSlot.create("2020-07-07T12:00:00Z", "8:00 AM", "Tue 7/7", true, true));
+    expectedFirstSlotsOfEachDay.add(
+        AvailabilityTimeSlot.create("2020-07-08T12:00:00Z", "8:00 AM", "Wed 7/8", false, false));
+    expectedFirstSlotsOfEachDay.add(
+        AvailabilityTimeSlot.create("2020-07-09T12:00:00Z", "8:00 AM", "Thu 7/9", true, false));
     expectedFirstSlotsOfEachDay.add(
         AvailabilityTimeSlot.create("2020-07-10T12:00:00Z", "8:00 AM", "Fri 7/10", false, false));
     expectedFirstSlotsOfEachDay.add(
