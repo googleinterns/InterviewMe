@@ -17,42 +17,33 @@ package com.google.sps.data;
 import com.google.auto.value.AutoValue;
 
 /**
- * A PossibleInterview represents a 1 hour chunk of time that has a interviewer and a time range.
+ * A PossibleInterviewSlot represents a 1 hour chunk of time with a utcEncoding and readable date
+ * and time strings.
  */
 @AutoValue
-public abstract class PossibleInterview {
-  public abstract Person interviewer();
-
+public abstract class PossibleInterviewSlot {
   public abstract String utcEncoding();
 
   public abstract String date();
 
   public abstract String time();
 
-  public static PossibleInterview create(
-      Person interviewer, String utcEncoding, String date, String time) {
-    return builder()
-        .setInterviewer(interviewer)
-        .setUtcEncoding(utcEncoding)
-        .setDate(date)
-        .setTime(time)
-        .build();
+  public static PossibleInterviewSlot create(String utcEncoding, String date, String time) {
+    return builder().setUtcEncoding(utcEncoding).setDate(date).setTime(time).build();
   }
 
   static Builder builder() {
-    return new AutoValue_PossibleInterview.Builder();
+    return new AutoValue_PossibleInterviewSlot.Builder();
   }
 
   @AutoValue.Builder
   abstract static class Builder {
-    abstract Builder setInterviewer(Person interviewer);
-
     abstract Builder setUtcEncoding(String utcEncoding);
 
     abstract Builder setDate(String date);
 
     abstract Builder setTime(String time);
 
-    abstract PossibleInterview build();
+    abstract PossibleInterviewSlot build();
   }
 }

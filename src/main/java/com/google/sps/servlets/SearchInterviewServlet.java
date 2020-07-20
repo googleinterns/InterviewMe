@@ -24,8 +24,7 @@ import com.google.sps.data.DatastoreAvailabilityDao;
 import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
 import com.google.sps.data.PersonDao;
-import com.google.sps.data.PossibleInterview;
-import com.google.sps.data.PossibleInterviews;
+import com.google.sps.data.PossibleInterviewSlot;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.ScheduledInterviewDao;
 import com.google.sps.data.TimeRange;
@@ -79,7 +78,6 @@ public class SearchInterviewServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("DEBUG: Makes it to doGet in Servlet.");
     int timezoneOffsetMinutes = Integer.parseInt(request.getParameter("timeZoneOffset"));
     Preconditions.checkArgument(
         Math.abs(timezoneOffsetMinutes) <= 720,
@@ -94,15 +92,9 @@ public class SearchInterviewServlet extends HttpServlet {
     Instant endOfRange = utcTime.toInstant().plus(6, ChronoUnit.DAYS);
     List<Availability> availabilitiesInRange =
         availabilityDao.getInRangeForAll(startOfRange, endOfRange);
-    List<PossibleInterview> possibleInterviews =
-        PossibleInterviews.getPossibleInterviews(
-            availabilitiesInRange,
-            startOfRange,
-            endOfRange,
-            timezoneOffset,
-            availabilityDao,
-            personDao);
-    
+    List<PossibleInterviewSlot> possibleInterviews =
+        getPossibleInterviewSlots(availabilitiesInRange, startOfRange, endOfRange, timezoneOffset);
+    // TODO: Sort these into lists corresponding to each day.
   }
 
   // Uses an Instant and a timezoneOffset to create a ZonedDateTime instance.
@@ -114,5 +106,91 @@ public class SearchInterviewServlet extends HttpServlet {
   // into a proper ZoneOffset instance.
   private static ZoneOffset convertIntToOffset(int timezoneOffsetMinutes) {
     return ZoneOffset.ofHoursMinutes((timezoneOffsetMinutes / 60), (timezoneOffsetMinutes % 60));
+  }
+
+  private List<PossibleInterviewSlot> getPossibleInterviewSlots(
+      List<Availability> allAvailabilities,
+      Instant startOfRange,
+      Instant endOfRange,
+      ZoneOffset timezoneOffset) {
+    Set<PossibleInterviewSlot> possibleInterviews = new HashSet<PossibleInterviewSlot>();
+    Set<String> interviewers = new HashSet<String>();
+    for (Availability avail : allAvailabilities) {
+      interviewers.add(avail.email());
+    }
+
+    for (String email : interviewers) {
+      possibleInterviews.addAll(
+          getPossibleInterviewSlotsForPerson(email, startOfRange, endOfRange, timezoneOffset));
+    }
+
+    List<PossibleInterviewSlot> possibleInterviewList =
+        new ArrayList<PossibleInterviewSlot>(possibleInterviews);
+
+    possibleInterviewList.sort(
+        (PossibleInterviewSlot p1, PossibleInterviewSlot p2) -> {
+          if (Instant.parse(p1.utcEncoding()).equals(Instant.parse(p2.utcEncoding()))) {
+            return 0;
+          }
+          if (Instant.parse(p1.utcEncoding()).isBefore(Instant.parse(p2.utcEncoding()))) {
+            return -1;
+          }
+          return 1;
+        });
+    return possibleInterviewList;
+  }
+
+  private List<PossibleInterviewSlot> getPossibleInterviewSlotsForPerson(
+      String email, Instant startOfRange, Instant endOfRange, ZoneOffset timezoneOffset) {
+    List<Availability> availabilities =
+        availabilityDao.getInRangeForUser(email, startOfRange, endOfRange);
+    List<PossibleInterviewSlot> possibleInterviewSlotsForPerson =
+        new ArrayList<PossibleInterviewSlot>();
+    for (int i = 0; i < availabilities.size() - 3; i++) {
+      if (availabilities.get(i).when().end().equals(availabilities.get(i + 1).when().start())) {
+        if (availabilities
+            .get(i + 1)
+            .when()
+            .end()
+            .equals(availabilities.get(i + 2).when().start())) {
+          if (availabilities
+              .get(i + 2)
+              .when()
+              .end()
+              .equals(availabilities.get(i + 3).when().start())) {
+            possibleInterviewSlotsForPerson.add(
+                PossibleInterviewSlot.create(
+                    availabilities.get(0).when().start().toString(),
+                    getDate(availabilities.get(0).when().start(), timezoneOffset),
+                    getTime(availabilities.get(0).when().start(), timezoneOffset)));
+          }
+        }
+      }
+    }
+    return possibleInterviewSlotsForPerson;
+  }
+
+  private String getDate(Instant instant, ZoneOffset timezoneOffset) {
+    ZonedDateTime day = instant.atZone(ZoneId.ofOffset("UTC", timezoneOffset));
+    String dayOfWeek = day.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.US);
+    int month = day.getMonthValue();
+    int dayOfMonth = day.getDayOfMonth();
+    return String.format("%s %d/%d", dayOfWeek, month, dayOfMonth);
+  }
+
+  private String getTime(Instant instant, ZoneOffset timezoneOffset) {
+    ZonedDateTime startTime = instant.atZone(ZoneId.ofOffset("UTC", timezoneOffset));
+    ZonedDateTime endTime = startTime.plus(1, ChronoUnit.HOURS);
+    return String.format("%s - %s", formatTime(startTime), formatTime(endTime));
+  }
+
+  private String formatTime(ZonedDateTime time) {
+    int hour = time.getHour();
+    int minute = time.getMinute();
+    int standardHour = hour;
+    if (hour > 12) {
+      standardHour = hour - 12;
+    }
+    return String.format("%d:%02d %s", standardHour, minute, hour < 12 ? "AM" : "PM");
   }
 }
