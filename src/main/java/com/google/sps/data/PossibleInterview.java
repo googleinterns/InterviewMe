@@ -15,26 +15,27 @@
 package com.google.sps.data;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.annotations.VisibleForTesting;
-
-// FIX DESCRIPTION
 
 /**
- * A PossibleInterview represents a 1 hour chunk of time that has a interviewer and a 
- * time range.
+ * A PossibleInterview represents a 1 hour chunk of time that has a interviewer and a time range.
  */
 @AutoValue
 public abstract class PossibleInterview {
-  public abstract String interviewer();
+  public abstract Person interviewer();
 
-  public abstract TimeRange when();
+  public abstract String utcEncoding();
 
-  @VisibleForTesting
-  static PossibleInterview create(
-      String interviewer, TimeRange when) {
+  public abstract String date();
+
+  public abstract String time();
+
+  public static PossibleInterview create(
+      Person interviewer, String utcEncoding, String date, String time) {
     return builder()
         .setInterviewer(interviewer)
-        .setWhen(when)
+        .setUtcEncoding(utcEncoding)
+        .setDate(date)
+        .setTime(time)
         .build();
   }
 
@@ -44,9 +45,13 @@ public abstract class PossibleInterview {
 
   @AutoValue.Builder
   abstract static class Builder {
-    abstract Builder setInterviewer(String interviewer);
+    abstract Builder setInterviewer(Person interviewer);
 
-    abstract Builder setWhen(TimeRange when);
+    abstract Builder setUtcEncoding(String utcEncoding);
+
+    abstract Builder setDate(String date);
+
+    abstract Builder setTime(String time);
 
     abstract PossibleInterview build();
   }
