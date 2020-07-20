@@ -25,6 +25,7 @@ import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
 import com.google.sps.data.PersonDao;
 import com.google.sps.data.PossibleInterview;
+import com.google.sps.data.PossibleInterviews;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.ScheduledInterviewDao;
 import com.google.sps.data.TimeRange;
@@ -94,7 +95,13 @@ public class SearchInterviewServlet extends HttpServlet {
     List<Availability> availabilitiesInRange =
         availabilityDao.getInRangeForAll(startOfRange, endOfRange);
     List<PossibleInterview> possibleInterviews =
-        getPossibleInterviews(availabilitiesInRange, startOfRange, endOfRange, timezoneOffset);
+        PossibleInterviews.getPossibleInterviews(
+            availabilitiesInRange,
+            startOfRange,
+            endOfRange,
+            timezoneOffset,
+            availabilityDao,
+            personDao);
   }
 
   // Uses an Instant and a timezoneOffset to create a ZonedDateTime instance.
@@ -106,89 +113,5 @@ public class SearchInterviewServlet extends HttpServlet {
   // into a proper ZoneOffset instance.
   private static ZoneOffset convertIntToOffset(int timezoneOffsetMinutes) {
     return ZoneOffset.ofHoursMinutes((timezoneOffsetMinutes / 60), (timezoneOffsetMinutes % 60));
-  }
-
-  private List<PossibleInterview> getPossibleInterviews(
-      List<Availability> allAvailabilities,
-      Instant startOfRange,
-      Instant endOfRange,
-      ZoneOffset timezoneOffset) {
-    List<PossibleInterview> possibleInterviews = new ArrayList<PossibleInterview>();
-    Set<String> interviewers = new HashSet<String>();
-    for (Availability avail : allAvailabilities) {
-      interviewers.add(avail.email());
-    }
-
-    for (String email : interviewers) {
-      possibleInterviews.addAll(
-          getPossibleInterviewsForPerson(email, startOfRange, endOfRange, timezoneOffset));
-    }
-
-    possibleInterviews.sort(
-        (PossibleInterview p1, PossibleInterview p2) -> {
-          if (Instant.parse(p1.utcEncoding()).equals(Instant.parse(p2.utcEncoding()))) {
-            return 0;
-          }
-          if (Instant.parse(p1.utcEncoding()).isBefore(Instant.parse(p2.utcEncoding()))) {
-            return -1;
-          }
-          return 1;
-        });
-    return possibleInterviews;
-  }
-
-  private List<PossibleInterview> getPossibleInterviewsForPerson(
-      String email, Instant startOfRange, Instant endOfRange, ZoneOffset timezoneOffset) {
-    List<Availability> availabilities =
-        availabilityDao.getInRangeForUser(email, startOfRange, endOfRange);
-    List<PossibleInterview> possibleInterviewsForPerson = new ArrayList<PossibleInterview>();
-    for (int i = 0; i < availabilities.size() - 3; i++) {
-      if (availabilities.get(i).when().end().equals(availabilities.get(i + 1).when().start())) {
-        if (availabilities
-            .get(i + 1)
-            .when()
-            .end()
-            .equals(availabilities.get(i + 2).when().start())) {
-          if (availabilities
-              .get(i + 2)
-              .when()
-              .end()
-              .equals(availabilities.get(i + 3).when().start())) {
-            possibleInterviewsForPerson.add(
-                PossibleInterview.create(
-                    // TODO: Deal with empty Optional case
-                    personDao.get(email).get(),
-                    availabilities.get(0).when().start().toString(),
-                    getDate(availabilities.get(0).when().start(), timezoneOffset),
-                    getTime(availabilities.get(0).when().start(), timezoneOffset)));
-          }
-        }
-      }
-    }
-    return possibleInterviewsForPerson;
-  }
-
-  private String getDate(Instant instant, ZoneOffset timezoneOffset) {
-    ZonedDateTime day = instant.atZone(ZoneId.ofOffset("UTC", timezoneOffset));
-    String dayOfWeek = day.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.US);
-    int month = day.getMonthValue();
-    int dayOfMonth = day.getDayOfMonth();
-    return String.format("%s %d/%d", dayOfWeek, month, dayOfMonth);
-  }
-
-  private String getTime(Instant instant, ZoneOffset timezoneOffset) {
-    ZonedDateTime startTime = instant.atZone(ZoneId.ofOffset("UTC", timezoneOffset));
-    ZonedDateTime endTime = startTime.plus(1, ChronoUnit.HOURS);
-    return String.format("%s - %s", formatTime(startTime), formatTime(endTime));
-  }
-
-  private String formatTime(ZonedDateTime time) {
-    int hour = time.getHour();
-    int minute = time.getMinute();
-    int standardHour = hour;
-    if (hour > 12) {
-      standardHour = hour - 12;
-    }
-    return String.format("%d:%02d %s", standardHour, minute, hour < 12 ? "AM" : "PM");
   }
 }
