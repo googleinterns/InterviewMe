@@ -28,6 +28,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+/** 
+ * A generator of a list  of PossibleInterview objects within the specified time range
+ * and timezone.
+ */
 public class PossibleInterviews {
   public static List<PossibleInterview> getPossibleInterviews(
       List<Availability> allAvailabilities,
