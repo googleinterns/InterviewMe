@@ -16,6 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.common.collect.ImmutableList;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.sps.data.Availability;
@@ -94,7 +95,24 @@ public class SearchInterviewServlet extends HttpServlet {
         availabilityDao.getInRangeForAll(startOfRange, endOfRange);
     List<PossibleInterviewSlot> possibleInterviews =
         getPossibleInterviewSlots(availabilitiesInRange, startOfRange, endOfRange, timezoneOffset);
-    // TODO: Sort these into lists corresponding to each day.
+    Set<String> dates = new HashSet<String>();
+    for (PossibleInterviewSlot pi : possibleInterviews) {
+      dates.add(pi.date());
+    }
+
+    ImmutableList.Builder<List<PossibleInterviewSlot>> weekList = ImmutableList.builder();
+    for (String date : dates) {
+      List<PossibleInterviewSlot> dayOfSlots = new ArrayList<PossibleInterviewSlot>();
+      for (PossibleInterviewSlot pi : possibleInterviews) {
+        if (date.equals(pi.date())) {
+          dayOfSlots.add(pi);
+        }
+      }
+      sortInterviews(dayOfSlots);
+      weekList.add(dayOfSlots);
+    }
+    List<List<PossibleInterviewSlot>> possibleInterviewsForWeek = weekList.build();
+    // TODO: send these to the jsp page
   }
 
   // Uses an Instant and a timezoneOffset to create a ZonedDateTime instance.
@@ -127,16 +145,7 @@ public class SearchInterviewServlet extends HttpServlet {
     List<PossibleInterviewSlot> possibleInterviewList =
         new ArrayList<PossibleInterviewSlot>(possibleInterviews);
 
-    possibleInterviewList.sort(
-        (PossibleInterviewSlot p1, PossibleInterviewSlot p2) -> {
-          if (Instant.parse(p1.utcEncoding()).equals(Instant.parse(p2.utcEncoding()))) {
-            return 0;
-          }
-          if (Instant.parse(p1.utcEncoding()).isBefore(Instant.parse(p2.utcEncoding()))) {
-            return -1;
-          }
-          return 1;
-        });
+    sortInterviews(possibleInterviewList);
     return possibleInterviewList;
   }
 
@@ -192,5 +201,18 @@ public class SearchInterviewServlet extends HttpServlet {
       standardHour = hour - 12;
     }
     return String.format("%d:%02d %s", standardHour, minute, hour < 12 ? "AM" : "PM");
+  }
+
+  private void sortInterviews(List<PossibleInterviewSlot> possibleInterviewSlots) {
+    possibleInterviewSlots.sort(
+        (PossibleInterviewSlot p1, PossibleInterviewSlot p2) -> {
+          if (Instant.parse(p1.utcEncoding()).equals(Instant.parse(p2.utcEncoding()))) {
+            return 0;
+          }
+          if (Instant.parse(p1.utcEncoding()).isBefore(Instant.parse(p2.utcEncoding()))) {
+            return -1;
+          }
+          return 1;
+        });
   }
 }
