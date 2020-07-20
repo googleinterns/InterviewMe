@@ -22,8 +22,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.sps.servlets.AvailabilityServlet;
+import com.google.sps.data.Availability;
 import com.google.sps.data.FakeAvailabilityDao;
 import com.google.sps.data.FakeScheduledInterviewDao;
+import com.google.sps.data.TimeRange;
 import com.google.sps.data.PutAvailabilityRequest;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -81,7 +83,8 @@ public final class AvailabilityServletTest {
     availabilityServlet.init(availabilityDao, scheduledInterviewDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest putRequest = new MockHttpServletRequest();
-    // Instead of 'lastSlot' we have 'lastSt' and instead of '2020-07-20T23:45:00Z' we have '2020-07-20T:45:00Z' (no hour)
+    // Instead of 'lastSlot' we have 'lastSt' and instead of '2020-07-20T23:45:00Z' we have
+    // '2020-07-20T:45:00Z' (no hour)
     String jsonString =
         "{\"firstSlot\":\"2020-07-14T12:00:00Z\",\"lastSt\":\"2020-07-20T:45:00Z\",\"selectedSlots\":[\"2020-07-15T13:15:00Z\",\"2020-07-16T14:30:00Z\"]}";
     putRequest.setContent(jsonString.getBytes(StandardCharsets.UTF_8));
