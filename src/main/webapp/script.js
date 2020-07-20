@@ -16,6 +16,12 @@ function onIndexLoad() {
   checkLogin();
 }
 
+function testSendEmail() {
+  fetch('/send-email', {method: 'POST'}).then((response) => response.text()).then((response) => {
+    console.log(response);
+  });
+}
+
 function checkLogin() {
   fetch('/login').then(response => response.json()).then(status => {
     if(status.loggedIn){
