@@ -1,6 +1,7 @@
 <%@ page import="com.google.sps.data.AvailabilityTimeSlotGenerator" %>
 <%@ page import="com.google.sps.data.AvailabilityTimeSlot" %>
-<%@ page import="java.util.List,java.time.Instant" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.time.Instant" %>
 <%@ page import="java.lang.Integer" %>
 <%
   List<List<AvailabilityTimeSlot>> list = AvailabilityTimeSlotGenerator

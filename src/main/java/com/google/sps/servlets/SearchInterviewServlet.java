@@ -47,6 +47,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.RequestDispatcher;
 import java.util.Optional;
 
 @WebServlet("/search-interviews")
@@ -78,7 +81,8 @@ public class SearchInterviewServlet extends HttpServlet {
   }
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
     int timezoneOffsetMinutes = Integer.parseInt(request.getParameter("timeZoneOffset"));
     Preconditions.checkArgument(
         Math.abs(timezoneOffsetMinutes) <= 720,
@@ -113,6 +117,10 @@ public class SearchInterviewServlet extends HttpServlet {
     }
     List<List<PossibleInterviewSlot>> possibleInterviewsForWeek = weekList.build();
     // TODO: send these to the jsp page
+    ServletContext sc = this.getServletContext();
+    request.setAttribute("weekList", possibleInterviewsForWeek);
+    RequestDispatcher rd = sc.getRequestDispatcher("/possibleInterviewTimes.jsp");
+    rd.forward(request, response);
   }
 
   // Uses an Instant and a timezoneOffset to create a ZonedDateTime instance.

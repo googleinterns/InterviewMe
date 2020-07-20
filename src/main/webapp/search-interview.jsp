@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8">
@@ -55,6 +54,7 @@
         <h5 class="text-center lead">Select the time you want from the dropdown on the day you want. </h5>
         <br>
         <!--TODO: Include Timezone consideration; Add pagination; Make this into a jsp page-->
+        <jsp:include page="possibleInterviewTimes.jsp" />
         <form>
           <div class="form-row">
             <div class="col-3 date-label">
