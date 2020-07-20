@@ -122,7 +122,8 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
     }
   }
 
-  // Returns a sorted list of all Availabilities ranging from minTime to maxTime of a user.
+  // Returns a sorted (by ascending start times) list of all Availabilities ranging from
+  // minTime to maxTime of a user.
   @Override
   public List<Availability> getInRangeForUser(String email, Instant minTime, Instant maxTime) {
     Filter userFilter = new FilterPredicate("email", FilterOperator.EQUAL, email);
@@ -134,7 +135,8 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
     return availability;
   }
 
-  // Returns all Availabilities across all users ranging from minTime to maxTime in order.
+  // Returns all Availabilities across all users ranging from minTime to maxTime in order
+  // (by ascending start times).
   @Override
   public List<Availability> getInRangeForAll(Instant minTime, Instant maxTime) {
     List<Entity> entities = getEntitiesInRange(minTime, maxTime, Optional.empty());

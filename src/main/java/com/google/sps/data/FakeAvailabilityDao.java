@@ -70,7 +70,7 @@ public class FakeAvailabilityDao implements AvailabilityDao {
 
   /**
    * Collects all Availabilities for the specified user within the specified time range and returns
-   * them in order.
+   * them in order (by ascending start times).
    */
   @Override
   public List<Availability> getInRangeForUser(String email, Instant minTime, Instant maxTime) {
@@ -89,7 +89,10 @@ public class FakeAvailabilityDao implements AvailabilityDao {
     return userAvailability;
   }
 
-  /** Collects all Availabilities within the specified time range and returns them in order. */
+  /**
+   * Collects all Availabilities within the specified time range and returns them in order (by
+   * ascending start times).
+   */
   @Override
   public List<Availability> getInRangeForAll(Instant minTime, Instant maxTime) {
     return getInRange(new ArrayList<Availability>(storedObjects.values()), minTime, maxTime);
