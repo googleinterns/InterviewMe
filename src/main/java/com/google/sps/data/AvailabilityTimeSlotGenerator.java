@@ -21,7 +21,9 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -85,11 +87,15 @@ public class AvailabilityTimeSlotGenerator {
     List<Availability> userAvailabilityForWeek =
         availabilityDao.getInRangeForUser(
             email, startAndEndOfWeek.get(0), startAndEndOfWeek.get(1));
+    Map<Instant, Availability> availabilityMap = new HashMap<Instant, Availability>();
+    for (Availability avail : userAvailabilityForWeek) {
+      availabilityMap.put(avail.when().start(), avail);
+    }
     ImmutableList.Builder<List<AvailabilityTimeSlot>> weekList = ImmutableList.builder();
     for (int i = 0; i < 7; i++) {
       weekList.add(
           timeSlotsForDay(
-              instant.plus(i, ChronoUnit.DAYS), timezoneOffsetMinutes, userAvailabilityForWeek));
+              instant.plus(i, ChronoUnit.DAYS), timezoneOffsetMinutes, availabilityMap));
     }
     return weekList.build();
   }
@@ -133,12 +139,14 @@ public class AvailabilityTimeSlotGenerator {
    * @param timezoneOffsetMinutes An int that represents the difference between UTC and the user's
    *     current timezone. Example: A user in EST has a timezoneOffsetMinutes of -240 which means
    *     that EST is 240 minutes behind UTC.
-   * @param userAvailabilityForWeek A list of the selected Availabilities for the current user
+   * @param userAvailabilityForWeek A hashmap of the selected Availabilities for the current user
    *     during the week that the specified day is a part of.
    */
   @VisibleForTesting
   static List<AvailabilityTimeSlot> timeSlotsForDay(
-      Instant instant, int timezoneOffsetMinutes, List<Availability> userAvailabilityForWeek) {
+      Instant instant,
+      int timezoneOffsetMinutes,
+      Map<Instant, Availability> userAvailabilityForWeek) {
     ZonedDateTime day = generateDay(instant, timezoneOffsetMinutes);
     ZoneId zoneId = day.getZone();
     String dayOfWeek = day.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.US);
@@ -195,29 +203,23 @@ public class AvailabilityTimeSlotGenerator {
   // This method tells whether or not a time slot has already been selected (Whether or not
   // it is already in datastore).
   private static boolean getSelectedStatus(
-      String utcEncoding, List<Availability> userAvailabilityForWeek) {
+      String utcEncoding, Map<Instant, Availability> userAvailabilityForWeek) {
     Instant startTime = Instant.parse(utcEncoding);
-    for (Availability avail : userAvailabilityForWeek) {
-      if (avail.when().start().equals(startTime)) {
-        return true;
-      }
+    if (userAvailabilityForWeek.get(startTime) == null) {
+      return false;
     }
-    return false;
+    return true;
   }
 
   // This methods tells whether or not a time slot has already been scheduled over.
   private static boolean getScheduledStatus(
-      String utcEncoding, List<Availability> userAvailabilityForWeek) {
+      String utcEncoding, Map<Instant, Availability> userAvailabilityForWeek) {
     if (!getSelectedStatus(utcEncoding, userAvailabilityForWeek)) {
       return false;
     }
     Instant startTime = Instant.parse(utcEncoding);
-    for (Availability avail : userAvailabilityForWeek) {
-      if (avail.when().start().equals(startTime)) {
-        if (avail.scheduled()) {
-          return true;
-        }
-      }
+    if (userAvailabilityForWeek.get(startTime).scheduled()) {
+      return true;
     }
     return false;
   }

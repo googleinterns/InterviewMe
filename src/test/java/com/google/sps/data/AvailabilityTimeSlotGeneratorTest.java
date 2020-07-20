@@ -22,7 +22,9 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -52,9 +54,10 @@ public final class AvailabilityTimeSlotGeneratorTest {
         ZonedDateTime.of(2020, 7, 7, 10, 0, 0, 0, ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-4)));
     Instant instant = day.toInstant();
     int timezoneOffsetMinutes = -240;
+    Map<Instant, Availability> userAvailabilityForWeek = new HashMap<Instant, Availability>();
     List<AvailabilityTimeSlot> actual =
         AvailabilityTimeSlotGenerator.timeSlotsForDay(
-            instant, timezoneOffsetMinutes, Arrays.asList());
+            instant, timezoneOffsetMinutes, userAvailabilityForWeek);
 
     List<AvailabilityTimeSlot> expected = new ArrayList<AvailabilityTimeSlot>();
 
@@ -164,7 +167,7 @@ public final class AvailabilityTimeSlotGeneratorTest {
         ZonedDateTime.of(2020, 7, 7, 10, 0, 0, 0, ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-4)));
     Instant instant = day.toInstant();
     int timezoneOffsetMinutes = -240;
-    List<Availability> userAvailabilityForWeek = new ArrayList<Availability>();
+    Map<Instant, Availability> userAvailabilityForWeek = new HashMap<Instant, Availability>();
     Availability availabilityOne =
         Availability.create(
             "user@mail.com",
@@ -179,8 +182,9 @@ public final class AvailabilityTimeSlotGeneratorTest {
                 Instant.parse("2020-07-07T17:00:00Z"), Instant.parse("2020-07-07T17:15:00Z")),
             -1,
             false);
-    userAvailabilityForWeek.add(availabilityOne);
-    userAvailabilityForWeek.add(availabilityTwo);
+    userAvailabilityForWeek.put(availabilityOne.when().start(), availabilityOne);
+    userAvailabilityForWeek.put(availabilityTwo.when().start(), availabilityTwo);
+
     List<AvailabilityTimeSlot> actual =
         AvailabilityTimeSlotGenerator.timeSlotsForDay(
             instant, timezoneOffsetMinutes, userAvailabilityForWeek);
@@ -295,7 +299,7 @@ public final class AvailabilityTimeSlotGeneratorTest {
         ZonedDateTime.of(2020, 7, 7, 10, 0, 0, 0, ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-4)));
     Instant instant = day.toInstant();
     int timezoneOffsetMinutes = -240;
-    List<Availability> userAvailabilityForWeek = new ArrayList<Availability>();
+    Map<Instant, Availability> userAvailabilityForWeek = new HashMap<Instant, Availability>();
     Availability availabilityOne =
         Availability.create(
             "user@mail.com",
@@ -310,8 +314,8 @@ public final class AvailabilityTimeSlotGeneratorTest {
                 Instant.parse("2020-07-07T22:45:00Z"), Instant.parse("2020-07-07T23:00:00Z")),
             -1,
             true);
-    userAvailabilityForWeek.add(availabilityOne);
-    userAvailabilityForWeek.add(availabilityTwo);
+    userAvailabilityForWeek.put(availabilityOne.when().start(), availabilityOne);
+    userAvailabilityForWeek.put(availabilityTwo.when().start(), availabilityTwo);
     List<AvailabilityTimeSlot> actual =
         AvailabilityTimeSlotGenerator.timeSlotsForDay(
             instant, timezoneOffsetMinutes, userAvailabilityForWeek);
@@ -426,7 +430,7 @@ public final class AvailabilityTimeSlotGeneratorTest {
         ZonedDateTime.of(2020, 7, 7, 10, 0, 0, 0, ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-4)));
     Instant instant = day.toInstant();
     int timezoneOffsetMinutes = -240;
-    List<Availability> userAvailabilityForWeek = new ArrayList<Availability>();
+    Map<Instant, Availability> userAvailabilityForWeek = new HashMap<Instant, Availability>();
     Availability availabilityOne =
         Availability.create(
             "user@mail.com",
@@ -441,8 +445,8 @@ public final class AvailabilityTimeSlotGeneratorTest {
                 Instant.parse("2020-07-07T19:00:00Z"), Instant.parse("2020-07-07T19:15:00Z")),
             -1,
             false);
-    userAvailabilityForWeek.add(availabilityOne);
-    userAvailabilityForWeek.add(availabilityTwo);
+    userAvailabilityForWeek.put(availabilityOne.when().start(), availabilityOne);
+    userAvailabilityForWeek.put(availabilityTwo.when().start(), availabilityTwo);
     List<AvailabilityTimeSlot> actual =
         AvailabilityTimeSlotGenerator.timeSlotsForDay(
             instant, timezoneOffsetMinutes, userAvailabilityForWeek);
@@ -557,9 +561,10 @@ public final class AvailabilityTimeSlotGeneratorTest {
         ZonedDateTime.of(2020, 7, 7, 10, 0, 0, 0, ZoneId.ofOffset("UTC", ZoneOffset.ofHours(0)));
     Instant instant = day.toInstant();
     int timezoneOffsetMinutes = 0;
+    Map<Instant, Availability> userAvailabilityForWeek = new HashMap<Instant, Availability>();
     List<AvailabilityTimeSlot> actual =
         AvailabilityTimeSlotGenerator.timeSlotsForDay(
-            instant, timezoneOffsetMinutes, Arrays.asList());
+            instant, timezoneOffsetMinutes, userAvailabilityForWeek);
 
     List<AvailabilityTimeSlot> expected = new ArrayList<AvailabilityTimeSlot>();
 
@@ -669,9 +674,10 @@ public final class AvailabilityTimeSlotGeneratorTest {
         ZonedDateTime.of(2020, 7, 7, 0, 0, 0, 0, ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-4)));
     Instant instant = day.toInstant();
     int timezoneOffsetMinutes = -240;
+    Map<Instant, Availability> userAvailabilityForWeek = new HashMap<Instant, Availability>();
     List<AvailabilityTimeSlot> actual =
         AvailabilityTimeSlotGenerator.timeSlotsForDay(
-            instant, timezoneOffsetMinutes, Arrays.asList());
+            instant, timezoneOffsetMinutes, userAvailabilityForWeek);
 
     List<AvailabilityTimeSlot> expected = new ArrayList<AvailabilityTimeSlot>();
 
