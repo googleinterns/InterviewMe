@@ -113,6 +113,9 @@ public class SearchInterviewServlet extends HttpServlet {
     // A NULLPOINTEREXCEPTION
     // ServletContext sc = getServletContext();
     request.setAttribute("weekList", possibleInterviewsForWeek);
+    List<List<PossibleInterviewSlot>> result =
+        (List<List<PossibleInterviewSlot>>) request.getAttribute("weekList");
+    System.out.println("DEBUG" + result.size());
     RequestDispatcher rd = request.getRequestDispatcher("/possibleInterviewTimes.jsp");
     rd.forward(request, response);
   }
