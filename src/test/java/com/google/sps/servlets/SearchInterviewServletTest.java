@@ -52,7 +52,7 @@ public final class SearchInterviewServletTest {
   public void setUp() {
     helper.setUp();
     availabilityDao = new FakeAvailabilityDao();
-    context = new MockServletContext();
+    // context = new MockServletContext();
   }
 
   @After
@@ -177,7 +177,7 @@ public final class SearchInterviewServletTest {
             -1,
             false));
 
-    MockHttpServletRequest getRequest = new MockHttpServletRequest(context);
+    MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("timeZoneOffset", "0");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
     servlet.doGet(getRequest, getResponse);
