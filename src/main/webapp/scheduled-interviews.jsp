@@ -17,7 +17,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
       integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="scheduled-interviews.js"></script>
-    <script src="logout.js"></script>
+    <script src="authentication.js"></script>
   </head>
   <body onload="onScheduledInterviewsLoad()">
     <div id="content">
@@ -54,11 +54,9 @@
               <div class="card w-75 scheduled-interview-card">
                 <div class="card-body">
                  <c:choose>
-                    <!-- if condition -->
                     <c:when test="${scheduledInterview.interviewerEmail().equals()}">
                       <h5 class="card-title">Your role: Interviewer</h5>
-                    </c:when> 
-                    <!-- else condition -->
+                    </c:when>
                     <c:otherwise>
                       <h5 class="card-title">Your role: Interviewee</h5>
                     </c:otherwise>   
