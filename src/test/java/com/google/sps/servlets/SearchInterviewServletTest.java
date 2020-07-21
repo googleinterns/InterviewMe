@@ -183,7 +183,7 @@ public final class SearchInterviewServletTest {
             false));
 
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
-    getRequest.addParameter("timeZoneOffset", "0");
+    getRequest.addParameter("timeZoneOffset", "60");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
     servlet.doGet(getRequest, getResponse);
     List<List<PossibleInterviewSlot>> possibleInterviewSlots =
@@ -191,7 +191,7 @@ public final class SearchInterviewServletTest {
     ImmutableList.Builder<List<PossibleInterviewSlot>> expected = ImmutableList.builder();
     List<PossibleInterviewSlot> day = new ArrayList<PossibleInterviewSlot>();
     PossibleInterviewSlot slot =
-        PossibleInterviewSlot.create("2020-07-07T16:30:00Z", "Tuesday 7/7", "4:30 PM - 5:30 PM");
+        PossibleInterviewSlot.create("2020-07-07T16:30:00Z", "Tuesday 7/7", "5:30 PM - 6:30 PM");
     day.add(slot);
     expected.add(day);
     List<List<PossibleInterviewSlot>> expectedInterviewSlots = expected.build();
