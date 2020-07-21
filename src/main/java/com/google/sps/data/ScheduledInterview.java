@@ -41,6 +41,7 @@ public abstract class ScheduledInterview {
         .build();
   }
 
+  /** Used to help serialize the ScheduledInterview before it is sent to the frontend */
   public static ScheduledInterview create(ScheduledInterviewRequest scheduledInterviewRequest) {
     return builder()
         .setId(scheduledInterviewRequest.getId())

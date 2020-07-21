@@ -65,12 +65,18 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String requestedInterviewerEmail = request.getParameter("interviewer");
     String requestedIntervieweeEmail = request.getParameter("interviewee");
     String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
+    // The default key for a scheduledInterview being stored in datastore
+    long defaultKey = -1;
+    if(requestedInterviewerEmail.equals(userEmail)
+        || requestedIntervieweeEmail.equals(userEmail)) {
+          
+        }
     if (requestedInterviewerEmail.equals(userEmail)
         || requestedIntervieweeEmail.equals(userEmail)) {
       try {
         ScheduledInterview scheduledInterview =
             ScheduledInterview.create(
-                -1,
+                defaultKey,
                 new TimeRange(
                     Instant.parse(request.getParameter("startTime")),
                     Instant.parse(request.getParameter("endTime"))),
@@ -79,7 +85,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
         scheduledInterviewDao.create(scheduledInterview);
         return;
       } catch (DateTimeParseException e) {
-        response.sendError(400);
+        response.sendError(400, e.getMessage());
         return;
       }
     }

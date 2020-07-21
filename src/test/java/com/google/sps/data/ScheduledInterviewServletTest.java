@@ -58,6 +58,7 @@ public final class ScheduledInterviewServletTest {
   public void tearDown() {
     helper.tearDown();
   }
+
   // Tests whether a scheduledInterview object was added to datastore.
   @Test
   public void validScheduledInterviewServletPostRequest() throws IOException {
@@ -167,7 +168,7 @@ public final class ScheduledInterviewServletTest {
 
   // Tests errors with Instant parsing.
   @Test
-  public void bad() throws IOException {
+  public void invalidInstant() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
     scheduledInterviewServlet.init(new FakeScheduledInterviewDao());
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
