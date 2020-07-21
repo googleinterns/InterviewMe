@@ -24,7 +24,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.sendgrid.*;
 import java.io.IOException;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -40,13 +39,15 @@ import org.springframework.mock.web.MockServletContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-// import com.sendgrid.helpers.mail.Mail;
-// import com.sendgrid.helpers.mail.objects.Content;
-// import com.sendgrid.helpers.mail.objects.Email;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
 
-/** Tests SendEmail class. */
+/** Tests EmailSender class. */
 @RunWith(JUnit4.class)
-public final class EmailHandlerTest {
+public final class EmailSenderTest {
   LocalServiceTestHelper helper;
   Path emailsPath;
 
@@ -71,9 +72,9 @@ public final class EmailHandlerTest {
     String subject = "Sending with SendGrid is Fun";
     Email to = new Email("the.claire.yang@gmail.com");
     String contentString =
-        EmailHandler.fileContentToString(emailsPath + "/NewInterview_Interviewer.txt");
+        EmailSender.fileContentToString(emailsPath + "/NewInterview_Interviewer.txt");
     Content content = new Content("text/plain", contentString);
-    Response response = new EmailHandler().sendEmail(from, to, subject, content);
+    Response response = new EmailSender().sendEmail(from, to, subject, content);
     assertEquals(response.getStatusCode(), 202);
     // Email also popped up in my inbox.
   }

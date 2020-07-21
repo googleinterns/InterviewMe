@@ -16,7 +16,13 @@ package com.google.sps.data;
 
 // using SendGrid's Java Library
 // https://github.com/sendgrid/sendgrid-java
-import com.sendgrid.*;
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -29,7 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 
 // Handles sending emails.
 @WebServlet("/email")
-public class EmailHandler {
+public class EmailSender {
 
   // Sends an email from the "from" Email to the "to" Email, with specified subject and content.
   public Response sendEmail(Email from, Email to, String subject, Content content)
