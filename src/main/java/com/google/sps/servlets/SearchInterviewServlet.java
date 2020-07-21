@@ -14,20 +14,13 @@
 
 package com.google.sps.servlets;
 
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.sps.data.Availability;
 import com.google.sps.data.AvailabilityDao;
 import com.google.sps.data.DatastoreAvailabilityDao;
-import com.google.sps.data.DatastorePersonDao;
-import com.google.sps.data.DatastoreScheduledInterviewDao;
-import com.google.sps.data.PersonDao;
 import com.google.sps.data.PossibleInterviewSlot;
-import com.google.sps.data.ScheduledInterview;
-import com.google.sps.data.ScheduledInterviewDao;
 import com.google.sps.data.TimeRange;
 import java.io.IOException;
 import java.io.BufferedReader;
@@ -56,27 +49,17 @@ import java.util.Optional;
 public class SearchInterviewServlet extends HttpServlet {
 
   private AvailabilityDao availabilityDao;
-  private ScheduledInterviewDao scheduledInterviewDao;
-  private PersonDao personDao;
   private Instant instant;
+  private ServletContext sc;
 
   @Override
   public void init() {
-    init(
-        new DatastoreAvailabilityDao(),
-        new DatastoreScheduledInterviewDao(),
-        new DatastorePersonDao(),
-        Instant.now());
+    sc = getServletContext();
+    init(new DatastoreAvailabilityDao(), Instant.now());
   }
 
-  public void init(
-      AvailabilityDao availabilityDao,
-      ScheduledInterviewDao scheduledInterviewDao,
-      PersonDao personDao,
-      Instant instant) {
+  public void init(AvailabilityDao availabilityDao, Instant instant) {
     this.availabilityDao = availabilityDao;
-    this.scheduledInterviewDao = scheduledInterviewDao;
-    this.personDao = personDao;
     this.instant = instant;
   }
 
@@ -97,6 +80,13 @@ public class SearchInterviewServlet extends HttpServlet {
     Instant endOfRange = utcTime.toInstant().plus(6, ChronoUnit.DAYS);
     List<Availability> availabilitiesInRange =
         availabilityDao.getInRangeForAll(startOfRange, endOfRange);
+    List<Availability> scheduledAvailability = new ArrayList<Availability>();
+    for (Availability avail : availabilitiesInRange) {
+      if (avail.scheduled()) {
+        scheduledAvailability.add(avail);
+      }
+    }
+    availabilitiesInRange.removeAll(scheduledAvailability);
     List<PossibleInterviewSlot> possibleInterviews =
         getPossibleInterviewSlots(availabilitiesInRange, startOfRange, endOfRange, timezoneOffset);
     Set<String> dates = new HashSet<String>();
@@ -117,7 +107,11 @@ public class SearchInterviewServlet extends HttpServlet {
     }
     List<List<PossibleInterviewSlot>> possibleInterviewsForWeek = weekList.build();
     // TODO: send these to the jsp page
-    ServletContext sc = this.getServletContext();
+    // Or maybe this? ServletContext sc = this.getServletContext();
+    // Or this? ServletContext sc = getServletConfig().getServletContext(); THROWS A
+    // NULLPOINTEREXCEPTION
+    // ServletContext sc = this.getServletConfig().getServletContext(); ALSO THROWS
+    // A NULLPOINTEREXCEPTION
     request.setAttribute("weekList", possibleInterviewsForWeek);
     RequestDispatcher rd = sc.getRequestDispatcher("/possibleInterviewTimes.jsp");
     rd.forward(request, response);
