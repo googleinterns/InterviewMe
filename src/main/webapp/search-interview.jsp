@@ -55,57 +55,7 @@
         <br>
         <!--TODO: Include Timezone consideration; Add pagination; Make this into a jsp page-->
         <div id = "jsp-container"></div>
-        <form>
-          <div class="form-row">
-            <div class="col-3 date-label">
-              <label>Monday 6/29</label>
-            </div>
-            <div class="col-5">
-              <select class="form-control">
-                <option>8:15 AM - 9:15 AM</option>
-                <option>10:30 AM - 11:30 AM</option>
-                <option>1:00 PM - 2:00 PM</option>
-              </select>
-            </div>
-            <div class="col-4">
-              <button type="button" class="btn btn-primary mb-2">Select</button>
-            </div>
-          </div>
-        </form>
-        <br>
-        <form>
-          <div class="form-row">
-            <div class="col-3 date-label">
-              <label>Wednesday 7/1</label>
-            </div>
-            <div class="col-5">
-              <select class="form-control">
-                <option>6:30 PM - 7:30 PM</option>
-              </select>
-            </div>
-            <div class="col-4">
-              <button type="button" class="btn btn-primary mb-2">Select</button>
-            </div>
-          </div>
-        </form>
-        <br>     
-        <form>
-          <div class="form-row">
-            <div class="col-3 date-label">
-              <label>Thursday 7/2</label>
-            </div>
-            <div class="col-5">
-              <select class="form-control">
-                <option>9:30 AM - 10:30 AM</option>
-                <option>6:30 PM - 7:30 PM</option>
-              </select>
-            </div>
-            <div class="col-4">
-              <button type="button" class="btn btn-primary mb-2">Select</button>
-            </div>
-          </div>
-        </form>
-        <br>  
+        <p>Example form to see modal</p>
         <form>
           <!-- TODO: Dynamically generate these with Sunday as the model. -->
           <!-- TODO: Make the week Sunday - Saturday. -->
