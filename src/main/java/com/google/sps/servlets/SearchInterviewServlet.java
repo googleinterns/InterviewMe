@@ -57,7 +57,6 @@ public class SearchInterviewServlet extends HttpServlet {
   }
 
   public void init(AvailabilityDao availabilityDao, Instant instant) {
-    // super.init();
     this.availabilityDao = availabilityDao;
     this.instant = instant;
   }
@@ -105,17 +104,9 @@ public class SearchInterviewServlet extends HttpServlet {
       weekList.add(dayOfSlots);
     }
     List<List<PossibleInterviewSlot>> possibleInterviewsForWeek = weekList.build();
-    // TODO: send these to the jsp page
-    // Or maybe this? ServletContext sc = this.getServletContext();
-    // Or this? ServletContext sc = getServletConfig().getServletContext(); THROWS A
-    // NULLPOINTEREXCEPTION
-    // ServletContext sc = this.getServletConfig().getServletContext(); ALSO THROWS
-    // A NULLPOINTEREXCEPTION
-    // ServletContext sc = getServletContext();
     request.setAttribute("weekList", possibleInterviewsForWeek);
     List<List<PossibleInterviewSlot>> result =
         (List<List<PossibleInterviewSlot>>) request.getAttribute("weekList");
-    System.out.println("DEBUG: List size = " + result.size());
     RequestDispatcher rd = request.getRequestDispatcher("/possibleInterviewTimes.jsp");
     rd.forward(request, response);
   }
@@ -174,9 +165,9 @@ public class SearchInterviewServlet extends HttpServlet {
               .equals(availabilities.get(i + 3).when().start())) {
             possibleInterviewSlotsForPerson.add(
                 PossibleInterviewSlot.create(
-                    availabilities.get(0).when().start().toString(),
-                    getDate(availabilities.get(0).when().start(), timezoneOffset),
-                    getTime(availabilities.get(0).when().start(), timezoneOffset)));
+                    availabilities.get(i).when().start().toString(),
+                    getDate(availabilities.get(i).when().start(), timezoneOffset),
+                    getTime(availabilities.get(i).when().start(), timezoneOffset)));
           }
         }
       }

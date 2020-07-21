@@ -17,7 +17,7 @@
       </div>
       <div class="col-5">
         <select class="form-control">
-          <c:forEach items = "day" var = "slot">
+          <c:forEach items = "${day}" var = "slot">
             <option value="${slot.utcEncoding()}" data-date="${slot.date()}">
               ${slot.time()}
             </option>

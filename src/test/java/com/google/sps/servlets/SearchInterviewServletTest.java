@@ -16,6 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.appengine.tools.development.testing.LocalCapabilitiesServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.common.collect.ImmutableList;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -23,11 +24,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.sps.data.Availability;
 import com.google.sps.data.FakeAvailabilityDao;
+import com.google.sps.data.PossibleInterviewSlot;
 import com.google.sps.data.TimeRange;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -181,7 +185,62 @@ public final class SearchInterviewServletTest {
     getRequest.addParameter("timeZoneOffset", "0");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
     servlet.doGet(getRequest, getResponse);
-    System.out.println(getRequest.getAttribute("weekList"));
-    Assert.assertTrue(true);
+    List<List<PossibleInterviewSlot>> possibleInterviewSlots =
+        (List<List<PossibleInterviewSlot>>) getRequest.getAttribute("weekList");
+    ImmutableList.Builder<List<PossibleInterviewSlot>> expected = ImmutableList.builder();
+    List<PossibleInterviewSlot> day = new ArrayList<PossibleInterviewSlot>();
+    PossibleInterviewSlot slot =
+        PossibleInterviewSlot.create("2020-07-07T16:30:00Z", "Tuesday 7/7", "4:30 PM - 5:30 PM");
+    day.add(slot);
+    expected.add(day);
+    List<List<PossibleInterviewSlot>> expectedInterviewSlots = expected.build();
+    Assert.assertEquals(expectedInterviewSlots, possibleInterviewSlots);
+  }
+
+  @Test
+  public void onlyReturnsUnscheduledSlots() throws IOException, ServletException {
+    SearchInterviewServlet servlet = new SearchInterviewServlet();
+    servlet.init(availabilityDao, Instant.parse("2020-07-07T13:15:00Z"));
+    // A scheduled hour slot
+    availabilityDao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T16:30:00Z"), Instant.parse("2020-07-07T16:45:00Z")),
+            -1,
+            true));
+
+    availabilityDao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T16:45:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
+            -1,
+            true));
+
+    availabilityDao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T17:00:00Z"), Instant.parse("2020-07-07T17:15:00Z")),
+            -1,
+            true));
+
+    availabilityDao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T17:15:00Z"), Instant.parse("2020-07-07T17:30:00Z")),
+            -1,
+            true));
+    MockHttpServletRequest getRequest = new MockHttpServletRequest();
+    getRequest.addParameter("timeZoneOffset", "0");
+    MockHttpServletResponse getResponse = new MockHttpServletResponse();
+    servlet.doGet(getRequest, getResponse);
+    List<List<PossibleInterviewSlot>> possibleInterviewSlots =
+        (List<List<PossibleInterviewSlot>>) getRequest.getAttribute("weekList");
+    ImmutableList.Builder<List<PossibleInterviewSlot>> expected = ImmutableList.builder();
+    List<List<PossibleInterviewSlot>> expectedInterviewSlots = expected.build();
+    Assert.assertEquals(expectedInterviewSlots, possibleInterviewSlots);
   }
 }
