@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps.servlets;
+package com.google.sps.data;
 
 // using SendGrid's Java Library
 // https://github.com/sendgrid/sendgrid-java
@@ -24,12 +24,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet("/email")
-public class EmailServlet extends HttpServlet {
-  public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
-    Email from = new Email("interviewme.business@gmail.com");
-    String subject = "Sending with SendGrid is Fun";
-    Email to = new Email("the.claire.yang@gmail.com");
-    Content content = new Content("text/plain", "and easy to do anywhere, even with Java");
+public class SendEmail {
+  public void sendEmail(Email from, Email to, String subject, Content content) throws IOException {
+
     Mail mail = new Mail(from, subject, to, content);
 
     SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));

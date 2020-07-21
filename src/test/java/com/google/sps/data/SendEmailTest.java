@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps.servlets;
+package com.google.sps.data;
 
 import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -24,8 +24,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.sps.data.FakePersonDao;
-import com.google.sps.servlets.PersonServlet;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import org.junit.After;
@@ -38,10 +36,14 @@ import org.springframework.mock.web.MockServletContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import com.sendgrid.helpers.*;
+// import com.sendgrid.helpers.mail.Mail;
+// import com.sendgrid.helpers.mail.objects.Content;
+// import com.sendgrid.helpers.mail.objects.Email;
 
-/** Tests EmailServlet. */
+/** Tests SendEmail class. */
 @RunWith(JUnit4.class)
-public final class EmailServletTest {
+public final class SendEmailTest {
   LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalUserServiceTestConfig());
 
   @Before
@@ -56,13 +58,10 @@ public final class EmailServletTest {
 
   @Test
   public void basic() throws IOException, UnsupportedEncodingException {
-    // a is logged in.
-    helper.setEnvIsLoggedIn(true).setEnvEmail("a@gmail.com").setEnvAuthDomain("auth");
-
-    // Post person a.
-    MockHttpServletRequest postRequest = post("/person").buildRequest(new MockServletContext());
-    MockHttpServletResponse postResponse = new MockHttpServletResponse();
-    EmailServlet emailServlet = new EmailServlet();
-    emailServlet.doPost(postRequest, postResponse);
+    Email from = new Email("interviewme.business@gmail.com");
+    String subject = "Sending with SendGrid is Fun";
+    Email to = new Email("the.claire.yang@gmail.com");
+    Content content = new Content("text/plain", "and easy to do anywhere, even with Java");
+    new SendEmail().sendEmail(from, to, subject, content);
   }
 }
