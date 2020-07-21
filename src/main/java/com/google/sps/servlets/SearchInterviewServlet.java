@@ -50,15 +50,14 @@ public class SearchInterviewServlet extends HttpServlet {
 
   private AvailabilityDao availabilityDao;
   private Instant instant;
-  private ServletContext sc;
 
   @Override
-  public void init() {
+  public void init() throws ServletException {
     init(new DatastoreAvailabilityDao(), Instant.now());
   }
 
-  public void init(AvailabilityDao availabilityDao, Instant instant) {
-    sc = getServletContext();
+  public void init(AvailabilityDao availabilityDao, Instant instant) throws ServletException {
+    super.init();
     this.availabilityDao = availabilityDao;
     this.instant = instant;
   }
@@ -112,6 +111,7 @@ public class SearchInterviewServlet extends HttpServlet {
     // NULLPOINTEREXCEPTION
     // ServletContext sc = this.getServletConfig().getServletContext(); ALSO THROWS
     // A NULLPOINTEREXCEPTION
+    ServletContext sc = getServletContext();
     request.setAttribute("weekList", possibleInterviewsForWeek);
     RequestDispatcher rd = sc.getRequestDispatcher("/possibleInterviewTimes.jsp");
     rd.forward(request, response);
