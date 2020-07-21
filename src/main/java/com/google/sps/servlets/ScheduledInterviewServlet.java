@@ -50,14 +50,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
   // interviews are returned, otherwise SC_UNAUTHORIZED is returned.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String requestedEmail = request.getParameter("userEmail");
     String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
-    if (!requestedEmail.equals(userEmail)) {
-      response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-      return;
-    }
-    List<ScheduledInterview> scheduledInterviews =
-        scheduledInterviewDao.getForPerson(requestedEmail);
+    List<ScheduledInterview> scheduledInterviews = scheduledInterviewDao.getForPerson(userEmail);
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(scheduledInterviews));
   }
