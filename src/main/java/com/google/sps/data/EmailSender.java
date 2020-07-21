@@ -32,6 +32,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.URL;
 
 // Handles sending emails.
 @WebServlet("/email")
@@ -59,6 +60,7 @@ public class EmailSender {
   // Returns the contents of the file specified at filePath as a String. Useful for converting
   // predifined email templates to text.
   public static String fileContentToString(String filePath) {
+    filePath = "src/main/resources/NewInterview_Interviewer.txt";
     StringBuilder contentBuilder = new StringBuilder();
     try (Stream<String> stream = Files.lines(Paths.get(filePath), StandardCharsets.UTF_8)) {
       stream.forEach(s -> contentBuilder.append(s).append("\n"));

@@ -1,3 +1,5 @@
 target/
 WEB-INF/appengine-generated/datastore-indexes-auto.xml
 .idea
+src/test/java/com/google/sps/data/EmailSenderTest.java
+src/test/java/com/google/sps/data/SecretFetcherTest.java
