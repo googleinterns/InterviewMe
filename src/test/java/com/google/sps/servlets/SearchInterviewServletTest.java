@@ -14,8 +14,8 @@
 
 package com.google.sps.servlets;
 
-import com.google.appengine.tools.development.testing.LocalCapabilitiesServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.collect.ImmutableList;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
@@ -47,8 +47,7 @@ import com.google.gson.JsonSyntaxException;
 
 @RunWith(JUnit4.class)
 public final class SearchInterviewServletTest {
-  LocalServiceTestHelper helper =
-      new LocalServiceTestHelper(new LocalCapabilitiesServiceTestConfig());
+  LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalUserServiceTestConfig());
   private FakeAvailabilityDao availabilityDao;
   private MockServletContext context;
 
@@ -56,7 +55,6 @@ public final class SearchInterviewServletTest {
   public void setUp() {
     helper.setUp();
     availabilityDao = new FakeAvailabilityDao();
-    // context = new MockServletContext();
   }
 
   @After
@@ -68,6 +66,7 @@ public final class SearchInterviewServletTest {
   public void tooLargePositiveOffset() {
     SearchInterviewServlet servlet = new SearchInterviewServlet();
     servlet.init(availabilityDao, Instant.now());
+    helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("timeZoneOffset", "740");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -82,6 +81,7 @@ public final class SearchInterviewServletTest {
   public void tooLargeNegativeOffset() {
     SearchInterviewServlet servlet = new SearchInterviewServlet();
     servlet.init(availabilityDao, Instant.now());
+    helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("timeZoneOffset", "-740");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -96,6 +96,7 @@ public final class SearchInterviewServletTest {
   public void onlyReturnsHourLongSlots() throws IOException, ServletException {
     SearchInterviewServlet servlet = new SearchInterviewServlet();
     servlet.init(availabilityDao, Instant.parse("2020-07-07T13:15:00Z"));
+    helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
 
     // A 15 minute slot
     availabilityDao.create(
@@ -201,6 +202,8 @@ public final class SearchInterviewServletTest {
   public void onlyReturnsUnscheduledSlots() throws IOException, ServletException {
     SearchInterviewServlet servlet = new SearchInterviewServlet();
     servlet.init(availabilityDao, Instant.parse("2020-07-07T13:15:00Z"));
+    helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
+
     // A scheduled hour slot
     availabilityDao.create(
         Availability.create(
@@ -233,6 +236,55 @@ public final class SearchInterviewServletTest {
                 Instant.parse("2020-07-07T17:15:00Z"), Instant.parse("2020-07-07T17:30:00Z")),
             -1,
             true));
+    MockHttpServletRequest getRequest = new MockHttpServletRequest();
+    getRequest.addParameter("timeZoneOffset", "0");
+    MockHttpServletResponse getResponse = new MockHttpServletResponse();
+    servlet.doGet(getRequest, getResponse);
+    List<List<PossibleInterviewSlot>> possibleInterviewSlots =
+        (List<List<PossibleInterviewSlot>>) getRequest.getAttribute("weekList");
+    ImmutableList.Builder<List<PossibleInterviewSlot>> expected = ImmutableList.builder();
+    List<List<PossibleInterviewSlot>> expectedInterviewSlots = expected.build();
+    Assert.assertEquals(expectedInterviewSlots, possibleInterviewSlots);
+  }
+
+  @Test
+  public void noSchedulingWithYourself() throws IOException, ServletException {
+    SearchInterviewServlet servlet = new SearchInterviewServlet();
+    servlet.init(availabilityDao, Instant.parse("2020-07-07T13:15:00Z"));
+    helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
+
+    // An hour of the user's availability
+    availabilityDao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T16:30:00Z"), Instant.parse("2020-07-07T16:45:00Z")),
+            -1,
+            false));
+
+    availabilityDao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T16:45:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
+            -1,
+            false));
+
+    availabilityDao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T17:00:00Z"), Instant.parse("2020-07-07T17:15:00Z")),
+            -1,
+            false));
+
+    availabilityDao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T17:15:00Z"), Instant.parse("2020-07-07T17:30:00Z")),
+            -1,
+            false));
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("timeZoneOffset", "0");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();

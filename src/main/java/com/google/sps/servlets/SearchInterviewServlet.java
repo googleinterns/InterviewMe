@@ -14,6 +14,8 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
@@ -132,6 +134,12 @@ public class SearchInterviewServlet extends HttpServlet {
     for (Availability avail : allAvailabilities) {
       interviewers.add(avail.email());
     }
+
+    // We don't want to schedule an interview for a user with themself, so we are removing
+    // the current user's email from the list.
+    UserService userService = UserServiceFactory.getUserService();
+    String userEmail = userService.getCurrentUser().getEmail();
+    interviewers.remove(userEmail);
 
     for (String email : interviewers) {
       possibleInterviews.addAll(
