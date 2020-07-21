@@ -42,7 +42,7 @@ public class EmailSender {
       throws IOException, Exception {
     Mail mail = new Mail(from, subject, to, content);
     SendGrid sg =
-        new SendGrid(SecretHandler.getSecretValue("interview-me-step-2020", "SENDGRID_API_KEY"));
+        new SendGrid(SecretFetcher.getSecretValue("interview-me-step-2020", "SENDGRID_API_KEY"));
     Request request = new Request();
     Response response;
     try {

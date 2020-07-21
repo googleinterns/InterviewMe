@@ -20,7 +20,7 @@ import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 
 // Handles getting secrets we define in our GCP's SecretManager.
-public class SecretHandler {
+public class SecretFetcher {
 
   public static String getSecretValue(String projectId, String secretId) throws Exception {
     // Initialize client that will be used to send requests. This client only needs to be created

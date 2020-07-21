@@ -40,11 +40,11 @@ import org.springframework.mock.web.MockServletContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import com.google.sps.data.SecretHandler;
+import com.google.sps.data.SecretFetcher;
 
-/** A way to run functions in the SecretHandler class. */
+/** A way to run functions in the SecretFetcherTest class. */
 @RunWith(JUnit4.class)
-public final class SecretHandlerTest {
+public final class SecretFetcherTest {
   LocalServiceTestHelper helper;
 
   @Before
@@ -58,10 +58,10 @@ public final class SecretHandlerTest {
     helper.tearDown();
   }
 
-  // A way to run secretHandler.getSecretValue() without having to mvn run the whole project.
+  // A way to run SecretFetcher.getSecretValue() without having to mvn run the whole project.
   // Does not actually ensure it works.
   @Test
   public void basic() throws IOException, Exception {
-    SecretHandler.getSecretValue("interview-me-step-2020", "SENDGRID_API_KEY");
+    SecretFetcher.getSecretValue("interview-me-step-2020", "SENDGRID_API_KEY");
   }
 }
