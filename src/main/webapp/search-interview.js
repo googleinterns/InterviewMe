@@ -27,9 +27,7 @@ function loadInterviews() {
   
   // NEW WORK
   let timezoneOffset = browserTimezoneOffset();
-  fetch(`/search-interviews?timeZoneOffset=${timezoneOffset}`)
-    .then(response => response.text())
-    .then(tableContents => {});
+  fetch(`/search-interviews?timeZoneOffset=${timezoneOffset}`);
 }
 
 function browserTimezoneOffset() {

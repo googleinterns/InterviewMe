@@ -3,8 +3,12 @@
 <%
   List<List<PossibleInterviewSlot>> list = (List<List<PossibleInterviewSlot>>) request.getAttribute("weekList");
   pageContext.setAttribute("list", list);
+  System.out.println("DEBUG: Made it to JSP.");
 %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<h1>HI THERE!</h1>
+
 <c:forEach items = "${pageScope.list}" var = "day">
   <form>
     <div class="form-row">
