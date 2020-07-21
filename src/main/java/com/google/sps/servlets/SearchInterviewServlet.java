@@ -54,11 +54,11 @@ public class SearchInterviewServlet extends HttpServlet {
 
   @Override
   public void init() {
-    sc = getServletContext();
     init(new DatastoreAvailabilityDao(), Instant.now());
   }
 
   public void init(AvailabilityDao availabilityDao, Instant instant) {
+    sc = getServletContext();
     this.availabilityDao = availabilityDao;
     this.instant = instant;
   }
