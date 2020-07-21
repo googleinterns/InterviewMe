@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.format.DateTimeParseException;
+import javax.servlet.ServletException;
 
 @WebServlet("/scheduled-interviews")
 public class ScheduledInterviewServlet extends HttpServlet {
@@ -46,8 +47,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
   }
 
   // Gets the current user's email from request and returns the ScheduledInterviews for that person.
-  // If the email that is requested matches the email that is logged in, then the scheduled
-  // interviews are returned, otherwise SC_UNAUTHORIZED is returned.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
@@ -58,12 +57,15 @@ public class ScheduledInterviewServlet extends HttpServlet {
     List<ScheduledInterview> scheduledInterviews = scheduledInterviewDao.getForPerson(userId);
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(scheduledInterviews));
+    request.setAttribute("scheduledInterviews", scheduledInterviews);
+    try {
+      request.getRequestDispatcher("scheduled-interviews.jsp").forward(request, response);
+    } catch (ServletException e) {
+      e.printStackTrace();
+    }
   }
 
-  // Send the request's contents to Datastore in the form of a new ScheduledInterview object. If the
-  // email that is requested as either an interviewer or interviewee matches the email that is
-  // logged in, then the scheduled interview is
-  // stored, otherwise SC_UNAUTHORIZED is returned.
+  // Send the request's contents to Datastore in the form of a new ScheduledInterview object.
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String requestedInterviewerId = request.getParameter("interviewer");
