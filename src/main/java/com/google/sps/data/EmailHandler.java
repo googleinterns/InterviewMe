@@ -17,30 +17,47 @@ package com.google.sps.data;
 // using SendGrid's Java Library
 // https://github.com/sendgrid/sendgrid-java
 import com.sendgrid.*;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
+// Handles sending emails.
 @WebServlet("/email")
-public class SendEmail {
-  public void sendEmail(Email from, Email to, String subject, Content content) throws IOException {
+public class EmailHandler {
 
+  // Sends an email from the "from" Email to the "to" Email, with specified subject and content.
+  public Response sendEmail(Email from, Email to, String subject, Content content)
+      throws IOException {
     Mail mail = new Mail(from, subject, to, content);
-
     SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
     Request request = new Request();
+    Response response;
     try {
       request.setMethod(Method.POST);
       request.setEndpoint("mail/send");
       request.setBody(mail.build());
-      Response response = sg.api(request);
-      System.out.println(response.getStatusCode());
-      System.out.println(response.getBody());
-      System.out.println(response.getHeaders());
+      response = sg.api(request);
     } catch (IOException ex) {
       throw ex;
     }
+    return response;
+  }
+
+  // Returns the contents of the file specified at filePath as a String. Useful for converting
+  // predifined email templates to text.
+  public static String fileContentToString(String filePath) {
+    StringBuilder contentBuilder = new StringBuilder();
+    try (Stream<String> stream = Files.lines(Paths.get(filePath), StandardCharsets.UTF_8)) {
+      stream.forEach(s -> contentBuilder.append(s).append("\n"));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return contentBuilder.toString();
   }
 }

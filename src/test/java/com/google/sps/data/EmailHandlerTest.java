@@ -24,8 +24,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.sendgrid.*;
 import java.io.IOException;
+import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Paths;
+import java.nio.file.Path;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -36,19 +40,23 @@ import org.springframework.mock.web.MockServletContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import com.sendgrid.helpers.*;
 // import com.sendgrid.helpers.mail.Mail;
 // import com.sendgrid.helpers.mail.objects.Content;
 // import com.sendgrid.helpers.mail.objects.Email;
 
 /** Tests SendEmail class. */
 @RunWith(JUnit4.class)
-public final class SendEmailTest {
-  LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalUserServiceTestConfig());
+public final class EmailHandlerTest {
+  LocalServiceTestHelper helper;
+  Path emailsPath;
 
   @Before
   public void setUp() {
+    helper = new LocalServiceTestHelper(new LocalUserServiceTestConfig());
     helper.setUp();
+    emailsPath =
+        Paths.get(
+            System.getProperty("user.home") + "/InterviewMe/src/main/java/com/google/sps/emails");
   }
 
   @After
@@ -56,12 +64,17 @@ public final class SendEmailTest {
     helper.tearDown();
   }
 
+  // Valid request
   @Test
-  public void basic() throws IOException, UnsupportedEncodingException {
+  public void basicSend() throws IOException, UnsupportedEncodingException {
     Email from = new Email("interviewme.business@gmail.com");
     String subject = "Sending with SendGrid is Fun";
     Email to = new Email("the.claire.yang@gmail.com");
-    Content content = new Content("text/plain", "and easy to do anywhere, even with Java");
-    new SendEmail().sendEmail(from, to, subject, content);
+    String contentString =
+        EmailHandler.fileContentToString(emailsPath + "/NewInterview_Interviewer.txt");
+    Content content = new Content("text/plain", contentString);
+    Response response = new EmailHandler().sendEmail(from, to, subject, content);
+    assertEquals(response.getStatusCode(), 202);
+    // Email also popped up in my inbox.
   }
 }
