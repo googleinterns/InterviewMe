@@ -67,28 +67,24 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     // The default key for a scheduledInterview being stored in datastore
     long defaultKey = -1;
-    if(requestedInterviewerEmail.equals(userEmail)
-        || requestedIntervieweeEmail.equals(userEmail)) {
-          
-        }
-    if (requestedInterviewerEmail.equals(userEmail)
-        || requestedIntervieweeEmail.equals(userEmail)) {
-      try {
-        ScheduledInterview scheduledInterview =
-            ScheduledInterview.create(
-                defaultKey,
-                new TimeRange(
-                    Instant.parse(request.getParameter("startTime")),
-                    Instant.parse(request.getParameter("endTime"))),
-                requestedInterviewerEmail,
-                requestedIntervieweeEmail);
-        scheduledInterviewDao.create(scheduledInterview);
-        return;
-      } catch (DateTimeParseException e) {
-        response.sendError(400, e.getMessage());
-        return;
-      }
+    if ((!requestedInterviewerEmail.equals(userEmail))
+        && (!requestedIntervieweeEmail.equals(userEmail))) {
+      response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
-    response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+    try {
+      ScheduledInterview scheduledInterview =
+          ScheduledInterview.create(
+              defaultKey,
+              new TimeRange(
+                  Instant.parse(request.getParameter("startTime")),
+                  Instant.parse(request.getParameter("endTime"))),
+              requestedInterviewerEmail,
+              requestedIntervieweeEmail);
+      scheduledInterviewDao.create(scheduledInterview);
+      return;
+    } catch (DateTimeParseException e) {
+      response.sendError(400, e.getMessage());
+      return;
+    }
   }
 }
