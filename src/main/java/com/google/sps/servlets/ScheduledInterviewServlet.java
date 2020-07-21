@@ -59,8 +59,9 @@ public class ScheduledInterviewServlet extends HttpServlet {
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(scheduledInterviews));
     request.setAttribute("scheduledInterviews", scheduledInterviews);
+    request.setAttribute("userEmail", userEmail);
     try {
-      request.getRequestDispatcher("scheduled-interviews.jsp").forward(request, response);
+      request.getRequestDispatcher("/scheduled-interviews.jsp").forward(request, response);
     } catch (ServletException e) {
       e.printStackTrace();
     }
