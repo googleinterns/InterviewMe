@@ -107,8 +107,6 @@ public class SearchInterviewServlet extends HttpServlet {
     }
     List<List<PossibleInterviewSlot>> possibleInterviewsForWeek = weekList.build();
     request.setAttribute("weekList", possibleInterviewsForWeek);
-    List<List<PossibleInterviewSlot>> result =
-        (List<List<PossibleInterviewSlot>>) request.getAttribute("weekList");
     RequestDispatcher rd = request.getRequestDispatcher("/possibleInterviewTimes.jsp");
     rd.forward(request, response);
   }

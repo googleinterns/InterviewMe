@@ -81,7 +81,9 @@ public class SelectInterviewServlet extends HttpServlet {
         availabilityDao.getInRangeForAll(startOfRange, endOfRange);
     List<Person> possibleInterviewers =
         getPossibleInterviewers(availabilitiesInRange, startOfRange, endOfRange);
-    // TODO: Send this to modal jsp with the utc (to be able to schedule the interview).
+    request.setAttribute("interviewers", possibleInterviewers);
+    RequestDispatcher rd = request.getRequestDispatcher("/possibleInterviewers.jsp");
+    rd.forward(request, response);
   }
 
   private List<Person> getPossibleInterviewers(
@@ -90,6 +92,12 @@ public class SelectInterviewServlet extends HttpServlet {
     for (Availability avail : allAvailabilities) {
       allInterviewers.add(avail.email());
     }
+
+    // We don't want to schedule an interview for a user with themself, so we are removing
+    // the current user's email from the list.
+    UserService userService = UserServiceFactory.getUserService();
+    String userEmail = userService.getCurrentUser().getEmail();
+    allInterviewers.remove(userEmail);
 
     List<Person> possibleInterviewers = new ArrayList<Person>();
     for (String email : allInterviewers) {

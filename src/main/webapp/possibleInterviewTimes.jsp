@@ -13,7 +13,7 @@
         <label>${day.get(0).date()}</label>
       </div>
       <div class="col-5">
-        <select class="form-control">
+        <select class="form-control" id="${day.get(0).date()}">
           <c:forEach items = "${day}" var = "slot">
             <option value="${slot.utcEncoding()}" data-date="${slot.date()}">
               ${slot.time()}
@@ -23,7 +23,10 @@
       </div>
       <div class="col-4">
         <!-- TODO: Create an onclick method that takes 'this' as a parameter.-->
-        <button type="button" class="btn btn-primary mb-2">Select</button>
+        <button type="button" class="btn btn-primary mb-2"
+          onclick="showInterviewers(this)" data-date="${day.get(0).date()}">
+          Select
+        </button>
       </div>
     </div>
   </form>

@@ -14,8 +14,8 @@
 
 package com.google.sps.servlets;
 
-import com.google.appengine.tools.development.testing.LocalCapabilitiesServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -40,8 +40,7 @@ import com.google.gson.JsonSyntaxException;
 
 @RunWith(JUnit4.class)
 public final class SelectInterviewServletTest {
-  LocalServiceTestHelper helper =
-      new LocalServiceTestHelper(new LocalCapabilitiesServiceTestConfig());
+  LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalUserServiceTestConfig());
   private FakeAvailabilityDao availabilityDao;
   private FakeScheduledInterviewDao scheduledInterviewDao;
   private FakePersonDao personDao;

@@ -18,16 +18,13 @@ function onSearchInterviewLoad() {
   loginInfo.then(getUserOrRedirectRegistration);
 }
 
-// Should query Datastore for appropriate interviews and render them on the
+// Queries Datastore for available interview times and renders them on the
 // page.
 function loadInterviews() {
-  // TODO: fetch and get all interviews instead of unhiding something hidden
   const searchResultsDiv = document.getElementById("search-results");
   searchResultsDiv.removeAttribute("hidden");
-  
-  // NEW WORK
-  let timezoneOffset = browserTimezoneOffset();
-  fetch(`/search-interviews?timeZoneOffset=${timezoneOffset}`)
+
+  fetch(`/search-interviews?timeZoneOffset=${browserTimezoneOffset()}`)
   .then(response => response.text())
     .then(interviewTimes => {
       interviewTimesDiv().innerHTML = interviewTimes;
@@ -64,12 +61,24 @@ function selectInterview(interviewer) {
 
 // Fills in the modal with interviewer info from Datastore and shows it.
 function showInterviewers(selectButton) {
-  fetch('/search-interview-interviewers.jsp').then(response => response.text())
+  // OLD CODE
+  fetch('/possibleInterviewers.jsp').then(response => response.text())
     .then(table => {
       $('#modal-body').html(table);
-      // TODO: format the date as June 5, 2020 not 7/5/2020 (more readable).
       const date = selectButton.getAttribute("id");
       const time = document.getElementById(date + '-options').value;
+      $('#modal-title').text(`Interviewers Information for ${date} at ${time}`);
+    });
+  $('#interviewer-modal').modal('show');
+  
+  // NEW CODE
+  const date = selectButton.getAttribute('data-date');
+  const time = document.getElementById(date).innerText;
+  const utc = document.getElementById(date).value;
+  fetch(`/select-interview?utc=${utc}`)
+  .then(response => response.text())
+    .then(interviewers => {
+      $('#modal-body').html(interviewers);
       $('#modal-title').text(`Interviewers Information for ${date} at ${time}`);
     });
   $('#interviewer-modal').modal('show');
