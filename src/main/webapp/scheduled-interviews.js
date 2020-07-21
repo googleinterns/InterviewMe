@@ -16,4 +16,5 @@ function onScheduledInterviewsLoad() {
   const loginInfo = getLoginInfo();
   loginInfo.then(supplyLogoutLinkOrRedirectHome); 
   loginInfo.then(getUserOrRedirectRegistration);
+  fetch("/scheduled-interviews"); 
 }

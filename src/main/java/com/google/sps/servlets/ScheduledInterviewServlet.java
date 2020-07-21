@@ -28,7 +28,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.time.format.DateTimeParseException;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import java.time.format.DateTimeParseException;
 
@@ -60,8 +60,12 @@ public class ScheduledInterviewServlet extends HttpServlet {
     response.getWriter().println(new Gson().toJson(scheduledInterviews));
     request.setAttribute("scheduledInterviews", scheduledInterviews);
     request.setAttribute("userEmail", userEmail);
+    List<ScheduledInterview> scheduledInterviews1 =
+        (List<ScheduledInterview>) request.getAttribute("scheduledInterviews");
+    String userEmail1 = (String) request.getAttribute("userEmail");
+    RequestDispatcher rd = request.getRequestDispatcher("/scheduled-interviews.jsp");
     try {
-      request.getRequestDispatcher("/scheduled-interviews.jsp").forward(request, response);
+      rd.forward(request, response);
     } catch (ServletException e) {
       e.printStackTrace();
     }

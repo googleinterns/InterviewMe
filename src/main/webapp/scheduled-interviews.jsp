@@ -1,7 +1,14 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
 <%@ page import="com.google.sps.data.ScheduledInterview" %>
+<%
+  List<ScheduledInterview> scheduledInterviews = (List<ScheduledInterview>)request.getAttribute("scheduledInterviews");
+  String userEmail = (String)request.getAttribute("userEmail");
+  pageContext.setAttribute("scheduledInterviews", scheduledInterviews);
+  pageContext.setAttribute("userEmail", userEmail); 
+%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 
 <html>
   <head>
@@ -49,23 +56,23 @@
           <h2 style="text-align: center">No Scheduled Interviews</h2>
         </c:when>
         <c:otherwise>
-          <c:forEach items= "${scheduledInterviews}" var="scheduledInterview">
+          <c:forEach items= "${pageScope.scheduledInterviews}" var="scheduledInterview">
             <div class="row">
               <div class="card w-75 scheduled-interview-card">
                 <div class="card-body">
                  <c:choose>
-                    <c:when test="${scheduledInterview}.interviewerEmail().equals(${userEmail})">
+                    <c:when test="${scheduledInterview.interviewerEmail() == userEmail}">
                       <h5 class="card-title">Your role: Interviewer</h5>
                     </c:when>
                     <c:otherwise>
                       <h5 class="card-title">Your role: Interviewee</h5>
                     </c:otherwise>   
                   </c:choose>
-                  <p class="card-text">${scheduledInterview}.when().start() - ${scheduledInterview}.when().end()</p>
+                  <p class="card-text">${scheduledInterview.when().start()} - ${scheduledInterview.when().end()}</p>
                 </div>
                 <ul class="list-group list-group-flush">
-                  <li class="list-group-item">Interviewee Email: ${scheduledInterview}.intervieweeEmail()</li>
-                  <li class="list-group-item">Interviewer Email: ${scheduledInterview}.interviewerEmail()</li>
+                  <li class="list-group-item">Interviewee Email: ${scheduledInterview.intervieweeEmail()}</li>
+                  <li class="list-group-item">Interviewer Email: ${scheduledInterview.interviewerEmail()}</li>
                 </ul>
               </div>
             </div>
