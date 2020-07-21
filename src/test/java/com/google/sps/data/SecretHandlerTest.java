@@ -40,23 +40,17 @@ import org.springframework.mock.web.MockServletContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-// import com.sendgrid.helpers.mail.Mail;
-// import com.sendgrid.helpers.mail.objects.Content;
-// import com.sendgrid.helpers.mail.objects.Email;
+import com.google.sps.data.SecretHandler;
 
-/** Tests SendEmail class. */
+/** A way to run functions in the SecretHandler class. */
 @RunWith(JUnit4.class)
-public final class EmailHandlerTest {
+public final class SecretHandlerTest {
   LocalServiceTestHelper helper;
-  Path emailsPath;
 
   @Before
   public void setUp() {
     helper = new LocalServiceTestHelper(new LocalUserServiceTestConfig());
     helper.setUp();
-    emailsPath =
-        Paths.get(
-            System.getProperty("user.home") + "/InterviewMe/src/main/java/com/google/sps/emails");
   }
 
   @After
@@ -64,17 +58,10 @@ public final class EmailHandlerTest {
     helper.tearDown();
   }
 
-  // Valid request
+  // A way to run secretHandler.getSecretValue() without having to mvn run the whole project.
+  // Does not actually ensure it works.
   @Test
-  public void basicSend() throws IOException, Exception {
-    Email from = new Email("interviewme.business@gmail.com");
-    String subject = "Sending with SendGrid is Fun";
-    Email to = new Email("the.claire.yang@gmail.com");
-    String contentString =
-        EmailHandler.fileContentToString(emailsPath + "/NewInterview_Interviewer.txt");
-    Content content = new Content("text/plain", contentString);
-    Response response = new EmailHandler().sendEmail(from, to, subject, content);
-    assertEquals(response.getStatusCode(), 202);
-    // Email also popped up in my inbox.
+  public void basic() throws IOException, Exception {
+    SecretHandler.getSecretValue("interview-me-step-2020", "SENDGRID_API_KEY");
   }
 }

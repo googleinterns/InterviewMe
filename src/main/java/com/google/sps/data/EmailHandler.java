@@ -33,9 +33,10 @@ public class EmailHandler {
 
   // Sends an email from the "from" Email to the "to" Email, with specified subject and content.
   public Response sendEmail(Email from, Email to, String subject, Content content)
-      throws IOException {
+      throws IOException, Exception {
     Mail mail = new Mail(from, subject, to, content);
-    SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
+    SendGrid sg =
+        new SendGrid(SecretHandler.getSecretValue("interview-me-step-2020", "SENDGRID_API_KEY"));
     Request request = new Request();
     Response response;
     try {
