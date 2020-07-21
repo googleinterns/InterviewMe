@@ -52,7 +52,7 @@ function availabilityTableDiv() {
 function updateAvailability() {
   let selectedSlots = document.getElementsByClassName('selected-time-slot');
   let scheduledSlots = document.getElementsByClassName('scheduled-time-slot');
-  let importantSlots = Array.from(selectedSlots).concat(Array.from(scheduledSlots));
+  let markedSlots = Array.from(selectedSlots).concat(Array.from(scheduledSlots));
   let firstSlot = document.getElementsByTagName('tbody').item(0)
     .firstElementChild.firstElementChild.getAttribute('data-utc');
   let lastSlot = document.getElementsByTagName('tbody').item(0)
@@ -60,7 +60,7 @@ function updateAvailability() {
   let requestObject = {
     firstSlot: firstSlot,
     lastSlot: lastSlot,
-    selectedSlots: importantSlots.map(s => s.getAttribute('data-utc')),
+    markedSlots: markedSlots.map(s => s.getAttribute('data-utc')),
   };
   let requestBody = JSON.stringify(requestObject);
   let request = new Request('/availability', {method: 'PUT', body: requestBody});

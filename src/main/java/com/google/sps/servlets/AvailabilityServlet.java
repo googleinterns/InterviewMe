@@ -80,8 +80,8 @@ public class AvailabilityServlet extends HttpServlet {
     availabilityDao.deleteInRangeForUser(email, minTime, maxTime);
     List<ScheduledInterview> scheduledInterviewsForUser =
         scheduledInterviewDao.getScheduledInterviewsInRangeForUser(email, minTime, maxTime);
-    for (String selectedSlot : utcEncodings.getSelectedSlots()) {
-      createAndStoreAvailability(selectedSlot, email, scheduledInterviewsForUser);
+    for (String markedSlot : utcEncodings.getMarkedSlots()) {
+      createAndStoreAvailability(markedSlot, email, scheduledInterviewsForUser);
     }
   }
 
