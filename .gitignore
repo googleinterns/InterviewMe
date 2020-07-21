@@ -2,5 +2,3 @@ target/
 WEB-INF/appengine-generated/datastore-indexes-auto.xml
 .idea
 sendgrid.env
-sendgrid.env
-sendgrid.env
