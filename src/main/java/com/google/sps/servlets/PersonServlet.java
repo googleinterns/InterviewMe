@@ -61,7 +61,7 @@ public class PersonServlet extends HttpServlet {
     // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
     // replaced with this hashcode.
     if (id == null) {
-      id = "" + email.hashCode();
+      id = String.format("%d", email.hashCode());
     }
     personDao.create(Person.createFromRequest(id, email, personRequest));
   }
@@ -82,7 +82,7 @@ public class PersonServlet extends HttpServlet {
     // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
     // replaced with this hashcode.
     if (id == null) {
-      id = "" + email.hashCode();
+      id = String.format("%d", email.hashCode());
     }
     personDao.update(Person.createFromRequest(id, email, personRequest));
   }
@@ -105,7 +105,7 @@ public class PersonServlet extends HttpServlet {
     // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
     // replaced with this hashcode.
     if (id == null) {
-      id = "" + userService.getCurrentUser().getEmail().hashCode();
+      id = String.format("%d", userService.getCurrentUser().getEmail().hashCode());
     }
     Optional<Person> personOpt = personDao.get(id);
     if (!personOpt.isPresent()) {
