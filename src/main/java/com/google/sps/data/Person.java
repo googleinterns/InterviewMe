@@ -19,6 +19,8 @@ import com.google.auto.value.AutoValue;
 /** Represents a user on the site. The email is used as the key to the user table. */
 @AutoValue
 public abstract class Person {
+  public abstract long id();
+  
   public abstract String email();
 
   public abstract String firstName();
@@ -35,6 +37,7 @@ public abstract class Person {
    * Creates a person that contains email, first name, last name, company, job, and LinkedIn URL.
    */
   public static Person create(
+      long id,
       String email,
       String firstName,
       String lastName,
@@ -42,6 +45,7 @@ public abstract class Person {
       String job,
       String linkedIn) {
     return builder()
+        .setId(id)
         .setEmail(email)
         .setFirstName(firstName)
         .setLastName(lastName)
@@ -52,6 +56,7 @@ public abstract class Person {
   }
 
   // Creates a person from a Person Servlet put request.
+  // TODO: SEE WHERE THIS IS USED AND IF ID IS NECESSARY
   public static Person create(PersonRequest personRequest) {
     return builder()
         .setEmail(personRequest.getEmail())
@@ -69,6 +74,8 @@ public abstract class Person {
 
   @AutoValue.Builder
   abstract static class Builder {
+    abstract Builder setId(long id);
+    
     abstract Builder setEmail(String email);
 
     abstract Builder setFirstName(String firstName);
