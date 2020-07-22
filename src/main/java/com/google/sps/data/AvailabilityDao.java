@@ -14,6 +14,7 @@
 
 package com.google.sps.data;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,13 +22,13 @@ import java.util.Optional;
  * AvailabilityDao includes the basic methods anything managing Availability entities must support.
  */
 public interface AvailabilityDao {
-  // Returns a list of all Availabilities ranging from minTime to maxTime of a user.
-  // minTime and maxTime are in milliseconds.
-  public List<Availability> getInRangeForUser(String email, long minTime, long maxTime);
+  // Returns a sorted (by ascending start times) list of all Availabilities ranging from minTime
+  // to maxTime of a user.
+  public List<Availability> getInRangeForUser(String email, Instant minTime, Instant maxTime);
 
-  // Returns all Availabilities across all users ranging from minTime to maxTime.
-  // minTime and maxTime are in milliseconds.
-  public List<Availability> getInRangeForAll(long minTime, long maxTime);
+  // Returns all Availabilities across all users ranging from minTime to maxTime in a sorted
+  // (by ascending start times) list.
+  public List<Availability> getInRangeForAll(Instant minTime, Instant maxTime);
 
   // Returns the Availability entity with specified id.
   public Optional<Availability> get(long id);
@@ -39,6 +40,5 @@ public interface AvailabilityDao {
   public void update(Availability availability);
 
   // Deletes all Availability entities for a user ranging from minTime to maxTime.
-  // minTime and maxTime are in milliseconds.
-  public void deleteInRangeForUser(String email, long minTime, long maxTime);
+  public void deleteInRangeForUser(String email, Instant minTime, Instant maxTime);
 }

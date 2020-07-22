@@ -34,6 +34,7 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -105,9 +106,8 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
   }
 
   // Deletes all Availability entities for a user ranging from minTime to maxTime.
-  // minTime and maxTime are in milliseconds.
   @Override
-  public void deleteInRangeForUser(String email, long minTime, long maxTime) {
+  public void deleteInRangeForUser(String email, Instant minTime, Instant maxTime) {
     Filter userFilter = new FilterPredicate("email", FilterOperator.EQUAL, email);
     List<Entity> entities = getEntitiesInRange(minTime, maxTime, Optional.of(userFilter));
     List<Key> keyList = new ArrayList<>();
@@ -122,10 +122,10 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
     }
   }
 
-  // Returns a list of all Availabilities ranging from minTime to maxTime of a user.
-  // minTime and maxTime are in milliseconds.
+  // Returns a sorted (by ascending start times) list of all Availabilities ranging from
+  // minTime to maxTime of a user.
   @Override
-  public List<Availability> getInRangeForUser(String email, long minTime, long maxTime) {
+  public List<Availability> getInRangeForUser(String email, Instant minTime, Instant maxTime) {
     Filter userFilter = new FilterPredicate("email", FilterOperator.EQUAL, email);
     List<Entity> entities = getEntitiesInRange(minTime, maxTime, Optional.of(userFilter));
     List<Availability> availability = new ArrayList<Availability>();
@@ -135,10 +135,10 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
     return availability;
   }
 
-  // Returns all Availabilities across all users ranging from minTime to maxTime.
-  // minTime and maxTime are in milliseconds.
+  // Returns all Availabilities across all users ranging from minTime to maxTime in order
+  // (by ascending start times).
   @Override
-  public List<Availability> getInRangeForAll(long minTime, long maxTime) {
+  public List<Availability> getInRangeForAll(Instant minTime, Instant maxTime) {
     List<Entity> entities = getEntitiesInRange(minTime, maxTime, Optional.empty());
     List<Availability> availability = new ArrayList<Availability>();
     for (Entity entity : entities) {
@@ -147,16 +147,28 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
     return availability;
   }
 
-  private List<Entity> getEntitiesInRange(long minTime, long maxTime, Optional<Filter> filterOpt) {
+  private List<Entity> getEntitiesInRange(
+      Instant minTime, Instant maxTime, Optional<Filter> filterOpt) {
     Filter minFilter =
-        new FilterPredicate("startTime", FilterOperator.GREATER_THAN_OR_EQUAL, minTime);
-    Filter maxFilter = new FilterPredicate("startTime", FilterOperator.LESS_THAN_OR_EQUAL, maxTime);
+        new FilterPredicate(
+            "startTime", FilterOperator.GREATER_THAN_OR_EQUAL, minTime.toEpochMilli());
+    // Queries can only perform inequality filters on one parameter, and so instead
+    // of using endTime for the maxFilter, startTime is used and the maxTime has 15
+    // minutes subtracted from it to be equal to the latest possible startTime.
+    Filter maxFilter =
+        new FilterPredicate(
+            "startTime",
+            FilterOperator.LESS_THAN_OR_EQUAL,
+            maxTime.minus(15, ChronoUnit.MINUTES).toEpochMilli());
     CompositeFilter compFilter = CompositeFilterOperator.and(minFilter, maxFilter);
     if (filterOpt.isPresent()) {
       compFilter = CompositeFilterOperator.and(compFilter, filterOpt.get());
     }
 
-    Query availQuery = new Query("Availability").setFilter(compFilter);
+    Query availQuery =
+        new Query("Availability")
+            .setFilter(compFilter)
+            .addSort("startTime", SortDirection.ASCENDING);
     return datastore.prepare(availQuery).asList(FetchOptions.Builder.withDefaults());
   }
 }
