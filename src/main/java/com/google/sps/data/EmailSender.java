@@ -53,7 +53,6 @@ public class EmailSender {
       request.setEndpoint("mail/send");
       request.setBody(mail.build());
       response = sg.api(request);
-      System.out.println(content.getValue());
     } catch (IOException ex) {
       throw ex;
     }
@@ -74,10 +73,13 @@ public class EmailSender {
 
   /**
    * Modifies and returns @param str. Replaces all occurences in @param str of each key in @param
-   * toReplace with its corresponding value. Ex. str = "You will be mock interviewing
-   * {{interviewee_full_name}} on {{formatted_date}}." toReplace = { ("{{interviewee_full_name}}",
-   * "Tess"), ("{{formatted_date}}", "June 6, 2022") } Returned: "You will be mock interviewing Tess
-   * on June 6, 2022."
+   * toReplace with its corresponding value.
+   *
+   * <p>Ex. str = "You will be mock interviewing {{interviewee_full_name}} on {{formatted_date}}."
+   *
+   * <p>toReplace = { ("{{interviewee_full_name}}","Tess"), ("{{formatted_date}}", "June 6, 2022") }
+   *
+   * <p>Returned: "You will be mock interviewing Tess on June 6, 2022."
    */
   public static String replaceAllPairs(HashMap<String, String> toReplace, String str) {
     for (Map.Entry<String, String> entry : toReplace.entrySet()) {
