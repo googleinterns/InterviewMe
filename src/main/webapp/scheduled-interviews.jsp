@@ -60,19 +60,12 @@
             <div class="row">
               <div class="card w-75 scheduled-interview-card">
                 <div class="card-body">
-                 <c:choose>
-                    <c:when test="${scheduledInterview.getInterviewerEmail() == userEmail}">
-                      <h5 class="card-title">Your Role: Interviewer</h5>
-                    </c:when>
-                    <c:otherwise>
-                      <h5 class="card-title">Your Role: Interviewee</h5>
-                    </c:otherwise>   
-                  </c:choose>
+                  <h5 class="card-title">Your Role: ${scheduledInterview.getRole()}</h5>
                   <p class="card-text">${scheduledInterview.getDateString()}</p>
                 </div>
                 <ul class="list-group list-group-flush">
-                  <li class="list-group-item">Interviewee Email: ${scheduledInterview.getIntervieweeEmail()}</li>
-                  <li class="list-group-item">Interviewer Email: ${scheduledInterview.getInterviewerEmail()}</li>
+                  <li class="list-group-item">Interviewee: ${scheduledInterview.getInterviewee()}</li>
+                  <li class="list-group-item">Interviewer: ${scheduledInterview.getInterviewer()}</li>
                 </ul>
               </div>
             </div>

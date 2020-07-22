@@ -53,7 +53,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
     init(new DatastoreScheduledInterviewDao(), new DatastorePersonDao());
   }
 
-  // TODO: add a FakeScheduledInterviewDao class so this will become useful
   public void init(ScheduledInterviewDao scheduledInterviewDao, PersonDao personDao) {
     this.scheduledInterviewDao = scheduledInterviewDao;
     this.personDao = personDao;
@@ -118,15 +117,35 @@ public class ScheduledInterviewServlet extends HttpServlet {
 
   public List<ScheduledInterviewRequest> objectToRequestObject(
       List<ScheduledInterview> scheduledInterviews) {
+    String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     List<ScheduledInterviewRequest> requestObjects = new ArrayList<ScheduledInterviewRequest>();
     for (ScheduledInterview scheduledInterview : scheduledInterviews) {
       String date = getDateString(scheduledInterview.when());
+      String interviewer;
+      String interviewee;
+      String role;
+
+      if (userEmail.equals(scheduledInterview.interviewerEmail())) {
+        role = "Interviewer";
+      } else {
+        role = "Interviewee";
+      }
+
+      if (!personDao.get(scheduledInterview.interviewerEmail()).isPresent()) {
+        interviewer = "Nonexistent User";
+      } else {
+        interviewer = personDao.get(scheduledInterview.interviewerEmail()).get().firstName();
+      }
+
+      if (!personDao.get(scheduledInterview.intervieweeEmail()).isPresent()) {
+        interviewee = "Nonexistent User";
+      } else {
+        interviewee = personDao.get(scheduledInterview.intervieweeEmail()).get().firstName();
+      }
+
       requestObjects.add(
           new ScheduledInterviewRequest(
-              scheduledInterview.id(),
-              date,
-              scheduledInterview.interviewerEmail(),
-              scheduledInterview.intervieweeEmail()));
+              scheduledInterview.id(), date, interviewer, interviewee, role));
     }
     return requestObjects;
   }
