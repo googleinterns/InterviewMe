@@ -76,7 +76,7 @@ public class Utils {
               + "?api=calendar into calendar-appengine-sample/src/main/resources/client_secrets.json");
     }
     // System.out.println("Util getClientCredential is not null");
-    return null;
+    return clientSecrets;
   }
 
   public static String getRedirectUri(HttpServletRequest req) {

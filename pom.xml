@@ -73,7 +73,6 @@
     </dependency>
     <!-- End of dependencies for calendar -->
 
-  <dependencies>
     <!-- Google's Secret Manager -->
     <dependency>
       <groupId>com.google.cloud</groupId>

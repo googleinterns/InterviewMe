@@ -38,6 +38,9 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.api.services.calendar.*;
+
+
 public class CalendarAccess {
   private static final String APPLICATION_NAME = "Interview Me Google Calendar API Usage";
   private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
@@ -62,6 +65,48 @@ public class CalendarAccess {
             .build();
     System.out.println("addEvent after service built");
 
+    Event event = new Event()
+    .setSummary("Google I/O 2015")
+    .setLocation("800 Howard St., San Francisco, CA 94103")
+    .setDescription("A chance to hear more about Google's developer products.");
+
+    DateTime startDateTime = new DateTime("2020-07-23T09:00:00-07:00");
+    EventDateTime start = new EventDateTime()
+        .setDateTime(startDateTime)
+        .setTimeZone("America/Montreal");
+    event.setStart(start);
+        System.out.printf("%s (%s)\n", event.getSummary(), start);    
+
+    DateTime endDateTime = new DateTime("2020-07-23T17:00:00-07:00");
+    EventDateTime end = new EventDateTime()
+        .setDateTime(endDateTime)
+        .setTimeZone("America/Montreal");
+    event.setEnd(end);
+
+    EventAttendee[] attendees = new EventAttendee[] {
+        new EventAttendee().setEmail("lpage@example.com"),
+        new EventAttendee().setEmail("sbrin@example.com"),
+    };
+    event.setAttendees(Arrays.asList(attendees));
+        System.out.printf("added attendees");
+
+    EventReminder[] reminderOverrides = new EventReminder[] {
+        new EventReminder().setMethod("email").setMinutes(24 * 60),
+        new EventReminder().setMethod("popup").setMinutes(10),
+    };
+    Event.Reminders reminders = new Event.Reminders()
+        .setUseDefault(false)
+        .setOverrides(Arrays.asList(reminderOverrides));
+        System.out.printf("added reminders");
+        
+    event.setReminders(reminders);
+
+    String calendarId = "primary";
+    event = service.events().insert(calendarId, event).execute();
+    System.out.printf("Event created: %s\n", event.getHtmlLink());
+  }
+  
+  public static void listNextTen(Calendar service){
     // List the next 10 events from the primary calendar.
     DateTime now = new DateTime(System.currentTimeMillis());
     Events events =
