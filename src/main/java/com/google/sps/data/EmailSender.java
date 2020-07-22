@@ -43,7 +43,7 @@ public class EmailSender {
   // Sends an email from the "from" Email to the "to" Email, with specified subject and content.
   public Response sendEmail(Email sender, Email recipient, String subject, Content content)
       throws IOException, Exception {
-    Mail mail = new Mail(from, subject, to, content);
+    Mail mail = new Mail(sender, recipient, to, content);
     SendGrid sg =
         new SendGrid(SecretFetcher.getSecretValue("interview-me-step-2020", "SENDGRID_API_KEY"));
     Request request = new Request();
