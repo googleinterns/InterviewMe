@@ -34,6 +34,7 @@ import java.util.Optional;
 public class PersonServlet extends HttpServlet {
 
   private PersonDao personDao;
+  private final UserService userService = UserServiceFactory.getUserService();
 
   @Override
   public void init() {
@@ -55,7 +56,6 @@ public class PersonServlet extends HttpServlet {
       response.sendError(400);
       return;
     }
-    UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     personDao.create(Person.createForPost(email, personRequest));
   }
@@ -71,11 +71,8 @@ public class PersonServlet extends HttpServlet {
       response.sendError(400);
       return;
     }
-
-    UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     long id = personDao.getFromEmail(email).get().id();
-
     personDao.update(Person.createForPut(id, email, personRequest));
   }
 
@@ -93,7 +90,6 @@ public class PersonServlet extends HttpServlet {
   // registration page.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     Optional<Person> personOpt = personDao.getFromEmail(email);
     if (!personOpt.isPresent()) {
