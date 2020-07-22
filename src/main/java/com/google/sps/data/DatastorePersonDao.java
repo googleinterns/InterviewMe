@@ -46,28 +46,18 @@ public class DatastorePersonDao implements PersonDao {
   /** We make an entity in Datastore with person's fields as properties. */
   @Override
   public void create(Person person) {
-    datastore.put(personToNewEntity(person));
+    datastore.put(personToEntity(person));
   }
 
   /** We update an entity in Datastore with person's fields as properties. */
   @Override
   public void update(Person person) {
-    datastore.put(personToUpdatedEntity(person));
+    datastore.put(personToEntity(person));
   }
 
-  private static Entity personToNewEntity(Person person) {
-    Entity personEntity = new Entity("Person");
-    personEntity.setProperty("email", person.email());
-    personEntity.setProperty("firstName", person.firstName());
-    personEntity.setProperty("lastName", person.lastName());
-    personEntity.setProperty("company", person.company());
-    personEntity.setProperty("job", person.job());
-    personEntity.setProperty("linkedIn", person.linkedIn());
-    return personEntity;
-  }
-
-  private static Entity personToUpdatedEntity(Person person) {
+  private static Entity personToEntity(Person person) {
     Entity personEntity = new Entity("Person", person.id());
+    personEntity.setProperty("id", person.id());
     personEntity.setProperty("email", person.email());
     personEntity.setProperty("firstName", person.firstName());
     personEntity.setProperty("lastName", person.lastName());
@@ -82,7 +72,7 @@ public class DatastorePersonDao implements PersonDao {
    * Datastore, the Optional is empty.
    */
   @Override
-  public Optional<Person> get(long id) {
+  public Optional<Person> get(String id) {
     Key key = KeyFactory.createKey("Person", id);
     Entity personEntity;
     try {
@@ -93,24 +83,9 @@ public class DatastorePersonDao implements PersonDao {
     return Optional.of(entityToPerson(personEntity));
   }
 
-  /**
-   * Retrieve the person from Datastore from their email and wrap it in an Optional. If they aren't
-   * in Datastore, the Optional is empty.
-   */
-  @Override
-  public Optional<Person> getFromEmail(String email) {
-    Filter emailFilter = new FilterPredicate("email", FilterOperator.EQUAL, email);
-    Entity personEntity =
-        datastore.prepare(new Query("Person").setFilter(emailFilter)).asSingleEntity();
-    if (personEntity == null) {
-      return Optional.empty();
-    }
-    return Optional.of(entityToPerson(personEntity));
-  }
-
   private static Person entityToPerson(Entity personEntity) {
     return Person.create(
-        personEntity.getKey().getId(),
+        (String) personEntity.getProperty("id"),
         (String) personEntity.getProperty("email"),
         (String) personEntity.getProperty("firstName"),
         (String) personEntity.getProperty("lastName"),

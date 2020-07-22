@@ -56,8 +56,9 @@ public class PersonServlet extends HttpServlet {
       response.sendError(400);
       return;
     }
+    String id = userService.getCurrentUser().getUserId();
     String email = userService.getCurrentUser().getEmail();
-    personDao.create(Person.createForPost(email, personRequest));
+    personDao.create(Person.createFromRequest(id, email, personRequest));
   }
 
   // Updates Datastore with the Person information in request. Sends a 400 error if
@@ -71,9 +72,9 @@ public class PersonServlet extends HttpServlet {
       response.sendError(400);
       return;
     }
+    String id = userService.getCurrentUser().getUserId();
     String email = userService.getCurrentUser().getEmail();
-    long id = personDao.getFromEmail(email).get().id();
-    personDao.update(Person.createForPut(id, email, personRequest));
+    personDao.update(Person.createFromRequest(id, email, personRequest));
   }
 
   // Get Json from request body.
@@ -90,8 +91,8 @@ public class PersonServlet extends HttpServlet {
   // registration page.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String email = userService.getCurrentUser().getEmail();
-    Optional<Person> personOpt = personDao.getFromEmail(email);
+    String id = userService.getCurrentUser().getUserId();
+    Optional<Person> personOpt = personDao.get(id);
     if (!personOpt.isPresent()) {
       response.sendRedirect("/register.html");
       return;

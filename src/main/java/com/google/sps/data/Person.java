@@ -19,7 +19,7 @@ import com.google.auto.value.AutoValue;
 /** Represents a user on the site. The email is used as the key to the user table. */
 @AutoValue
 public abstract class Person {
-  public abstract long id();
+  public abstract String id();
 
   public abstract String email();
 
@@ -34,10 +34,11 @@ public abstract class Person {
   public abstract String linkedIn();
 
   /**
-   * Creates a person that contains email, first name, last name, company, job, and LinkedIn URL.
+   * Creates a person that contains a user id, email, first name, last name, company, job, and
+   * LinkedIn URL.
    */
   public static Person create(
-      long id,
+      String id,
       String email,
       String firstName,
       String lastName,
@@ -55,28 +56,8 @@ public abstract class Person {
         .build();
   }
 
-  abstract Builder toBuilder();
-
-  // Returns a new Person with the old information plus an updated id.
-  public Person withId(long id) {
-    return toBuilder().setId(id).build();
-  }
-
-  // Creates a person from a Person Servlet POST request.
-  public static Person createForPost(String email, PersonRequest personRequest) {
-    return builder()
-        .setId(-1)
-        .setEmail(email)
-        .setFirstName(personRequest.getFirstName())
-        .setLastName(personRequest.getLastName())
-        .setCompany(personRequest.getCompany())
-        .setJob(personRequest.getJob())
-        .setLinkedIn(personRequest.getLinkedIn())
-        .build();
-  }
-
-  // Creates a person from a Person Servlet PUT request.
-  public static Person createForPut(long id, String email, PersonRequest personRequest) {
+  // Creates a person from a Person Servlet request.
+  public static Person createFromRequest(String id, String email, PersonRequest personRequest) {
     return builder()
         .setId(id)
         .setEmail(email)
@@ -94,7 +75,7 @@ public abstract class Person {
 
   @AutoValue.Builder
   abstract static class Builder {
-    abstract Builder setId(long id);
+    abstract Builder setId(String id);
 
     abstract Builder setEmail(String email);
 

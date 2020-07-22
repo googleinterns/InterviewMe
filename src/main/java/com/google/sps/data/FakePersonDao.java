@@ -22,19 +22,17 @@ import java.util.Random;
 
 /** Mimics accessing Datastore to support managing Person entities. */
 public class FakePersonDao implements PersonDao {
-  private HashMap<Long, Person> storedObjects;
+  private HashMap<String, Person> storedObjects;
 
   /** Initializes the fields for PersonDatastoreDAO. */
   public FakePersonDao() {
-    storedObjects = new HashMap<Long, Person>();
+    storedObjects = new HashMap<String, Person>();
   }
 
-  /** We put person into storedObjects with a randomly generated long as its id. */
+  /** We put person into storedObjects . */
   @Override
   public void create(Person person) {
-    long id = new Random().nextLong();
-    Person toStorePerson = person.withId(id);
-    storedObjects.put(id, toStorePerson);
+    storedObjects.put(person.id(), person);
   }
 
   /** We update person in storedObjects. */
@@ -48,24 +46,9 @@ public class FakePersonDao implements PersonDao {
    * in datastore, the Optional is empty.
    */
   @Override
-  public Optional<Person> get(long id) {
+  public Optional<Person> get(String id) {
     if (storedObjects.containsKey(id)) {
       return Optional.of(storedObjects.get(id));
-    }
-    return Optional.empty();
-  }
-
-  /**
-   * Retrieve the person from storedObjects from their email and wrap it in an Optional. If they
-   * aren't in datastore, the Optional is empty.
-   */
-  @Override
-  public Optional<Person> getFromEmail(String email) {
-    List<Person> allPeople = new ArrayList<Person>(storedObjects.values());
-    for (Person person : allPeople) {
-      if (person.email().equals(email)) {
-        return Optional.of(person);
-      }
     }
     return Optional.empty();
   }
