@@ -74,13 +74,10 @@ public class EmailSender {
   /**
    * Modifies and returns @param str. Replaces all occurences in @param str of each key in @param
    * toReplace with its corresponding value.
-   *
-   * <p>Ex. str = "You will be mock interviewing {{interviewee_full_name}} on {{formatted_date}}."
-   *
-   * <p>toReplace = { ("{{interviewee_full_name}}","Tess"), ("{{formatted_date}}", "June 6, 2022") }
-   *
-   * <p>Returned: "You will be mock interviewing Tess on June 6, 2022."
    */
+  // Ex. str = "You will be mock interviewing {{interviewee_full_name}} on {{formatted_date}}."
+  // toReplace = { ("{{interviewee_full_name}}","Tess"), ("{{formatted_date}}", "June 6, 2022") }
+  // Returned: "You will be mock interviewing Tess on June 6, 2022."
   public static String replaceAllPairs(HashMap<String, String> toReplace, String str) {
     for (Map.Entry<String, String> entry : toReplace.entrySet()) {
       str = str.replace(entry.getKey(), entry.getValue());
