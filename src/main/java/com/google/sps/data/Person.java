@@ -54,6 +54,13 @@ public abstract class Person {
         .setLinkedIn(linkedIn)
         .build();
   }
+  
+  abstract Builder toBuilder();
+
+  // Returns a new Person with the old information plus an updated id.
+  public Person withId(long id) {
+    return toBuilder().setId(id).build();
+  }
 
   // Creates a person from a Person Servlet put request.
   // TODO: SEE WHERE THIS IS USED AND IF ID IS NECESSARY

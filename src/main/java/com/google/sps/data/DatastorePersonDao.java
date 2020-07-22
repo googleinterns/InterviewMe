@@ -41,23 +41,34 @@ public class DatastorePersonDao implements PersonDao {
   }
 
   /**
-   * We make an entity in Datastore with person's fields as properties and their email as the key.
+   * We make an entity in Datastore with person's fields as properties.
    */
   @Override
   public void create(Person person) {
-    datastore.put(personToEntity(person));
+    datastore.put(personToNewEntity(person));
   }
 
   /**
-   * We update an entity in Datastore with person's fields as properties and their email as the key.
+   * We update an entity in Datastore with person's fields as properties.
    */
   @Override
   public void update(Person person) {
-    datastore.put(personToEntity(person));
+    datastore.put(personToUpdatedEntity(person));
   }
 
-  private static Entity personToEntity(Person person) {
-    Entity personEntity = new Entity("Person", person.email());
+  private static Entity personToNewEntity(Person person) {
+    Entity personEntity = new Entity("Person");
+    personEntity.setProperty("email", person.email());
+    personEntity.setProperty("firstName", person.firstName());
+    personEntity.setProperty("lastName", person.lastName());
+    personEntity.setProperty("company", person.company());
+    personEntity.setProperty("job", person.job());
+    personEntity.setProperty("linkedIn", person.linkedIn());
+    return personEntity;
+  }
+  
+  private static Entity personToUpdatedEntity(Person person) {
+    Entity personEntity = new Entity("Person", person.id());
     personEntity.setProperty("email", person.email());
     personEntity.setProperty("firstName", person.firstName());
     personEntity.setProperty("lastName", person.lastName());
@@ -68,12 +79,12 @@ public class DatastorePersonDao implements PersonDao {
   }
 
   /**
-   * Retrieve the person from Datastore from their email and wrap it in an Optional. If they aren't
+   * Retrieve the person from Datastore from their id and wrap it in an Optional. If they aren't
    * in Datastore, the Optional is empty.
    */
   @Override
-  public Optional<Person> get(String email) {
-    Key key = KeyFactory.createKey("Person", email);
+  public Optional<Person> get(long id) {
+    Key key = KeyFactory.createKey("Person", id);
     Entity personEntity;
     try {
       personEntity = datastore.get(key);
@@ -85,6 +96,7 @@ public class DatastorePersonDao implements PersonDao {
 
   private static Person entityToPerson(Entity personEntity) {
     return Person.create(
+        personEntity.getKey().getId(),
         (String) personEntity.getProperty("email"),
         (String) personEntity.getProperty("firstName"),
         (String) personEntity.getProperty("lastName"),
