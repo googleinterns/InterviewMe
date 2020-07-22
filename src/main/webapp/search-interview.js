@@ -24,7 +24,7 @@ function loadInterviews() {
   const searchResultsDiv = document.getElementById("search-results");
   searchResultsDiv.removeAttribute("hidden");
 
-  fetch(`/search-interviews?timeZoneOffset=${browserTimezoneOffset()}`)
+  fetch(`/load-interviews?timeZoneOffset=${browserTimezoneOffset()}`)
   .then(response => response.text())
     .then(interviewTimes => {
       interviewTimesDiv().innerHTML = interviewTimes;
@@ -45,37 +45,35 @@ function browserTimezoneOffset() {
 function selectInterview(interviewer) {
   if (confirm(
     // TOOD: fill in these times dynamically from ids in the .jsp file.
-      `You selected: Sunday 7/5 from 6:30 PM - 7:30 PM with a ` +
-      `${interviewer.getAttribute("data-company")} ` +
+      `You selected: ${interviewer.getAttribute('data-date')} from ` +
+      `${interviewer.getAttribute('data-time')} with a ` +
+      `${interviewer.getAttribute('data-company')} ` +
       `${interviewer.getAttribute('data-job')}. ` +
       `Click OK if you wish to proceed.`)) {
     alert(
-      `You have scheduled an interview on Sunday 7/5 from 6:30 PM - 7:30 ` +
-      `PM with a ${interviewer.getAttribute('data-company')} ` +
+      `You have scheduled an interview on ${interviewer.getAttribute('data-date')}` +
+      ` from ${interviewer.getAttribute('data-time')} ` +
+      `with a ${interviewer.getAttribute('data-company')} ` +
       `${interviewer.getAttribute('data-job')}. Check your email for more ` +
       `information.`);
-    // TODO: Call a servlet to save this selection.
+    // TODO: Call a servlet to save this selection. Using interviewer.getAttribute('data-utc').
+    let requestObject = {
+      interviewer: interviewer.getAttribute('data-email'),
+      utc: interviewer.getAttribute('data-utc')
+    };
+    let requestBody = JSON.stringify(requestObject);
+    let request = new Request('/schedule-interview', {method: 'POST', body: requestBody});
+    fetch(request).then(unused => {}); // TODO: Redirect to scheduled interviews page?
     location.reload();
   }
 }
 
 // Fills in the modal with interviewer info from Datastore and shows it.
 function showInterviewers(selectButton) {
-  // OLD CODE
-  fetch('/possibleInterviewers.jsp').then(response => response.text())
-    .then(table => {
-      $('#modal-body').html(table);
-      const date = selectButton.getAttribute("id");
-      const time = document.getElementById(date + '-options').value;
-      $('#modal-title').text(`Interviewers Information for ${date} at ${time}`);
-    });
-  $('#interviewer-modal').modal('show');
-  
-  // NEW CODE
   const date = selectButton.getAttribute('data-date');
   const time = document.getElementById(date).innerText;
   const utc = document.getElementById(date).value;
-  fetch(`/select-interview?utc=${utc}`)
+  fetch(`/show-interviewers?utc=${utc}&date=${date}&time=${time}`)
   .then(response => response.text())
     .then(interviewers => {
       $('#modal-body').html(interviewers);

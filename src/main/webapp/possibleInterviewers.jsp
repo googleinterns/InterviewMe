@@ -3,6 +3,9 @@
 <%
   List<Person> list = (List<Person>) request.getAttribute("interviewers");
   pageContext.setAttribute("list", list);
+  String utc = request.getParameter("utc");
+  String time = request.getParameter("time");
+  String date = request.getParameter("date");
 %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
@@ -21,7 +24,8 @@
         <td>
           <button type="button" class="btn btn-primary" 
           data-company="${interviewer.company()}" data-job="${interviewer.job()}" 
-          data-email="${interviewer.email()}" onclick="selectInterview(this)">
+          data-email="${interviewer.email()}" data-utc="${utc}" data-time="${time}"
+          data-date="${date}" onclick="selectInterview(this)">
             Select
           </button>
         </td>

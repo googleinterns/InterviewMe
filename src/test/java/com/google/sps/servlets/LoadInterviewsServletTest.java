@@ -46,7 +46,7 @@ import org.junit.Test;
 import com.google.gson.JsonSyntaxException;
 
 @RunWith(JUnit4.class)
-public final class SearchInterviewServletTest {
+public final class LoadInterviewsServletTest {
   LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalUserServiceTestConfig());
   private FakeAvailabilityDao availabilityDao;
   private MockServletContext context;
@@ -64,7 +64,7 @@ public final class SearchInterviewServletTest {
 
   @Test
   public void tooLargePositiveOffset() {
-    SearchInterviewServlet servlet = new SearchInterviewServlet();
+    LoadInterviewsServlet servlet = new LoadInterviewsServlet();
     servlet.init(availabilityDao, Instant.now());
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
@@ -79,7 +79,7 @@ public final class SearchInterviewServletTest {
 
   @Test
   public void tooLargeNegativeOffset() {
-    SearchInterviewServlet servlet = new SearchInterviewServlet();
+    LoadInterviewsServlet servlet = new LoadInterviewsServlet();
     servlet.init(availabilityDao, Instant.now());
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
@@ -94,7 +94,7 @@ public final class SearchInterviewServletTest {
 
   @Test
   public void onlyReturnsHourLongSlots() throws IOException, ServletException {
-    SearchInterviewServlet servlet = new SearchInterviewServlet();
+    LoadInterviewsServlet servlet = new LoadInterviewsServlet();
     servlet.init(availabilityDao, Instant.parse("2020-07-07T13:15:00Z"));
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
 
@@ -200,7 +200,7 @@ public final class SearchInterviewServletTest {
 
   @Test
   public void onlyReturnsUnscheduledSlots() throws IOException, ServletException {
-    SearchInterviewServlet servlet = new SearchInterviewServlet();
+    LoadInterviewsServlet servlet = new LoadInterviewsServlet();
     servlet.init(availabilityDao, Instant.parse("2020-07-07T13:15:00Z"));
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
 
@@ -249,7 +249,7 @@ public final class SearchInterviewServletTest {
 
   @Test
   public void noSchedulingWithYourself() throws IOException, ServletException {
-    SearchInterviewServlet servlet = new SearchInterviewServlet();
+    LoadInterviewsServlet servlet = new LoadInterviewsServlet();
     servlet.init(availabilityDao, Instant.parse("2020-07-07T13:15:00Z"));
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
 

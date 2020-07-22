@@ -47,8 +47,8 @@ import javax.servlet.ServletException;
 import javax.servlet.RequestDispatcher;
 import java.util.Optional;
 
-@WebServlet("/search-interviews")
-public class SearchInterviewServlet extends HttpServlet {
+@WebServlet("/load-interviews")
+public class LoadInterviewsServlet extends HttpServlet {
 
   private AvailabilityDao availabilityDao;
   private Instant instant;
@@ -80,13 +80,6 @@ public class SearchInterviewServlet extends HttpServlet {
     Instant endOfRange = utcTime.toInstant().plus(6, ChronoUnit.DAYS);
     List<Availability> availabilitiesInRange =
         availabilityDao.getInRangeForAll(startOfRange, endOfRange);
-    List<Availability> scheduledAvailability = new ArrayList<Availability>();
-    for (Availability avail : availabilitiesInRange) {
-      if (avail.scheduled()) {
-        scheduledAvailability.add(avail);
-      }
-    }
-    availabilitiesInRange.removeAll(scheduledAvailability);
     List<PossibleInterviewSlot> possibleInterviews =
         getPossibleInterviewSlots(availabilitiesInRange, startOfRange, endOfRange, timezoneOffset);
     Set<String> dates = new HashSet<String>();
@@ -155,6 +148,13 @@ public class SearchInterviewServlet extends HttpServlet {
       String email, Instant startOfRange, Instant endOfRange, ZoneOffset timezoneOffset) {
     List<Availability> availabilities =
         availabilityDao.getInRangeForUser(email, startOfRange, endOfRange);
+    List<Availability> scheduledAvailability = new ArrayList<Availability>();
+    for (Availability avail : availabilities) {
+      if (avail.scheduled()) {
+        scheduledAvailability.add(avail);
+      }
+    }
+    availabilities.removeAll(scheduledAvailability);
     List<PossibleInterviewSlot> possibleInterviewSlotsForPerson =
         new ArrayList<PossibleInterviewSlot>();
     for (int i = 0; i < availabilities.size() - 3; i++) {

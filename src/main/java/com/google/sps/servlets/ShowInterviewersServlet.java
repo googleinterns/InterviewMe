@@ -46,34 +46,29 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletException;
+import javax.servlet.RequestDispatcher;
 import java.util.Optional;
 
-@WebServlet("/select-interview")
-public class SelectInterviewServlet extends HttpServlet {
+@WebServlet("/show-interviewers")
+public class ShowInterviewersServlet extends HttpServlet {
 
   private AvailabilityDao availabilityDao;
-  private ScheduledInterviewDao scheduledInterviewDao;
   private PersonDao personDao;
 
   @Override
   public void init() {
-    init(
-        new DatastoreAvailabilityDao(),
-        new DatastoreScheduledInterviewDao(),
-        new DatastorePersonDao());
+    init(new DatastoreAvailabilityDao(), new DatastorePersonDao());
   }
 
-  public void init(
-      AvailabilityDao availabilityDao,
-      ScheduledInterviewDao scheduledInterviewDao,
-      PersonDao personDao) {
+  public void init(AvailabilityDao availabilityDao, PersonDao personDao) {
     this.availabilityDao = availabilityDao;
-    this.scheduledInterviewDao = scheduledInterviewDao;
     this.personDao = personDao;
   }
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
     String utc = request.getParameter("utc");
     Instant startOfRange = Instant.parse(utc);
     Instant endOfRange = Instant.parse(utc).plus(1, ChronoUnit.HOURS);
@@ -113,6 +108,13 @@ public class SelectInterviewServlet extends HttpServlet {
       String email, Instant startOfRange, Instant endOfRange) {
     List<Availability> availabilities =
         availabilityDao.getInRangeForUser(email, startOfRange, endOfRange);
+    List<Availability> scheduledAvailability = new ArrayList<Availability>();
+    for (Availability avail : availabilities) {
+      if (avail.scheduled()) {
+        scheduledAvailability.add(avail);
+      }
+    }
+    availabilities.removeAll(scheduledAvailability);
     for (int i = 0; i < availabilities.size() - 3; i++) {
       if (availabilities.get(i).when().end().equals(availabilities.get(i + 1).when().start())) {
         if (availabilities
