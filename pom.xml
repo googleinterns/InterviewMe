@@ -15,17 +15,19 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <failOnMissingWebXml>false</failOnMissingWebXml>
   </properties>
-  
-  <distributionManagement>
-    <!-- <repository>
-      <uniqueVersion>false</uniqueVersion>
-      <id></id>
-      <name>Corporate Repository</name>
-      <url>http://localhost:8081/repository/maven-releases</url>
-      <layout>default</layout>
-    </repository>   -->
-  </distributionManagement>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
+        <version>8.0.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  
   <dependencies>
   
     <!-- For calendar-->
@@ -70,6 +72,20 @@
       <version>1.30.4</version>
     </dependency>
     <!-- End of dependencies for calendar -->
+
+  <dependencies>
+    <!-- Google's Secret Manager -->
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-secretmanager</artifactId>
+    </dependency>
+    
+    <!-- Sendgrid for emails -->
+    <dependency>
+      <groupId>com.sendgrid</groupId>
+      <artifactId>sendgrid-java</artifactId>
+      <version>4.6.1</version>
+    </dependency>
 
     <dependency>
       <groupId>javax.servlet</groupId>
