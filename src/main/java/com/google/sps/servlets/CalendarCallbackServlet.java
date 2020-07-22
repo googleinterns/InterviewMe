@@ -17,7 +17,10 @@ package com.google.sps.servlets;
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
 import com.google.api.client.auth.oauth2.AuthorizationCodeResponseUrl;
 import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.auth.oauth2.StoredCredential;
+import com.google.api.client.util.store.DataStore;
 import com.google.api.client.extensions.appengine.auth.oauth2.AbstractAppEngineAuthorizationCodeCallbackServlet;
+import com.google.api.client.extensions.appengine.datastore.AppEngineDataStoreFactory;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.Utils;
 
@@ -26,9 +29,17 @@ import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.ServletException;
 import java.security.GeneralSecurityException;
+import java.io.File;
+import com.google.api.client.util.store.FileDataStoreFactory;
+import java.security.GeneralSecurityException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.sps.data.CalendarAccess;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 
 @WebServlet("/calendar-callback")
 public class CalendarCallbackServlet extends AbstractAppEngineAuthorizationCodeCallbackServlet {
@@ -39,12 +50,34 @@ public class CalendarCallbackServlet extends AbstractAppEngineAuthorizationCodeC
   public void onSuccess(HttpServletRequest req, HttpServletResponse resp, Credential credential)
       throws ServletException, IOException {
     System.out.println("success");
-    try {
-      CalendarAccess.addEvent(credential);
-    } catch (GeneralSecurityException e) {
-    }
+    // try {
+    StoredCredential sc = new StoredCredential(credential);
+    DataStore<StoredCredential> storedCredentialDataStore =
+        sc.getDefaultDataStore(AppEngineDataStoreFactory.getDefaultInstance());
+    storedCredentialDataStore.set("first", sc);
+    credential.setExpirationTimeMilliseconds(Long.MAX_VALUE);
+    System.out.println("stored " + sc.toString());
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Key key = KeyFactory.createKey("StoredCredential", "first");
+
+    // try {
+    //   Entity ent = datastore.get(key);
+    //   StoredCredential scc = (StoredCredential) ent.getProperty("value");
+    //   System.out.println(scc.toString());
+    // } catch (com.google.appengine.api.datastore.EntityNotFoundException e) {
+    // }
+    // CalendarAccess.addEvent(credential);
+    // }
+    // catch (GeneralSecurityException e) {
+    // }
     resp.sendRedirect("/");
   }
+
+  // public static Object deserialize(byte[] data) throws IOException, ClassNotFoundException {
+  //     ByteArrayInputStream in = new ByteArrayInputStream(data);
+  //     ObjectInputStream is = new ObjectInputStream(in);
+  //     return is.readObject();
+  // }
 
   @Override
   public void onError(
