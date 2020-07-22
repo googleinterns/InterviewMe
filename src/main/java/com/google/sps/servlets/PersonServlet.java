@@ -55,11 +55,9 @@ public class PersonServlet extends HttpServlet {
       response.sendError(400);
       return;
     }
-    if (!authenticateRequest(personRequest)) {
-      response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-      return;
-    }
-    personDao.update(Person.create(personRequest));
+    UserService userService = UserServiceFactory.getUserService();
+    String email = userService.getCurrentUser().getEmail();
+    personDao.create(Person.createForPost(email, personRequest));
   }
 
   // Updates Datastore with the Person information in request. Sends a 400 error if
@@ -73,11 +71,12 @@ public class PersonServlet extends HttpServlet {
       response.sendError(400);
       return;
     }
-    if (!authenticateRequest(personRequest)) {
-      response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-      return;
-    }
-    personDao.update(Person.create(personRequest));
+
+    UserService userService = UserServiceFactory.getUserService();
+    String email = userService.getCurrentUser().getEmail();
+    long id = personDao.getFromEmail(email).get().id();
+
+    personDao.update(Person.createForPut(id, email, personRequest));
   }
 
   // Get Json from request body.
@@ -90,21 +89,13 @@ public class PersonServlet extends HttpServlet {
     return buffer.toString();
   }
 
-  // Ensure person logged in == person being requested.
-  private static boolean authenticateRequest(PersonRequest request) {
-    return request.getEmail().equals(LogInServlet.getLoginInfo("/").email);
-  }
-
-  // Returns the person the request's email belongs to. If they aren't in Datastore, redirects to
-  // registration page. If the requestee is not the logged in user, throws a
+  // Returns the person currently logged in. If they aren't in Datastore, redirects to
+  // registration page.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String requesteeEmail = request.getParameter("email");
-    if (!requesteeEmail.equals(LogInServlet.getLoginInfo("/").email)) {
-      response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-      return;
-    }
-    Optional<Person> personOpt = personDao.get(requesteeEmail);
+    UserService userService = UserServiceFactory.getUserService();
+    String email = userService.getCurrentUser().getEmail();
+    Optional<Person> personOpt = personDao.getFromEmail(email);
     if (!personOpt.isPresent()) {
       response.sendRedirect("/register.html");
       return;

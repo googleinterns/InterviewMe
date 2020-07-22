@@ -21,6 +21,9 @@ public interface PersonDao {
   // Returns a Person object from storage, with the specified id.
   public Optional<Person> get(long id);
 
+  // Returns a Person object from storage, with the specified email.
+  public Optional<Person> getFromEmail(String emal);
+
   // Adds a Person object into storage.
   public void create(Person person);
 

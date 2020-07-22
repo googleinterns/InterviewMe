@@ -24,6 +24,9 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,17 +43,13 @@ public class DatastorePersonDao implements PersonDao {
     datastore = DatastoreServiceFactory.getDatastoreService();
   }
 
-  /**
-   * We make an entity in Datastore with person's fields as properties.
-   */
+  /** We make an entity in Datastore with person's fields as properties. */
   @Override
   public void create(Person person) {
     datastore.put(personToNewEntity(person));
   }
 
-  /**
-   * We update an entity in Datastore with person's fields as properties.
-   */
+  /** We update an entity in Datastore with person's fields as properties. */
   @Override
   public void update(Person person) {
     datastore.put(personToUpdatedEntity(person));
@@ -66,7 +65,7 @@ public class DatastorePersonDao implements PersonDao {
     personEntity.setProperty("linkedIn", person.linkedIn());
     return personEntity;
   }
-  
+
   private static Entity personToUpdatedEntity(Person person) {
     Entity personEntity = new Entity("Person", person.id());
     personEntity.setProperty("email", person.email());
@@ -79,8 +78,8 @@ public class DatastorePersonDao implements PersonDao {
   }
 
   /**
-   * Retrieve the person from Datastore from their id and wrap it in an Optional. If they aren't
-   * in Datastore, the Optional is empty.
+   * Retrieve the person from Datastore from their id and wrap it in an Optional. If they aren't in
+   * Datastore, the Optional is empty.
    */
   @Override
   public Optional<Person> get(long id) {
@@ -89,6 +88,21 @@ public class DatastorePersonDao implements PersonDao {
     try {
       personEntity = datastore.get(key);
     } catch (com.google.appengine.api.datastore.EntityNotFoundException e) {
+      return Optional.empty();
+    }
+    return Optional.of(entityToPerson(personEntity));
+  }
+
+  /**
+   * Retrieve the person from Datastore from their email and wrap it in an Optional. If they aren't
+   * in Datastore, the Optional is empty.
+   */
+  @Override
+  public Optional<Person> getFromEmail(String email) {
+    Filter emailFilter = new FilterPredicate("email", FilterOperator.EQUAL, email);
+    Entity personEntity =
+        datastore.prepare(new Query("Person").setFilter(emailFilter)).asSingleEntity();
+    if (personEntity == null) {
       return Optional.empty();
     }
     return Optional.of(entityToPerson(personEntity));

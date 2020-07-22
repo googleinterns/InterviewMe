@@ -14,7 +14,9 @@
 
 package com.google.sps.data;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -32,7 +34,7 @@ public class FakePersonDao implements PersonDao {
   public void create(Person person) {
     long id = new Random().nextLong();
     Person toStorePerson = person.withId(id);
-    storedObjects.put(id, toStoreAvail);
+    storedObjects.put(id, toStorePerson);
   }
 
   /** We update person in storedObjects. */
@@ -49,6 +51,21 @@ public class FakePersonDao implements PersonDao {
   public Optional<Person> get(long id) {
     if (storedObjects.containsKey(id)) {
       return Optional.of(storedObjects.get(id));
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * Retrieve the person from storedObjects from their email and wrap it in an Optional. If they
+   * aren't in datastore, the Optional is empty.
+   */
+  @Override
+  public Optional<Person> getFromEmail(String email) {
+    List<Person> allPeople = new ArrayList<Person>(storedObjects.values());
+    for (Person person : allPeople) {
+      if (person.email().equals(email)) {
+        return Optional.of(person);
+      }
     }
     return Optional.empty();
   }

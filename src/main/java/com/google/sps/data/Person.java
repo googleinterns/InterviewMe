@@ -20,7 +20,7 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class Person {
   public abstract long id();
-  
+
   public abstract String email();
 
   public abstract String firstName();
@@ -54,7 +54,7 @@ public abstract class Person {
         .setLinkedIn(linkedIn)
         .build();
   }
-  
+
   abstract Builder toBuilder();
 
   // Returns a new Person with the old information plus an updated id.
@@ -62,11 +62,24 @@ public abstract class Person {
     return toBuilder().setId(id).build();
   }
 
-  // Creates a person from a Person Servlet put request.
-  // TODO: SEE WHERE THIS IS USED AND IF ID IS NECESSARY
-  public static Person create(PersonRequest personRequest) {
+  // Creates a person from a Person Servlet POST request.
+  public static Person createForPost(String email, PersonRequest personRequest) {
     return builder()
-        .setEmail(personRequest.getEmail())
+        .setId(-1)
+        .setEmail(email)
+        .setFirstName(personRequest.getFirstName())
+        .setLastName(personRequest.getLastName())
+        .setCompany(personRequest.getCompany())
+        .setJob(personRequest.getJob())
+        .setLinkedIn(personRequest.getLinkedIn())
+        .build();
+  }
+
+  // Creates a person from a Person Servlet PUT request.
+  public static Person createForPut(long id, String email, PersonRequest personRequest) {
+    return builder()
+        .setId(id)
+        .setEmail(email)
         .setFirstName(personRequest.getFirstName())
         .setLastName(personRequest.getLastName())
         .setCompany(personRequest.getCompany())
@@ -82,7 +95,7 @@ public abstract class Person {
   @AutoValue.Builder
   abstract static class Builder {
     abstract Builder setId(long id);
-    
+
     abstract Builder setEmail(String email);
 
     abstract Builder setFirstName(String firstName);
