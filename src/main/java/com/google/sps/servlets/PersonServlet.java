@@ -58,6 +58,11 @@ public class PersonServlet extends HttpServlet {
     }
     String id = userService.getCurrentUser().getUserId();
     String email = userService.getCurrentUser().getEmail();
+    // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
+    // replaced with this hashcode.
+    if (id == null) {
+      id = "" + email.hashCode();
+    }
     personDao.create(Person.createFromRequest(id, email, personRequest));
   }
 
@@ -74,6 +79,11 @@ public class PersonServlet extends HttpServlet {
     }
     String id = userService.getCurrentUser().getUserId();
     String email = userService.getCurrentUser().getEmail();
+    // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
+    // replaced with this hashcode.
+    if (id == null) {
+      id = "" + email.hashCode();
+    }
     personDao.update(Person.createFromRequest(id, email, personRequest));
   }
 
@@ -92,6 +102,11 @@ public class PersonServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String id = userService.getCurrentUser().getUserId();
+    // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
+    // replaced with this hashcode.
+    if (id == null) {
+      id = "" + userService.getCurrentUser().getEmail().hashCode();
+    }
     Optional<Person> personOpt = personDao.get(id);
     if (!personOpt.isPresent()) {
       response.sendRedirect("/register.html");
