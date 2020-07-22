@@ -62,10 +62,10 @@
                 <div class="card-body">
                  <c:choose>
                     <c:when test="${scheduledInterview.getInterviewerEmail() == userEmail}">
-                      <h5 class="card-title">Your role: Interviewer</h5>
+                      <h5 class="card-title">Your Role: Interviewer</h5>
                     </c:when>
                     <c:otherwise>
-                      <h5 class="card-title">Your role: Interviewee</h5>
+                      <h5 class="card-title">Your Role: Interviewee</h5>
                     </c:otherwise>   
                   </c:choose>
                   <p class="card-text">${scheduledInterview.getDateString()}</p>

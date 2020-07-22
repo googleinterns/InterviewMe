@@ -17,7 +17,10 @@ package com.google.sps.servlets;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
+import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
+import com.google.sps.data.Person;
+import com.google.sps.data.PersonDao;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.ScheduledInterviewDao;
 import com.google.sps.data.ScheduledInterviewRequest;
@@ -43,15 +46,17 @@ import java.time.format.DateTimeParseException;
 public class ScheduledInterviewServlet extends HttpServlet {
 
   private ScheduledInterviewDao scheduledInterviewDao;
+  private PersonDao personDao;
 
   @Override
   public void init() {
-    init(new DatastoreScheduledInterviewDao());
+    init(new DatastoreScheduledInterviewDao(), new DatastorePersonDao());
   }
 
   // TODO: add a FakeScheduledInterviewDao class so this will become useful
-  public void init(ScheduledInterviewDao scheduledInterviewDao) {
+  public void init(ScheduledInterviewDao scheduledInterviewDao, PersonDao personDao) {
     this.scheduledInterviewDao = scheduledInterviewDao;
+    this.personDao = personDao;
   }
 
   // Gets the current user's email from request and returns the ScheduledInterviews for that person.
