@@ -16,5 +16,10 @@ function onScheduledInterviewsLoad() {
   const loginInfo = getLoginInfo();
   loginInfo.then(supplyLogoutLinkOrRedirectHome); 
   loginInfo.then(getUserOrRedirectRegistration);
-  fetch("/scheduled-interviews"); 
+  console.log(browserTimezoneOffset()); 
+}
+
+function browserTimezoneOffset() {
+  let date = new Date();
+  return (-1) * date.getTimezoneOffset();
 }

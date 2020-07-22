@@ -20,10 +20,17 @@ import com.google.gson.Gson;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.ScheduledInterviewDao;
+import com.google.sps.data.ScheduledInterviewRequest;
 import com.google.sps.data.TimeRange;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -102,5 +109,29 @@ public class ScheduledInterviewServlet extends HttpServlet {
       response.sendError(400, e.getMessage());
       return;
     }
+  }
+
+  public List<ScheduledInterviewRequest> objectToRequestObject(
+      List<ScheduledInterview> scheduledInterviews) {
+    List<ScheduledInterviewRequest> requestObjects = new ArrayList<ScheduledInterviewRequest>();
+    for (ScheduledInterview scheduledInterview : scheduledInterviews) {
+      String date = getDateString(scheduledInterview.when());
+      requestObjects.add(
+          new ScheduledInterviewRequest(
+              scheduledInterview.id(),
+              date,
+              scheduledInterview.interviewerEmail(),
+              scheduledInterview.intervieweeEmail()));
+    }
+    return requestObjects;
+  }
+
+  public String getDateString(TimeRange when) {
+    LocalDateTime start = LocalDateTime.ofInstant(when.start(), ZoneId.systemDefault());
+    LocalDateTime end = LocalDateTime.ofInstant(when.end(), ZoneId.systemDefault());
+    String startTime = start.format(DateTimeFormatter.ofPattern("hh:mm a"));
+    String endTime = end.format(DateTimeFormatter.ofPattern("hh:mm a"));
+    String day = start.format(DateTimeFormatter.ofPattern("EEEE, MMMM dd, yyyy"));
+    return day + " from " + startTime + " to " + endTime;
   }
 }

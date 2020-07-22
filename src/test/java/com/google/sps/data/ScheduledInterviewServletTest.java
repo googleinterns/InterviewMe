@@ -143,27 +143,33 @@ public final class ScheduledInterviewServletTest {
     getRequest.addParameter("userEmail", emailToId("user@gmail.com"));
     scheduledInterviewServlet.doGet(getRequest, getResponse);
 
-    Type scheduledInterviewListType =
-        new TypeToken<ArrayList<ScheduledInterviewRequest>>() {}.getType();
-    JsonElement json = new JsonParser().parse(getResponse.getContentAsString());
-    List<ScheduledInterviewRequest> actual = new Gson().fromJson(json, scheduledInterviewListType);
+    List<ScheduledInterview> actual =
+        (List<ScheduledInterview>) getRequest.getAttribute("scheduledInterviews");
 
-    ScheduledInterviewRequest scheduledInterview1 =
-        new ScheduledInterviewRequest(
-            actual.get(0).getId(),
+    ScheduledInterview scheduledInterview1 =
+        ScheduledInterview.create(
+            actual.get(0).id(),
             new TimeRange(
                 Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
+<<<<<<< HEAD
             emailToId("user@company.org"),
             emailToId("user@gmail.com"));
     ScheduledInterviewRequest scheduledInterview2 =
         new ScheduledInterviewRequest(
             actual.get(1).getId(),
+=======
+            "user@company.org",
+            "user@gmail.com");
+    ScheduledInterview scheduledInterview2 =
+        ScheduledInterview.create(
+            actual.get(1).id(),
+>>>>>>> Formatted date is sent to page
             new TimeRange(
                 Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
             emailToId("user2@company.org"),
             emailToId("user@gmail.com"));
 
-    List<ScheduledInterviewRequest> expected = new ArrayList<ScheduledInterviewRequest>();
+    List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
     expected.add(scheduledInterview1);
     expected.add(scheduledInterview2);
     Assert.assertEquals(expected, actual);

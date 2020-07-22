@@ -17,6 +17,7 @@ package com.google.sps.data;
 /** Represents the data sent in a put or post request to the Person Servlet. */
 public class ScheduledInterviewRequest {
   private long id;
+<<<<<<< HEAD
   private TimeRange when;
   private String interviewerId;
   private String intervieweeId;
@@ -27,14 +28,26 @@ public class ScheduledInterviewRequest {
     this.when = when;
     this.interviewerId = interviewerId;
     this.intervieweeId = intervieweeId;
+=======
+  private String dateString;
+  private String interviewerEmail;
+  private String intervieweeEmail;
+
+  public ScheduledInterviewRequest(
+      long id, String dateString, String interviewerEmail, String intervieweeEmail) {
+    this.id = id;
+    this.dateString = dateString;
+    this.interviewerEmail = interviewerEmail;
+    this.intervieweeEmail = intervieweeEmail;
+>>>>>>> Formatted date is sent to page
   }
 
   public long getId() {
     return id;
   }
 
-  public TimeRange getWhen() {
-    return when;
+  public String getDateString() {
+    return dateString;
   }
 
   public String getInterviewerId() {
@@ -44,6 +57,7 @@ public class ScheduledInterviewRequest {
   public String getIntervieweeId() {
     return intervieweeId;
   }
+<<<<<<< HEAD
 
   public String toString() {
     return String.format(
@@ -64,4 +78,6 @@ public class ScheduledInterviewRequest {
     }
     return false;
   }
+=======
+>>>>>>> Formatted date is sent to page
 }

@@ -1,8 +1,8 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
-<%@ page import="com.google.sps.data.ScheduledInterview" %>
+<%@ page import="com.google.sps.data.ScheduledInterviewRequest" %>
 <%
-  List<ScheduledInterview> scheduledInterviews = (List<ScheduledInterview>)request.getAttribute("scheduledInterviews");
+  List<ScheduledInterviewRequest> scheduledInterviews = (List<ScheduledInterviewRequest>)request.getAttribute("scheduledInterviews");
   String userEmail = (String)request.getAttribute("userEmail");
   pageContext.setAttribute("scheduledInterviews", scheduledInterviews);
   pageContext.setAttribute("userEmail", userEmail); 
@@ -61,18 +61,18 @@
               <div class="card w-75 scheduled-interview-card">
                 <div class="card-body">
                  <c:choose>
-                    <c:when test="${scheduledInterview.interviewerEmail() == userEmail}">
+                    <c:when test="${scheduledInterview.getInterviewerEmail() == userEmail}">
                       <h5 class="card-title">Your role: Interviewer</h5>
                     </c:when>
                     <c:otherwise>
                       <h5 class="card-title">Your role: Interviewee</h5>
                     </c:otherwise>   
                   </c:choose>
-                  <p class="card-text">${scheduledInterview.when().start()} - ${scheduledInterview.when().end()}</p>
+                  <p class="card-text">${scheduledInterview.getDateString()}</p>
                 </div>
                 <ul class="list-group list-group-flush">
-                  <li class="list-group-item">Interviewee Email: ${scheduledInterview.intervieweeEmail()}</li>
-                  <li class="list-group-item">Interviewer Email: ${scheduledInterview.interviewerEmail()}</li>
+                  <li class="list-group-item">Interviewee Email: ${scheduledInterview.getIntervieweeEmail()}</li>
+                  <li class="list-group-item">Interviewer Email: ${scheduledInterview.getInterviewerEmail()}</li>
                 </ul>
               </div>
             </div>
