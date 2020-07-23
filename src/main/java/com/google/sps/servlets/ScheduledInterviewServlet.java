@@ -18,11 +18,14 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
+import com.google.sps.data.InterviewPostRequest;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.ScheduledInterviewDao;
 import com.google.sps.data.TimeRange;
 import java.io.IOException;
+import java.io.BufferedReader;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -60,17 +63,16 @@ public class ScheduledInterviewServlet extends HttpServlet {
   // Send the request's contents to Datastore in the form of a new ScheduledInterview object.
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
+
     String intervieweeEmail = userService.getCurrentUser().getEmail();
     String intervieweeId = userService.getCurrentUser().getUserId();
-    
+
     // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
     // replaced with this hashcode.
     if (intervieweeId == null) {
       intervieweeId = String.format("%d", intervieweeEmail.hashCode());
     }
-    
-    
+
     InterviewPostRequest postRequest;
     try {
       postRequest = new Gson().fromJson(getJsonString(request), InterviewPostRequest.class);
@@ -82,32 +84,25 @@ public class ScheduledInterviewServlet extends HttpServlet {
       response.sendError(400);
       return;
     }
-    
+
     String interviewerId = postRequest.getInterviewer();
     String utc = postRequest.getUtc();
-    
-    String requestedInterviewerEmail = request.getParameter("interviewer");
-    String requestedIntervieweeEmail = request.getParameter("interviewee");
-    String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
-    // The default key for a scheduledInterview being stored in datastore
-    long defaultKey = -1;
+
+    Instant startTime;
+    Instant endTime;
+
     try {
-      ScheduledInterview scheduledInterview =
-          ScheduledInterview.create(
-              defaultKey,
-              new TimeRange(
-                  Instant.parse(request.getParameter("startTime")),
-                  Instant.parse(request.getParameter("endTime"))),
-              requestedInterviewerEmail,
-              requestedIntervieweeEmail);
-      scheduledInterviewDao.create(scheduledInterview);
-      return;
+      startTime = Instant.parse(utc);
+      endTime = Instant.parse(utc).plus(1, ChronoUnit.HOURS);
     } catch (DateTimeParseException e) {
       response.sendError(400, e.getMessage());
       return;
     }
+
+    // TODO: Create the Scheduled Interview after the refactoring is complete. Also maybe make a
+    // Availability dao method for marking the four effected slots as scheduled.
   }
-  
+
   // Get Json from request body.
   private static String getJsonString(HttpServletRequest request) throws IOException {
     BufferedReader reader = request.getReader();

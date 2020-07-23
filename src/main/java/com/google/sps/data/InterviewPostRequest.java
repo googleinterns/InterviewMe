@@ -34,16 +34,11 @@ public class InterviewPostRequest {
   }
 
   public boolean allFieldsPopulated() {
-    return !(interviewer == null || utc = null);
+    return !(interviewer == null || utc == null);
   }
 
   public String toString() {
     return String.format(
-        "%s= %s:%s, %s:%s",
-        "InterviewPostRequest",
-        "interviewer",
-        interviewer,
-        "utc",
-        utc);
+        "%s= %s:%s, %s:%s", "InterviewPostRequest", "interviewer", interviewer, "utc", utc);
   }
 }
