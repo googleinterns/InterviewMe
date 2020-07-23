@@ -2,14 +2,16 @@ You have been registered for an interview on {{formatted_date}}. You are the int
 
 Before the interview, you will need to:
   - Prepare a few questions for the interviewer. You may not use all of them but it is best to be prepared.
-  - Think about what types of questions you need. How many technical? How many behavioral?
-  - Reflect and study up on how a real life interview for a {{position}} position would go. Try to model the mock interview after a real one.
+  - Think about what the distribution of questions you need. How many technical questions? How many behavioral questions?
+  - Reflect and/or study up on how a real life interview for a {{position}} position would go. Try to model the mock interview after a real one.
+  - Prepare the appropriate interview attire for a {{position}} interview.   
 
 Be sure to follow these general guidelines when interviewing:
-  - Keep the time in mind. The interview lasts an hour. feedback??
+  - Keep the time in mind. The interview lasts an hour, but leave about 15 minutes 
   - Treat this as an actual interview. This is how you will get the most out of your InterviewMe experience.
   
 After interviewing:
+ - Your interviewee will write up a feedback report. Expect to see this in your inbox shortly.
  - Send the interviewee feedback through this form: [TODO].
 
 A Google Calendar event titled "InterviewMe Interview {{interviewer_full_name}} / {{interviewee_full_name}}" was added to your Google Calendar. Please reach out to interviewme.business@gmail.com if you have any questions.
