@@ -162,9 +162,9 @@ public class ScheduledInterviewServlet extends HttpServlet {
   public String getDateString(TimeRange when, ZoneId timeZoneId) {
     LocalDateTime start = LocalDateTime.ofInstant(when.start(), timeZoneId);
     LocalDateTime end = LocalDateTime.ofInstant(when.end(), timeZoneId);
-    String startTime = start.format(DateTimeFormatter.ofPattern("hh:mm a"));
-    String endTime = end.format(DateTimeFormatter.ofPattern("hh:mm a"));
-    String day = start.format(DateTimeFormatter.ofPattern("EEEE, MMMM dd, yyyy"));
+    String startTime = start.format(DateTimeFormatter.ofPattern("h:mm a"));
+    String endTime = end.format(DateTimeFormatter.ofPattern("h:mm a"));
+    String day = start.format(DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy"));
     return day + " from " + startTime + " to " + endTime;
   }
 }

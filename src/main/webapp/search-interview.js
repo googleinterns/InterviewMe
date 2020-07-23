@@ -44,7 +44,7 @@ function selectInterview(interviewer) {
       `PM with a ${interviewer.getAttribute('data-company')} ` +
       `${interviewer.getAttribute('data-job')}. Check your email for more ` +
       `information.`);
-    const request = new Request(`/scheduled-interviews?startTime=2020-07-05T18:30:10Z&endTime=2020-07-05T19:30:10Z&interviewer=${interviewer.getAttribute('data-email')}&interviewee=user@gmail.com`, {
+    const request = new Request(`/scheduled-interviews?startTime=2020-07-13T18:30:10Z&endTime=2020-07-13T19:30:10Z&interviewer=${interviewer.getAttribute('data-email')}&interviewee=user@gmail.com`, {
       method: 'POST'
     }); 
     fetch(request)
