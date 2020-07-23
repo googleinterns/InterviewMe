@@ -21,7 +21,9 @@ import com.google.gson.Gson;
 import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.Person;
 import com.google.sps.data.PersonDao;
+import com.google.sps.data.PersonRequest;
 import java.io.IOException;
+import java.io.BufferedReader;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -32,60 +34,84 @@ import java.util.Optional;
 public class PersonServlet extends HttpServlet {
 
   private PersonDao personDao;
+  private final UserService userService = UserServiceFactory.getUserService();
 
   @Override
   public void init() {
     init(new DatastorePersonDao());
   }
 
-  // TODO: add a FakePersonDao class so this will become useful
   public void init(PersonDao personDao) {
     this.personDao = personDao;
   }
 
-  // Sends the request's contents to Datastore in the form of a new Person.
+  // Sends the request's contents to Datastore in the form of a new Person. Sends a 400 error if
+  // the JSON is malformed.
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    personDao.create(
-        Person.create(
-            request.getParameter("user-email"),
-            request.getParameter("first-name"),
-            request.getParameter("last-name"),
-            request.getParameter("company"),
-            request.getParameter("job"),
-            request.getParameter("linkedin")));
+    PersonRequest personRequest;
+    try {
+      personRequest = new Gson().fromJson(getJsonString(request), PersonRequest.class);
+    } catch (Exception JsonSyntaxException) {
+      response.sendError(400);
+      return;
+    }
+    String id = userService.getCurrentUser().getUserId();
+    String email = userService.getCurrentUser().getEmail();
+    // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
+    // replaced with this hashcode.
+    if (id == null) {
+      id = String.format("%d", email.hashCode());
+    }
+    personDao.create(Person.createFromRequest(id, email, personRequest));
   }
 
-  // Updates Datastore with the Person information in request.
+  // Updates Datastore with the Person information in request. Sends a 400 error if
+  // the JSON is malformed.
   @Override
   public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    personDao.update(
-        Person.create(
-            request.getParameter("user-email"),
-            request.getParameter("first-name"),
-            request.getParameter("last-name"),
-            request.getParameter("company"),
-            request.getParameter("job"),
-            request.getParameter("linkedin")));
-    // TODO: redirect to home page and handle in JS.
+    PersonRequest personRequest;
+    try {
+      personRequest = new Gson().fromJson(getJsonString(request), PersonRequest.class);
+    } catch (Exception JsonSyntaxException) {
+      response.sendError(400);
+      return;
+    }
+    String id = userService.getCurrentUser().getUserId();
+    String email = userService.getCurrentUser().getEmail();
+    // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
+    // replaced with this hashcode.
+    if (id == null) {
+      id = String.format("%d", email.hashCode());
+    }
+    personDao.update(Person.createFromRequest(id, email, personRequest));
   }
 
-  // Returns the person the request's email belongs to. If they aren't in Datastore, redirects to
-  // registration page. If the requestee is not the logged in user, throws a
+  // Get Json from request body.
+  private static String getJsonString(HttpServletRequest request) throws IOException {
+    BufferedReader reader = request.getReader();
+    StringBuffer buffer = new StringBuffer();
+    String payloadLine = null;
+
+    while ((payloadLine = reader.readLine()) != null) buffer.append(payloadLine);
+    return buffer.toString();
+  }
+
+  // Returns the person currently logged in. If they aren't in Datastore, redirects to
+  // registration page.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Ensure person logged in == person being requested.
-    String requesteeEmail = request.getParameter("email");
-    String userEmail = LogInServlet.getLoginInfo("/").email;
-    Preconditions.checkState(requesteeEmail.equals(userEmail));
-
-    Optional<Person> personOpt = personDao.get(requesteeEmail);
+    String id = userService.getCurrentUser().getUserId();
+    // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
+    // replaced with this hashcode.
+    if (id == null) {
+      id = String.format("%d", userService.getCurrentUser().getEmail().hashCode());
+    }
+    Optional<Person> personOpt = personDao.get(id);
     if (!personOpt.isPresent()) {
-      // TODO: apply this to all other pages when someone accesses them illegally.
       response.sendRedirect("/register.html");
       return;
     }
-
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(personOpt.get()));
   }
