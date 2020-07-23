@@ -20,8 +20,8 @@
             <p class="card-text">${scheduledInterview.getDateString()}</p>
           </div>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item">Interviewee: ${scheduledInterview.getInterviewee()}</li>
-            <li class="list-group-item">Interviewer: ${scheduledInterview.getInterviewer()}</li>
+            <li class="list-group-item">Interviewee: ${scheduledInterview.getIntervieweeId()}</li>
+            <li class="list-group-item">Interviewer: ${scheduledInterview.getInterviewerId()}</li>
           </ul>
         </div>
       </div>

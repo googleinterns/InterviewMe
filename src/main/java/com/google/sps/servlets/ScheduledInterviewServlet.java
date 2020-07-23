@@ -126,45 +126,53 @@ public class ScheduledInterviewServlet extends HttpServlet {
     } else {
       timeZoneId = ZoneId.of(timeZoneIdString);
     }
-    String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     List<ScheduledInterviewRequest> requestObjects = new ArrayList<ScheduledInterviewRequest>();
     for (ScheduledInterview scheduledInterview : scheduledInterviews) {
-      String date = getDateString(scheduledInterview.when(), timeZoneId);
-      String interviewer;
-      String interviewee;
-      String role;
-
-      if (userEmail.equals(scheduledInterview.interviewerId())) {
-        role = "Interviewer";
-      } else {
-        role = "Interviewee";
-      }
-
-      if (!personDao.get(scheduledInterview.interviewerId()).isPresent()) {
-        interviewer = "Nonexistent User";
-      } else {
-        interviewer = personDao.get(scheduledInterview.interviewerId()).get().firstName();
-      }
-
-      if (!personDao.get(scheduledInterview.intervieweeId()).isPresent()) {
-        interviewee = "Nonexistent User";
-      } else {
-        interviewee = personDao.get(scheduledInterview.intervieweeId()).get().firstName();
-      }
-
-      requestObjects.add(
-          new ScheduledInterviewRequest(
-              scheduledInterview.id(), date, interviewer, interviewee, role));
+      requestObjects.add(makeSheduledInterviewRequest(scheduledInterview, timeZoneId));
     }
     return requestObjects;
   }
 
-  public String getDateString(TimeRange when, ZoneId timeZoneId) {
+  private String getDateString(TimeRange when, ZoneId timeZoneId) {
     LocalDateTime start = LocalDateTime.ofInstant(when.start(), timeZoneId);
     LocalDateTime end = LocalDateTime.ofInstant(when.end(), timeZoneId);
     String startTime = start.format(DateTimeFormatter.ofPattern("h:mm a"));
     String endTime = end.format(DateTimeFormatter.ofPattern("h:mm a"));
     String day = start.format(DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy"));
     return day + " from " + startTime + " to " + endTime;
+  }
+
+  private ScheduledInterviewRequest makeSheduledInterviewRequest(
+      ScheduledInterview scheduledInterview, ZoneId timeZoneId) {
+    String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
+    String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
+    if (userId == null) {
+      userId = String.format("%d", userEmail.hashCode());
+    }
+    String date = getDateString(scheduledInterview.when(), timeZoneId);
+    String interviewer;
+    String interviewee;
+    String role;
+
+    if (userId.equals(scheduledInterview.interviewerId())) {
+      role = "Interviewer";
+    } else {
+      role = "Interviewee";
+    }
+
+    if (!personDao.get(scheduledInterview.interviewerId()).isPresent()) {
+      interviewer = "Nonexistent User";
+    } else {
+      interviewer = personDao.get(scheduledInterview.interviewerId()).get().firstName();
+    }
+
+    if (!personDao.get(scheduledInterview.intervieweeId()).isPresent()) {
+      interviewee = "Nonexistent User";
+    } else {
+      interviewee = personDao.get(scheduledInterview.intervieweeId()).get().firstName();
+    }
+
+    return new ScheduledInterviewRequest(
+        scheduledInterview.id(), date, interviewer, interviewee, role);
   }
 }
