@@ -17,8 +17,8 @@ function onProfileLoad() {
   loginInfo.then(supplyLogoutLinkOrRedirectHome);  
   loginInfo.then(getUserOrRedirectRegistration).then((person) => {
     autofillForm(person);      
-  });
-  prepareFormValidation();
+  }).then(prepareFormValidation);
+  
 }
 
 // Submits profile form to Datastore.

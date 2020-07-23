@@ -50,6 +50,7 @@ public class PersonServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     PersonRequest personRequest;
+    System.out.println("posting");
     try {
       personRequest = new Gson().fromJson(getJsonString(request), PersonRequest.class);
     } catch (Exception JsonSyntaxException) {
@@ -71,6 +72,7 @@ public class PersonServlet extends HttpServlet {
   @Override
   public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
     PersonRequest personRequest;
+    System.out.println("posting");    
     try {
       personRequest = new Gson().fromJson(getJsonString(request), PersonRequest.class);
     } catch (Exception JsonSyntaxException) {
