@@ -38,6 +38,7 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import com.google.api.client.auth.oauth2.StoredCredential;
 
 import com.google.api.services.calendar.*;
 import com.google.api.services.calendar.model.*;
