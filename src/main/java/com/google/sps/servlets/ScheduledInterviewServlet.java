@@ -50,8 +50,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
   // interviews are returned, otherwise SC_UNAUTHORIZED is returned.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
-    List<ScheduledInterview> scheduledInterviews = scheduledInterviewDao.getForPerson(userEmail);
+    String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
+    List<ScheduledInterview> scheduledInterviews = scheduledInterviewDao.getForPerson(userId);
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(scheduledInterviews));
   }
@@ -62,13 +62,12 @@ public class ScheduledInterviewServlet extends HttpServlet {
   // stored, otherwise SC_UNAUTHORIZED is returned.
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String requestedInterviewerEmail = request.getParameter("interviewer");
-    String requestedIntervieweeEmail = request.getParameter("interviewee");
-    String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
+    String requestedInterviewerId = request.getParameter("interviewer");
+    String requestedIntervieweeId = request.getParameter("interviewee");
+    String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
     // The default key for a scheduledInterview being stored in datastore
     long defaultKey = -1;
-    if ((!requestedInterviewerEmail.equals(userEmail))
-        && (!requestedIntervieweeEmail.equals(userEmail))) {
+    if ((!requestedInterviewerId.equals(userId)) && (!requestedIntervieweeId.equals(userId))) {
       response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
     try {
@@ -78,8 +77,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
               new TimeRange(
                   Instant.parse(request.getParameter("startTime")),
                   Instant.parse(request.getParameter("endTime"))),
-              requestedInterviewerEmail,
-              requestedIntervieweeEmail);
+              requestedInterviewerId,
+              requestedIntervieweeId);
       scheduledInterviewDao.create(scheduledInterview);
       return;
     } catch (DateTimeParseException e) {
