@@ -17,12 +17,16 @@ function onProfileLoad() {
   loginInfo.then(supplyLogoutLinkOrRedirectHome);  
   loginInfo.then(getUserOrRedirectRegistration).then((person) => {
     autofillForm(person);      
-  }).then(prepareFormValidation);
+  });
   
 }
 
 // Submits profile form to Datastore.
 function submitProfileForm(methodType, redirectUrl) {
+  if(!validateProfileForm()) {
+    return;
+  } 
+  console.log("sumbtting");  
   const personJson = {
     firstName: $('#first-name-field').val(),
     lastName: $('#last-name-field').val(),
@@ -38,6 +42,16 @@ function submitProfileForm(methodType, redirectUrl) {
       alert('Error: ' + error + '\nThere was an error submitting your information.' +
       ' Please try again.');
     });
+}
+
+function validateProfileForm() {
+  const form = document.getElementById('profile-form');
+  form.classList.add('was-validated');
+  if (form.checkValidity() === false) {
+    console.log('invalid form');
+    return false;
+  }
+  return true;
 }
 
 // Fills in the profile form with data from Datastore.
