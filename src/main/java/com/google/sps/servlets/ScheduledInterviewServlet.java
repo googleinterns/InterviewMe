@@ -77,6 +77,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     long defaultKey = -1;
     if ((!requestedInterviewerId.equals(userId)) && (!requestedIntervieweeId.equals(userId))) {
       response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+      return;
     }
     try {
       ScheduledInterview scheduledInterview =
