@@ -94,7 +94,7 @@ public class AvailabilityServlet extends HttpServlet {
   }
 
   private void createAndStoreAvailability(
-      String utc, String id, List<ScheduledInterview> scheduledInterviews) {
+      String utc, String userId, List<ScheduledInterview> scheduledInterviews) {
     TimeRange when =
         new TimeRange(Instant.parse(utc), Instant.parse(utc).plus(15, ChronoUnit.MINUTES));
     boolean scheduled = false;
@@ -103,7 +103,7 @@ public class AvailabilityServlet extends HttpServlet {
         scheduled = true;
       }
     }
-    Availability avail = Availability.create(id, when, -1, scheduled);
+    Availability avail = Availability.create(userId, when, -1, scheduled);
     availabilityDao.create(avail);
   }
 }
