@@ -25,6 +25,8 @@ function checkRegisteredBefore() {
     .then(status => fetch(`/person?email=${status.email}`))
     .then(response => {
       if (!response.redirected) {
+        // If response was redirected, that means the logged in user has not registered before.
+        // Otherwise, it means they have registered before and should not re-register.
         window.location.href = '/profile.html';
         return;
       }
