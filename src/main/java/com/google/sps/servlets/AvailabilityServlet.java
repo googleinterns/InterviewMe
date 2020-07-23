@@ -72,21 +72,29 @@ public class AvailabilityServlet extends HttpServlet {
       response.sendError(400);
       return;
     }
+
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
+    String id = userService.getCurrentUser().getUserId();
+    // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
+    // replaced with this hashcode.
+    if (id == null) {
+      id = String.format("%d", email.hashCode());
+    }
+
     Instant minTime = Instant.parse(utcEncodings.getFirstSlot());
     // The last slot for the week starts 15 minutes before the true end of the week.
     Instant maxTime = Instant.parse(utcEncodings.getLastSlot()).plus(15, ChronoUnit.MINUTES);
-    availabilityDao.deleteInRangeForUser(email, minTime, maxTime);
+    availabilityDao.deleteInRangeForUser(id, minTime, maxTime);
     List<ScheduledInterview> scheduledInterviewsForUser =
-        scheduledInterviewDao.getScheduledInterviewsInRangeForUser(email, minTime, maxTime);
+        scheduledInterviewDao.getScheduledInterviewsInRangeForUser(id, minTime, maxTime);
     for (String markedSlot : utcEncodings.getMarkedSlots()) {
-      createAndStoreAvailability(markedSlot, email, scheduledInterviewsForUser);
+      createAndStoreAvailability(markedSlot, id, scheduledInterviewsForUser);
     }
   }
 
   private void createAndStoreAvailability(
-      String utc, String email, List<ScheduledInterview> scheduledInterviews) {
+      String utc, String id, List<ScheduledInterview> scheduledInterviews) {
     TimeRange when =
         new TimeRange(Instant.parse(utc), Instant.parse(utc).plus(15, ChronoUnit.MINUTES));
     boolean scheduled = false;
@@ -95,7 +103,7 @@ public class AvailabilityServlet extends HttpServlet {
         scheduled = true;
       }
     }
-    Availability avail = Availability.create(email, when, -1, scheduled);
+    Availability avail = Availability.create(id, when, -1, scheduled);
     availabilityDao.create(avail);
   }
 }
