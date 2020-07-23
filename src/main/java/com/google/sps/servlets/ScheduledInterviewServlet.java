@@ -72,9 +72,11 @@ public class ScheduledInterviewServlet extends HttpServlet {
         objectToRequestObject(scheduledInterviewDao.getForPerson(userId), timeZoneId);
     request.setAttribute("scheduledInterviews", scheduledInterviews);
     request.setAttribute("userEmail", userEmail);
-    List<ScheduledInterview> scheduledInterviews1 =
-        (List<ScheduledInterview>) request.getAttribute("scheduledInterviews");
+    System.out.println(scheduledInterviews.size());
+    List<ScheduledInterviewRequest> scheduledInterviews1 =
+        (List<ScheduledInterviewRequest>) request.getAttribute("scheduledInterviews");
     String userEmail1 = (String) request.getAttribute("userEmail");
+    System.out.println("Request size: " + scheduledInterviews1.size());
     RequestDispatcher rd = request.getRequestDispatcher("/scheduled-interviews.jsp");
     try {
       rd.forward(request, response);
@@ -158,7 +160,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
   }
 
   public String getDateString(TimeRange when, ZoneId timeZoneId) {
-    System.out.println(timeZoneId);
     LocalDateTime start = LocalDateTime.ofInstant(when.start(), timeZoneId);
     LocalDateTime end = LocalDateTime.ofInstant(when.end(), timeZoneId);
     String startTime = start.format(DateTimeFormatter.ofPattern("hh:mm a"));

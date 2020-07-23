@@ -13,16 +13,22 @@
 // limitations under the License.
 
 function onScheduledInterviewsLoad() {
-  fetch(`/scheduled-interviews?timeZone=${browserTimezoneOffset()}`)
+  //fetch(`/scheduled-interviews?timeZone=${getBrowserTimeZone()}`)
   const loginInfo = getLoginInfo();
   loginInfo.then(supplyLogoutLinkOrRedirectHome); 
   loginInfo.then(getUserOrRedirectRegistration);
-  console.log(browserTimezoneOffset());
+  console.log(getBrowserTimeZone());
+  loadScheduledInterviewCards(); 
 }
 
-function browserTimezoneOffset() {
-  /*let date = new Date();
-  return (-1) * date.getTimezoneOffset();
-  */
+function getBrowserTimeZone() {
   return Intl.DateTimeFormat().resolvedOptions().timeZone; 
+}
+
+function loadScheduledInterviewCards() {
+  fetch(`/scheduled-interviews?timeZone=${getBrowserTimeZone()}`)
+    .then(response => response.text())
+    .then(listOfCards => {
+      document.getElementById('scheduled-interviews-cards').innerHTML = listOfCards;
+    });
 }
