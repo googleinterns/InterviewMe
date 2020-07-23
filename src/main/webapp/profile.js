@@ -18,7 +18,6 @@ function onProfileLoad() {
   loginInfo.then(getUserOrRedirectRegistration).then((person) => {
     autofillForm(person);      
   });
-  
 }
 
 // Submits profile form to Datastore.
@@ -26,7 +25,6 @@ function submitProfileForm(methodType, redirectUrl) {
   if(!validateProfileForm()) {
     return;
   } 
-  console.log("sumbtting");  
   const personJson = {
     firstName: $('#first-name-field').val(),
     lastName: $('#last-name-field').val(),
@@ -47,11 +45,7 @@ function submitProfileForm(methodType, redirectUrl) {
 function validateProfileForm() {
   const form = document.getElementById('profile-form');
   form.classList.add('was-validated');
-  if (form.checkValidity() === false) {
-    console.log('invalid form');
-    return false;
-  }
-  return true;
+  return form.checkValidity();
 }
 
 // Fills in the profile form with data from Datastore.
