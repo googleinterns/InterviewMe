@@ -44,7 +44,6 @@ function browserTimezoneOffset() {
 // if confirmed.
 function selectInterview(interviewer) {
   if (confirm(
-    // TOOD: fill in these times dynamically from ids in the .jsp file.
       `You selected: ${interviewer.getAttribute('data-date')} from ` +
       `${interviewer.getAttribute('data-time')} with a ` +
       `${interviewer.getAttribute('data-company')} ` +
@@ -57,14 +56,14 @@ function selectInterview(interviewer) {
       `${interviewer.getAttribute('data-job')}. Check your email for more ` +
       `information.`);
     // TODO: Call a servlet to save this selection. Using interviewer.getAttribute('data-utc').
+    // TODO: Change this to data-id once refactor is merged
     let requestObject = {
       interviewer: interviewer.getAttribute('data-email'),
       utc: interviewer.getAttribute('data-utc')
     };
     let requestBody = JSON.stringify(requestObject);
     let request = new Request('/scheduled-interviews', {method: 'POST', body: requestBody});
-    fetch(request).then(unused => {}); // TODO: Redirect to scheduled interviews page?
-    location.reload();
+    fetch(request).then(unused => {window.location.replace('/scheduled-interviews.html');});
   }
 }
 
