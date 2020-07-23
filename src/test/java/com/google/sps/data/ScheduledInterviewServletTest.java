@@ -67,13 +67,34 @@ public final class ScheduledInterviewServletTest {
   }
 
   private final Person interviewer =
-      Person.create("user@company.org", "User", "Subject", "Google", "SWE", "linkedIn");
+      Person.create(
+          emailToId("user@company.org"),
+          "user@company.org",
+          "User1",
+          "Subject",
+          "Google",
+          "SWE",
+          "linkedIn");
 
   private final Person interviewee =
-      Person.create("user@gmail.com", "User", "Subject", "Google", "SWE", "linkedIn");
+      Person.create(
+          emailToId("user@gmail.com"),
+          "user@gmail.com",
+          "User2",
+          "Subject",
+          "Google",
+          "SWE",
+          "linkedIn");
 
   private final Person interviewer1 =
-      Person.create("user2@company.org", "User", "Subject", "Google", "SWE", "linkedIn");
+      Person.create(
+          emailToId("user2@company.org"),
+          "user2@company.org",
+          "User3",
+          "Subject",
+          "Google",
+          "SWE",
+          "linkedIn");
 
   // Tests whether a scheduledInterview object was added to datastore.
   @Test
@@ -166,25 +187,25 @@ public final class ScheduledInterviewServletTest {
     getRequest.addParameter("userEmail", emailToId("user@gmail.com"));
     scheduledInterviewServlet.doGet(getRequest, getResponse);
 
-    List<ScheduledInterview> actual =
-        (List<ScheduledInterview>) getRequest.getAttribute("scheduledInterviews");
+    List<ScheduledInterviewRequest> actual =
+        (List<ScheduledInterviewRequest>) getRequest.getAttribute("scheduledInterviews");
 
-    ScheduledInterview scheduledInterview1 =
-        ScheduledInterview.create(
-            actual.get(0).id(),
-            new TimeRange(
-                Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
-            emailToId("user@company.org"),
-            emailToId("user@gmail.com"));
+    ScheduledInterviewRequest scheduledInterview1 =
+        new ScheduledInterviewRequest(
+            actual.get(0).getId(),
+            "Sunday, July 5, 2020 from 6:00 PM to 7:00 PM",
+            "User1",
+            "User2",
+            "Interviewee");
     ScheduledInterviewRequest scheduledInterview2 =
         new ScheduledInterviewRequest(
             actual.get(1).getId(),
-            new TimeRange(
-                Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
-            emailToId("user2@company.org"),
-            emailToId("user@gmail.com"));
+            "Sunday, July 5, 2020 from 8:00 PM to 9:00 PM",
+            "User3",
+            "User2",
+            "Interviewee");
 
-    List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
+    List<ScheduledInterviewRequest> expected = new ArrayList<ScheduledInterviewRequest>();
     expected.add(scheduledInterview1);
     expected.add(scheduledInterview2);
     // Used assertThat in order to see what the actual field differences are

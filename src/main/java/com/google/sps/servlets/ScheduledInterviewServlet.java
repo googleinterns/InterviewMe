@@ -134,22 +134,22 @@ public class ScheduledInterviewServlet extends HttpServlet {
       String interviewee;
       String role;
 
-      if (userEmail.equals(scheduledInterview.interviewerEmail())) {
+      if (userEmail.equals(scheduledInterview.interviewerId())) {
         role = "Interviewer";
       } else {
         role = "Interviewee";
       }
 
-      if (!personDao.get(scheduledInterview.interviewerEmail()).isPresent()) {
+      if (!personDao.get(scheduledInterview.interviewerId()).isPresent()) {
         interviewer = "Nonexistent User";
       } else {
-        interviewer = personDao.get(scheduledInterview.interviewerEmail()).get().firstName();
+        interviewer = personDao.get(scheduledInterview.interviewerId()).get().firstName();
       }
 
-      if (!personDao.get(scheduledInterview.intervieweeEmail()).isPresent()) {
+      if (!personDao.get(scheduledInterview.intervieweeId()).isPresent()) {
         interviewee = "Nonexistent User";
       } else {
-        interviewee = personDao.get(scheduledInterview.intervieweeEmail()).get().firstName();
+        interviewee = personDao.get(scheduledInterview.intervieweeId()).get().firstName();
       }
 
       requestObjects.add(

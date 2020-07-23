@@ -17,15 +17,15 @@ package com.google.sps.data;
 /** Represents the data sent in a put or post request to the Person Servlet. */
 public class ScheduledInterviewRequest {
   private long id;
-  private TimeRange when;
+  private String dateString;
   private String interviewerId;
   private String intervieweeId;
   private String role;
 
   public ScheduledInterviewRequest(
-      long id, TimeRange when, String interviewerId, String intervieweeId) {
+      long id, String dateString, String interviewerId, String intervieweeId, String role) {
     this.id = id;
-    this.when = when;
+    this.dateString = dateString;
     this.interviewerId = interviewerId;
     this.intervieweeId = intervieweeId;
     this.role = role;
@@ -46,7 +46,7 @@ public class ScheduledInterviewRequest {
   public String getIntervieweeId() {
     return intervieweeId;
   }
-  
+
   public String getRole() {
     return role;
   }
@@ -59,8 +59,8 @@ public class ScheduledInterviewRequest {
       ScheduledInterviewRequest that = (ScheduledInterviewRequest) o;
       return this.getId() == that.getId()
           && this.getDateString().equals(that.getDateString())
-          && this.getInterviewer().equals(that.getInterviewerId())
-          && this.getInterviewee().equals(that.getIntervieweeId())
+          && this.getInterviewerId().equals(that.getInterviewerId())
+          && this.getIntervieweeId().equals(that.getIntervieweeId())
           && this.getRole().equals(that.getRole());
     }
     return false;
@@ -68,7 +68,7 @@ public class ScheduledInterviewRequest {
 
   public String toString() {
     return String.format(
-        "{%s:%s, %s:%s, %s:%s, %s:%s}",
+        "{%s:%s, %s:%s, %s:%s, %s:%s, %s:%s}",
         "id",
         id,
         "dateString",
