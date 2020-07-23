@@ -14,15 +14,14 @@
 
 function onRegisterLoad() {
   const loginInfo = getLoginInfo();
+  loginInfo.then(redirectProfileIfRegistered);
   loginInfo.then(supplyLogoutLinkOrRedirectHome); 
   loginInfo.then(autofillEmail).then(prepareFormValidation);
 }
 
 // If they have registered before, redirect them to profile page.
-function checkRegisteredBefore() {
-  fetch('/login')
-    .then(response => response.json())
-    .then(status => fetch(`/person?email=${status.email}`))
+function redirectProfileIfRegistered() {
+  fetch('/person')
     .then(response => {
       if (!response.redirected) {
         // If response was redirected, that means the logged in user has not registered before.
