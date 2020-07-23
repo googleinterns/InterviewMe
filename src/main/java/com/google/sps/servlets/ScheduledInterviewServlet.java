@@ -55,7 +55,11 @@ public class ScheduledInterviewServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String userEmail = userService.getCurrentUser().getEmail();
-    List<ScheduledInterview> scheduledInterviews = scheduledInterviewDao.getForPerson(userEmail);
+    String userId = userService.getCurrentUser().getUserId();
+    if (userId == null) {
+      userId = String.format("%d", userEmail.hashCode());
+    }
+    List<ScheduledInterview> scheduledInterviews = scheduledInterviewDao.getForPerson(userId);
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(scheduledInterviews));
   }
@@ -63,6 +67,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
   // Send the request's contents to Datastore in the form of a new ScheduledInterview object.
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+<<<<<<< HEAD
 
     String intervieweeEmail = userService.getCurrentUser().getEmail();
     String intervieweeId = userService.getCurrentUser().getUserId();
