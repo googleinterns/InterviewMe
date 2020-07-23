@@ -50,7 +50,11 @@ public class ScheduledInterviewServlet extends HttpServlet {
   // interviews are returned, otherwise SC_UNAUTHORIZED is returned.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
+    if (userId == null) {
+      userId = String.format("%d", userEmail.hashCode());
+    }
     List<ScheduledInterview> scheduledInterviews = scheduledInterviewDao.getForPerson(userId);
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(scheduledInterviews));
@@ -64,7 +68,11 @@ public class ScheduledInterviewServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String requestedInterviewerId = request.getParameter("interviewer");
     String requestedIntervieweeId = request.getParameter("interviewee");
+    String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
+    if (userId == null) {
+      userId = String.format("%d", userEmail.hashCode());
+    }
     // The default key for a scheduledInterview being stored in datastore
     long defaultKey = -1;
     if ((!requestedInterviewerId.equals(userId)) && (!requestedIntervieweeId.equals(userId))) {

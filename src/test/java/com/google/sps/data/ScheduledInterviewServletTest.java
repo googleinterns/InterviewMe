@@ -48,10 +48,12 @@ import com.google.gson.JsonSyntaxException;
 public final class ScheduledInterviewServletTest {
   LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalCapabilitiesServiceTestConfig());
+  private FakeScheduledInterviewDao scheduledInterviewDao;
 
   @Before
   public void setUp() {
     helper.setUp();
+    scheduledInterviewDao = new FakeScheduledInterviewDao();
   }
 
   @After
