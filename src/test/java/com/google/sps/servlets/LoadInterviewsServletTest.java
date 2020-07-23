@@ -101,7 +101,7 @@ public final class LoadInterviewsServletTest {
     // A 15 minute slot
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T13:30:00Z"), Instant.parse("2020-07-07T13:45:00Z")),
             -1,
@@ -110,7 +110,7 @@ public final class LoadInterviewsServletTest {
     // A 30 minute slot
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T14:30:00Z"), Instant.parse("2020-07-07T14:45:00Z")),
             -1,
@@ -118,7 +118,7 @@ public final class LoadInterviewsServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T14:45:00Z"), Instant.parse("2020-07-07T15:00:00Z")),
             -1,
@@ -127,7 +127,7 @@ public final class LoadInterviewsServletTest {
     // A 45 minute slot
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T15:30:00Z"), Instant.parse("2020-07-07T15:45:00Z")),
             -1,
@@ -135,7 +135,7 @@ public final class LoadInterviewsServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T15:45:00Z"), Instant.parse("2020-07-07T16:00:00Z")),
             -1,
@@ -143,7 +143,7 @@ public final class LoadInterviewsServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T16:00:00Z"), Instant.parse("2020-07-07T16:15:00Z")),
             -1,
@@ -152,7 +152,7 @@ public final class LoadInterviewsServletTest {
     // An hour slot
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T16:30:00Z"), Instant.parse("2020-07-07T16:45:00Z")),
             -1,
@@ -160,7 +160,7 @@ public final class LoadInterviewsServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T16:45:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
             -1,
@@ -168,7 +168,7 @@ public final class LoadInterviewsServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T17:00:00Z"), Instant.parse("2020-07-07T17:15:00Z")),
             -1,
@@ -176,7 +176,7 @@ public final class LoadInterviewsServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T17:15:00Z"), Instant.parse("2020-07-07T17:30:00Z")),
             -1,
@@ -207,7 +207,7 @@ public final class LoadInterviewsServletTest {
     // A scheduled hour slot
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T16:30:00Z"), Instant.parse("2020-07-07T16:45:00Z")),
             -1,
@@ -215,7 +215,7 @@ public final class LoadInterviewsServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T16:45:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
             -1,
@@ -223,7 +223,7 @@ public final class LoadInterviewsServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T17:00:00Z"), Instant.parse("2020-07-07T17:15:00Z")),
             -1,
@@ -231,7 +231,7 @@ public final class LoadInterviewsServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T17:15:00Z"), Instant.parse("2020-07-07T17:30:00Z")),
             -1,
@@ -251,12 +251,15 @@ public final class LoadInterviewsServletTest {
   public void noSchedulingWithYourself() throws IOException, ServletException {
     LoadInterviewsServlet servlet = new LoadInterviewsServlet();
     servlet.init(availabilityDao, Instant.parse("2020-07-07T13:15:00Z"));
-    helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
+    String userEmail = "user@gmail.com";
+    helper.setEnvIsLoggedIn(true).setEnvEmail(userEmail).setEnvAuthDomain("auth");
+
+    String userId = String.format("%d", userEmail.hashCode());
 
     // An hour of the user's availability
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            userId,
             new TimeRange(
                 Instant.parse("2020-07-07T16:30:00Z"), Instant.parse("2020-07-07T16:45:00Z")),
             -1,
@@ -264,7 +267,7 @@ public final class LoadInterviewsServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            userId,
             new TimeRange(
                 Instant.parse("2020-07-07T16:45:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
             -1,
@@ -272,7 +275,7 @@ public final class LoadInterviewsServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            userId,
             new TimeRange(
                 Instant.parse("2020-07-07T17:00:00Z"), Instant.parse("2020-07-07T17:15:00Z")),
             -1,
@@ -280,7 +283,7 @@ public final class LoadInterviewsServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            userId,
             new TimeRange(
                 Instant.parse("2020-07-07T17:15:00Z"), Instant.parse("2020-07-07T17:30:00Z")),
             -1,
@@ -305,7 +308,7 @@ public final class LoadInterviewsServletTest {
     // An hour and 15 minute slot
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T16:30:00Z"), Instant.parse("2020-07-07T16:45:00Z")),
             -1,
@@ -313,7 +316,7 @@ public final class LoadInterviewsServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T16:45:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
             -1,
@@ -321,7 +324,7 @@ public final class LoadInterviewsServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T17:00:00Z"), Instant.parse("2020-07-07T17:15:00Z")),
             -1,
@@ -329,14 +332,14 @@ public final class LoadInterviewsServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T17:15:00Z"), Instant.parse("2020-07-07T17:30:00Z")),
             -1,
             false));
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T17:30:00Z"), Instant.parse("2020-07-07T17:45:00Z")),
             -1,
@@ -369,7 +372,7 @@ public final class LoadInterviewsServletTest {
     // An hour slot on 7/7
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T16:30:00Z"), Instant.parse("2020-07-07T16:45:00Z")),
             -1,
@@ -377,7 +380,7 @@ public final class LoadInterviewsServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T16:45:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
             -1,
@@ -385,7 +388,7 @@ public final class LoadInterviewsServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T17:00:00Z"), Instant.parse("2020-07-07T17:15:00Z")),
             -1,
@@ -393,7 +396,7 @@ public final class LoadInterviewsServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T17:15:00Z"), Instant.parse("2020-07-07T17:30:00Z")),
             -1,
@@ -402,7 +405,7 @@ public final class LoadInterviewsServletTest {
     // An hour slot on 7/8
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-08T16:30:00Z"), Instant.parse("2020-07-08T16:45:00Z")),
             -1,
@@ -410,7 +413,7 @@ public final class LoadInterviewsServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-08T16:45:00Z"), Instant.parse("2020-07-08T17:00:00Z")),
             -1,
@@ -418,7 +421,7 @@ public final class LoadInterviewsServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-08T17:00:00Z"), Instant.parse("2020-07-08T17:15:00Z")),
             -1,
@@ -426,7 +429,7 @@ public final class LoadInterviewsServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "user@gmail.com",
+            "user1",
             new TimeRange(
                 Instant.parse("2020-07-08T17:15:00Z"), Instant.parse("2020-07-08T17:30:00Z")),
             -1,

@@ -17,6 +17,9 @@ package com.google.sps.servlets;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
+import com.google.sps.data.Availability;
+import com.google.sps.data.AvailabilityDao;
+import com.google.sps.data.DatastoreAvailabilityDao;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
 import com.google.sps.data.InterviewPostRequest;
 import com.google.sps.data.ScheduledInterview;
@@ -37,16 +40,17 @@ import java.time.format.DateTimeParseException;
 public class ScheduledInterviewServlet extends HttpServlet {
 
   private ScheduledInterviewDao scheduledInterviewDao;
+  private AvailabilityDao availabilityDao;
   private final UserService userService = UserServiceFactory.getUserService();
 
   @Override
   public void init() {
-    init(new DatastoreScheduledInterviewDao());
+    init(new DatastoreScheduledInterviewDao(), new DatastoreAvailabilityDao());
   }
 
-  // TODO: add a FakeScheduledInterviewDao class so this will become useful
-  public void init(ScheduledInterviewDao scheduledInterviewDao) {
+  public void init(ScheduledInterviewDao scheduledInterviewDao, AvailabilityDao availabilityDao) {
     this.scheduledInterviewDao = scheduledInterviewDao;
+    this.availabilityDao = availabilityDao;
   }
 
   // Gets the current user's email from request and returns the ScheduledInterviews for that person.
@@ -67,8 +71,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
   // Send the request's contents to Datastore in the form of a new ScheduledInterview object.
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-<<<<<<< HEAD
-
     String intervieweeEmail = userService.getCurrentUser().getEmail();
     String intervieweeId = userService.getCurrentUser().getUserId();
 
@@ -104,8 +106,23 @@ public class ScheduledInterviewServlet extends HttpServlet {
       return;
     }
 
-    // TODO: Create the Scheduled Interview after the refactoring is complete. Also maybe make a
-    // Availability dao method for marking the four effected slots as scheduled.
+    scheduledInterviewDao.create(ScheduledInterview.create(
+      -1,
+      new TimeRange(startTime, endTime),
+      interviewerId,
+      intervieweeId
+    ));
+    
+    // Since an interview was scheduled, both parties' availabilities must be updated
+    List<Availability> affectedAvailability = new ArrayList<Availability>();
+    List<Availability> intervieweeAffectedAvailability = availabilityDao.getInRangeForUser(intervieweeId, startTime, endTime);
+    List<Availability> interviewerAffectedAvailability = availabilityDao.getInRangeForUser(interviewerId, startTime, endTime);
+    affectedAvailability.addAll(intervieweeAffectedAvailability);
+    affectedAvailability.addAll(interviewerAffectedAvailability);
+    
+    for (Availability avail : affectedAvailability) {
+      availabilityDao.update(avail.scheduledStatus(true));
+    }
   }
 
   // Get Json from request body.

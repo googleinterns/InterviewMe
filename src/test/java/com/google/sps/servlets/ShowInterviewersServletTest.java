@@ -51,11 +51,15 @@ public final class ShowInterviewersServletTest {
   private FakeAvailabilityDao availabilityDao;
   private FakePersonDao personDao;
 
+  private final String person1Email = "person1@mail";
+  private final String person1Id = String.format("%d", person1Email.hashCode());
   private final Person person1 =
-      Person.create("person1@mail", "Test", "Subject", "Google", "SWE", "linkedIn");
+      Person.create(person1Id, person1Email, "Test", "Subject", "Google", "SWE", "linkedIn");
 
+  private final String person2Email = "person2@mail";
+  private final String person2Id = String.format("%d", person2Email.hashCode());
   private final Person person2 =
-      Person.create("person2@mail", "Test", "Subject", "Google", "PM", "linkedIn");
+      Person.create(person2Id, person2Email, "Test", "Subject", "Google", "PM", "linkedIn");
 
   @Before
   public void setUp() {
@@ -79,7 +83,7 @@ public final class ShowInterviewersServletTest {
 
     availabilityDao.create(
         Availability.create(
-            person1.email(),
+            person1.id(),
             new TimeRange(
                 Instant.parse("2020-07-07T13:30:00Z"), Instant.parse("2020-07-07T13:45:00Z")),
             -1,
@@ -87,7 +91,7 @@ public final class ShowInterviewersServletTest {
 
     availabilityDao.create(
         Availability.create(
-            person1.email(),
+            person1.id(),
             new TimeRange(
                 Instant.parse("2020-07-07T13:45:00Z"), Instant.parse("2020-07-07T14:00:00Z")),
             -1,
@@ -95,7 +99,7 @@ public final class ShowInterviewersServletTest {
 
     availabilityDao.create(
         Availability.create(
-            person1.email(),
+            person1.id(),
             new TimeRange(
                 Instant.parse("2020-07-07T14:00:00Z"), Instant.parse("2020-07-07T14:15:00Z")),
             -1,
@@ -120,7 +124,7 @@ public final class ShowInterviewersServletTest {
 
     availabilityDao.create(
         Availability.create(
-            person1.email(),
+            person1.id(),
             new TimeRange(
                 Instant.parse("2020-07-07T13:30:00Z"), Instant.parse("2020-07-07T13:45:00Z")),
             -1,
@@ -128,7 +132,7 @@ public final class ShowInterviewersServletTest {
 
     availabilityDao.create(
         Availability.create(
-            person1.email(),
+            person1.id(),
             new TimeRange(
                 Instant.parse("2020-07-07T13:45:00Z"), Instant.parse("2020-07-07T14:00:00Z")),
             -1,
@@ -136,7 +140,7 @@ public final class ShowInterviewersServletTest {
 
     availabilityDao.create(
         Availability.create(
-            person1.email(),
+            person1.id(),
             new TimeRange(
                 Instant.parse("2020-07-07T14:00:00Z"), Instant.parse("2020-07-07T14:15:00Z")),
             -1,
@@ -144,7 +148,7 @@ public final class ShowInterviewersServletTest {
 
     availabilityDao.create(
         Availability.create(
-            person1.email(),
+            person1.id(),
             new TimeRange(
                 Instant.parse("2020-07-07T14:15:00Z"), Instant.parse("2020-07-07T14:30:00Z")),
             -1,
@@ -164,11 +168,14 @@ public final class ShowInterviewersServletTest {
   public void noSchedulingWithYourself() throws IOException, ServletException {
     ShowInterviewersServlet servlet = new ShowInterviewersServlet();
     servlet.init(availabilityDao, personDao);
+    String userEmail = "person@gmail.com";
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
+
+    String userId = String.format("%d", userEmail.hashCode());
 
     availabilityDao.create(
         Availability.create(
-            "person@gmail.com",
+            userId,
             new TimeRange(
                 Instant.parse("2020-07-07T13:30:00Z"), Instant.parse("2020-07-07T13:45:00Z")),
             -1,
@@ -176,7 +183,7 @@ public final class ShowInterviewersServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "person@gmail.com",
+            userId,
             new TimeRange(
                 Instant.parse("2020-07-07T13:45:00Z"), Instant.parse("2020-07-07T14:00:00Z")),
             -1,
@@ -184,7 +191,7 @@ public final class ShowInterviewersServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "person@gmail.com",
+            userId,
             new TimeRange(
                 Instant.parse("2020-07-07T14:00:00Z"), Instant.parse("2020-07-07T14:15:00Z")),
             -1,
@@ -192,7 +199,7 @@ public final class ShowInterviewersServletTest {
 
     availabilityDao.create(
         Availability.create(
-            "person@gmail.com",
+            userId,
             new TimeRange(
                 Instant.parse("2020-07-07T14:15:00Z"), Instant.parse("2020-07-07T14:30:00Z")),
             -1,
@@ -217,7 +224,7 @@ public final class ShowInterviewersServletTest {
 
     availabilityDao.create(
         Availability.create(
-            person2.email(),
+            person2.id(),
             new TimeRange(
                 Instant.parse("2020-07-07T13:30:00Z"), Instant.parse("2020-07-07T13:45:00Z")),
             -1,
@@ -225,7 +232,7 @@ public final class ShowInterviewersServletTest {
 
     availabilityDao.create(
         Availability.create(
-            person2.email(),
+            person2.id(),
             new TimeRange(
                 Instant.parse("2020-07-07T13:45:00Z"), Instant.parse("2020-07-07T14:00:00Z")),
             -1,
@@ -233,7 +240,7 @@ public final class ShowInterviewersServletTest {
 
     availabilityDao.create(
         Availability.create(
-            person2.email(),
+            person2.id(),
             new TimeRange(
                 Instant.parse("2020-07-07T14:00:00Z"), Instant.parse("2020-07-07T14:15:00Z")),
             -1,
@@ -241,7 +248,7 @@ public final class ShowInterviewersServletTest {
 
     availabilityDao.create(
         Availability.create(
-            person2.email(),
+            person2.id(),
             new TimeRange(
                 Instant.parse("2020-07-07T14:15:00Z"), Instant.parse("2020-07-07T14:30:00Z")),
             -1,

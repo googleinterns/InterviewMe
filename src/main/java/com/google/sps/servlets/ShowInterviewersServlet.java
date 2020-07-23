@@ -85,19 +85,27 @@ public class ShowInterviewersServlet extends HttpServlet {
       List<Availability> allAvailabilities, Instant startOfRange, Instant endOfRange) {
     Set<String> allInterviewers = new HashSet<String>();
     for (Availability avail : allAvailabilities) {
-      allInterviewers.add(avail.email());
+      allInterviewers.add(avail.userId());
     }
 
     // We don't want to schedule an interview for a user with themself, so we are removing
-    // the current user's email from the list.
+    // the current user's id from the list.
     UserService userService = UserServiceFactory.getUserService();
     String userEmail = userService.getCurrentUser().getEmail();
-    allInterviewers.remove(userEmail);
+    String userId = userService.getCurrentUser().getUserId();
+
+    // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
+    // replaced with this hashcode.
+    if (userId == null) {
+      userId = String.format("%d", userEmail.hashCode());
+    }
+
+    allInterviewers.remove(userId);
 
     List<Person> possibleInterviewers = new ArrayList<Person>();
-    for (String email : allInterviewers) {
-      if (personHasPossibleInterviewSlot(email, startOfRange, endOfRange)) {
-        possibleInterviewers.add(personDao.get(email).get());
+    for (String interviewer : allInterviewers) {
+      if (personHasPossibleInterviewSlot(interviewer, startOfRange, endOfRange)) {
+        possibleInterviewers.add(personDao.get(interviewer).get());
       }
     }
 
@@ -105,9 +113,9 @@ public class ShowInterviewersServlet extends HttpServlet {
   }
 
   private boolean personHasPossibleInterviewSlot(
-      String email, Instant startOfRange, Instant endOfRange) {
+      String userId, Instant startOfRange, Instant endOfRange) {
     List<Availability> availabilities =
-        availabilityDao.getInRangeForUser(email, startOfRange, endOfRange);
+        availabilityDao.getInRangeForUser(userId, startOfRange, endOfRange);
     List<Availability> scheduledAvailability = new ArrayList<Availability>();
     for (Availability avail : availabilities) {
       if (avail.scheduled()) {
