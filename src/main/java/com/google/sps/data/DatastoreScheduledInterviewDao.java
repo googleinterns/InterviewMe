@@ -65,11 +65,11 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
    * returns them as a list of ScheduledInterview objects in the order in which they occur.
    */
   @Override
-  public List<ScheduledInterview> getForPerson(String id) {
+  public List<ScheduledInterview> getForPerson(String userId) {
     FilterPredicate interviewerFilter =
-        new FilterPredicate("interviewer", FilterOperator.EQUAL, id);
+        new FilterPredicate("interviewer", FilterOperator.EQUAL, userId);
     FilterPredicate intervieweeFilter =
-        new FilterPredicate("interviewee", FilterOperator.EQUAL, id);
+        new FilterPredicate("interviewee", FilterOperator.EQUAL, userId);
     CompositeFilter compositeFilter =
         CompositeFilterOperator.or(interviewerFilter, intervieweeFilter);
     Query query =
@@ -91,9 +91,9 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
    */
   @Override
   public List<ScheduledInterview> getScheduledInterviewsInRangeForUser(
-      String id, Instant minTime, Instant maxTime) {
-    Filter interviewerFilter = new FilterPredicate("interviewer", FilterOperator.EQUAL, id);
-    Filter intervieweeFilter = new FilterPredicate("interviewee", FilterOperator.EQUAL, id);
+      String userId, Instant minTime, Instant maxTime) {
+    Filter interviewerFilter = new FilterPredicate("interviewer", FilterOperator.EQUAL, userId);
+    Filter intervieweeFilter = new FilterPredicate("interviewee", FilterOperator.EQUAL, userId);
     CompositeFilter scheduledForUserFilter =
         CompositeFilterOperator.or(interviewerFilter, intervieweeFilter);
     List<Entity> entities =

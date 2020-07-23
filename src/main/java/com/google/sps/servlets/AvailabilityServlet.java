@@ -75,21 +75,21 @@ public class AvailabilityServlet extends HttpServlet {
 
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
-    String id = userService.getCurrentUser().getUserId();
+    String userId = userService.getCurrentUser().getUserId();
     // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
     // replaced with this hashcode.
-    if (id == null) {
-      id = String.format("%d", email.hashCode());
+    if (userId == null) {
+      userId = String.format("%d", email.hashCode());
     }
 
     Instant minTime = Instant.parse(utcEncodings.getFirstSlot());
     // The last slot for the week starts 15 minutes before the true end of the week.
     Instant maxTime = Instant.parse(utcEncodings.getLastSlot()).plus(15, ChronoUnit.MINUTES);
-    availabilityDao.deleteInRangeForUser(id, minTime, maxTime);
+    availabilityDao.deleteInRangeForUser(userId, minTime, maxTime);
     List<ScheduledInterview> scheduledInterviewsForUser =
-        scheduledInterviewDao.getScheduledInterviewsInRangeForUser(id, minTime, maxTime);
+        scheduledInterviewDao.getScheduledInterviewsInRangeForUser(userId, minTime, maxTime);
     for (String markedSlot : utcEncodings.getMarkedSlots()) {
-      createAndStoreAvailability(markedSlot, id, scheduledInterviewsForUser);
+      createAndStoreAvailability(markedSlot, userId, scheduledInterviewsForUser);
     }
   }
 
