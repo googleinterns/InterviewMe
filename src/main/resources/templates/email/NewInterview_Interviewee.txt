@@ -1,0 +1,16 @@
+You have been registered for an interview on {{formatted_date}}. You are the interviewee. You will be be mock interviewed by {{interviewer_full_name}} for the position of: {{position}}.
+
+Before the interview, you will need to:
+  - Prepare your resume to share with your interviewer if they ask for it.
+  - 
+
+Be sure to follow these general guidelines when interviewing:
+  - Be respectful to the interviewer. They are volunteering their time to help you.
+  - Treat this as an actual interview. This is how you will get the most out of your InterviewMe experience.
+
+After interviewing:
+ - Your interviewer will write up a feedback report. Expect to see this in your inbox shortly.
+ - Write feedback??
+ - Reflect on your feedback. 
+
+A Google Calendar event titled "InterviewMe Interview {{interviewer_full_name}} / {{interviewee_full_name}}" was added to your Google Calendar. Please reach out to interviewme.business@gmail.com if you have any questions.

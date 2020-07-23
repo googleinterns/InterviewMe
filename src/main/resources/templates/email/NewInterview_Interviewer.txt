@@ -1,15 +1,15 @@
-You have been registered for an interview on {{formatted_date}}. You are the interviewer. You will be mock interviewing {{interviewee_full_name}} ({{interviewee_email}}) for the position of: {{position}}.
+You have been registered for an interview on {{formatted_date}}. You are the interviewer. You will be mock interviewing {{interviewee_full_name}} for the position of: {{position}}.
 
-Before the interviewer, you will need to:
+Before the interview, you will need to:
   - Prepare a few questions for the interviewer. You may not use all of them but it is best to be prepared.
-  - Reflect and study up on how a real life interviewer 
+  - Think about what types of questions you need. How many technical? How many behavioral?
+  - Reflect and study up on how a real life interview for a {{position}} position would go. Try to model the mock interview after a real one.
 
 Be sure to follow these general guidelines when interviewing:
-Keep the time in mind??
-
+  - Keep the time in mind. The interview lasts an hour. feedback??
+  - Treat this as an actual interview. This is how you will get the most out of your InterviewMe experience.
+  
 After interviewing:
-Send the interviewee feedback through this form: [TODO].
-Remember:
-Treat this as an actual interview. Be professional.
+ - Send the interviewee feedback through this form: [TODO].
 
-A Google Calendar event titled "InterviewMe Interview {{interviewer_full_name}} / {{interviewee_full_name}}" was added to your Google Calendar. Please reach out if you have any questions.
+A Google Calendar event titled "InterviewMe Interview {{interviewer_full_name}} / {{interviewee_full_name}}" was added to your Google Calendar. Please reach out to interviewme.business@gmail.com if you have any questions.
