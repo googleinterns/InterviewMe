@@ -61,14 +61,15 @@ public class ScheduledInterviewServlet extends HttpServlet {
   // Gets the current user's email from request and returns the ScheduledInterviews for that person.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String timeZoneId = request.getParameter("timeZone");
+    System.out.println(timeZoneId);
     String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
     if (userId == null) {
       userId = String.format("%d", userEmail.hashCode());
     }
-    List<ScheduledInterview> scheduledInterviews = scheduledInterviewDao.getForPerson(userId);
-    response.setContentType("application/json;");
-    response.getWriter().println(new Gson().toJson(scheduledInterviews));
+    List<ScheduledInterviewRequest> scheduledInterviews =
+        objectToRequestObject(scheduledInterviewDao.getForPerson(userId), timeZoneId);
     request.setAttribute("scheduledInterviews", scheduledInterviews);
     request.setAttribute("userEmail", userEmail);
     List<ScheduledInterview> scheduledInterviews1 =
@@ -116,11 +117,17 @@ public class ScheduledInterviewServlet extends HttpServlet {
   }
 
   public List<ScheduledInterviewRequest> objectToRequestObject(
-      List<ScheduledInterview> scheduledInterviews) {
+      List<ScheduledInterview> scheduledInterviews, String timeZoneIdString) {
+    ZoneId timeZoneId;
+    if (timeZoneIdString == null) {
+      timeZoneId = ZoneId.systemDefault();
+    } else {
+      timeZoneId = ZoneId.of(timeZoneIdString);
+    }
     String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     List<ScheduledInterviewRequest> requestObjects = new ArrayList<ScheduledInterviewRequest>();
     for (ScheduledInterview scheduledInterview : scheduledInterviews) {
-      String date = getDateString(scheduledInterview.when());
+      String date = getDateString(scheduledInterview.when(), timeZoneId);
       String interviewer;
       String interviewee;
       String role;
@@ -150,9 +157,10 @@ public class ScheduledInterviewServlet extends HttpServlet {
     return requestObjects;
   }
 
-  public String getDateString(TimeRange when) {
-    LocalDateTime start = LocalDateTime.ofInstant(when.start(), ZoneId.systemDefault());
-    LocalDateTime end = LocalDateTime.ofInstant(when.end(), ZoneId.systemDefault());
+  public String getDateString(TimeRange when, ZoneId timeZoneId) {
+    System.out.println(timeZoneId);
+    LocalDateTime start = LocalDateTime.ofInstant(when.start(), timeZoneId);
+    LocalDateTime end = LocalDateTime.ofInstant(when.end(), timeZoneId);
     String startTime = start.format(DateTimeFormatter.ofPattern("hh:mm a"));
     String endTime = end.format(DateTimeFormatter.ofPattern("hh:mm a"));
     String day = start.format(DateTimeFormatter.ofPattern("EEEE, MMMM dd, yyyy"));
