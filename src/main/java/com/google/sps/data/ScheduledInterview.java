@@ -61,9 +61,9 @@ public abstract class ScheduledInterview {
 
     abstract Builder setWhen(TimeRange range);
 
-    abstract Builder setInterviewerId(String id);
+    abstract Builder setInterviewerId(String interviewerId);
 
-    abstract Builder setIntervieweeId(String id);
+    abstract Builder setIntervieweeId(String intervieweeId);
 
     abstract ScheduledInterview build();
   }
