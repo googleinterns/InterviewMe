@@ -34,6 +34,7 @@ import java.time.format.DateTimeParseException;
 public class ScheduledInterviewServlet extends HttpServlet {
 
   private ScheduledInterviewDao scheduledInterviewDao;
+  private final UserService userService = UserServiceFactory.getUserService();
 
   @Override
   public void init() {
@@ -50,27 +51,46 @@ public class ScheduledInterviewServlet extends HttpServlet {
   // interviews are returned, otherwise SC_UNAUTHORIZED is returned.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
+    String userEmail = userService.getCurrentUser().getEmail();
     List<ScheduledInterview> scheduledInterviews = scheduledInterviewDao.getForPerson(userEmail);
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(scheduledInterviews));
   }
 
-  // Send the request's contents to Datastore in the form of a new ScheduledInterview object. If the
-  // email that is requested as either an interviewer or interviewee matches the email that is
-  // logged in, then the scheduled interview is
-  // stored, otherwise SC_UNAUTHORIZED is returned.
+  // Send the request's contents to Datastore in the form of a new ScheduledInterview object.
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    
+    String intervieweeEmail = userService.getCurrentUser().getEmail();
+    String intervieweeId = userService.getCurrentUser().getUserId();
+    
+    // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
+    // replaced with this hashcode.
+    if (intervieweeId == null) {
+      intervieweeId = String.format("%d", intervieweeEmail.hashCode());
+    }
+    
+    
+    InterviewPostRequest postRequest;
+    try {
+      postRequest = new Gson().fromJson(getJsonString(request), InterviewPostRequest.class);
+    } catch (Exception JsonSyntaxException) {
+      response.sendError(400);
+      return;
+    }
+    if (!postRequest.allFieldsPopulated()) {
+      response.sendError(400);
+      return;
+    }
+    
+    String interviewerId = postRequest.getInterviewer();
+    String utc = postRequest.getUtc();
+    
     String requestedInterviewerEmail = request.getParameter("interviewer");
     String requestedIntervieweeEmail = request.getParameter("interviewee");
     String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     // The default key for a scheduledInterview being stored in datastore
     long defaultKey = -1;
-    if ((!requestedInterviewerEmail.equals(userEmail))
-        && (!requestedIntervieweeEmail.equals(userEmail))) {
-      response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-    }
     try {
       ScheduledInterview scheduledInterview =
           ScheduledInterview.create(
@@ -86,5 +106,15 @@ public class ScheduledInterviewServlet extends HttpServlet {
       response.sendError(400, e.getMessage());
       return;
     }
+  }
+  
+  // Get Json from request body.
+  private static String getJsonString(HttpServletRequest request) throws IOException {
+    BufferedReader reader = request.getReader();
+    StringBuffer buffer = new StringBuffer();
+    String payloadLine = null;
+
+    while ((payloadLine = reader.readLine()) != null) buffer.append(payloadLine);
+    return buffer.toString();
   }
 }

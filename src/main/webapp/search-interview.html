@@ -56,29 +56,6 @@
         <br>
         <!-- This div is loaded with the available interview times for the week from a jsp page.-->
         <div id = "interview-times-container"></div>
-        <p>Example form to see modal</p>
-        <form>
-          <!-- TODO: Dynamically generate these with Sunday as the model. -->
-          <!-- TODO: Make the week Sunday - Saturday. -->
-          <div class="form-row">
-            <div class="col-3 date-label">
-              <label>Sunday 7/5</label>
-            </div>
-            <div class="col-5">
-              <select class="form-control" id="7/5/2020-options">
-                <option>9:30 AM - 10:30 AM</option>
-                <option>6:30 PM - 7:30 PM</option>
-              </select>
-            </div>
-            <div class="col-4">
-              <button type="button" class="btn btn-primary mb-2" 
-                onclick="showInterviewers(this)" id="7/5/2020">
-                Select
-              </button>
-            </div>
-          </div>
-        </form>
-        <br>  
       </section>
       <div class="modal fade" id="interviewer-modal" role="dialog">
         <div class="modal-dialog mw-100 w-25" role="document">

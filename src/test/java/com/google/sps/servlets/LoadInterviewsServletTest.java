@@ -295,4 +295,161 @@ public final class LoadInterviewsServletTest {
     List<List<PossibleInterviewSlot>> expectedInterviewSlots = expected.build();
     Assert.assertEquals(expectedInterviewSlots, possibleInterviewSlots);
   }
+
+  @Test
+  public void possibleInterviewSlotsAreSorted() throws IOException, ServletException {
+    LoadInterviewsServlet servlet = new LoadInterviewsServlet();
+    servlet.init(availabilityDao, Instant.parse("2020-07-07T13:15:00Z"));
+    helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
+
+    // An hour and 15 minute slot
+    availabilityDao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T16:30:00Z"), Instant.parse("2020-07-07T16:45:00Z")),
+            -1,
+            false));
+
+    availabilityDao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T16:45:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
+            -1,
+            false));
+
+    availabilityDao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T17:00:00Z"), Instant.parse("2020-07-07T17:15:00Z")),
+            -1,
+            false));
+
+    availabilityDao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T17:15:00Z"), Instant.parse("2020-07-07T17:30:00Z")),
+            -1,
+            false));
+    availabilityDao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T17:30:00Z"), Instant.parse("2020-07-07T17:45:00Z")),
+            -1,
+            false));
+    MockHttpServletRequest getRequest = new MockHttpServletRequest();
+    getRequest.addParameter("timeZoneOffset", "0");
+    MockHttpServletResponse getResponse = new MockHttpServletResponse();
+    servlet.doGet(getRequest, getResponse);
+    List<ArrayList<PossibleInterviewSlot>> possibleInterviewSlots =
+        (List<ArrayList<PossibleInterviewSlot>>) getRequest.getAttribute("weekList");
+    List<ArrayList<PossibleInterviewSlot>> expected =
+        new ArrayList<ArrayList<PossibleInterviewSlot>>();
+    PossibleInterviewSlot slot1 =
+        PossibleInterviewSlot.create("2020-07-07T16:30:00Z", "Tuesday 7/7", "4:30 PM - 5:30 PM");
+    PossibleInterviewSlot slot2 =
+        PossibleInterviewSlot.create("2020-07-07T16:45:00Z", "Tuesday 7/7", "4:45 PM - 5:45 PM");
+    ArrayList<PossibleInterviewSlot> day = new ArrayList<PossibleInterviewSlot>();
+    day.add(slot1);
+    day.add(slot2);
+    expected.add(day);
+    Assert.assertEquals(expected, possibleInterviewSlots);
+  }
+
+  @Test
+  public void daysAreSorted() throws IOException, ServletException {
+    LoadInterviewsServlet servlet = new LoadInterviewsServlet();
+    servlet.init(availabilityDao, Instant.parse("2020-07-07T13:15:00Z"));
+    helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
+
+    // An hour slot on 7/7
+    availabilityDao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T16:30:00Z"), Instant.parse("2020-07-07T16:45:00Z")),
+            -1,
+            false));
+
+    availabilityDao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T16:45:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
+            -1,
+            false));
+
+    availabilityDao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T17:00:00Z"), Instant.parse("2020-07-07T17:15:00Z")),
+            -1,
+            false));
+
+    availabilityDao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-07T17:15:00Z"), Instant.parse("2020-07-07T17:30:00Z")),
+            -1,
+            false));
+
+    // An hour slot on 7/8
+    availabilityDao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-08T16:30:00Z"), Instant.parse("2020-07-08T16:45:00Z")),
+            -1,
+            false));
+
+    availabilityDao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-08T16:45:00Z"), Instant.parse("2020-07-08T17:00:00Z")),
+            -1,
+            false));
+
+    availabilityDao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-08T17:00:00Z"), Instant.parse("2020-07-08T17:15:00Z")),
+            -1,
+            false));
+
+    availabilityDao.create(
+        Availability.create(
+            "user@gmail.com",
+            new TimeRange(
+                Instant.parse("2020-07-08T17:15:00Z"), Instant.parse("2020-07-08T17:30:00Z")),
+            -1,
+            false));
+
+    MockHttpServletRequest getRequest = new MockHttpServletRequest();
+    getRequest.addParameter("timeZoneOffset", "0");
+    MockHttpServletResponse getResponse = new MockHttpServletResponse();
+    servlet.doGet(getRequest, getResponse);
+    List<ArrayList<PossibleInterviewSlot>> possibleInterviewSlots =
+        (List<ArrayList<PossibleInterviewSlot>>) getRequest.getAttribute("weekList");
+    List<ArrayList<PossibleInterviewSlot>> expected =
+        new ArrayList<ArrayList<PossibleInterviewSlot>>();
+    PossibleInterviewSlot slot1 =
+        PossibleInterviewSlot.create("2020-07-07T16:30:00Z", "Tuesday 7/7", "4:30 PM - 5:30 PM");
+    PossibleInterviewSlot slot2 =
+        PossibleInterviewSlot.create("2020-07-08T16:30:00Z", "Wednesday 7/8", "4:30 PM - 5:30 PM");
+    ArrayList<PossibleInterviewSlot> day1 = new ArrayList<PossibleInterviewSlot>();
+    day1.add(slot1);
+    ArrayList<PossibleInterviewSlot> day2 = new ArrayList<PossibleInterviewSlot>();
+    day2.add(slot2);
+    expected.add(day1);
+    expected.add(day2);
+    Assert.assertEquals(expected, possibleInterviewSlots);
+  }
 }

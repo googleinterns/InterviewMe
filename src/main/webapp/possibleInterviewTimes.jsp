@@ -22,7 +22,6 @@
         </select>
       </div>
       <div class="col-4">
-        <!-- TODO: Create an onclick method that takes 'this' as a parameter.-->
         <button type="button" class="btn btn-primary mb-2"
           onclick="showInterviewers(this)" data-date="${day.get(0).date()}">
           Select

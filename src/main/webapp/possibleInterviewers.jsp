@@ -4,8 +4,11 @@
   List<Person> list = (List<Person>) request.getAttribute("interviewers");
   pageContext.setAttribute("list", list);
   String utc = request.getParameter("utc");
+  pageContext.setAttribute("utc", utc);
   String time = request.getParameter("time");
+  pageContext.setAttribute("time", time);
   String date = request.getParameter("date");
+  pageContext.setAttribute("date", date);
 %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
@@ -24,24 +27,12 @@
         <td>
           <button type="button" class="btn btn-primary" 
           data-company="${interviewer.company()}" data-job="${interviewer.job()}" 
-          data-email="${interviewer.email()}" data-utc="${utc}" data-time="${time}"
-          data-date="${date}" onclick="selectInterview(this)">
+          data-email="${interviewer.email()}" data-utc="${pageScope.utc}" data-time="${pageScope.time}"
+          data-date="${pageScope.date}" onclick="selectInterview(this)">
             Select
           </button>
         </td>
       </tr>
     </c:forEach>
-    <!-- HARDCODED -->
-     <tr>
-        <td>Google</td>
-        <td>Software Engineer</td>
-        <td> 
-          <button type="button" class="btn btn-primary" data-company="Google" 
-          data-job="Software Engineer" data-email="gswe@gmail.com" 
-          onclick="selectInterview(this)">
-            Select
-          </button>
-        </td>
-     </tr>
   </tbody>
 </table>

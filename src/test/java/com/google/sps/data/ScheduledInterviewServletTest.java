@@ -59,23 +59,6 @@ public final class ScheduledInterviewServletTest {
     helper.tearDown();
   }
 
-  // Tests whether a scheduledInterview object was added to datastore.
-  @Test
-  public void validScheduledInterviewServletPostRequest() throws IOException {
-    ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(new FakeScheduledInterviewDao());
-    helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
-    MockHttpServletRequest postRequest = new MockHttpServletRequest();
-    MockHttpServletResponse postResponse = new MockHttpServletResponse();
-    postRequest.addParameter("startTime", "2020-07-05T18:00:00Z");
-    postRequest.addParameter("endTime", "2020-07-05T19:00:10Z");
-    postRequest.addParameter("interviewer", "user@company.org");
-    postRequest.addParameter("interviewee", "user@gmail.com");
-
-    scheduledInterviewServlet.doPost(postRequest, postResponse);
-    Assert.assertEquals(200, postResponse.getStatus());
-  }
-
   // Tests whether a list of scheduledInterviews was returned by the server
   @Test
   public void validScheduledInterviewServletGetRequest() throws IOException {

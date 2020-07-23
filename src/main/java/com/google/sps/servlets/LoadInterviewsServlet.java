@@ -87,18 +87,19 @@ public class LoadInterviewsServlet extends HttpServlet {
       dates.add(pi.date());
     }
 
-    ImmutableList.Builder<List<PossibleInterviewSlot>> weekList = ImmutableList.builder();
+    List<ArrayList<PossibleInterviewSlot>> possibleInterviewsForWeek =
+        new ArrayList<ArrayList<PossibleInterviewSlot>>();
     for (String date : dates) {
-      List<PossibleInterviewSlot> dayOfSlots = new ArrayList<PossibleInterviewSlot>();
+      ArrayList<PossibleInterviewSlot> dayOfSlots = new ArrayList<PossibleInterviewSlot>();
       for (PossibleInterviewSlot pi : possibleInterviews) {
         if (date.equals(pi.date())) {
           dayOfSlots.add(pi);
         }
       }
       sortInterviews(dayOfSlots);
-      weekList.add(dayOfSlots);
+      possibleInterviewsForWeek.add(dayOfSlots);
     }
-    List<List<PossibleInterviewSlot>> possibleInterviewsForWeek = weekList.build();
+    sortWeek(possibleInterviewsForWeek);
     request.setAttribute("weekList", possibleInterviewsForWeek);
     RequestDispatcher rd = request.getRequestDispatcher("/possibleInterviewTimes.jsp");
     rd.forward(request, response);
@@ -212,6 +213,21 @@ public class LoadInterviewsServlet extends HttpServlet {
             return 0;
           }
           if (Instant.parse(p1.utcEncoding()).isBefore(Instant.parse(p2.utcEncoding()))) {
+            return -1;
+          }
+          return 1;
+        });
+  }
+
+  private void sortWeek(List<ArrayList<PossibleInterviewSlot>> possibleInterviewsForWeek) {
+    possibleInterviewsForWeek.sort(
+        (ArrayList<PossibleInterviewSlot> d1, ArrayList<PossibleInterviewSlot> d2) -> {
+          if (Instant.parse(d1.get(0).utcEncoding())
+              .equals(Instant.parse(d2.get(0).utcEncoding()))) {
+            return 0;
+          }
+          if (Instant.parse(d1.get(0).utcEncoding())
+              .isBefore(Instant.parse(d2.get(0).utcEncoding()))) {
             return -1;
           }
           return 1;

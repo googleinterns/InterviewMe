@@ -62,7 +62,7 @@ function selectInterview(interviewer) {
       utc: interviewer.getAttribute('data-utc')
     };
     let requestBody = JSON.stringify(requestObject);
-    let request = new Request('/schedule-interview', {method: 'POST', body: requestBody});
+    let request = new Request('/scheduled-interviews', {method: 'POST', body: requestBody});
     fetch(request).then(unused => {}); // TODO: Redirect to scheduled interviews page?
     location.reload();
   }
@@ -72,12 +72,13 @@ function selectInterview(interviewer) {
 function showInterviewers(selectButton) {
   const date = selectButton.getAttribute('data-date');
   const time = document.getElementById(date).innerText;
+  const reformattedTime = time.replace('-', 'to');
   const utc = document.getElementById(date).value;
-  fetch(`/show-interviewers?utc=${utc}&date=${date}&time=${time}`)
+  fetch(`/show-interviewers?utc=${utc}&date=${date}&time=${reformattedTime}`)
   .then(response => response.text())
     .then(interviewers => {
       $('#modal-body').html(interviewers);
-      $('#modal-title').text(`Interviewers Information for ${date} at ${time}`);
+      $('#modal-title').text(`Interviewers Information for ${date} from ${reformattedTime}`);
     });
   $('#interviewer-modal').modal('show');
 }
