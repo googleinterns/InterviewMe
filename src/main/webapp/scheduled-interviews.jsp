@@ -3,10 +3,7 @@
 <%@ page import="com.google.sps.data.ScheduledInterviewRequest" %>
 <%
   List<ScheduledInterviewRequest> scheduledInterviews = (List<ScheduledInterviewRequest>)request.getAttribute("scheduledInterviews");
-  String userEmail = (String)request.getAttribute("userEmail");
-  System.out.println(userEmail); 
   pageContext.setAttribute("scheduledInterviews", scheduledInterviews);
-  pageContext.setAttribute("userEmail", userEmail); 
 %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
