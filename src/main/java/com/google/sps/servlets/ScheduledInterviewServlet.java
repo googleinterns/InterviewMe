@@ -64,6 +64,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String timeZoneId = request.getParameter("timeZone");
     String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
+    // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
+    // replaced with this hashcode.
     if (userId == null) {
       userId = String.format("%d", userEmail.hashCode());
     }
@@ -85,6 +87,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String requestedIntervieweeId = request.getParameter("interviewee");
     String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
+    // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
+    // replaced with this hashcode.
     if (userId == null) {
       userId = String.format("%d", userEmail.hashCode());
     }
@@ -113,15 +117,10 @@ public class ScheduledInterviewServlet extends HttpServlet {
 
   public List<ScheduledInterviewRequest> scheduledInterviewsToRequestObjects(
       List<ScheduledInterview> scheduledInterviews, String timeZoneIdString) {
-    ZoneId timeZoneId;
-    if (timeZoneIdString == null) {
-      timeZoneId = ZoneId.systemDefault();
-    } else {
-      timeZoneId = ZoneId.of(timeZoneIdString);
-    }
+    ZoneId timeZoneId = ZoneId.of(timeZoneIdString);
     List<ScheduledInterviewRequest> requestObjects = new ArrayList<ScheduledInterviewRequest>();
     for (ScheduledInterview scheduledInterview : scheduledInterviews) {
-      requestObjects.add(makeSheduledInterviewRequest(scheduledInterview, timeZoneId));
+      requestObjects.add(makeScheduledInterviewRequest(scheduledInterview, timeZoneId));
     }
     return requestObjects;
   }
@@ -135,10 +134,12 @@ public class ScheduledInterviewServlet extends HttpServlet {
     return String.format("%s from %s to %s", day, startTime, endTime);
   }
 
-  private ScheduledInterviewRequest makeSheduledInterviewRequest(
+  private ScheduledInterviewRequest makeScheduledInterviewRequest(
       ScheduledInterview scheduledInterview, ZoneId timeZoneId) {
     String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
+    // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
+    // replaced with this hashcode.
     if (userId == null) {
       userId = String.format("%d", userEmail.hashCode());
     }

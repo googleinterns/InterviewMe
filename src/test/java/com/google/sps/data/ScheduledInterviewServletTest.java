@@ -146,6 +146,7 @@ public final class ScheduledInterviewServletTest {
     scheduledInterviewServlet.doPost(postRequest, new MockHttpServletResponse());
 
     getRequest.addParameter("userEmail", "user@company.org");
+    getRequest.addParameter("timeZone", "Etc/UCT");
     scheduledInterviewServlet.doGet(getRequest, getResponse);
 
     Assert.assertEquals(200, getResponse.getStatus());
@@ -185,6 +186,7 @@ public final class ScheduledInterviewServletTest {
     scheduledInterviewServlet.doPost(postRequest, new MockHttpServletResponse());
 
     getRequest.addParameter("userEmail", emailToId("user@gmail.com"));
+    getRequest.addParameter("timeZone", "Etc/UCT");
     scheduledInterviewServlet.doGet(getRequest, getResponse);
 
     List<ScheduledInterviewRequest> actual =
