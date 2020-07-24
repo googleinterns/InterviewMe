@@ -28,7 +28,8 @@ function checkLogin() {
         element.classList.remove('disabled');
       }
       document.getElementById('login-tab').innerText = 'Logout';
-      ifUnregisteredShowRegistrationMessage();
+      let loginInfo = getLoginInfo();
+      loginInfo.then(getUserOrRedirectRegistration);
     } else {
       document.getElementById('login-message-container').style.display = 'inline';
       document.getElementById('login-message').innerHTML = 'To get started, please <a href="' + status.changeLogInStatusURL + '">login</a>.';
@@ -40,15 +41,4 @@ function checkLogin() {
     }
     document.getElementById('login-tab').href = status.changeLogInStatusURL;
   });
-}
-
-// If user is not registered, show the registration message.
-function ifUnregisteredShowRegistrationMessage() {
-  fetch('/person')
-    .then(response => {
-      // response.redirected means they are not registered yet.
-      if (response.redirected) {
-        document.getElementById('registration-message-container').removeAttribute('hidden');
-      }
-    });
 }
