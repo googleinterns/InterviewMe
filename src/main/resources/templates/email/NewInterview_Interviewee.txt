@@ -1,4 +1,4 @@
-You have been registered for an interview on {{formatted_date}}. You are the interviewee. You will be be mock interviewed by {{interviewer_full_name}} for the position of: {{position}}.
+You have been registered for an interview on {{formatted_date}}. You are the interviewee. You will be be mock interviewed by {{interviewer_first_name}} for the position of: {{position}}.
 
 Before the interview, you will need to:
   - Prepare your resume to share with your interviewer if they ask for it.
@@ -13,4 +13,4 @@ After interviewing:
  - Your interviewer will write up a feedback report. Expect to see this in your inbox shortly.
  - Send the interviewer feedback through this form: {{form_link}}.
 
-A Google Calendar event titled "InterviewMe Interview {{interviewer_full_name}} / {{interviewee_full_name}}" was added to your Google Calendar. Please reach out to interviewme.business@gmail.com if you have any questions.
+A Google Calendar event titled "InterviewMe Interview {{interviewer_first_name}} / {{interviewee_first_name}}" was added to your Google Calendar. Please reach out to interviewme.business@gmail.com if you have any questions.
