@@ -144,21 +144,17 @@ public class ScheduledInterviewServlet extends HttpServlet {
       userId = String.format("%d", userEmail.hashCode());
     }
     String date = getDateString(scheduledInterview.when(), timeZoneId);
-    String interviewer;
-    String interviewee;
     String role = getUserRole(scheduledInterview, userId);
-  
-    if (!personDao.get(scheduledInterview.interviewerId()).isPresent()) {
-      interviewer = "Nonexistent User";
-    } else {
-      interviewer = personDao.get(scheduledInterview.interviewerId()).get().firstName();
-    }
-    
-    if (!personDao.get(scheduledInterview.intervieweeId()).isPresent()) {
-      interviewee = "Nonexistent User";
-    } else {
-      interviewee = personDao.get(scheduledInterview.intervieweeId()).get().firstName();
-    }
+    String interviewer =
+        personDao
+            .get(scheduledInterview.interviewerId())
+            .map(Person::firstName)
+            .orElse("Nonexistent User");
+    String interviewee =
+        personDao
+            .get(scheduledInterview.intervieweeId())
+            .map(Person::firstName)
+            .orElse("Nonexistent User");
 
     return new ScheduledInterviewRequest(
         scheduledInterview.id(), date, interviewer, interviewee, role);
