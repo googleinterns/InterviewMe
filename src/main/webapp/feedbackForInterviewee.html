@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Feedback for the Interviewer</title>
+    <title>Feedback for the Interviewee</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
       integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="scheduled-interviews.css">
@@ -15,7 +15,7 @@
     <script src="scheduled-interviews.js"></script>
     <script src="authentication.js"></script>
   </head>
-  <body onload="onFeedbackForInterviewerLoad()">
+  <body onload="onFeedbackForIntervieweeLoad()">
     <div id="content">
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <span class="navbar-brand mb-0 h1">InterviewMe</span>
@@ -41,7 +41,7 @@
       <div>
         <form action="/action_page.php">
           <h4>Please Enter a value between 1 and 10 (1 being strongly disagree and 10 being strongly agree)</h4>
-          <label for="question1">The interviewee communicated their thought process as they went along:</label><br>
+          <label for="question1">I was comfortable during the interview:</label><br>
           <input type="number" min="1" max="10" id="question1" name="question1"><br>
           <label for="question2">My interviewer moved at a decent pace:</label><br>
           <input type="number" min="1" max="10" id="question2" name="question2"><br>
