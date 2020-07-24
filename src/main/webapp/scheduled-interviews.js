@@ -24,9 +24,13 @@ function getBrowserTimeZone() {
 }
 
 function loadScheduledInterviewCards() {
-  fetch(`/scheduled-interviews?timeZone=${getBrowserTimeZone()}`)
+  fetch(`/scheduled-interviews?timeZone=${getBrowserTimeZone()}&userTime=${getCurrentTime()}`)
     .then(response => response.text())
     .then(listOfCards => {
       document.getElementById('scheduled-interviews-cards').innerHTML = listOfCards;
     });
+    
+function getCurrentTime() {
+  return new Date().toISOString(); 
+}
 }

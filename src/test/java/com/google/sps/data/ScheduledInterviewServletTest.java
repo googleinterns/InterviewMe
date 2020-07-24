@@ -147,6 +147,7 @@ public final class ScheduledInterviewServletTest {
 
     getRequest.addParameter("userEmail", "user@company.org");
     getRequest.addParameter("timeZone", "Etc/UCT");
+    getRequest.addParameter("userTime", "2020-07-05T19:00:00Z");
     scheduledInterviewServlet.doGet(getRequest, getResponse);
 
     Assert.assertEquals(200, getResponse.getStatus());
@@ -187,6 +188,7 @@ public final class ScheduledInterviewServletTest {
 
     getRequest.addParameter("userEmail", emailToId("user@gmail.com"));
     getRequest.addParameter("timeZone", "Etc/UCT");
+    getRequest.addParameter("userTime", "2020-07-05T22:00:00Z");
     scheduledInterviewServlet.doGet(getRequest, getResponse);
 
     List<ScheduledInterviewRequest> actual =
@@ -198,14 +200,16 @@ public final class ScheduledInterviewServletTest {
             "Sunday, July 5, 2020 from 6:00 PM to 7:00 PM",
             "User1",
             "User2",
-            "Interviewee");
+            "Interviewee",
+            true);
     ScheduledInterviewRequest scheduledInterview2 =
         new ScheduledInterviewRequest(
             actual.get(1).getId(),
             "Sunday, July 5, 2020 from 8:00 PM to 9:00 PM",
             "User3",
             "User2",
-            "Interviewee");
+            "Interviewee",
+            true);
 
     List<ScheduledInterviewRequest> expected = new ArrayList<ScheduledInterviewRequest>();
     expected.add(scheduledInterview1);

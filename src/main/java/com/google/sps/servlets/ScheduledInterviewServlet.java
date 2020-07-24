@@ -62,6 +62,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String timeZoneId = request.getParameter("timeZone");
+    String userTime = request.getParameter("userTime");
+    System.out.println(userTime);
     String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
     // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
@@ -70,7 +72,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
       userId = String.format("%d", userEmail.hashCode());
     }
     List<ScheduledInterviewRequest> scheduledInterviews =
-        scheduledInterviewsToRequestObjects(scheduledInterviewDao.getForPerson(userId), timeZoneId);
+        scheduledInterviewsToRequestObjects(
+            scheduledInterviewDao.getForPerson(userId), timeZoneId, userTime);
     request.setAttribute("scheduledInterviews", scheduledInterviews);
     RequestDispatcher rd = request.getRequestDispatcher("/scheduled-interviews.jsp");
     try {
@@ -116,11 +119,14 @@ public class ScheduledInterviewServlet extends HttpServlet {
   }
 
   public List<ScheduledInterviewRequest> scheduledInterviewsToRequestObjects(
-      List<ScheduledInterview> scheduledInterviews, String timeZoneIdString) {
+      List<ScheduledInterview> scheduledInterviews,
+      String timeZoneIdString,
+      String userTimeString) {
     ZoneId timeZoneId = ZoneId.of(timeZoneIdString);
+    Instant userTime = Instant.parse(userTimeString);
     List<ScheduledInterviewRequest> requestObjects = new ArrayList<ScheduledInterviewRequest>();
     for (ScheduledInterview scheduledInterview : scheduledInterviews) {
-      requestObjects.add(makeScheduledInterviewRequest(scheduledInterview, timeZoneId));
+      requestObjects.add(makeScheduledInterviewRequest(scheduledInterview, timeZoneId, userTime));
     }
     return requestObjects;
   }
@@ -135,7 +141,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
   }
 
   private ScheduledInterviewRequest makeScheduledInterviewRequest(
-      ScheduledInterview scheduledInterview, ZoneId timeZoneId) {
+      ScheduledInterview scheduledInterview, ZoneId timeZoneId, Instant userTime) {
     String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
     // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
@@ -147,6 +153,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String interviewer;
     String interviewee;
     String role;
+    boolean hasPassed;
 
     if (userId.equals(scheduledInterview.interviewerId())) {
       role = "Interviewer";
@@ -166,7 +173,9 @@ public class ScheduledInterviewServlet extends HttpServlet {
       interviewee = personDao.get(scheduledInterview.intervieweeId()).get().firstName();
     }
 
+    hasPassed = scheduledInterview.when().start().isBefore(userTime);
+
     return new ScheduledInterviewRequest(
-        scheduledInterview.id(), date, interviewer, interviewee, role);
+        scheduledInterview.id(), date, interviewer, interviewee, role, hasPassed);
   }
 }

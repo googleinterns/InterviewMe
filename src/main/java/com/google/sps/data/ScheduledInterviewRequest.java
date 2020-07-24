@@ -21,14 +21,21 @@ public class ScheduledInterviewRequest {
   private String interviewer;
   private String interviewee;
   private String role;
+  private boolean hasPassed;
 
   public ScheduledInterviewRequest(
-      long id, String dateString, String interviewer, String interviewee, String role) {
+      long id,
+      String dateString,
+      String interviewer,
+      String interviewee,
+      String role,
+      boolean hasPassed) {
     this.id = id;
     this.dateString = dateString;
     this.interviewer = interviewer;
     this.interviewee = interviewee;
     this.role = role;
+    this.hasPassed = hasPassed;
   }
 
   public long getId() {
@@ -51,6 +58,10 @@ public class ScheduledInterviewRequest {
     return role;
   }
 
+  public boolean getHasPassed() {
+    return hasPassed;
+  }
+
   public boolean equals(Object o) {
     if (o == this) {
       return true;
@@ -61,7 +72,8 @@ public class ScheduledInterviewRequest {
           && this.getDateString().equals(that.getDateString())
           && this.getInterviewer().equals(that.getInterviewer())
           && this.getInterviewee().equals(that.getInterviewee())
-          && this.getRole().equals(that.getRole());
+          && this.getRole().equals(that.getRole())
+          && this.getHasPassed() == that.getHasPassed();
     }
     return false;
   }
@@ -78,6 +90,8 @@ public class ScheduledInterviewRequest {
         "interviewee",
         interviewee,
         "role",
-        role);
+        role,
+        "hasPassed",
+        hasPassed);
   }
 }

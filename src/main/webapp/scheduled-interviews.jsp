@@ -23,7 +23,14 @@
             <li class="list-group-item">Interviewee: ${scheduledInterview.getInterviewee()}</li>
             <li class="list-group-item">Interviewer: ${scheduledInterview.getInterviewer()}</li>
           </ul>
-          <a href="feedbackFor${scheduledInterview.getRole()}.html"><button class = "feedbackButton">Submit Feedback</button></a>
+          <c:choose>
+            <c:when test= "${scheduledInterview.getHasPassed()}">
+              <a href="feedbackFor${scheduledInterview.getRole()}.html"><button class = "feedbackButton">Submit Feedback</button></a>
+            </c:when>
+            <c:otherwise>
+              <p>You may submit feedback once the interview has commenced</p>
+            </c:otherwise>
+          </c:choose>
         </div>
       </div>
     </c:forEach>
