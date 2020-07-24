@@ -14,7 +14,7 @@
 
 package com.google.sps.data;
 
-/** Represents the data sent in a put or post request to the Person Servlet. */
+/** Represents the data sent from a get request to the ScheduledInterview Servlet. */
 public class ScheduledInterviewRequest {
   private long id;
   private String dateString;
