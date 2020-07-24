@@ -103,7 +103,6 @@ public class DatastorePersonDaoTest {
     Assert.assertEquals(update, updatedPerson);
   }
 
-  /*
   // Checks that an Person is returned when it exists within datastore.
   // @Test
   public void getsPerson() {
@@ -121,6 +120,7 @@ public class DatastorePersonDaoTest {
     Assert.assertEquals(expectedPersonOptional, actualPersonOptional);
   }
 
+  /*
   // Checks that an empty Optional is returned when an Person does not exist within
   // datastore.
   // @Test
