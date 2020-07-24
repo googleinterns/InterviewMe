@@ -32,6 +32,16 @@ public abstract class Person {
   public abstract String job();
 
   public abstract String linkedIn();
+  
+  public abstract boolean softwareEngineerQualified();
+  public abstract boolean productManagerQualified();
+  public abstract boolean businessAnalystQualified();
+  public abstract boolean technicalConsultantQualified();
+  public abstract boolean softwareTesterQualified();
+  public abstract boolean technicalSalesQualified();
+  public abstract boolean networkEngineerQualified();
+  public abstract boolean systemsAnalystQualified();
+  public abstract boolean technicalSupportQualified();
 
   /**
    * Creates a person that contains a user id, email, first name, last name, company, job, and
