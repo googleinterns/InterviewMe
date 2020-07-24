@@ -68,7 +68,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
       userId = String.format("%d", userEmail.hashCode());
     }
     List<ScheduledInterviewRequest> scheduledInterviews =
-        objectToRequestObjects(scheduledInterviewDao.getForPerson(userId), timeZoneId);
+        scheduledInterviewsToRequestObjects(scheduledInterviewDao.getForPerson(userId), timeZoneId);
     request.setAttribute("scheduledInterviews", scheduledInterviews);
     RequestDispatcher rd = request.getRequestDispatcher("/scheduled-interviews.jsp");
     try {
@@ -111,7 +111,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     }
   }
 
-  public List<ScheduledInterviewRequest> objectToRequestObjects(
+  public List<ScheduledInterviewRequest> scheduledInterviewsToRequestObjects(
       List<ScheduledInterview> scheduledInterviews, String timeZoneIdString) {
     ZoneId timeZoneId;
     if (timeZoneIdString == null) {
@@ -132,7 +132,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String startTime = start.format(DateTimeFormatter.ofPattern("h:mm a"));
     String endTime = end.format(DateTimeFormatter.ofPattern("h:mm a"));
     String day = start.format(DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy"));
-    return day + " from " + startTime + " to " + endTime;
+    return String.format("%s from %s to %s", day, startTime, endTime);
   }
 
   private ScheduledInterviewRequest makeSheduledInterviewRequest(

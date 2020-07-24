@@ -16,10 +16,6 @@ function onSearchInterviewLoad() {
   const loginInfo = getLoginInfo();
   loginInfo.then(supplyLogoutLinkOrRedirectHome); 
   loginInfo.then(getUserOrRedirectRegistration);
-  let email = loginInfo.then(getUserOrRedirectRegistration).then((person) => {
-    return person.email;      
-  }); 
-  console.log(email); 
 }
 
 // Should query Datastore for appropriate interviews and render them on the
