@@ -24,7 +24,6 @@ We see that you registered for a {{position}} mock interview with InterviewMe on
     - Style counts; use semantically meaningful names.
 
   After coding:
-    - Immediately work through a small example to try and catch any logic/errors.
     - Talk about testing and test cases in general.
     - Finally, talk about other possibly more efficient solutions with the interviewer.
 

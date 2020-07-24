@@ -1,6 +1,6 @@
 Hello {{interviewer_first_name}},
 
-You have been registered for an interview on {{formatted_date}}. You are the interviewer. You will be mock interviewing {{interviewee_first_name}} for the position of: {{position}}.
+You have been registered for a mock interview on {{formatted_date}}. You are the interviewer. You will be interviewing {{interviewee_first_name}} for the position of: {{position}}.
 
 Before the interview, you will need to:
   - Think about the distribution of questions you need. How many technical questions? How many behavioral questions? Prepare more than enough.
