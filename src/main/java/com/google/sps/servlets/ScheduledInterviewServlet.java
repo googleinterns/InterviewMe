@@ -146,20 +146,14 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String date = getDateString(scheduledInterview.when(), timeZoneId);
     String interviewer;
     String interviewee;
-    String role;
-
-    if (userId.equals(scheduledInterview.interviewerId())) {
-      role = "Interviewer";
-    } else {
-      role = "Interviewee";
-    }
-
+    String role = getUserRole(scheduledInterview, userId);
+  
     if (!personDao.get(scheduledInterview.interviewerId()).isPresent()) {
       interviewer = "Nonexistent User";
     } else {
       interviewer = personDao.get(scheduledInterview.interviewerId()).get().firstName();
     }
-
+    
     if (!personDao.get(scheduledInterview.intervieweeId()).isPresent()) {
       interviewee = "Nonexistent User";
     } else {
@@ -168,5 +162,15 @@ public class ScheduledInterviewServlet extends HttpServlet {
 
     return new ScheduledInterviewRequest(
         scheduledInterview.id(), date, interviewer, interviewee, role);
+  }
+
+  static String getUserRole(ScheduledInterview scheduledInterview, String userId) {
+    if (userId.equals(scheduledInterview.interviewerId())) {
+      return "Interviewer";
+    }
+    if (userId.equals(scheduledInterview.intervieweeId())) {
+      return "Interviewee";
+    }
+    return "unknown";
   }
 }
