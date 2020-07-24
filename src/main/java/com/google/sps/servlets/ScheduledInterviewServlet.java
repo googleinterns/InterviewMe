@@ -74,7 +74,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     try {
       rd.forward(request, response);
     } catch (ServletException e) {
-      e.printStackTrace();
+      throw new RuntimeException(e);
     }
   }
 
