@@ -62,7 +62,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String timeZoneId = request.getParameter("timeZone");
-    System.out.println(timeZoneId);
     String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
     if (userId == null) {
@@ -71,12 +70,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
     List<ScheduledInterviewRequest> scheduledInterviews =
         objectToRequestObject(scheduledInterviewDao.getForPerson(userId), timeZoneId);
     request.setAttribute("scheduledInterviews", scheduledInterviews);
-    request.setAttribute("userEmail", userEmail);
-    System.out.println(scheduledInterviews.size());
     List<ScheduledInterviewRequest> scheduledInterviews1 =
         (List<ScheduledInterviewRequest>) request.getAttribute("scheduledInterviews");
-    String userEmail1 = (String) request.getAttribute("userEmail");
-    System.out.println("Request size: " + scheduledInterviews1.size());
     RequestDispatcher rd = request.getRequestDispatcher("/scheduled-interviews.jsp");
     try {
       rd.forward(request, response);

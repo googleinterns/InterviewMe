@@ -13,11 +13,9 @@
 // limitations under the License.
 
 function onScheduledInterviewsLoad() {
-  //fetch(`/scheduled-interviews?timeZone=${getBrowserTimeZone()}`)
   const loginInfo = getLoginInfo();
   loginInfo.then(supplyLogoutLinkOrRedirectHome); 
   loginInfo.then(getUserOrRedirectRegistration);
-  console.log(getBrowserTimeZone());
   loadScheduledInterviewCards(); 
 }
 
