@@ -92,6 +92,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
       intervieweeId = String.format("%d", intervieweeEmail.hashCode());
     }
 
+    // TODO: Put this null id check in a separate method to call from both Get and Post.
+
     InterviewPostRequest postRequest;
     try {
       postRequest = new Gson().fromJson(getJsonString(request), InterviewPostRequest.class);
