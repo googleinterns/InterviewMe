@@ -25,6 +25,7 @@ import com.google.sps.data.Availability;
 import com.google.sps.data.FakeAvailabilityDao;
 import com.google.sps.data.FakePersonDao;
 import com.google.sps.data.Person;
+import com.google.sps.data.PossibleInterviewer;
 import com.google.sps.data.TimeRange;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -42,7 +43,9 @@ import com.google.gson.JsonSyntaxException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.servlet.ServletException;
 
 @RunWith(JUnit4.class)
@@ -60,6 +63,11 @@ public final class ShowInterviewersServletTest {
   private final String person2Id = String.format("%d", person2Email.hashCode());
   private final Person person2 =
       Person.create(person2Id, person2Email, "Test", "Subject", "Google", "PM", "linkedIn");
+
+  private final String person3Email = "person3@mail";
+  private final String person3Id = String.format("%d", person3Email.hashCode());
+  private final Person person3 =
+      Person.create(person3Id, person3Email, "Test", "Subject", "Google", "PM", "linkedInLink");
 
   @Before
   public void setUp() {
@@ -111,8 +119,9 @@ public final class ShowInterviewersServletTest {
     getRequest.addParameter("time", "1:30 PM - 2:30 PM");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
     servlet.doGet(getRequest, getResponse);
-    List<Person> actual = (List<Person>) getRequest.getAttribute("interviewers");
-    Assert.assertEquals(Arrays.asList(), actual);
+    Set<PossibleInterviewer> actual =
+        (Set<PossibleInterviewer>) getRequest.getAttribute("interviewers");
+    Assert.assertEquals(new HashSet<PossibleInterviewer>(), actual);
   }
 
   @Test
@@ -160,8 +169,9 @@ public final class ShowInterviewersServletTest {
     getRequest.addParameter("time", "1:30 PM - 2:30 PM");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
     servlet.doGet(getRequest, getResponse);
-    List<Person> actual = (List<Person>) getRequest.getAttribute("interviewers");
-    Assert.assertEquals(Arrays.asList(), actual);
+    Set<PossibleInterviewer> actual =
+        (Set<PossibleInterviewer>) getRequest.getAttribute("interviewers");
+    Assert.assertEquals(new HashSet<PossibleInterviewer>(), actual);
   }
 
   @Test
@@ -211,8 +221,9 @@ public final class ShowInterviewersServletTest {
     getRequest.addParameter("time", "1:30 PM - 2:30 PM");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
     servlet.doGet(getRequest, getResponse);
-    List<Person> actual = (List<Person>) getRequest.getAttribute("interviewers");
-    Assert.assertEquals(Arrays.asList(), actual);
+    Set<PossibleInterviewer> actual =
+        (Set<PossibleInterviewer>) getRequest.getAttribute("interviewers");
+    Assert.assertEquals(new HashSet<PossibleInterviewer>(), actual);
   }
 
   @Test
@@ -260,9 +271,101 @@ public final class ShowInterviewersServletTest {
     getRequest.addParameter("time", "1:30 PM - 2:30 PM");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
     servlet.doGet(getRequest, getResponse);
-    List<Person> actual = (List<Person>) getRequest.getAttribute("interviewers");
-    List<Person> expected = new ArrayList<Person>();
-    expected.add(person2);
+    Set<PossibleInterviewer> actual =
+        (Set<PossibleInterviewer>) getRequest.getAttribute("interviewers");
+    Set<PossibleInterviewer> expected = new HashSet<PossibleInterviewer>();
+    PossibleInterviewer person2Details =
+        PossibleInterviewer.create(person2.company(), person2.job());
+    expected.add(person2Details);
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void noRepeatsOfCompanyAndJob() throws IOException, ServletException {
+    personDao.create(person2);
+    personDao.create(person3);
+    ShowInterviewersServlet servlet = new ShowInterviewersServlet();
+    servlet.init(availabilityDao, personDao);
+    helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
+
+    // Person 2's Availability
+    availabilityDao.create(
+        Availability.create(
+            person2.id(),
+            new TimeRange(
+                Instant.parse("2020-07-07T13:30:00Z"), Instant.parse("2020-07-07T13:45:00Z")),
+            -1,
+            false));
+
+    availabilityDao.create(
+        Availability.create(
+            person2.id(),
+            new TimeRange(
+                Instant.parse("2020-07-07T13:45:00Z"), Instant.parse("2020-07-07T14:00:00Z")),
+            -1,
+            false));
+
+    availabilityDao.create(
+        Availability.create(
+            person2.id(),
+            new TimeRange(
+                Instant.parse("2020-07-07T14:00:00Z"), Instant.parse("2020-07-07T14:15:00Z")),
+            -1,
+            false));
+
+    availabilityDao.create(
+        Availability.create(
+            person2.id(),
+            new TimeRange(
+                Instant.parse("2020-07-07T14:15:00Z"), Instant.parse("2020-07-07T14:30:00Z")),
+            -1,
+            false));
+
+    // Person 3's Availability
+    availabilityDao.create(
+        Availability.create(
+            person3.id(),
+            new TimeRange(
+                Instant.parse("2020-07-07T13:30:00Z"), Instant.parse("2020-07-07T13:45:00Z")),
+            -1,
+            false));
+
+    availabilityDao.create(
+        Availability.create(
+            person3.id(),
+            new TimeRange(
+                Instant.parse("2020-07-07T13:45:00Z"), Instant.parse("2020-07-07T14:00:00Z")),
+            -1,
+            false));
+
+    availabilityDao.create(
+        Availability.create(
+            person3.id(),
+            new TimeRange(
+                Instant.parse("2020-07-07T14:00:00Z"), Instant.parse("2020-07-07T14:15:00Z")),
+            -1,
+            false));
+
+    availabilityDao.create(
+        Availability.create(
+            person3.id(),
+            new TimeRange(
+                Instant.parse("2020-07-07T14:15:00Z"), Instant.parse("2020-07-07T14:30:00Z")),
+            -1,
+            false));
+
+    MockHttpServletRequest getRequest = new MockHttpServletRequest();
+    getRequest.addParameter("utc", "2020-07-07T13:30:00Z");
+    getRequest.addParameter("date", "Tuesday 7/7");
+    getRequest.addParameter("time", "1:30 PM - 2:30 PM");
+    MockHttpServletResponse getResponse = new MockHttpServletResponse();
+    servlet.doGet(getRequest, getResponse);
+    Set<PossibleInterviewer> actual =
+        (Set<PossibleInterviewer>) getRequest.getAttribute("interviewers");
+    Set<PossibleInterviewer> expected = new HashSet<PossibleInterviewer>();
+    PossibleInterviewer person2Details =
+        PossibleInterviewer.create(person2.company(), person2.job());
+    expected.add(person2Details);
     Assert.assertEquals(expected, actual);
   }
 }

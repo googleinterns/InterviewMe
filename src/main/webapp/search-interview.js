@@ -58,7 +58,8 @@ function selectInterview(interviewer) {
     // TODO: Call a servlet to save this selection. Using interviewer.getAttribute('data-utc').
     // TODO: Change this to data-id once refactor is merged
     let requestObject = {
-      interviewer: interviewer.getAttribute('data-email'),
+      company: interviewer.getAttribute('data-company'),
+      job: interviewer.getAttribute('data-job'),
       utc: interviewer.getAttribute('data-utc')
     };
     let requestBody = JSON.stringify(requestObject);

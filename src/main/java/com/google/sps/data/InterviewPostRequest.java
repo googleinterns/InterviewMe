@@ -17,16 +17,22 @@ package com.google.sps.data;
 import java.util.ArrayList;
 
 public class InterviewPostRequest {
-  private String interviewer;
+  private String company;
+  private String job;
   private String utc;
 
-  public InterviewPostRequest(String interviewer, String utc) {
-    this.interviewer = interviewer;
+  public InterviewPostRequest(String company, String job, String utc) {
+    this.company = company;
+    this.job = job;
     this.utc = utc;
   }
 
-  public String getInterviewer() {
-    return interviewer;
+  public String getCompany() {
+    return company;
+  }
+
+  public String getJob() {
+    return job;
   }
 
   public String getUtc() {
@@ -34,11 +40,12 @@ public class InterviewPostRequest {
   }
 
   public boolean allFieldsPopulated() {
-    return !(interviewer == null || utc == null);
+    return !(company == null || job == null || utc == null);
   }
 
   public String toString() {
     return String.format(
-        "%s= %s:%s, %s:%s", "InterviewPostRequest", "interviewer", interviewer, "utc", utc);
+        "%s= %s:%s, %s:%s, %s:%s",
+        "InterviewPostRequest", "company", company, "job", job, "utc", utc);
   }
 }

@@ -41,7 +41,7 @@ public abstract class Availability {
   public Availability withId(long id) {
     return toBuilder().setId(id).build();
   }
-  
+
   // Returns a new Availability with the old information with an updated scheduled status.
   public Availability scheduledStatus(boolean scheduled) {
     return toBuilder().setScheduled(scheduled).build();

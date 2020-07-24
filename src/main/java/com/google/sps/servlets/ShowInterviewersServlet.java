@@ -25,6 +25,7 @@ import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
 import com.google.sps.data.Person;
 import com.google.sps.data.PersonDao;
+import com.google.sps.data.PossibleInterviewer;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.ScheduledInterviewDao;
 import com.google.sps.data.TimeRange;
@@ -74,14 +75,15 @@ public class ShowInterviewersServlet extends HttpServlet {
     Instant endOfRange = Instant.parse(utc).plus(1, ChronoUnit.HOURS);
     List<Availability> availabilitiesInRange =
         availabilityDao.getInRangeForAll(startOfRange, endOfRange);
-    List<Person> possibleInterviewers =
-        getPossibleInterviewers(availabilitiesInRange, startOfRange, endOfRange);
+    List<Person> possiblePeople =
+        getPossiblePeople(availabilitiesInRange, startOfRange, endOfRange);
+    Set<PossibleInterviewer> possibleInterviewers = getPossibleInterviewers(possiblePeople);
     request.setAttribute("interviewers", possibleInterviewers);
     RequestDispatcher rd = request.getRequestDispatcher("/possibleInterviewers.jsp");
     rd.forward(request, response);
   }
 
-  private List<Person> getPossibleInterviewers(
+  List<Person> getPossiblePeople(
       List<Availability> allAvailabilities, Instant startOfRange, Instant endOfRange) {
     Set<String> allInterviewers = new HashSet<String>();
     for (Availability avail : allAvailabilities) {
@@ -112,8 +114,16 @@ public class ShowInterviewersServlet extends HttpServlet {
     return possibleInterviewers;
   }
 
-  private boolean personHasPossibleInterviewSlot(
-      String userId, Instant startOfRange, Instant endOfRange) {
+  private Set<PossibleInterviewer> getPossibleInterviewers(List<Person> possiblePeople) {
+    Set<PossibleInterviewer> possibleInterviewers = new HashSet<PossibleInterviewer>();
+    for (Person person : possiblePeople) {
+      possibleInterviewers.add(personToPossibleInterviewer(person));
+    }
+
+    return possibleInterviewers;
+  }
+
+  boolean personHasPossibleInterviewSlot(String userId, Instant startOfRange, Instant endOfRange) {
     List<Availability> availabilities =
         availabilityDao.getInRangeForUser(userId, startOfRange, endOfRange);
     List<Availability> scheduledAvailability = new ArrayList<Availability>();
@@ -141,5 +151,9 @@ public class ShowInterviewersServlet extends HttpServlet {
       }
     }
     return false;
+  }
+
+  private PossibleInterviewer personToPossibleInterviewer(Person person) {
+    return PossibleInterviewer.create(person.company(), person.job());
   }
 }

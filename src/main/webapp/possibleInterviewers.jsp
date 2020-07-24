@@ -1,8 +1,8 @@
 <%@ page import="java.util.List" %>
-<%@ page import="com.google.sps.data.Person" %>
+<%@ page import="com.google.sps.data.PossibleInterviewer" %>
 <%
-  List<Person> list = (List<Person>) request.getAttribute("interviewers");
-  pageContext.setAttribute("list", list);
+  Set<PossibleInterviewer> list = (Set<PossibleInterviewer>) request.getAttribute("interviewers");
+  pageContext.setAttribute("set", set);
   String utc = request.getParameter("utc");
   pageContext.setAttribute("utc", utc);
   String time = request.getParameter("time");
@@ -20,14 +20,14 @@
      </tr>
   </thead>
   <tbody>
-    <c:forEach items = "${pageScope.list}" var = "interviewer">
+    <c:forEach items = "${pageScope.set}" var = "interviewer">
       <tr>
         <td>${interviewer.company()}</td>
         <td>${interviewer.job()}</td>
         <td>
           <button type="button" class="btn btn-primary" 
           data-company="${interviewer.company()}" data-job="${interviewer.job()}" 
-          data-email="${interviewer.email()}" data-utc="${pageScope.utc}" data-time="${pageScope.time}"
+          data-utc="${pageScope.utc}" data-time="${pageScope.time}"
           data-date="${pageScope.date}" onclick="selectInterview(this)">
             Select
           </button>

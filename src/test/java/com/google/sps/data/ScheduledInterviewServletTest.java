@@ -49,11 +49,15 @@ public final class ScheduledInterviewServletTest {
   LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalCapabilitiesServiceTestConfig());
   private FakeScheduledInterviewDao scheduledInterviewDao;
+  private FakeAvailabilityDao availabilityDao;
+  private FakePersonDao personDao;
 
   @Before
   public void setUp() {
     helper.setUp();
     scheduledInterviewDao = new FakeScheduledInterviewDao();
+    availabilityDao = new FakeAvailabilityDao();
+    personDao = new FakePersonDao();
   }
 
   @After
@@ -65,7 +69,7 @@ public final class ScheduledInterviewServletTest {
   @Test
   public void validScheduledInterviewServletPostRequest() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(new FakeScheduledInterviewDao());
+    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
@@ -82,7 +86,7 @@ public final class ScheduledInterviewServletTest {
   @Test
   public void validScheduledInterviewServletGetRequest() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(new FakeScheduledInterviewDao());
+    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -115,7 +119,7 @@ public final class ScheduledInterviewServletTest {
   @Test
   public void orderedScheduledInterviewServletGetRequest() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(new FakeScheduledInterviewDao());
+    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -172,7 +176,7 @@ public final class ScheduledInterviewServletTest {
   @Test
   public void invalidInstant() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(new FakeScheduledInterviewDao());
+    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
