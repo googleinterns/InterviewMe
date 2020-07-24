@@ -68,10 +68,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
       userId = String.format("%d", userEmail.hashCode());
     }
     List<ScheduledInterviewRequest> scheduledInterviews =
-        objectToRequestObject(scheduledInterviewDao.getForPerson(userId), timeZoneId);
+        objectToRequestObjects(scheduledInterviewDao.getForPerson(userId), timeZoneId);
     request.setAttribute("scheduledInterviews", scheduledInterviews);
-    List<ScheduledInterviewRequest> scheduledInterviews1 =
-        (List<ScheduledInterviewRequest>) request.getAttribute("scheduledInterviews");
     RequestDispatcher rd = request.getRequestDispatcher("/scheduled-interviews.jsp");
     try {
       rd.forward(request, response);
@@ -113,7 +111,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     }
   }
 
-  public List<ScheduledInterviewRequest> objectToRequestObject(
+  public List<ScheduledInterviewRequest> objectToRequestObjects(
       List<ScheduledInterview> scheduledInterviews, String timeZoneIdString) {
     ZoneId timeZoneId;
     if (timeZoneIdString == null) {
