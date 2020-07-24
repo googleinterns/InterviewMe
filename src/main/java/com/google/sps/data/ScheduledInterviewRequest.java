@@ -18,16 +18,16 @@ package com.google.sps.data;
 public class ScheduledInterviewRequest {
   private long id;
   private String dateString;
-  private String interviewerId;
-  private String intervieweeId;
+  private String interviewer;
+  private String interviewee;
   private String role;
 
   public ScheduledInterviewRequest(
-      long id, String dateString, String interviewerId, String intervieweeId, String role) {
+      long id, String dateString, String interviewer, String interviewee, String role) {
     this.id = id;
     this.dateString = dateString;
-    this.interviewerId = interviewerId;
-    this.intervieweeId = intervieweeId;
+    this.interviewer = interviewer;
+    this.interviewee = interviewee;
     this.role = role;
   }
 
@@ -39,12 +39,12 @@ public class ScheduledInterviewRequest {
     return dateString;
   }
 
-  public String getInterviewerId() {
-    return interviewerId;
+  public String getInterviewer() {
+    return interviewer;
   }
 
-  public String getIntervieweeId() {
-    return intervieweeId;
+  public String getInterviewee() {
+    return interviewee;
   }
 
   public String getRole() {
@@ -59,8 +59,8 @@ public class ScheduledInterviewRequest {
       ScheduledInterviewRequest that = (ScheduledInterviewRequest) o;
       return this.getId() == that.getId()
           && this.getDateString().equals(that.getDateString())
-          && this.getInterviewerId().equals(that.getInterviewerId())
-          && this.getIntervieweeId().equals(that.getIntervieweeId())
+          && this.getInterviewer().equals(that.getInterviewer())
+          && this.getInterviewee().equals(that.getInterviewee())
           && this.getRole().equals(that.getRole());
     }
     return false;
@@ -73,10 +73,10 @@ public class ScheduledInterviewRequest {
         id,
         "dateString",
         dateString,
-        "interviewerId",
-        interviewerId,
-        "intervieweeId",
-        intervieweeId,
+        "interviewer",
+        interviewer,
+        "interviewee",
+        interviewee,
         "role",
         role);
   }
