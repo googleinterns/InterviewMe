@@ -28,6 +28,7 @@ function checkLogin() {
         element.classList.remove('disabled');
       }
       document.getElementById('login-tab').innerText = 'Logout';
+      // If not registered, redirect to registration.
       let loginInfo = getLoginInfo();
       loginInfo.then(getUserOrRedirectRegistration);
     } else {
