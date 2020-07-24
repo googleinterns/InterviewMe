@@ -22,7 +22,10 @@ import com.google.gson.Gson;
 import com.google.sps.data.Availability;
 import com.google.sps.data.AvailabilityDao;
 import com.google.sps.data.DatastoreAvailabilityDao;
+import com.google.sps.data.DatastoreScheduledInterviewDao;
 import com.google.sps.data.PossibleInterviewSlot;
+import com.google.sps.data.ScheduledInterview;
+import com.google.sps.data.ScheduledInterviewDao;
 import com.google.sps.data.TimeRange;
 import java.io.IOException;
 import java.io.BufferedReader;
@@ -51,15 +54,17 @@ import java.util.Optional;
 public class LoadInterviewsServlet extends HttpServlet {
 
   private AvailabilityDao availabilityDao;
+  private ScheduledInterviewDao scheduledInterviewDao;
   private Instant instant;
 
   @Override
   public void init() {
-    init(new DatastoreAvailabilityDao(), Instant.now());
+    init(new DatastoreAvailabilityDao(), new DatastoreScheduledInterviewDao(), Instant.now());
   }
 
-  public void init(AvailabilityDao availabilityDao, Instant instant) {
+  public void init(AvailabilityDao availabilityDao, ScheduledInterviewDao scheduledInterviewDao, Instant instant) {
     this.availabilityDao = availabilityDao;
+    this.scheduledInterviewDao = scheduledInterviewDao;
     this.instant = instant;
   }
 
@@ -130,7 +135,7 @@ public class LoadInterviewsServlet extends HttpServlet {
     for (Availability avail : allAvailabilities) {
       interviewers.add(avail.userId());
     }
-
+    
     // We don't want to schedule an interview for a user with themself, so we are removing
     // the current user's id from the list.
     UserService userService = UserServiceFactory.getUserService();
@@ -150,6 +155,12 @@ public class LoadInterviewsServlet extends HttpServlet {
           getPossibleInterviewSlotsForPerson(
               interviewer, startOfRange, endOfRange, timezoneOffset));
     }
+
+    // TODO: Check that the person looking to schedule is not already scheduled during any of
+    // the proposed times.
+    
+    List<ScheduledInterview> userScheduledInterviews = scheduledInterviewDao.getScheduledInterviewsInRangeForUser(
+      String email, Instant minTime, Instant maxTime);
 
     List<PossibleInterviewSlot> possibleInterviewList =
         new ArrayList<PossibleInterviewSlot>(possibleInterviews);
