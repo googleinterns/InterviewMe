@@ -15,6 +15,7 @@
 package com.google.sps.data;
 
 import com.google.auto.value.AutoValue;
+import java.util.EnumSet;
 
 /** Represents a user on the site. The email is used as the key to the user table. */
 @AutoValue
@@ -32,17 +33,8 @@ public abstract class Person {
   public abstract String job();
 
   public abstract String linkedIn();
-  
-  public abstract boolean softwareEngineerQualified();
-  public abstract boolean productManagerQualified();
-  public abstract boolean businessAnalystQualified();
-  public abstract boolean technicalConsultantQualified();
-  public abstract boolean softwareTesterQualified();
-  public abstract boolean technicalSalesQualified();
-  public abstract boolean networkEngineerQualified();
-  public abstract boolean systemsAnalystQualified();
-  public abstract boolean technicalSupportQualified();
 
+  public abstract EnumSet<Job> qualifiedJobs();
   /**
    * Creates a person that contains a user id, email, first name, last name, company, job, and
    * LinkedIn URL.
@@ -54,7 +46,8 @@ public abstract class Person {
       String lastName,
       String company,
       String job,
-      String linkedIn) {
+      String linkedIn,
+      EnumSet<Job> qualifiedJobs) {
     return builder()
         .setId(id)
         .setEmail(email)
@@ -63,6 +56,7 @@ public abstract class Person {
         .setCompany(company)
         .setJob(job)
         .setLinkedIn(linkedIn)
+        .setQualifiedJobs(qualifiedJobs)
         .build();
   }
 
@@ -76,6 +70,7 @@ public abstract class Person {
         .setCompany(personRequest.getCompany())
         .setJob(personRequest.getJob())
         .setLinkedIn(personRequest.getLinkedIn())
+        .setQualifiedJobs(personRequest.getQualifiedJobs())
         .build();
   }
 
@@ -98,6 +93,8 @@ public abstract class Person {
     abstract Builder setJob(String job);
 
     abstract Builder setLinkedIn(String linkedIn);
+
+    abstract Builder setQualifiedJobs(EnumSet<Job> qualifiedJobs);
 
     abstract Person build();
   }
