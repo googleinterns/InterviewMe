@@ -1,3 +1,5 @@
+Hello {{interviewee_first_name}},
+
 You have been registered for an interview on {{formatted_date}}. You are the interviewee. You will be be mock interviewed by {{interviewer_first_name}} for the position of: {{position}}.
 
 Before the interview, you will need to:

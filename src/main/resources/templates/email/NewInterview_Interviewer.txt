@@ -1,3 +1,5 @@
+Hello {{interviewer_first_name}},
+
 You have been registered for an interview on {{formatted_date}}. You are the interviewer. You will be mock interviewing {{interviewee_first_name}} for the position of: {{position}}.
 
 Before the interview, you will need to:
@@ -8,7 +10,6 @@ Before the interview, you will need to:
 Be sure to follow these general guidelines when interviewing:
   - Keep the time in mind. The interview lasts an hour, but leave about 15 minutes at the end to give your interviewee feedback. Note that this post-interview feedback is something done in a mock interview but not a real life interview.
   - Treat this as an actual interview. This is how you will get the most out of your InterviewMe experience.
-  - You are here to measure the candidate's competency. Does the candidate make progress? 
   
 After interviewing:
  - Your interviewee will write up a feedback report. Expect to see this in your inbox shortly.
