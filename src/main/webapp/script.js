@@ -18,8 +18,7 @@ function onIndexLoad() {
 
 // Disables / enables navbar links and adjusts login / logout tab depending on if user is logged in 
 // or out.
-// Displays login message if user is not logged in and registration message if user is logged in 
-// but not registered.
+// If user is logged in but not registered, redirects to registration.
 function checkLogin() {
   fetch('/login').then(response => response.json()).then(status => {
     if(status.loggedIn){
