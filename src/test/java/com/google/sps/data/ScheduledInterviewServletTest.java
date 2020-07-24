@@ -44,8 +44,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.junit.Test;
 import com.google.gson.JsonSyntaxException;
 
-// TODO: FIX THIS TO MATCH CURRENT IMPLEMENTATION
-
 @RunWith(JUnit4.class)
 public final class ScheduledInterviewServletTest {
   LocalServiceTestHelper helper =
@@ -304,6 +302,7 @@ public final class ScheduledInterviewServletTest {
     Assert.assertTrue(allAvailabilitiesAreScheduled);
   }
 
+  // TODO: FIX THIS TEST!!
   // Tests whether a list of scheduledInterviews was returned by the server
   @Test
   public void validScheduledInterviewServletGetRequest() throws IOException {
@@ -337,6 +336,7 @@ public final class ScheduledInterviewServletTest {
     Assert.assertEquals(200, getResponse.getStatus());
   }
 
+  // TODO: FIX THIS TEST!!
   // Tests that the list of scheduledInterviews is in the correct order
   @Test
   public void orderedScheduledInterviewServletGetRequest() throws IOException {
