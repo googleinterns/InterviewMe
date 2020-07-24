@@ -68,8 +68,7 @@ public class ShowInterviewersServlet extends HttpServlet {
   }
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws IOException, ServletException {
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String utc = request.getParameter("utc");
     Instant startOfRange = Instant.parse(utc);
     Instant endOfRange = Instant.parse(utc).plus(1, ChronoUnit.HOURS);
@@ -80,7 +79,11 @@ public class ShowInterviewersServlet extends HttpServlet {
     Set<PossibleInterviewer> possibleInterviewers = getPossibleInterviewers(possiblePeople);
     request.setAttribute("interviewers", possibleInterviewers);
     RequestDispatcher rd = request.getRequestDispatcher("/possibleInterviewers.jsp");
-    rd.forward(request, response);
+    try {
+      rd.forward(request, response);
+    } catch (ServletException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   List<Person> getPossiblePeople(

@@ -64,8 +64,7 @@ public class LoadInterviewsServlet extends HttpServlet {
   }
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws IOException, ServletException {
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     int timezoneOffsetMinutes = Integer.parseInt(request.getParameter("timeZoneOffset"));
     Preconditions.checkArgument(
         Math.abs(timezoneOffsetMinutes) <= 720,
@@ -102,7 +101,12 @@ public class LoadInterviewsServlet extends HttpServlet {
     sortWeek(possibleInterviewsForWeek);
     request.setAttribute("weekList", possibleInterviewsForWeek);
     RequestDispatcher rd = request.getRequestDispatcher("/possibleInterviewTimes.jsp");
-    rd.forward(request, response);
+
+    try {
+      rd.forward(request, response);
+    } catch (ServletException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   // Uses an Instant and a timezoneOffset to create a ZonedDateTime instance.

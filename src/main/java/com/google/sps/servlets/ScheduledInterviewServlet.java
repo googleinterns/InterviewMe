@@ -50,10 +50,16 @@ public class ScheduledInterviewServlet extends HttpServlet {
 
   @Override
   public void init() {
-    init(new DatastoreScheduledInterviewDao(), new DatastoreAvailabilityDao(), new DatastorePersonDao());
+    init(
+        new DatastoreScheduledInterviewDao(),
+        new DatastoreAvailabilityDao(),
+        new DatastorePersonDao());
   }
 
-  public void init(ScheduledInterviewDao scheduledInterviewDao, AvailabilityDao availabilityDao, PersonDao personDao) {
+  public void init(
+      ScheduledInterviewDao scheduledInterviewDao,
+      AvailabilityDao availabilityDao,
+      PersonDao personDao) {
     this.scheduledInterviewDao = scheduledInterviewDao;
     this.availabilityDao = availabilityDao;
     interviewerServlet.init(availabilityDao, personDao);
@@ -113,17 +119,14 @@ public class ScheduledInterviewServlet extends HttpServlet {
       return;
     }
 
-    // TODO: Create Person dao method to get people with this company and job. Then find the ones
-    // that are available now and randomly select one.
-    
-    List<Availability> availabilitiesInRange =
-        availabilityDao.getInRangeForAll(startTime, endTime);
-    List<Person> allAvailableInterviewers = interviewerServlet.getPossiblePeople(availabilitiesInRange, startTime, endTime);
-    List<String> possibleInterviewers = getPossibleInterviewerIds(allAvailableInterviewers, interviewerCompany, interviewerJob);
+    List<Availability> availabilitiesInRange = availabilityDao.getInRangeForAll(startTime, endTime);
+    List<Person> allAvailableInterviewers =
+        interviewerServlet.getPossiblePeople(availabilitiesInRange, startTime, endTime);
+    List<String> possibleInterviewers =
+        getPossibleInterviewerIds(allAvailableInterviewers, interviewerCompany, interviewerJob);
 
-    // TODO: Randomly select an interviewer (ask how this could be consistent/testable).
-
-    String interviewerId = "fakeId";
+    int randomNumber = (int) (Math.random() * possibleInterviewers.size());
+    String interviewerId = possibleInterviewers.get(randomNumber);
 
     scheduledInterviewDao.create(
         ScheduledInterview.create(
@@ -152,7 +155,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     while ((payloadLine = reader.readLine()) != null) buffer.append(payloadLine);
     return buffer.toString();
   }
-  
+
   List<String> getPossibleInterviewerIds(List<Person> availablePeople, String company, String job) {
     List<String> possibleInterviewerIds = new ArrayList<String>();
     for (Person person : availablePeople) {

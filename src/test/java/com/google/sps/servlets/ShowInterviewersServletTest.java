@@ -82,8 +82,7 @@ public final class ShowInterviewersServletTest {
   }
 
   @Test
-  public void onlyReturnsInterviewersWhoAreAvailableForTheFullHour()
-      throws IOException, ServletException {
+  public void onlyReturnsInterviewersWhoAreAvailableForTheFullHour() throws IOException {
     personDao.create(person1);
     ShowInterviewersServlet servlet = new ShowInterviewersServlet();
     servlet.init(availabilityDao, personDao);
@@ -125,7 +124,7 @@ public final class ShowInterviewersServletTest {
   }
 
   @Test
-  public void onlyReturnsInterviewersWhoAreNotScheduled() throws IOException, ServletException {
+  public void onlyReturnsInterviewersWhoAreNotScheduled() throws IOException {
     personDao.create(person1);
     ShowInterviewersServlet servlet = new ShowInterviewersServlet();
     servlet.init(availabilityDao, personDao);
@@ -175,7 +174,7 @@ public final class ShowInterviewersServletTest {
   }
 
   @Test
-  public void noSchedulingWithYourself() throws IOException, ServletException {
+  public void noSchedulingWithYourself() throws IOException {
     ShowInterviewersServlet servlet = new ShowInterviewersServlet();
     servlet.init(availabilityDao, personDao);
     String userEmail = "person@gmail.com";
@@ -227,7 +226,7 @@ public final class ShowInterviewersServletTest {
   }
 
   @Test
-  public void successfulRun() throws IOException, ServletException {
+  public void successfulRun() throws IOException {
     personDao.create(person2);
     ShowInterviewersServlet servlet = new ShowInterviewersServlet();
     servlet.init(availabilityDao, personDao);
@@ -281,7 +280,7 @@ public final class ShowInterviewersServletTest {
   }
 
   @Test
-  public void noRepeatsOfCompanyAndJob() throws IOException, ServletException {
+  public void noRepeatsOfCompanyAndJob() throws IOException {
     personDao.create(person2);
     personDao.create(person3);
     ShowInterviewersServlet servlet = new ShowInterviewersServlet();

@@ -93,7 +93,7 @@ public final class LoadInterviewsServletTest {
   }
 
   @Test
-  public void onlyReturnsHourLongSlots() throws IOException, ServletException {
+  public void onlyReturnsHourLongSlots() throws IOException {
     LoadInterviewsServlet servlet = new LoadInterviewsServlet();
     servlet.init(availabilityDao, Instant.parse("2020-07-07T13:15:00Z"));
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
@@ -199,7 +199,7 @@ public final class LoadInterviewsServletTest {
   }
 
   @Test
-  public void onlyReturnsUnscheduledSlots() throws IOException, ServletException {
+  public void onlyReturnsUnscheduledSlots() throws IOException {
     LoadInterviewsServlet servlet = new LoadInterviewsServlet();
     servlet.init(availabilityDao, Instant.parse("2020-07-07T13:15:00Z"));
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
@@ -248,7 +248,7 @@ public final class LoadInterviewsServletTest {
   }
 
   @Test
-  public void noSchedulingWithYourself() throws IOException, ServletException {
+  public void noSchedulingWithYourself() throws IOException {
     LoadInterviewsServlet servlet = new LoadInterviewsServlet();
     servlet.init(availabilityDao, Instant.parse("2020-07-07T13:15:00Z"));
     String userEmail = "user@gmail.com";
@@ -300,7 +300,7 @@ public final class LoadInterviewsServletTest {
   }
 
   @Test
-  public void possibleInterviewSlotsAreSorted() throws IOException, ServletException {
+  public void possibleInterviewSlotsAreSorted() throws IOException {
     LoadInterviewsServlet servlet = new LoadInterviewsServlet();
     servlet.init(availabilityDao, Instant.parse("2020-07-07T13:15:00Z"));
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
@@ -364,7 +364,7 @@ public final class LoadInterviewsServletTest {
   }
 
   @Test
-  public void daysAreSorted() throws IOException, ServletException {
+  public void daysAreSorted() throws IOException {
     LoadInterviewsServlet servlet = new LoadInterviewsServlet();
     servlet.init(availabilityDao, Instant.parse("2020-07-07T13:15:00Z"));
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");

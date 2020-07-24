@@ -44,6 +44,8 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.junit.Test;
 import com.google.gson.JsonSyntaxException;
 
+// TODO: FIX THIS TO MATCH CURRENT IMPLEMENTATION
+
 @RunWith(JUnit4.class)
 public final class ScheduledInterviewServletTest {
   LocalServiceTestHelper helper =
@@ -51,6 +53,9 @@ public final class ScheduledInterviewServletTest {
   private FakeScheduledInterviewDao scheduledInterviewDao;
   private FakeAvailabilityDao availabilityDao;
   private FakePersonDao personDao;
+  
+  private final Person person1 = Person.create(emailToId("user1@mail"), "user1@mail", "User", "Test", "Google", "SWE", "linkedIn");
+  private final Availability person1Avail1 = Availability.create(person1.id(), new TimeRange(Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:00:00Z")), -1, false);
 
   @Before
   public void setUp() {
@@ -68,15 +73,15 @@ public final class ScheduledInterviewServletTest {
   // Tests whether a scheduledInterview object was added to datastore.
   @Test
   public void validScheduledInterviewServletPostRequest() throws IOException {
+    personDao.create(person1);
+    
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
     scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
-    postRequest.addParameter("startTime", "2020-07-05T18:00:00Z");
-    postRequest.addParameter("endTime", "2020-07-05T19:00:10Z");
-    postRequest.addParameter("interviewer", emailToId("user@company.org"));
-    postRequest.addParameter("interviewee", emailToId("user@gmail.com"));
+    String jsonString = "{\"company\":\"Google\",\"job\":\"SWE\",\"utc\":\"2020-07-20T12:45:00Z\"}";
+    postRequest.setContent(jsonString.getBytes(StandardCharsets.UTF_8));
 
     scheduledInterviewServlet.doPost(postRequest, postResponse);
     Assert.assertEquals(200, postResponse.getStatus());
