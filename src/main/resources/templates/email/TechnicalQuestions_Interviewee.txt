@@ -4,7 +4,6 @@ We see that you registered for a {{position}} mock interview with InterviewMe on
 
   Repeat/clarify the question with the interviewer.
     - Pay attention for hints.
-    - Gives you more time to digest the question.
     - Vagueness is expected. This gives you the chance to define the problem better.
 
   Brainstorm potential solutions.
