@@ -62,7 +62,10 @@ public class LoadInterviewsServlet extends HttpServlet {
     init(new DatastoreAvailabilityDao(), new DatastoreScheduledInterviewDao(), Instant.now());
   }
 
-  public void init(AvailabilityDao availabilityDao, ScheduledInterviewDao scheduledInterviewDao, Instant instant) {
+  public void init(
+      AvailabilityDao availabilityDao,
+      ScheduledInterviewDao scheduledInterviewDao,
+      Instant instant) {
     this.availabilityDao = availabilityDao;
     this.scheduledInterviewDao = scheduledInterviewDao;
     this.instant = instant;
@@ -135,7 +138,7 @@ public class LoadInterviewsServlet extends HttpServlet {
     for (Availability avail : allAvailabilities) {
       interviewers.add(avail.userId());
     }
-    
+
     // We don't want to schedule an interview for a user with themself, so we are removing
     // the current user's id from the list.
     UserService userService = UserServiceFactory.getUserService();
@@ -156,11 +159,24 @@ public class LoadInterviewsServlet extends HttpServlet {
               interviewer, startOfRange, endOfRange, timezoneOffset));
     }
 
-    // TODO: Check that the person looking to schedule is not already scheduled during any of
+    // We need to check that the person looking to schedule is not already scheduled during any of
     // the proposed times.
-    
-    List<ScheduledInterview> userScheduledInterviews = scheduledInterviewDao.getScheduledInterviewsInRangeForUser(
-      String email, Instant minTime, Instant maxTime);
+
+    List<ScheduledInterview> userScheduledInterviews =
+        scheduledInterviewDao.getScheduledInterviewsInRangeForUser(
+            userId, startOfRange, endOfRange);
+
+    Set<PossibleInterviewSlot> conflictingInterviews = new HashSet<PossibleInterviewSlot>();
+
+    for (PossibleInterviewSlot slot : possibleInterviews) {
+      for (ScheduledInterview userInterview : userScheduledInterviews) {
+        if (userInterview.when().contains(Instant.parse(slot.utcEncoding()))) {
+          conflictingInterviews.add(slot);
+        }
+      }
+    }
+
+    possibleInterviews.removeAll(conflictingInterviews);
 
     List<PossibleInterviewSlot> possibleInterviewList =
         new ArrayList<PossibleInterviewSlot>(possibleInterviews);

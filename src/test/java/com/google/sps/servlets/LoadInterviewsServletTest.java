@@ -24,7 +24,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.sps.data.Availability;
 import com.google.sps.data.FakeAvailabilityDao;
+import com.google.sps.data.FakeScheduledInterviewDao;
 import com.google.sps.data.PossibleInterviewSlot;
+import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.TimeRange;
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -49,12 +51,14 @@ import com.google.gson.JsonSyntaxException;
 public final class LoadInterviewsServletTest {
   LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalUserServiceTestConfig());
   private FakeAvailabilityDao availabilityDao;
+  private FakeScheduledInterviewDao scheduledInterviewDao;
   private MockServletContext context;
 
   @Before
   public void setUp() {
     helper.setUp();
     availabilityDao = new FakeAvailabilityDao();
+    scheduledInterviewDao = new FakeScheduledInterviewDao();
   }
 
   @After
@@ -65,7 +69,7 @@ public final class LoadInterviewsServletTest {
   @Test
   public void tooLargePositiveOffset() {
     LoadInterviewsServlet servlet = new LoadInterviewsServlet();
-    servlet.init(availabilityDao, Instant.now());
+    servlet.init(availabilityDao, scheduledInterviewDao, Instant.now());
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("timeZoneOffset", "740");
@@ -80,7 +84,7 @@ public final class LoadInterviewsServletTest {
   @Test
   public void tooLargeNegativeOffset() {
     LoadInterviewsServlet servlet = new LoadInterviewsServlet();
-    servlet.init(availabilityDao, Instant.now());
+    servlet.init(availabilityDao, scheduledInterviewDao, Instant.now());
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("timeZoneOffset", "-740");
@@ -95,7 +99,7 @@ public final class LoadInterviewsServletTest {
   @Test
   public void onlyReturnsHourLongSlots() throws IOException {
     LoadInterviewsServlet servlet = new LoadInterviewsServlet();
-    servlet.init(availabilityDao, Instant.parse("2020-07-07T13:15:00Z"));
+    servlet.init(availabilityDao, scheduledInterviewDao, Instant.parse("2020-07-07T13:15:00Z"));
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
 
     // A 15 minute slot
@@ -201,7 +205,7 @@ public final class LoadInterviewsServletTest {
   @Test
   public void onlyReturnsUnscheduledSlots() throws IOException {
     LoadInterviewsServlet servlet = new LoadInterviewsServlet();
-    servlet.init(availabilityDao, Instant.parse("2020-07-07T13:15:00Z"));
+    servlet.init(availabilityDao, scheduledInterviewDao, Instant.parse("2020-07-07T13:15:00Z"));
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
 
     // A scheduled hour slot
@@ -248,9 +252,69 @@ public final class LoadInterviewsServletTest {
   }
 
   @Test
+  public void removesInterviewsThatConflictWithUser() throws IOException {
+    LoadInterviewsServlet servlet = new LoadInterviewsServlet();
+    servlet.init(availabilityDao, scheduledInterviewDao, Instant.parse("2020-07-07T13:15:00Z"));
+    String userEmail = "person@gmail.com";
+    helper.setEnvIsLoggedIn(true).setEnvEmail(userEmail).setEnvAuthDomain("auth");
+
+    // A scheduled interview for the current user that overlaps with the only possible interviewer
+    // time.
+    scheduledInterviewDao.create(
+        ScheduledInterview.create(
+            -1,
+            new TimeRange(
+                Instant.parse("2020-07-07T16:00:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
+            "interviewerId",
+            String.format("%d", userEmail.hashCode())));
+
+    // An unscheduled hour slot for an interviewer
+    availabilityDao.create(
+        Availability.create(
+            "user1",
+            new TimeRange(
+                Instant.parse("2020-07-07T16:30:00Z"), Instant.parse("2020-07-07T16:45:00Z")),
+            -1,
+            false));
+
+    availabilityDao.create(
+        Availability.create(
+            "user1",
+            new TimeRange(
+                Instant.parse("2020-07-07T16:45:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
+            -1,
+            false));
+
+    availabilityDao.create(
+        Availability.create(
+            "user1",
+            new TimeRange(
+                Instant.parse("2020-07-07T17:00:00Z"), Instant.parse("2020-07-07T17:15:00Z")),
+            -1,
+            false));
+
+    availabilityDao.create(
+        Availability.create(
+            "user1",
+            new TimeRange(
+                Instant.parse("2020-07-07T17:15:00Z"), Instant.parse("2020-07-07T17:30:00Z")),
+            -1,
+            false));
+    MockHttpServletRequest getRequest = new MockHttpServletRequest();
+    getRequest.addParameter("timeZoneOffset", "0");
+    MockHttpServletResponse getResponse = new MockHttpServletResponse();
+    servlet.doGet(getRequest, getResponse);
+    List<List<PossibleInterviewSlot>> possibleInterviewSlots =
+        (List<List<PossibleInterviewSlot>>) getRequest.getAttribute("weekList");
+    ImmutableList.Builder<List<PossibleInterviewSlot>> expected = ImmutableList.builder();
+    List<List<PossibleInterviewSlot>> expectedInterviewSlots = expected.build();
+    Assert.assertEquals(expectedInterviewSlots, possibleInterviewSlots);
+  }
+
+  @Test
   public void noSchedulingWithYourself() throws IOException {
     LoadInterviewsServlet servlet = new LoadInterviewsServlet();
-    servlet.init(availabilityDao, Instant.parse("2020-07-07T13:15:00Z"));
+    servlet.init(availabilityDao, scheduledInterviewDao, Instant.parse("2020-07-07T13:15:00Z"));
     String userEmail = "user@gmail.com";
     helper.setEnvIsLoggedIn(true).setEnvEmail(userEmail).setEnvAuthDomain("auth");
 
@@ -302,7 +366,7 @@ public final class LoadInterviewsServletTest {
   @Test
   public void possibleInterviewSlotsAreSorted() throws IOException {
     LoadInterviewsServlet servlet = new LoadInterviewsServlet();
-    servlet.init(availabilityDao, Instant.parse("2020-07-07T13:15:00Z"));
+    servlet.init(availabilityDao, scheduledInterviewDao, Instant.parse("2020-07-07T13:15:00Z"));
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
 
     // An hour and 15 minute slot
@@ -366,7 +430,7 @@ public final class LoadInterviewsServletTest {
   @Test
   public void daysAreSorted() throws IOException {
     LoadInterviewsServlet servlet = new LoadInterviewsServlet();
-    servlet.init(availabilityDao, Instant.parse("2020-07-07T13:15:00Z"));
+    servlet.init(availabilityDao, scheduledInterviewDao, Instant.parse("2020-07-07T13:15:00Z"));
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
 
     // An hour slot on 7/7
