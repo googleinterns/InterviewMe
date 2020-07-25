@@ -104,18 +104,22 @@ public class DatastorePersonDaoTest {
   }
 
   // Checks that an Person is returned when it exists within datastore.
-  // @Test
+  @Test
   public void getsPerson() {
-    dao.create(availabilityTwo);
+    dao.create(a);
     Entity entity = datastore.prepare(new Query("Person")).asSingleEntity();
     Person storedPerson = dao.entityToPerson(entity);
     Optional<Person> actualPersonOptional = dao.get(storedPerson.id());
     Person expectedPerson =
         Person.create(
-            availabilityTwo.userId(),
-            availabilityTwo.when(),
             storedPerson.id(),
-            availabilityTwo.scheduled());
+            a.email(),
+            a.firstName(),
+            a.lastName(),
+            a.company(),
+            a.job(),
+            a.linkedIn(),
+            a.qualifiedJobs());
     Optional<Person> expectedPersonOptional = Optional.of(expectedPerson);
     Assert.assertEquals(expectedPersonOptional, actualPersonOptional);
   }

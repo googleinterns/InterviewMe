@@ -22,7 +22,7 @@ public class PersonRequest {
   private String lastName;
   private String company;
   private String job;
-  private String linkedin;
+  private String linkedIn;
   private EnumSet<Job> qualifiedJobs;
 
   public PersonRequest(
@@ -30,14 +30,16 @@ public class PersonRequest {
       String lastName,
       String company,
       String job,
-      String linkedin,
+      String linkedIn,
       EnumSet<Job> qualifiedJobs) {
+    System.out.println("PersonRequest ctor");
     this.firstName = firstName;
     this.lastName = lastName;
     this.company = company;
     this.job = job;
-    this.linkedin = linkedin;
+    this.linkedIn = linkedIn;
     this.qualifiedJobs = qualifiedJobs;
+    System.out.println(toString());
   }
 
   public String getFirstName() {
@@ -57,7 +59,7 @@ public class PersonRequest {
   }
 
   public String getLinkedIn() {
-    return linkedin;
+    return linkedIn;
   }
 
   public EnumSet<Job> getQualifiedJobs() {
@@ -76,12 +78,16 @@ public class PersonRequest {
             company,
             "job",
             job,
-            "linkedin",
-            linkedin)
+            "linkedIn",
+            linkedIn)
         + qualifiedJobsToString();
   }
 
   private String qualifiedJobsToString() {
-    return "";
+    StringBuilder sb = new StringBuilder();
+    for (Job job : qualifiedJobs) {
+      sb.append(job.toString() + " ");
+    }
+    return sb.toString();
   }
 }

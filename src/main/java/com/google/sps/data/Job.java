@@ -15,24 +15,13 @@
 package com.google.sps.data;
 
 public enum Job {
-  SOFTWARE_ENGINEER("Software Engineer"),
-  PRODUCT_MANAGER("Product Manager"),
-  BUSINESS_ANALYST("Business Analyst"),
-  TECHNICAL_CONSULTANT("Technical Consultant"),
-  SOFTWARE_TESTER("Software Tester"),
-  TECHNICAL_SALES("Technical Sales"),
-  NETWORK_ENGINEER("Network Engineer"),
-  SYSTEMS_ANALYST("Systems Analyst"),
-  TECHNICAL_SUPPORT("Technical Support");
-
-  String formattedJob;
-
-  Job(String formattedJob) {
-    this.formattedJob = formattedJob;
-  }
-
-  @Override
-  public String toString() {
-    return formattedJob;
-  }
+  SOFTWARE_ENGINEER,
+  PRODUCT_MANAGER,
+  BUSINESS_ANALYST,
+  TECHNICAL_CONSULTANT,
+  SOFTWARE_TESTER,
+  TECHNICAL_SALES,
+  NETWORK_ENGINEER,
+  SYSTEMS_ANALYST,
+  TECHNICAL_SUPPORT;
 }
