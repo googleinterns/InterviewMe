@@ -30,6 +30,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -150,32 +151,31 @@ public class ScheduledInterviewServlet extends HttpServlet {
       userId = String.format("%d", userEmail.hashCode());
     }
     String date = getDateString(scheduledInterview.when(), timeZoneId);
-    String interviewer;
-    String interviewee;
-    String role;
-    boolean hasPassed;
-
-    if (userId.equals(scheduledInterview.interviewerId())) {
-      role = "Interviewer";
-    } else {
-      role = "Interviewee";
-    }
-
-    if (!personDao.get(scheduledInterview.interviewerId()).isPresent()) {
-      interviewer = "Nonexistent User";
-    } else {
-      interviewer = personDao.get(scheduledInterview.interviewerId()).get().firstName();
-    }
-
-    if (!personDao.get(scheduledInterview.intervieweeId()).isPresent()) {
-      interviewee = "Nonexistent User";
-    } else {
-      interviewee = personDao.get(scheduledInterview.intervieweeId()).get().firstName();
-    }
-
-    hasPassed = scheduledInterview.when().start().isBefore(userTime);
+    String interviewer =
+        personDao
+            .get(scheduledInterview.interviewerId())
+            .map(Person::firstName)
+            .orElse("Nonexistent User");
+    String interviewee =
+        personDao
+            .get(scheduledInterview.intervieweeId())
+            .map(Person::firstName)
+            .orElse("Nonexistent User");
+    String role = getUserRole(scheduledInterview, userId);
+    boolean hasPassed =
+        scheduledInterview.when().start().minus(5, ChronoUnit.MINUTES).isBefore(userTime);
 
     return new ScheduledInterviewRequest(
         scheduledInterview.id(), date, interviewer, interviewee, role, hasPassed);
+  }
+
+  static String getUserRole(ScheduledInterview scheduledInterview, String userId) {
+    if (userId.equals(scheduledInterview.interviewerId())) {
+      return "Interviewer";
+    }
+    if (userId.equals(scheduledInterview.intervieweeId())) {
+      return "Interviewee";
+    }
+    return "unknown";
   }
 }
