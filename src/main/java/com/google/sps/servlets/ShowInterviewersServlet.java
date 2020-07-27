@@ -128,12 +128,7 @@ public class ShowInterviewersServlet extends HttpServlet {
     List<Availability> availabilities =
         availabilityDao.getInRangeForUser(userId, range.start(), range.end());
     List<Availability> scheduledAvailability = new ArrayList<Availability>();
-    for (Availability avail : availabilities) {
-      if (avail.scheduled()) {
-        scheduledAvailability.add(avail);
-      }
-    }
-    availabilities.removeAll(scheduledAvailability);
+    availabilities.removeIf(avail -> avail.scheduled());
     // If they have 4 unscheduled availabilities during the hour-long range, then they have
     // a possible interview slot.
     if (availabilities.size() == 4) {
