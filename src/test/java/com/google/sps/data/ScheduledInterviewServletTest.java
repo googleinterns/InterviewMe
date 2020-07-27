@@ -161,6 +161,106 @@ public final class ScheduledInterviewServletTest {
     helper.tearDown();
   }
 
+  // Tests whether only the scheduled interviews that the current user is involved in are returned.
+  @Test
+  public void returnsScheduledInterviewsForUser() throws IOException {
+    ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
+    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
+    helper.setEnvIsLoggedIn(true).setEnvEmail(person1.email()).setEnvAuthDomain("auth");
+
+    MockHttpServletRequest getRequest = new MockHttpServletRequest();
+    MockHttpServletResponse getResponse = new MockHttpServletResponse();
+
+    scheduledInterviewDao.create(
+        ScheduledInterview.create(
+            -1,
+            new TimeRange(
+                Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
+            person1.id(),
+            person2.id()));
+
+    scheduledInterviewDao.create(
+        ScheduledInterview.create(
+            -1,
+            new TimeRange(
+                Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
+            person2.id(),
+            person3.id()));
+
+    scheduledInterviewServlet.doGet(getRequest, getResponse);
+
+    Type scheduledInterviewListType =
+        new TypeToken<ArrayList<ScheduledInterviewRequest>>() {}.getType();
+    JsonElement json = new JsonParser().parse(getResponse.getContentAsString());
+    List<ScheduledInterviewRequest> actual = new Gson().fromJson(json, scheduledInterviewListType);
+
+    ScheduledInterviewRequest expectedInterview =
+        new ScheduledInterviewRequest(
+            actual.get(0).getId(),
+            new TimeRange(
+                Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
+            person1.id(),
+            person2.id());
+
+    List<ScheduledInterviewRequest> expected = new ArrayList<ScheduledInterviewRequest>();
+    expected.add(expectedInterview);
+
+    Assert.assertEquals(expected, actual);
+  }
+
+  // Tests that the list of scheduledInterviews is in the correct order
+  @Test
+  public void returnsScheduledInterviewsInOrder() throws IOException {
+    ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
+    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
+    helper.setEnvIsLoggedIn(true).setEnvEmail(person1.email()).setEnvAuthDomain("auth");
+    MockHttpServletRequest getRequest = new MockHttpServletRequest();
+    MockHttpServletResponse getResponse = new MockHttpServletResponse();
+
+    scheduledInterviewDao.create(
+        ScheduledInterview.create(
+            -1,
+            new TimeRange(
+                Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
+            person1.id(),
+            person2.id()));
+
+    scheduledInterviewDao.create(
+        ScheduledInterview.create(
+            -1,
+            new TimeRange(
+                Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
+            person1.id(),
+            person2.id()));
+
+    scheduledInterviewServlet.doGet(getRequest, getResponse);
+
+    Type scheduledInterviewListType =
+        new TypeToken<ArrayList<ScheduledInterviewRequest>>() {}.getType();
+    JsonElement json = new JsonParser().parse(getResponse.getContentAsString());
+    List<ScheduledInterviewRequest> actual = new Gson().fromJson(json, scheduledInterviewListType);
+
+    ScheduledInterviewRequest scheduledInterview1 =
+        new ScheduledInterviewRequest(
+            actual.get(0).getId(),
+            new TimeRange(
+                Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
+            person1.id(),
+            person2.id());
+    ScheduledInterviewRequest scheduledInterview2 =
+        new ScheduledInterviewRequest(
+            actual.get(1).getId(),
+            new TimeRange(
+                Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
+            person1.id(),
+            person2.id());
+
+    List<ScheduledInterviewRequest> expected = new ArrayList<ScheduledInterviewRequest>();
+    expected.add(scheduledInterview1);
+    expected.add(scheduledInterview2);
+    Assert.assertEquals(expected, actual);
+  }
+
   // Tests whether a scheduledInterview object was added to datastore with one possible interviewer.
   @Test
   public void onlyOnePossibleInterviewer() throws IOException {
@@ -300,98 +400,6 @@ public final class ScheduledInterviewServletTest {
     }
 
     Assert.assertTrue(allAvailabilitiesAreScheduled);
-  }
-
-  // TODO: FIX THIS TEST!!
-  // Tests whether a list of scheduledInterviews was returned by the server
-  @Test
-  public void validScheduledInterviewServletGetRequest() throws IOException {
-    ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
-    helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
-    MockHttpServletRequest getRequest = new MockHttpServletRequest();
-    MockHttpServletResponse getResponse = new MockHttpServletResponse();
-    MockHttpServletRequest postRequest = new MockHttpServletRequest();
-    postRequest.addParameter("startTime", "2020-07-05T18:00:00Z");
-    postRequest.addParameter("endTime", "2020-07-05T19:00:00Z");
-    postRequest.addParameter("interviewer", "user@company.org");
-    postRequest.addParameter("interviewee", "user@gmail.com");
-    scheduledInterviewServlet.doPost(postRequest, new MockHttpServletResponse());
-
-    postRequest.setParameter("startTime", "2020-07-05T20:00:00Z");
-    postRequest.setParameter("endTime", "2020-07-05T21:00:00Z");
-    postRequest.setParameter("interviewer", "user2@company.org");
-    postRequest.setParameter("interviewee", "user@gmail.com");
-    scheduledInterviewServlet.doPost(postRequest, new MockHttpServletResponse());
-
-    postRequest.setParameter("startTime", "2020-07-05T18:00:00Z");
-    postRequest.setParameter("endTime", "2020-07-05T19:00:00Z");
-    postRequest.setParameter("interviewer", "user2@company.org");
-    postRequest.setParameter("interviewee", "user1@gmail.com");
-    scheduledInterviewServlet.doPost(postRequest, new MockHttpServletResponse());
-
-    getRequest.addParameter("userEmail", "user@company.org");
-    scheduledInterviewServlet.doGet(getRequest, getResponse);
-
-    Assert.assertEquals(200, getResponse.getStatus());
-  }
-
-  // TODO: FIX THIS TEST!!
-  // Tests that the list of scheduledInterviews is in the correct order
-  @Test
-  public void orderedScheduledInterviewServletGetRequest() throws IOException {
-    ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
-    helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
-    MockHttpServletRequest getRequest = new MockHttpServletRequest();
-    MockHttpServletResponse getResponse = new MockHttpServletResponse();
-    MockHttpServletRequest postRequest = new MockHttpServletRequest();
-
-    postRequest.addParameter("startTime", "2020-07-05T18:00:00Z");
-    postRequest.addParameter("endTime", "2020-07-05T19:00:00Z");
-    postRequest.addParameter("interviewer", emailToId("user@company.org"));
-    postRequest.addParameter("interviewee", emailToId("user@gmail.com"));
-    scheduledInterviewServlet.doPost(postRequest, new MockHttpServletResponse());
-
-    postRequest.setParameter("startTime", "2020-07-05T20:00:00Z");
-    postRequest.setParameter("endTime", "2020-07-05T21:00:00Z");
-    postRequest.setParameter("interviewer", emailToId("user2@company.org"));
-    postRequest.setParameter("interviewee", emailToId("user@gmail.com"));
-    scheduledInterviewServlet.doPost(postRequest, new MockHttpServletResponse());
-
-    postRequest.setParameter("startTime", "2020-07-05T18:00:00Z");
-    postRequest.setParameter("endTime", "2020-07-05T19:00:00Z");
-    postRequest.setParameter("interviewer", emailToId("user2@company.org"));
-    postRequest.setParameter("interviewee", emailToId("user1@gmail.com"));
-    scheduledInterviewServlet.doPost(postRequest, new MockHttpServletResponse());
-
-    getRequest.addParameter("userEmail", emailToId("user@gmail.com"));
-    scheduledInterviewServlet.doGet(getRequest, getResponse);
-
-    Type scheduledInterviewListType =
-        new TypeToken<ArrayList<ScheduledInterviewRequest>>() {}.getType();
-    JsonElement json = new JsonParser().parse(getResponse.getContentAsString());
-    List<ScheduledInterviewRequest> actual = new Gson().fromJson(json, scheduledInterviewListType);
-
-    ScheduledInterviewRequest scheduledInterview1 =
-        new ScheduledInterviewRequest(
-            actual.get(0).getId(),
-            new TimeRange(
-                Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
-            emailToId("user@company.org"),
-            emailToId("user@gmail.com"));
-    ScheduledInterviewRequest scheduledInterview2 =
-        new ScheduledInterviewRequest(
-            actual.get(1).getId(),
-            new TimeRange(
-                Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
-            emailToId("user2@company.org"),
-            emailToId("user@gmail.com"));
-
-    List<ScheduledInterviewRequest> expected = new ArrayList<ScheduledInterviewRequest>();
-    expected.add(scheduledInterview1);
-    expected.add(scheduledInterview2);
-    Assert.assertEquals(expected, actual);
   }
 
   // Tests errors with Instant parsing.

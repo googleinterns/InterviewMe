@@ -65,9 +65,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     interviewerServlet.init(availabilityDao, personDao);
   }
 
-  // Gets the current user's email from request and returns the ScheduledInterviews for that person.
-  // If the email that is requested matches the email that is logged in, then the scheduled
-  // interviews are returned, otherwise SC_UNAUTHORIZED is returned.
+  // Gets the current user's email and returns the ScheduledInterviews for that person.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String userEmail = userService.getCurrentUser().getEmail();
