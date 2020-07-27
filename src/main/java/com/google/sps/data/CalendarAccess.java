@@ -44,12 +44,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import com.google.api.client.auth.oauth2.StoredCredential;
+import java.io.BufferedReader;
+import java.util.stream.Collectors;
 
 import com.google.api.services.calendar.*;
 import com.google.api.services.calendar.model.*;
 
 public class CalendarAccess {
-  private static final String APPLICATION_NAME = "Interview Me Google Calendar API Usage";
+  private static final String APPLICATION_NAME = "Interview Me";
   private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
   private static final String TOKENS_DIRECTORY_PATH = "tokens";
 
@@ -59,28 +61,78 @@ public class CalendarAccess {
    */
   private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR);
 
-  private static final String KEY_PATH = "/interview-me-step-2020-6ae1489eb3f9.json";
+  // private static final String KEY_PATH =
+  //     "src/main/resources/interview-me-step-2020-6ae1489eb3f9.json";
+  // private static final String KEY_PATH_RUN = "interview-me-step-2020-6ae1489eb3f9.json";
 
-  public CalendarAccess() throws GeneralSecurityException, IOException {
-    GoogleCredential credential;
+  public CalendarAccess() {}
+
+  public void getService() throws GeneralSecurityException, IOException {
     try {
-      FileInputStream creds = new FileInputStream(new File(KEY_PATH));
-      credential =
-          GoogleCredential.fromStream(creds)
-              .createScoped(SCOPES)
-              .createDelegated("interviewme.business@gmail.com");
-    } catch (final IOException e) {
-      System.err.println("Failed to load credentials " + e.getMessage());
-      return;
+      System.out.println("getService()");
+      FileInputStream fstream =
+          new FileInputStream(
+              new File(
+                  this.getClass()
+                      .getResource("/interview-me-step-2020-627ae7fba2f5.json")
+                      .toURI()));
+      FileInputStream fstream2 =
+          new FileInputStream(
+              new File(
+                  this.getClass()
+                      .getResource("/interview-me-step-2020-627ae7fba2f5.json")
+                      .toURI()));
+      String result =
+          new BufferedReader(new InputStreamReader(fstream2))
+              .lines()
+              .collect(Collectors.joining("\n"));
+      System.out.println(result);
+      GoogleCredential credential = GoogleCredential.fromStream(fstream).createScoped(SCOPES);
+      // .createDelegated("interviewme.business@gmail.com");
+      System.out.println("getServiceAccountUser: " + credential.getServiceAccountUser());
+
+      final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+      Calendar calendarService =
+          new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+              .setApplicationName(APPLICATION_NAME)
+              .build();
+      System.out.println("calendarService built");
+      listNextTen(calendarService);
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      e.printStackTrace();
     }
+  }
 
-    Calendar calendar =
-        new Calendar.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, credential)
-            .setApplicationName("Interview Me")
-            .build();
-    listNextTen(calendar);
-
-    // return calendar.calendarList().list();
+  public static void listNextTen(Calendar service) throws IOException {
+    System.out.println("listNextTen");
+    System.out.println(service.calendars().get("interviewme.business@gmail.com").execute());
+    // System.out.println(service.calendars().setMaxResults(10).execute());
+    // List the next 10 events from the primary calendar.
+    DateTime now = new DateTime(System.currentTimeMillis());
+    Events events =
+        service
+            .events()
+            .list("interviewme.business@gmail.com")
+            .setMaxResults(10)
+            .setTimeMin(now)
+            .setOrderBy("startTime")
+            .setSingleEvents(true)
+            .execute();
+    System.out.println("events made");
+    List<Event> items = events.getItems();
+    if (items.isEmpty()) {
+      System.out.println("No upcoming events found.");
+    } else {
+      System.out.println("Upcoming events");
+      for (Event event : items) {
+        DateTime start = event.getStart().getDateTime();
+        if (start == null) {
+          start = event.getStart().getDate();
+        }
+        System.out.printf("%s (%s)\n", event.getSummary(), start);
+      }
+    }
   }
 
   public static void addEvent(Credential credential) throws IOException, GeneralSecurityException {
@@ -130,33 +182,5 @@ public class CalendarAccess {
     String calendarId = "clairexy@google.com";
     // event = service.events().insert(calendarId, event).execute();
     // System.out.printf("Event created: %s\n", event.getHtmlLink());
-  }
-
-  public static void listNextTen(Calendar service) throws IOException {
-    // List the next 10 events from the primary calendar.
-    DateTime now = new DateTime(System.currentTimeMillis());
-    Events events =
-        service
-            .events()
-            .list("primary")
-            .setMaxResults(10)
-            .setTimeMin(now)
-            .setOrderBy("startTime")
-            .setSingleEvents(true)
-            .execute();
-    System.out.println("b5");
-    List<Event> items = events.getItems();
-    if (items.isEmpty()) {
-      System.out.println("No upcoming events found.");
-    } else {
-      System.out.println("Upcoming events");
-      for (Event event : items) {
-        DateTime start = event.getStart().getDateTime();
-        if (start == null) {
-          start = event.getStart().getDate();
-        }
-        System.out.printf("%s (%s)\n", event.getSummary(), start);
-      }
-    }
   }
 }

@@ -31,10 +31,12 @@ import java.io.PrintWriter;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.sps.data.CalendarAccess;
+import javax.servlet.http.HttpServlet;
 
 /** Google Calendar Data API App Engine sample. */
 @WebServlet("/calendar")
-public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
+public class CalendarServlet extends HttpServlet {
 
   static final String APP_NAME = "Google Calendar Data API Sample Web Client";
 
@@ -45,26 +47,33 @@ public class CalendarServlet extends AbstractAppEngineAuthorizationCodeServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     System.out.println("Calendar Servlet doGet");
-    AuthorizationCodeFlow flow = initializeFlow();
-    String url =
-        flow.newAuthorizationUrl().setState("xyz").setRedirectUri(getRedirectUri(request)).build();
-    System.out.println("url: " + url);
-    response.sendRedirect(url);
+    try {
+      CalendarAccess cal = new CalendarAccess();
+      cal.getService();
+    } catch (Exception e) {
+    }
+
+    // AuthorizationCodeFlow flow = initializeFlow();
+    // String url =
+    //
+    // flow.newAuthorizationUrl().setState("xyz").setRedirectUri(getRedirectUri(request)).build();
+    // System.out.println("url: " + url);
+    // response.sendRedirect(url);
   }
 
-  @Override
+  // @Override
   public String getRedirectUri(HttpServletRequest req) throws IOException {
     // System.out.println("Calendar Servlet getRedirectUri");
     return Utils.getRedirectUri(req);
   }
 
-  @Override
+  // @Override
   public AuthorizationCodeFlow initializeFlow() throws IOException {
     // System.out.println("Calendar Servlet initializeFlow");
     return Utils.newFlow();
   }
 
-  @Override
+  // @Override
   protected String getUserId(HttpServletRequest req) throws IOException {
     // System.out.println("Calendar Servlet getUserId");
     return UserServiceFactory.getUserService().getCurrentUser().getUserId();

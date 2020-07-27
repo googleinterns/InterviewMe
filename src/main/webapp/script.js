@@ -16,7 +16,6 @@ function onIndexLoad() {
   checkLogin();
 }
 
-<<<<<<< HEAD
 function testCal() {
   fetch('/calendar', {
     mode: 'no-cors',

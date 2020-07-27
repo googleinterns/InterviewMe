@@ -47,5 +47,6 @@ public final class CalendarAccessTest {
   @Test
   public void basic() throws IOException, GeneralSecurityException {
     CalendarAccess cal = new CalendarAccess();
+    cal.getService();
   }
 }
