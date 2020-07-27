@@ -83,12 +83,12 @@ public class LoadInterviewsServlet extends HttpServlet {
     ZonedDateTime utcTime = day.withZoneSameInstant(ZoneOffset.UTC);
     // TODO: Decide how precise this range should be. Must start after or at now, when should end
     // be?
-    Instant startOfRange = utcTime.toInstant();
-    Instant endOfRange = utcTime.toInstant().plus(6, ChronoUnit.DAYS);
+    TimeRange range =
+        new TimeRange(utcTime.toInstant(), utcTime.toInstant().plus(6, ChronoUnit.DAYS));
     List<Availability> availabilitiesInRange =
-        availabilityDao.getInRangeForAll(startOfRange, endOfRange);
+        availabilityDao.getInRangeForAll(range.start(), range.end());
     List<PossibleInterviewSlot> possibleInterviews =
-        getPossibleInterviewSlots(availabilitiesInRange, startOfRange, endOfRange, timezoneOffset);
+        getPossibleInterviewSlots(availabilitiesInRange, range, timezoneOffset);
     Set<String> dates = new HashSet<String>();
     for (PossibleInterviewSlot possibleInterview : possibleInterviews) {
       dates.add(possibleInterview.date());
@@ -129,10 +129,7 @@ public class LoadInterviewsServlet extends HttpServlet {
   }
 
   private List<PossibleInterviewSlot> getPossibleInterviewSlots(
-      List<Availability> allAvailabilities,
-      Instant startOfRange,
-      Instant endOfRange,
-      ZoneOffset timezoneOffset) {
+      List<Availability> allAvailabilities, TimeRange range, ZoneOffset timezoneOffset) {
     Set<PossibleInterviewSlot> possibleInterviews = new HashSet<PossibleInterviewSlot>();
     Set<String> interviewers = new HashSet<String>();
     for (Availability avail : allAvailabilities) {
@@ -155,8 +152,7 @@ public class LoadInterviewsServlet extends HttpServlet {
 
     for (String interviewer : interviewers) {
       possibleInterviews.addAll(
-          getPossibleInterviewSlotsForPerson(
-              interviewer, startOfRange, endOfRange, timezoneOffset));
+          getPossibleInterviewSlotsForPerson(interviewer, range, timezoneOffset));
     }
 
     // We need to check that the person looking to schedule is not already scheduled during any of
@@ -164,7 +160,7 @@ public class LoadInterviewsServlet extends HttpServlet {
 
     List<ScheduledInterview> userScheduledInterviews =
         scheduledInterviewDao.getScheduledInterviewsInRangeForUser(
-            userId, startOfRange, endOfRange);
+            userId, range.start(), range.end());
 
     Set<PossibleInterviewSlot> conflictingInterviews = new HashSet<PossibleInterviewSlot>();
 
@@ -186,9 +182,9 @@ public class LoadInterviewsServlet extends HttpServlet {
   }
 
   private List<PossibleInterviewSlot> getPossibleInterviewSlotsForPerson(
-      String userId, Instant startOfRange, Instant endOfRange, ZoneOffset timezoneOffset) {
+      String userId, TimeRange range, ZoneOffset timezoneOffset) {
     List<Availability> availabilities =
-        availabilityDao.getInRangeForUser(userId, startOfRange, endOfRange);
+        availabilityDao.getInRangeForUser(userId, range.start(), range.end());
     List<Availability> scheduledAvailability = new ArrayList<Availability>();
     for (Availability avail : availabilities) {
       if (avail.scheduled()) {
