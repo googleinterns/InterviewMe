@@ -75,16 +75,15 @@ public class Utils {
           "Download client_secrets.json file from https://code.google.com/apis/console/"
               + "?api=calendar into calendar-appengine-sample/src/main/resources/client_secrets.json");
     }
-    // System.out.println("Util getClientCredential is not null");
+    System.out.println("b3");
     return clientSecrets;
   }
 
   public static String getRedirectUri(HttpServletRequest req) {
     // TODO: change this to the where the request was sent from
-    GenericUrl url =
-        new GenericUrl(
-            "https://8080-cd144138-6164-4978-b5a9-12129253ea46.us-central1.cloudshell.dev");
+    GenericUrl url = new GenericUrl(req.getRequestURL().toString());
     url.setRawPath("/calendar-callback");
+    url.setPort(8080);
     return url.build();
   }
 
@@ -101,6 +100,7 @@ public class Utils {
 
   public static Calendar loadCalendarClient() throws IOException {
     String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
+    System.out.println("b1");
     Credential credential = newFlow().loadCredential(userId);
     System.out.println("Util loadCalendarClient");
     return new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)

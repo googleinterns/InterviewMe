@@ -64,6 +64,17 @@ public class CalendarServlet extends HttpServlet {
   // @Override
   public String getRedirectUri(HttpServletRequest req) throws IOException {
     // System.out.println("Calendar Servlet getRedirectUri");
+    Calendar service = Utils.loadCalendarClient();
+    AuthorizationCodeFlow flow = initializeFlow();
+    System.out.println("flow inited");
+    String url =
+        flow.newAuthorizationUrl().setState("xyz").setRedirectUri(getRedirectUri(request)).build();
+    System.out.println("url: " + url);
+    response.sendRedirect(url);
+  }
+
+  @Override
+  public String getRedirectUri(HttpServletRequest req) throws IOException {
     return Utils.getRedirectUri(req);
   }
 
