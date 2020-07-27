@@ -1,7 +1,7 @@
-<%@ page import="java.util.List" %>
+<%@ page import="java.util.Set" %>
 <%@ page import="com.google.sps.data.PossibleInterviewer" %>
 <%
-  Set<PossibleInterviewer> list = (Set<PossibleInterviewer>) request.getAttribute("interviewers");
+  Set<PossibleInterviewer> set = (Set<PossibleInterviewer>) request.getAttribute("interviewers");
   pageContext.setAttribute("set", set);
   String utc = request.getParameter("utc");
   pageContext.setAttribute("utc", utc);
