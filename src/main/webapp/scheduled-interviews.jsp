@@ -25,7 +25,7 @@
           </ul>
           <c:choose>
             <c:when test= "${scheduledInterview.getHasPassed()}">
-              <a href="feedbackFor${scheduledInterview.getRole()}.html?${scheduledInterview.getId()}"><button class = "feedbackButton">Submit Feedback</button></a>
+              <a href="feedback.html?interview=${scheduledInterview.getId()}&role=${scheduledInterview.getRole()}"><button class = "feedbackButton">Submit Feedback</button></a>
             </c:when>
             <c:otherwise>
               <p>You may submit feedback once the interview has commenced</p>

@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Feedback for the Interviewee</title>
+    <title>Feedback</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
       integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="scheduled-interviews.css">
@@ -12,10 +12,10 @@
       integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
       integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <script src="scheduled-interviews.js"></script>
+    <script src="feedback.js"></script>
     <script src="authentication.js"></script>
   </head>
-  <body onload="onFeedbackForIntervieweeLoad()">
+  <body onload="onFeedbackLoad()">
     <div id="content">
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <span class="navbar-brand mb-0 h1">InterviewMe</span>
@@ -37,30 +37,7 @@
         </div>
       </nav>
       <br>
-      <h1 class="text-center">Please submit your feedback for your interviewer below</h1>
-      <div>
-        <form action="/action_page.php">
-          <h5>Please Enter a value between 1 and 10 (1 being strongly disagree and 10 being strongly agree)</h5>
-          <label for="question1">I was comfortable during the interview:</label><br>
-          <input type="number" min="1" max="10" id="question1" name="question1"><br>
-          <label for="question2">My interviewer moved at a decent pace:</label><br>
-          <input type="number" min="1" max="10" id="question2" name="question2"><br>
-          <label for="question3">My interviewer was able to stay on topic:</label><br>
-          <input type="number" min="1" max="10" id="question3" name="question3"><br>
-          <label for="question4">My interviewer was able to provide advice or suggestions along the way when I got stuck:</label><br>
-          <input type="number" min="1" max="10" id="question4" name="question4"><br>
-          <label for="question5">My interviewer answered my questions to the best of their ability:</label><br>
-          <input type="number" min="1" max="10" id="question5" name="question5"><br>
-          <label for="question6">I felt my interviewer came prepared:</label><br>
-          <input type="number" min="1" max="10" id="question6" name="question5"><br>
-          <label for="question7">This InterviewMe experience was helpful:</label><br>
-          <input type="number" min="1" max="10" id="question7" name="question7"><br>
-          <label for="question8">Is there anything in particular that your interviewer did to improve your overall experience?</label><br>
-          <textarea rows="4" cols="50" id="question8" name="question8"></textarea><br>
-          <label for="question9">What is something that you think your interviewer could have done better?</label><br>
-          <textarea rows="4" cols="50" id="question9" name="question8"></textarea><br>
-          <input type="submit" value="Submit">
-        </form> 
+      <div id="feedBackForm"> 
       </div>
       <br><br><br>
     </div>
