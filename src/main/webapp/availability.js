@@ -76,11 +76,8 @@ function updateAvailability() {
 let page = 0;
 
 function goBack() {
-  if (page < 0) {
+  if (page <= 0) {
     page = 0;
-    return;
-  }
-  if (page === 0) {
     return;
   }
   page -= 1;
@@ -88,11 +85,8 @@ function goBack() {
 }
 
 function goForward() {
-  if (page > 3) {
+  if (page >= 3) {
     page = 3;
-    return;
-  }
-  if (page === 3) {
     return;
   }
   page += 1;
