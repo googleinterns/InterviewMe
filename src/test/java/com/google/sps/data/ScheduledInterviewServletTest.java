@@ -24,6 +24,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import com.google.sps.data.FakePersonDao;
+import com.google.sps.data.Person;
 import com.google.sps.servlets.ScheduledInterviewServlet;
 import com.google.sps.data.PutAvailabilityRequest;
 import java.io.IOException;
@@ -43,6 +45,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.junit.Test;
 import com.google.gson.JsonSyntaxException;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(JUnit4.class)
 public final class ScheduledInterviewServletTest {
@@ -161,6 +164,40 @@ public final class ScheduledInterviewServletTest {
     helper.tearDown();
   }
 
+  // GRANT'S START
+  /*
+  private final Person interviewer =
+      Person.create(
+          emailToId("user@company.org"),
+          "user@company.org",
+          "User1",
+          "Subject",
+          "Google",
+          "SWE",
+          "linkedIn");
+
+  private final Person interviewee =
+      Person.create(
+          emailToId("user@gmail.com"),
+          "user@gmail.com",
+          "User2",
+          "Subject",
+          "Google",
+          "SWE",
+          "linkedIn");
+
+  private final Person interviewer1 =
+      Person.create(
+          emailToId("user2@company.org"),
+          "user2@company.org",
+          "User3",
+          "Subject",
+          "Google",
+          "SWE",
+          "linkedIn");
+  */
+  // GRANT'S END
+
   // Tests whether only the scheduled interviews that the current user is involved in are returned.
   @Test
   public void returnsScheduledInterviewsForUser() throws IOException {
@@ -170,6 +207,10 @@ public final class ScheduledInterviewServletTest {
 
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
+
+    personDao.create(person1);
+    personDao.create(person2);
+    personDao.create(person3);
 
     scheduledInterviewDao.create(
         ScheduledInterview.create(
@@ -187,20 +228,22 @@ public final class ScheduledInterviewServletTest {
             person2.id(),
             person3.id()));
 
+    // GRANT'S START
+    getRequest.addParameter("timeZone", "America/New_York");
+    // GRANT'S END
+
     scheduledInterviewServlet.doGet(getRequest, getResponse);
 
-    Type scheduledInterviewListType =
-        new TypeToken<ArrayList<ScheduledInterviewRequest>>() {}.getType();
-    JsonElement json = new JsonParser().parse(getResponse.getContentAsString());
-    List<ScheduledInterviewRequest> actual = new Gson().fromJson(json, scheduledInterviewListType);
+    List<ScheduledInterviewRequest> actual =
+        (List<ScheduledInterviewRequest>) getRequest.getAttribute("scheduledInterviews");
 
     ScheduledInterviewRequest expectedInterview =
         new ScheduledInterviewRequest(
             actual.get(0).getId(),
-            new TimeRange(
-                Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
-            person1.id(),
-            person2.id());
+            "Sunday, July 5, 2020 from 2:00 PM to 3:00 PM",
+            person1.firstName(),
+            person2.firstName(),
+            "Interviewer");
 
     List<ScheduledInterviewRequest> expected = new ArrayList<ScheduledInterviewRequest>();
     expected.add(expectedInterview);
@@ -217,6 +260,10 @@ public final class ScheduledInterviewServletTest {
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
 
+    personDao.create(person1);
+    personDao.create(person2);
+    personDao.create(person3);
+
     scheduledInterviewDao.create(
         ScheduledInterview.create(
             -1,
@@ -233,32 +280,35 @@ public final class ScheduledInterviewServletTest {
             person1.id(),
             person2.id()));
 
+    // GRANT'S START
+    getRequest.addParameter("timeZone", "Etc/UCT");
+    // GRANT'S END
+
     scheduledInterviewServlet.doGet(getRequest, getResponse);
 
-    Type scheduledInterviewListType =
-        new TypeToken<ArrayList<ScheduledInterviewRequest>>() {}.getType();
-    JsonElement json = new JsonParser().parse(getResponse.getContentAsString());
-    List<ScheduledInterviewRequest> actual = new Gson().fromJson(json, scheduledInterviewListType);
+    List<ScheduledInterviewRequest> actual =
+        (List<ScheduledInterviewRequest>) getRequest.getAttribute("scheduledInterviews");
 
     ScheduledInterviewRequest scheduledInterview1 =
         new ScheduledInterviewRequest(
             actual.get(0).getId(),
-            new TimeRange(
-                Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
-            person1.id(),
-            person2.id());
+            "Sunday, July 5, 2020 from 6:00 PM to 7:00 PM",
+            person1.firstName(),
+            person2.firstName(),
+            "Interviewer");
     ScheduledInterviewRequest scheduledInterview2 =
         new ScheduledInterviewRequest(
             actual.get(1).getId(),
-            new TimeRange(
-                Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
-            person1.id(),
-            person2.id());
+            "Sunday, July 5, 2020 from 8:00 PM to 9:00 PM",
+            person1.firstName(),
+            person2.firstName(),
+            "Interviewer");
 
     List<ScheduledInterviewRequest> expected = new ArrayList<ScheduledInterviewRequest>();
     expected.add(scheduledInterview1);
     expected.add(scheduledInterview2);
-    Assert.assertEquals(expected, actual);
+    // Used assertThat in order to see what the actual field differences are
+    assertThat(actual).containsExactlyElementsIn(expected);
   }
 
   // Tests whether a scheduledInterview object was added to datastore with one possible interviewer.
