@@ -136,22 +136,10 @@ public class ShowInterviewersServlet extends HttpServlet {
       }
     }
     availabilities.removeAll(scheduledAvailability);
-    for (int i = 0; i < availabilities.size() - 3; i++) {
-      if (availabilities.get(i).when().end().equals(availabilities.get(i + 1).when().start())) {
-        if (availabilities
-            .get(i + 1)
-            .when()
-            .end()
-            .equals(availabilities.get(i + 2).when().start())) {
-          if (availabilities
-              .get(i + 2)
-              .when()
-              .end()
-              .equals(availabilities.get(i + 3).when().start())) {
-            return true;
-          }
-        }
-      }
+    // If they have 4 unscheduled availabilities during the hour-long range, then they have
+    // a possible interview slot.
+    if (availabilities.size() == 4) {
+      return true;
     }
     return false;
   }
