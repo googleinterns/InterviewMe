@@ -185,13 +185,8 @@ public class LoadInterviewsServlet extends HttpServlet {
       String userId, TimeRange range, ZoneOffset timezoneOffset) {
     List<Availability> availabilities =
         availabilityDao.getInRangeForUser(userId, range.start(), range.end());
-    List<Availability> scheduledAvailability = new ArrayList<Availability>();
-    for (Availability avail : availabilities) {
-      if (avail.scheduled()) {
-        scheduledAvailability.add(avail);
-      }
-    }
-    availabilities.removeAll(scheduledAvailability);
+    availabilities.removeIf(avail -> avail.scheduled());
+
     List<PossibleInterviewSlot> possibleInterviewSlotsForPerson =
         new ArrayList<PossibleInterviewSlot>();
     for (int i = 0; i < availabilities.size() - 3; i++) {
