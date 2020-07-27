@@ -90,17 +90,17 @@ public class LoadInterviewsServlet extends HttpServlet {
     List<PossibleInterviewSlot> possibleInterviews =
         getPossibleInterviewSlots(availabilitiesInRange, startOfRange, endOfRange, timezoneOffset);
     Set<String> dates = new HashSet<String>();
-    for (PossibleInterviewSlot pi : possibleInterviews) {
-      dates.add(pi.date());
+    for (PossibleInterviewSlot possibleInterview : possibleInterviews) {
+      dates.add(possibleInterview.date());
     }
 
     List<ArrayList<PossibleInterviewSlot>> possibleInterviewsForWeek =
         new ArrayList<ArrayList<PossibleInterviewSlot>>();
     for (String date : dates) {
       ArrayList<PossibleInterviewSlot> dayOfSlots = new ArrayList<PossibleInterviewSlot>();
-      for (PossibleInterviewSlot pi : possibleInterviews) {
-        if (date.equals(pi.date())) {
-          dayOfSlots.add(pi);
+      for (PossibleInterviewSlot possibleInterview : possibleInterviews) {
+        if (date.equals(possibleInterview.date())) {
+          dayOfSlots.add(possibleInterview);
         }
       }
       sortInterviews(dayOfSlots);
