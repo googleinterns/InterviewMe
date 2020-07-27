@@ -70,12 +70,11 @@ public class ShowInterviewersServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String utc = request.getParameter("utc");
-    Instant startOfRange = Instant.parse(utc);
-    Instant endOfRange = Instant.parse(utc).plus(1, ChronoUnit.HOURS);
+    TimeRange range =
+        new TimeRange(Instant.parse(utc), Instant.parse(utc).plus(1, ChronoUnit.HOURS));
     List<Availability> availabilitiesInRange =
-        availabilityDao.getInRangeForAll(startOfRange, endOfRange);
-    List<Person> possiblePeople =
-        getPossiblePeople(availabilitiesInRange, startOfRange, endOfRange);
+        availabilityDao.getInRangeForAll(range.start(), range.end());
+    List<Person> possiblePeople = getPossiblePeople(availabilitiesInRange, range);
     Set<PossibleInterviewer> possibleInterviewers = getPossibleInterviewers(possiblePeople);
     request.setAttribute("interviewers", possibleInterviewers);
     RequestDispatcher rd = request.getRequestDispatcher("/possibleInterviewers.jsp");
@@ -86,8 +85,7 @@ public class ShowInterviewersServlet extends HttpServlet {
     }
   }
 
-  List<Person> getPossiblePeople(
-      List<Availability> allAvailabilities, Instant startOfRange, Instant endOfRange) {
+  List<Person> getPossiblePeople(List<Availability> allAvailabilities, TimeRange range) {
     Set<String> allInterviewers = new HashSet<String>();
     for (Availability avail : allAvailabilities) {
       allInterviewers.add(avail.userId());
@@ -109,7 +107,7 @@ public class ShowInterviewersServlet extends HttpServlet {
 
     List<Person> possibleInterviewers = new ArrayList<Person>();
     for (String interviewer : allInterviewers) {
-      if (personHasPossibleInterviewSlot(interviewer, startOfRange, endOfRange)) {
+      if (personHasPossibleInterviewSlot(interviewer, range)) {
         possibleInterviewers.add(personDao.get(interviewer).get());
       }
     }
@@ -126,9 +124,9 @@ public class ShowInterviewersServlet extends HttpServlet {
     return possibleInterviewers;
   }
 
-  boolean personHasPossibleInterviewSlot(String userId, Instant startOfRange, Instant endOfRange) {
+  boolean personHasPossibleInterviewSlot(String userId, TimeRange range) {
     List<Availability> availabilities =
-        availabilityDao.getInRangeForUser(userId, startOfRange, endOfRange);
+        availabilityDao.getInRangeForUser(userId, range.start(), range.end());
     List<Availability> scheduledAvailability = new ArrayList<Availability>();
     for (Availability avail : availabilities) {
       if (avail.scheduled()) {

@@ -108,20 +108,19 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String interviewerJob = postRequest.getJob();
     String utc = postRequest.getUtc();
 
-    Instant startTime;
-    Instant endTime;
+    TimeRange range;
 
     try {
-      startTime = Instant.parse(utc);
-      endTime = Instant.parse(utc).plus(1, ChronoUnit.HOURS);
+      range = new TimeRange(Instant.parse(utc), Instant.parse(utc).plus(1, ChronoUnit.HOURS));
     } catch (DateTimeParseException e) {
       response.sendError(400, e.getMessage());
       return;
     }
 
-    List<Availability> availabilitiesInRange = availabilityDao.getInRangeForAll(startTime, endTime);
+    List<Availability> availabilitiesInRange =
+        availabilityDao.getInRangeForAll(range.start(), range.end());
     List<Person> allAvailableInterviewers =
-        interviewerServlet.getPossiblePeople(availabilitiesInRange, startTime, endTime);
+        interviewerServlet.getPossiblePeople(availabilitiesInRange, range);
     List<String> possibleInterviewers =
         getPossibleInterviewerIds(allAvailableInterviewers, interviewerCompany, interviewerJob);
 
@@ -129,15 +128,14 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String interviewerId = possibleInterviewers.get(randomNumber);
 
     scheduledInterviewDao.create(
-        ScheduledInterview.create(
-            -1, new TimeRange(startTime, endTime), interviewerId, intervieweeId));
+        ScheduledInterview.create(-1, range, interviewerId, intervieweeId));
 
     // Since an interview was scheduled, both parties' availabilities must be updated
     List<Availability> affectedAvailability = new ArrayList<Availability>();
     List<Availability> intervieweeAffectedAvailability =
-        availabilityDao.getInRangeForUser(intervieweeId, startTime, endTime);
+        availabilityDao.getInRangeForUser(intervieweeId, range.start(), range.end());
     List<Availability> interviewerAffectedAvailability =
-        availabilityDao.getInRangeForUser(interviewerId, startTime, endTime);
+        availabilityDao.getInRangeForUser(interviewerId, range.start(), range.end());
     affectedAvailability.addAll(intervieweeAffectedAvailability);
     affectedAvailability.addAll(interviewerAffectedAvailability);
 
