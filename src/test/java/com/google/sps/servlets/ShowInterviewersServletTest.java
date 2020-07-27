@@ -59,15 +59,74 @@ public final class ShowInterviewersServletTest {
   private final Person person1 =
       Person.create(person1Id, person1Email, "Test", "Subject", "Google", "SWE", "linkedIn");
 
+  private final Availability person1Avail1 =
+      Availability.create(
+          person1.id(),
+          new TimeRange(
+              Instant.parse("2020-07-07T13:30:00Z"), Instant.parse("2020-07-07T13:45:00Z")),
+          -1,
+          false);
+
+  private final Availability person1Avail2 =
+      Availability.create(
+          person1.id(),
+          new TimeRange(
+              Instant.parse("2020-07-07T13:45:00Z"), Instant.parse("2020-07-07T14:00:00Z")),
+          -1,
+          false);
+
+  private final Availability person1Avail3 =
+      Availability.create(
+          person1.id(),
+          new TimeRange(
+              Instant.parse("2020-07-07T14:00:00Z"), Instant.parse("2020-07-07T14:15:00Z")),
+          -1,
+          false);
+
+  private final Availability person1Avail4 =
+      Availability.create(
+          person1.id(),
+          new TimeRange(
+              Instant.parse("2020-07-07T14:15:00Z"), Instant.parse("2020-07-07T14:30:00Z")),
+          -1,
+          false);
+
   private final String person2Email = "person2@mail";
   private final String person2Id = String.format("%d", person2Email.hashCode());
   private final Person person2 =
-      Person.create(person2Id, person2Email, "Test", "Subject", "Google", "PM", "linkedIn");
+      Person.create(person2Id, person2Email, "Test", "Subject", "Google", "SWE", "linkedIn");
 
-  private final String person3Email = "person3@mail";
-  private final String person3Id = String.format("%d", person3Email.hashCode());
-  private final Person person3 =
-      Person.create(person3Id, person3Email, "Test", "Subject", "Google", "PM", "linkedInLink");
+  private final Availability person2Avail1 =
+      Availability.create(
+          person2.id(),
+          new TimeRange(
+              Instant.parse("2020-07-07T13:30:00Z"), Instant.parse("2020-07-07T13:45:00Z")),
+          -1,
+          false);
+
+  private final Availability person2Avail2 =
+      Availability.create(
+          person2.id(),
+          new TimeRange(
+              Instant.parse("2020-07-07T13:45:00Z"), Instant.parse("2020-07-07T14:00:00Z")),
+          -1,
+          false);
+
+  private final Availability person2Avail3 =
+      Availability.create(
+          person2.id(),
+          new TimeRange(
+              Instant.parse("2020-07-07T14:00:00Z"), Instant.parse("2020-07-07T14:15:00Z")),
+          -1,
+          false);
+
+  private final Availability person2Avail4 =
+      Availability.create(
+          person2.id(),
+          new TimeRange(
+              Instant.parse("2020-07-07T14:15:00Z"), Instant.parse("2020-07-07T14:30:00Z")),
+          -1,
+          false);
 
   @Before
   public void setUp() {
@@ -86,31 +145,11 @@ public final class ShowInterviewersServletTest {
     personDao.create(person1);
     ShowInterviewersServlet servlet = new ShowInterviewersServlet();
     servlet.init(availabilityDao, personDao);
-    helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
+    helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
 
-    availabilityDao.create(
-        Availability.create(
-            person1.id(),
-            new TimeRange(
-                Instant.parse("2020-07-07T13:30:00Z"), Instant.parse("2020-07-07T13:45:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            person1.id(),
-            new TimeRange(
-                Instant.parse("2020-07-07T13:45:00Z"), Instant.parse("2020-07-07T14:00:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            person1.id(),
-            new TimeRange(
-                Instant.parse("2020-07-07T14:00:00Z"), Instant.parse("2020-07-07T14:15:00Z")),
-            -1,
-            false));
+    availabilityDao.create(person1Avail1);
+    availabilityDao.create(person1Avail2);
+    availabilityDao.create(person1Avail3);
 
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("utc", "2020-07-07T13:30:00Z");
@@ -130,37 +169,10 @@ public final class ShowInterviewersServletTest {
     servlet.init(availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
 
-    availabilityDao.create(
-        Availability.create(
-            person1.id(),
-            new TimeRange(
-                Instant.parse("2020-07-07T13:30:00Z"), Instant.parse("2020-07-07T13:45:00Z")),
-            -1,
-            true));
-
-    availabilityDao.create(
-        Availability.create(
-            person1.id(),
-            new TimeRange(
-                Instant.parse("2020-07-07T13:45:00Z"), Instant.parse("2020-07-07T14:00:00Z")),
-            -1,
-            true));
-
-    availabilityDao.create(
-        Availability.create(
-            person1.id(),
-            new TimeRange(
-                Instant.parse("2020-07-07T14:00:00Z"), Instant.parse("2020-07-07T14:15:00Z")),
-            -1,
-            true));
-
-    availabilityDao.create(
-        Availability.create(
-            person1.id(),
-            new TimeRange(
-                Instant.parse("2020-07-07T14:15:00Z"), Instant.parse("2020-07-07T14:30:00Z")),
-            -1,
-            true));
+    availabilityDao.create(person1Avail1.scheduledStatus(true));
+    availabilityDao.create(person1Avail2.scheduledStatus(true));
+    availabilityDao.create(person1Avail3.scheduledStatus(true));
+    availabilityDao.create(person1Avail4.scheduledStatus(true));
 
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("utc", "2020-07-07T13:30:00Z");
@@ -177,42 +189,12 @@ public final class ShowInterviewersServletTest {
   public void noSchedulingWithYourself() throws IOException {
     ShowInterviewersServlet servlet = new ShowInterviewersServlet();
     servlet.init(availabilityDao, personDao);
-    String userEmail = "person@gmail.com";
-    helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
+    helper.setEnvIsLoggedIn(true).setEnvEmail(person1.email()).setEnvAuthDomain("auth");
 
-    String userId = String.format("%d", userEmail.hashCode());
-
-    availabilityDao.create(
-        Availability.create(
-            userId,
-            new TimeRange(
-                Instant.parse("2020-07-07T13:30:00Z"), Instant.parse("2020-07-07T13:45:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            userId,
-            new TimeRange(
-                Instant.parse("2020-07-07T13:45:00Z"), Instant.parse("2020-07-07T14:00:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            userId,
-            new TimeRange(
-                Instant.parse("2020-07-07T14:00:00Z"), Instant.parse("2020-07-07T14:15:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            userId,
-            new TimeRange(
-                Instant.parse("2020-07-07T14:15:00Z"), Instant.parse("2020-07-07T14:30:00Z")),
-            -1,
-            false));
+    availabilityDao.create(person1Avail1);
+    availabilityDao.create(person1Avail2);
+    availabilityDao.create(person1Avail3);
+    availabilityDao.create(person1Avail4);
 
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("utc", "2020-07-07T13:30:00Z");
@@ -227,42 +209,15 @@ public final class ShowInterviewersServletTest {
 
   @Test
   public void successfulRun() throws IOException {
-    personDao.create(person2);
+    personDao.create(person1);
     ShowInterviewersServlet servlet = new ShowInterviewersServlet();
     servlet.init(availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
 
-    availabilityDao.create(
-        Availability.create(
-            person2.id(),
-            new TimeRange(
-                Instant.parse("2020-07-07T13:30:00Z"), Instant.parse("2020-07-07T13:45:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            person2.id(),
-            new TimeRange(
-                Instant.parse("2020-07-07T13:45:00Z"), Instant.parse("2020-07-07T14:00:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            person2.id(),
-            new TimeRange(
-                Instant.parse("2020-07-07T14:00:00Z"), Instant.parse("2020-07-07T14:15:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            person2.id(),
-            new TimeRange(
-                Instant.parse("2020-07-07T14:15:00Z"), Instant.parse("2020-07-07T14:30:00Z")),
-            -1,
-            false));
+    availabilityDao.create(person1Avail1);
+    availabilityDao.create(person1Avail2);
+    availabilityDao.create(person1Avail3);
+    availabilityDao.create(person1Avail4);
 
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("utc", "2020-07-07T13:30:00Z");
@@ -273,85 +228,28 @@ public final class ShowInterviewersServletTest {
     Set<PossibleInterviewer> actual =
         (Set<PossibleInterviewer>) getRequest.getAttribute("interviewers");
     Set<PossibleInterviewer> expected = new HashSet<PossibleInterviewer>();
-    PossibleInterviewer person2Details =
-        PossibleInterviewer.create(person2.company(), person2.job());
-    expected.add(person2Details);
+    PossibleInterviewer person1Details =
+        PossibleInterviewer.create(person1.company(), person1.job());
+    expected.add(person1Details);
     Assert.assertEquals(expected, actual);
   }
 
   @Test
   public void noRepeatsOfCompanyAndJob() throws IOException {
+    personDao.create(person1);
     personDao.create(person2);
-    personDao.create(person3);
     ShowInterviewersServlet servlet = new ShowInterviewersServlet();
     servlet.init(availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
 
-    // Person 2's Availability
-    availabilityDao.create(
-        Availability.create(
-            person2.id(),
-            new TimeRange(
-                Instant.parse("2020-07-07T13:30:00Z"), Instant.parse("2020-07-07T13:45:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            person2.id(),
-            new TimeRange(
-                Instant.parse("2020-07-07T13:45:00Z"), Instant.parse("2020-07-07T14:00:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            person2.id(),
-            new TimeRange(
-                Instant.parse("2020-07-07T14:00:00Z"), Instant.parse("2020-07-07T14:15:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            person2.id(),
-            new TimeRange(
-                Instant.parse("2020-07-07T14:15:00Z"), Instant.parse("2020-07-07T14:30:00Z")),
-            -1,
-            false));
-
-    // Person 3's Availability
-    availabilityDao.create(
-        Availability.create(
-            person3.id(),
-            new TimeRange(
-                Instant.parse("2020-07-07T13:30:00Z"), Instant.parse("2020-07-07T13:45:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            person3.id(),
-            new TimeRange(
-                Instant.parse("2020-07-07T13:45:00Z"), Instant.parse("2020-07-07T14:00:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            person3.id(),
-            new TimeRange(
-                Instant.parse("2020-07-07T14:00:00Z"), Instant.parse("2020-07-07T14:15:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            person3.id(),
-            new TimeRange(
-                Instant.parse("2020-07-07T14:15:00Z"), Instant.parse("2020-07-07T14:30:00Z")),
-            -1,
-            false));
+    availabilityDao.create(person1Avail1);
+    availabilityDao.create(person1Avail2);
+    availabilityDao.create(person1Avail3);
+    availabilityDao.create(person1Avail4);
+    availabilityDao.create(person2Avail1);
+    availabilityDao.create(person2Avail2);
+    availabilityDao.create(person2Avail3);
+    availabilityDao.create(person2Avail4);
 
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("utc", "2020-07-07T13:30:00Z");
@@ -362,9 +260,9 @@ public final class ShowInterviewersServletTest {
     Set<PossibleInterviewer> actual =
         (Set<PossibleInterviewer>) getRequest.getAttribute("interviewers");
     Set<PossibleInterviewer> expected = new HashSet<PossibleInterviewer>();
-    PossibleInterviewer person2Details =
-        PossibleInterviewer.create(person2.company(), person2.job());
-    expected.add(person2Details);
+    PossibleInterviewer person1Details =
+        PossibleInterviewer.create(person1.company(), person1.job());
+    expected.add(person1Details);
     Assert.assertEquals(expected, actual);
   }
 }
