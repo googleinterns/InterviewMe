@@ -164,40 +164,6 @@ public final class ScheduledInterviewServletTest {
     helper.tearDown();
   }
 
-  // GRANT'S START
-  /*
-  private final Person interviewer =
-      Person.create(
-          emailToId("user@company.org"),
-          "user@company.org",
-          "User1",
-          "Subject",
-          "Google",
-          "SWE",
-          "linkedIn");
-
-  private final Person interviewee =
-      Person.create(
-          emailToId("user@gmail.com"),
-          "user@gmail.com",
-          "User2",
-          "Subject",
-          "Google",
-          "SWE",
-          "linkedIn");
-
-  private final Person interviewer1 =
-      Person.create(
-          emailToId("user2@company.org"),
-          "user2@company.org",
-          "User3",
-          "Subject",
-          "Google",
-          "SWE",
-          "linkedIn");
-  */
-  // GRANT'S END
-
   // Tests whether only the scheduled interviews that the current user is involved in are returned.
   @Test
   public void returnsScheduledInterviewsForUser() throws IOException {
@@ -228,10 +194,7 @@ public final class ScheduledInterviewServletTest {
             person2.id(),
             person3.id()));
 
-    // GRANT'S START
     getRequest.addParameter("timeZone", "America/New_York");
-    // GRANT'S END
-
     scheduledInterviewServlet.doGet(getRequest, getResponse);
 
     List<ScheduledInterviewRequest> actual =
@@ -280,10 +243,7 @@ public final class ScheduledInterviewServletTest {
             person1.id(),
             person2.id()));
 
-    // GRANT'S START
     getRequest.addParameter("timeZone", "Etc/UCT");
-    // GRANT'S END
-
     scheduledInterviewServlet.doGet(getRequest, getResponse);
 
     List<ScheduledInterviewRequest> actual =
