@@ -1,11 +1,14 @@
 <%@ page import="com.google.sps.data.AvailabilityTimeSlotGenerator" %>
 <%@ page import="com.google.sps.data.AvailabilityTimeSlot" %>
 <%@ page import="com.google.sps.data.DatastoreAvailabilityDao" %>
-<%@ page import="java.util.List,java.time.Instant" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.time.Instant" %>
+<%@ page import="java.time.temporal.ChronoUnit" %>
 <%@ page import="java.lang.Integer" %>
 <%
   List<List<AvailabilityTimeSlot>> list = AvailabilityTimeSlotGenerator
-    .timeSlotsForWeek(Instant.now(), Integer.parseInt(request
+    .timeSlotsForWeek(Instant.now().plus((Integer.parseInt(request
+    .getParameter("page")) * 7), ChronoUnit.DAYS), Integer.parseInt(request
     .getParameter("timeZoneOffset")), new DatastoreAvailabilityDao());
   pageContext.setAttribute("list", list);
 %>
