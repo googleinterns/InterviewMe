@@ -144,34 +144,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
     for (Availability avail : affectedAvailability) {
       availabilityDao.update(avail.scheduledStatus(true));
     }
-
-    // If the interviewee did not already have availabilities during this time, we will add
-    // them in order to mark them as scheduled.
-
-    Instant firstSlot = startTime;
-    Instant secondSlot = startTime.plus(15, ChronoUnit.MINUTES);
-    Instant thirdSlot = startTime.plus(30, ChronoUnit.MINUTES);
-    Instant fourthSlot = startTime.plus(45, ChronoUnit.MINUTES);
-
-    List<Instant> availabilityStartTimes = new ArrayList<Instant>();
-    availabilityStartTimes.add(firstSlot);
-    availabilityStartTimes.add(secondSlot);
-    availabilityStartTimes.add(thirdSlot);
-    availabilityStartTimes.add(fourthSlot);
-
-    for (Instant start : availabilityStartTimes) {
-      boolean exists = false;
-      for (Availability intervieweeAvail : intervieweeAffectedAvailability) {
-        if (intervieweeAvail.when().contains(start)) {
-          exists = true;
-        }
-      }
-      if (!exists) {
-        availabilityDao.create(
-            Availability.create(
-                intervieweeId, new TimeRange(start, start.plus(15, ChronoUnit.MINUTES)), -1, true));
-      }
-    }
   }
 
   // Get Json from request body.
