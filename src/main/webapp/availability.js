@@ -33,6 +33,12 @@ function toggleTile(tile) {
 }
 
 function loadAvailabilityTable(tableDiv, timezoneOffset) {
+  if (page < 0) {
+    page = 0;
+  }
+  if (page > 3) {
+    page = 3;
+  }
   fetch(`/availabilityTable.jsp?timeZoneOffset=${timezoneOffset}&page=${page}`)
     .then(response => response.text())
     .then(tableContents => {
@@ -70,6 +76,10 @@ function updateAvailability() {
 let page = 0;
 
 function goBack() {
+  if (page < 0) {
+    page = 0;
+    return;
+  }
   if (page === 0) {
     return;
   }
@@ -78,6 +88,10 @@ function goBack() {
 }
 
 function goForward() {
+  if (page > 3) {
+    page = 3;
+    return;
+  }
   if (page === 3) {
     return;
   }
