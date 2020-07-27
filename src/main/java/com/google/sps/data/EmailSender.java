@@ -40,33 +40,37 @@ import java.net.URL;
 @WebServlet("/email")
 public class EmailSender {
 
+  // The email messages are being sent from.
+  private final Email sender;
+  private final SendGrid sg;
+
+  public EmailSender(Email sender) throws Exception {
+    this.sender = sender;
+    this.sg =
+        new SendGrid(
+            new SecretFetcher("interview-me-step-2020").getSecretValue("SENDGRID_API_KEY"));
+  }
+
   // Sends an email from the "from" Email to the "to" Email, with specified subject and content.
-  public Response sendEmail(Email from, Email to, String subject, Content content)
+  public Response sendEmail(Email recipient, String subject, Content content)
       throws IOException, Exception {
-    Mail mail = new Mail(from, subject, to, content);
-    SendGrid sg =
-        new SendGrid(SecretFetcher.getSecretValue("interview-me-step-2020", "SENDGRID_API_KEY"));
+    Mail mail = new Mail(sender, subject, recipient, content);
+
     Request request = new Request();
     Response response;
-    try {
-      request.setMethod(Method.POST);
-      request.setEndpoint("mail/send");
-      request.setBody(mail.build());
-      response = sg.api(request);
-    } catch (IOException ex) {
-      throw ex;
-    }
+    request.setMethod(Method.POST);
+    request.setEndpoint("mail/send");
+    request.setBody(mail.build());
+    response = sg.api(request);
     return response;
   }
 
   // Returns the contents of the file specified at filePath as a String. Useful for converting
   // predifined email templates to text.
-  public static String fileContentToString(String filePath) {
+  public static String fileContentToString(String filePath) throws IOException {
     StringBuilder contentBuilder = new StringBuilder();
     try (Stream<String> stream = Files.lines(Paths.get(filePath), StandardCharsets.UTF_8)) {
       stream.forEach(s -> contentBuilder.append(s).append("\n"));
-    } catch (IOException e) {
-      e.printStackTrace();
     }
     return contentBuilder.toString();
   }

@@ -16,6 +16,7 @@ function onIndexLoad() {
   checkLogin();
 }
 
+<<<<<<< HEAD
 function testCal() {
   fetch('/calendar', {
     mode: 'no-cors',
@@ -29,6 +30,9 @@ function testCal() {
   });  
 }
 
+// Disables / enables navbar links and adjusts login / logout tab depending on if user is logged in 
+// or out.
+// If user is logged in but not registered, redirects to registration.
 function checkLogin() {
   fetch('/login').then(response => response.json()).then(status => {
     if(status.loggedIn){
@@ -37,6 +41,9 @@ function checkLogin() {
         element.classList.remove('disabled');
       }
       document.getElementById('login-tab').innerText = 'Logout';
+      // If not registered, redirect to registration.
+      let loginInfo = getLoginInfo();
+      loginInfo.then(getUserOrRedirectRegistration);
     } else {
       document.getElementById('login-message-container').style.display = 'inline';
       document.getElementById('login-message').innerHTML = 'To get started, please <a href="' + status.changeLogInStatusURL + '">login</a>.';

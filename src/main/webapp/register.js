@@ -14,28 +14,25 @@
 
 function onRegisterLoad() {
   const loginInfo = getLoginInfo();
+  loginInfo.then(redirectProfileIfRegistered);
   loginInfo.then(supplyLogoutLinkOrRedirectHome); 
-  loginInfo.then(autofillEmail).then(prepareFormValidation);
+  loginInfo.then(autofillEmail);
+}
+
+// If they have registered before, redirect them to profile page.
+function redirectProfileIfRegistered() {
+  fetch('/person')
+    .then(response => {
+      if (!response.redirected) {
+        // If response was redirected, that means the logged in user has not registered before.
+        // Otherwise, it means they have registered before and should not re-register.
+        window.location.href = '/profile.html';
+        return;
+      }
+    });
 }
 
 // Autofills email on the registration form of the email of the logged in user.
 function autofillEmail(loginInfo) {
   $('#user-email').val(loginInfo.email);
 } 
-
-// Finds fields that need an input and makes sure that submit won't go through if they are empty. 
-// Straight from Bootstrap.
-function prepareFormValidation() {
-  // Fetch all the forms we want to apply custom Bootstrap validation styles to
-  var forms = document.getElementsByClassName('needs-validation');
-  // Loop over them and prevent submission
-  Array.prototype.filter.call(forms, function(form) {
-    form.addEventListener('submit', function(event) {
-      if (form.checkValidity() === false) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-      form.classList.add('was-validated');      
-    }, false);
-  });
-}

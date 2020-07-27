@@ -19,7 +19,10 @@ import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInsta
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -30,10 +33,12 @@ import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.FileInputStream;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,9 +59,29 @@ public class CalendarAccess {
    */
   private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR);
 
-  private static final String CREDENTIALS_FILE_PATH = "/application_default_credentials.json";
+  private static final String KEY_PATH = "/interview-me-step-2020-6ae1489eb3f9.json";
 
-  public CalendarAccess() {}
+  public CalendarAccess() throws GeneralSecurityException, IOException {
+    GoogleCredential credential;
+    try {
+      FileInputStream creds = new FileInputStream(new File(KEY_PATH));
+      credential =
+          GoogleCredential.fromStream(creds)
+              .createScoped(SCOPES)
+              .createDelegated("interviewme.business@gmail.com");
+    } catch (final IOException e) {
+      System.err.println("Failed to load credentials " + e.getMessage());
+      return;
+    }
+
+    Calendar calendar =
+        new Calendar.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, credential)
+            .setApplicationName("Interview Me")
+            .build();
+    listNextTen(calendar);
+
+    // return calendar.calendarList().list();
+  }
 
   public static void addEvent(Credential credential) throws IOException, GeneralSecurityException {
     // Build a new authorized API client service.
