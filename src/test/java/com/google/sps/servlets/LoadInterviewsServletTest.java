@@ -54,6 +54,40 @@ public final class LoadInterviewsServletTest {
   private FakeScheduledInterviewDao scheduledInterviewDao;
   private MockServletContext context;
 
+  private final String person1Email = "person1@mail.com";
+  private final String person1Id = String.format("%d", person1Email.hashCode());
+  private final Availability person1Avail1 =
+      Availability.create(
+          person1Id,
+          new TimeRange(
+              Instant.parse("2020-07-07T16:30:00Z"), Instant.parse("2020-07-07T16:45:00Z")),
+          -1,
+          false);
+
+  private final Availability person1Avail2 =
+      Availability.create(
+          person1Id,
+          new TimeRange(
+              Instant.parse("2020-07-07T16:45:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
+          -1,
+          false);
+
+  private final Availability person1Avail3 =
+      Availability.create(
+          person1Id,
+          new TimeRange(
+              Instant.parse("2020-07-07T17:00:00Z"), Instant.parse("2020-07-07T17:15:00Z")),
+          -1,
+          false);
+
+  private final Availability person1Avail4 =
+      Availability.create(
+          person1Id,
+          new TimeRange(
+              Instant.parse("2020-07-07T17:15:00Z"), Instant.parse("2020-07-07T17:30:00Z")),
+          -1,
+          false);
+
   @Before
   public void setUp() {
     helper.setUp();
@@ -154,37 +188,10 @@ public final class LoadInterviewsServletTest {
             false));
 
     // An hour slot
-    availabilityDao.create(
-        Availability.create(
-            "user1",
-            new TimeRange(
-                Instant.parse("2020-07-07T16:30:00Z"), Instant.parse("2020-07-07T16:45:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            "user1",
-            new TimeRange(
-                Instant.parse("2020-07-07T16:45:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            "user1",
-            new TimeRange(
-                Instant.parse("2020-07-07T17:00:00Z"), Instant.parse("2020-07-07T17:15:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            "user1",
-            new TimeRange(
-                Instant.parse("2020-07-07T17:15:00Z"), Instant.parse("2020-07-07T17:30:00Z")),
-            -1,
-            false));
+    availabilityDao.create(person1Avail1);
+    availabilityDao.create(person1Avail2);
+    availabilityDao.create(person1Avail3);
+    availabilityDao.create(person1Avail4);
 
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("timeZoneOffset", "60");
@@ -209,37 +216,11 @@ public final class LoadInterviewsServletTest {
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
 
     // A scheduled hour slot
-    availabilityDao.create(
-        Availability.create(
-            "user1",
-            new TimeRange(
-                Instant.parse("2020-07-07T16:30:00Z"), Instant.parse("2020-07-07T16:45:00Z")),
-            -1,
-            true));
+    availabilityDao.create(person1Avail1.scheduledStatus(true));
+    availabilityDao.create(person1Avail2.scheduledStatus(true));
+    availabilityDao.create(person1Avail3.scheduledStatus(true));
+    availabilityDao.create(person1Avail4.scheduledStatus(true));
 
-    availabilityDao.create(
-        Availability.create(
-            "user1",
-            new TimeRange(
-                Instant.parse("2020-07-07T16:45:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
-            -1,
-            true));
-
-    availabilityDao.create(
-        Availability.create(
-            "user1",
-            new TimeRange(
-                Instant.parse("2020-07-07T17:00:00Z"), Instant.parse("2020-07-07T17:15:00Z")),
-            -1,
-            true));
-
-    availabilityDao.create(
-        Availability.create(
-            "user1",
-            new TimeRange(
-                Instant.parse("2020-07-07T17:15:00Z"), Instant.parse("2020-07-07T17:30:00Z")),
-            -1,
-            true));
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("timeZoneOffset", "0");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -269,37 +250,11 @@ public final class LoadInterviewsServletTest {
             String.format("%d", userEmail.hashCode())));
 
     // An unscheduled hour slot for an interviewer
-    availabilityDao.create(
-        Availability.create(
-            "user1",
-            new TimeRange(
-                Instant.parse("2020-07-07T16:30:00Z"), Instant.parse("2020-07-07T16:45:00Z")),
-            -1,
-            false));
+    availabilityDao.create(person1Avail1);
+    availabilityDao.create(person1Avail2);
+    availabilityDao.create(person1Avail3);
+    availabilityDao.create(person1Avail4);
 
-    availabilityDao.create(
-        Availability.create(
-            "user1",
-            new TimeRange(
-                Instant.parse("2020-07-07T16:45:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            "user1",
-            new TimeRange(
-                Instant.parse("2020-07-07T17:00:00Z"), Instant.parse("2020-07-07T17:15:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            "user1",
-            new TimeRange(
-                Instant.parse("2020-07-07T17:15:00Z"), Instant.parse("2020-07-07T17:30:00Z")),
-            -1,
-            false));
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("timeZoneOffset", "0");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -315,43 +270,14 @@ public final class LoadInterviewsServletTest {
   public void noSchedulingWithYourself() throws IOException {
     LoadInterviewsServlet servlet = new LoadInterviewsServlet();
     servlet.init(availabilityDao, scheduledInterviewDao, Instant.parse("2020-07-07T13:15:00Z"));
-    String userEmail = "user@gmail.com";
-    helper.setEnvIsLoggedIn(true).setEnvEmail(userEmail).setEnvAuthDomain("auth");
-
-    String userId = String.format("%d", userEmail.hashCode());
+    helper.setEnvIsLoggedIn(true).setEnvEmail(person1Email).setEnvAuthDomain("auth");
 
     // An hour of the user's availability
-    availabilityDao.create(
-        Availability.create(
-            userId,
-            new TimeRange(
-                Instant.parse("2020-07-07T16:30:00Z"), Instant.parse("2020-07-07T16:45:00Z")),
-            -1,
-            false));
+    availabilityDao.create(person1Avail1);
+    availabilityDao.create(person1Avail2);
+    availabilityDao.create(person1Avail3);
+    availabilityDao.create(person1Avail4);
 
-    availabilityDao.create(
-        Availability.create(
-            userId,
-            new TimeRange(
-                Instant.parse("2020-07-07T16:45:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            userId,
-            new TimeRange(
-                Instant.parse("2020-07-07T17:00:00Z"), Instant.parse("2020-07-07T17:15:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            userId,
-            new TimeRange(
-                Instant.parse("2020-07-07T17:15:00Z"), Instant.parse("2020-07-07T17:30:00Z")),
-            -1,
-            false));
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("timeZoneOffset", "0");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -370,40 +296,14 @@ public final class LoadInterviewsServletTest {
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
 
     // An hour and 15 minute slot
-    availabilityDao.create(
-        Availability.create(
-            "user1",
-            new TimeRange(
-                Instant.parse("2020-07-07T16:30:00Z"), Instant.parse("2020-07-07T16:45:00Z")),
-            -1,
-            false));
+    availabilityDao.create(person1Avail1);
+    availabilityDao.create(person1Avail2);
+    availabilityDao.create(person1Avail3);
+    availabilityDao.create(person1Avail4);
 
     availabilityDao.create(
         Availability.create(
-            "user1",
-            new TimeRange(
-                Instant.parse("2020-07-07T16:45:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            "user1",
-            new TimeRange(
-                Instant.parse("2020-07-07T17:00:00Z"), Instant.parse("2020-07-07T17:15:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            "user1",
-            new TimeRange(
-                Instant.parse("2020-07-07T17:15:00Z"), Instant.parse("2020-07-07T17:30:00Z")),
-            -1,
-            false));
-    availabilityDao.create(
-        Availability.create(
-            "user1",
+            person1Id,
             new TimeRange(
                 Instant.parse("2020-07-07T17:30:00Z"), Instant.parse("2020-07-07T17:45:00Z")),
             -1,
@@ -434,37 +334,10 @@ public final class LoadInterviewsServletTest {
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
 
     // An hour slot on 7/7
-    availabilityDao.create(
-        Availability.create(
-            "user1",
-            new TimeRange(
-                Instant.parse("2020-07-07T16:30:00Z"), Instant.parse("2020-07-07T16:45:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            "user1",
-            new TimeRange(
-                Instant.parse("2020-07-07T16:45:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            "user1",
-            new TimeRange(
-                Instant.parse("2020-07-07T17:00:00Z"), Instant.parse("2020-07-07T17:15:00Z")),
-            -1,
-            false));
-
-    availabilityDao.create(
-        Availability.create(
-            "user1",
-            new TimeRange(
-                Instant.parse("2020-07-07T17:15:00Z"), Instant.parse("2020-07-07T17:30:00Z")),
-            -1,
-            false));
+    availabilityDao.create(person1Avail1);
+    availabilityDao.create(person1Avail2);
+    availabilityDao.create(person1Avail3);
+    availabilityDao.create(person1Avail4);
 
     // An hour slot on 7/8
     availabilityDao.create(
