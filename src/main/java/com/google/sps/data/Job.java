@@ -14,6 +14,8 @@
 
 package com.google.sps.data;
 
+// Represents all jobs someone could have on our site. Used for current job and positions qualified
+// to give interview.
 public enum Job {
   SOFTWARE_ENGINEER,
   PRODUCT_MANAGER,

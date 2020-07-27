@@ -72,6 +72,15 @@ public class DatastorePersonDao implements PersonDao {
     return Optional.of(entityToPerson(personEntity));
   }
 
+  // Returns the job qualification booleans in personEntity as an EnumSet.
+  private static EnumSet<Job> entityBooleansToEnumSet(Entity personEntity) {
+    List<Job> qualifiedJobs = new ArrayList<>();
+    for (Job job : Job.values()) {
+      if ((boolean) personEntity.getProperty(job.toString())) qualifiedJobs.add(job);
+    }
+    return EnumSet.copyOf(qualifiedJobs);
+  }
+
   public static Person entityToPerson(Entity personEntity) {
     return Person.create(
         (String) personEntity.getProperty("id"),
@@ -82,15 +91,6 @@ public class DatastorePersonDao implements PersonDao {
         (String) personEntity.getProperty("job"),
         (String) personEntity.getProperty("linkedIn"),
         entityBooleansToEnumSet(personEntity));
-  }
-
-  private static EnumSet<Job> entityBooleansToEnumSet(Entity personEntity) {
-    List<Job> qualifiedJobs = new ArrayList<>();
-    for (Job job : Job.values()) {
-      boolean b = (boolean) personEntity.getProperty(job.toString());
-      if (b) qualifiedJobs.add(job);
-    }
-    return EnumSet.copyOf(qualifiedJobs);
   }
 
   public static Entity personToEntity(Person person) {

@@ -124,14 +124,12 @@ public class DatastorePersonDaoTest {
     Assert.assertEquals(expectedPersonOptional, actualPersonOptional);
   }
 
-  /*
   // Checks that an empty Optional is returned when an Person does not exist within
   // datastore.
   // @Test
   public void failsToGetPerson() {
-    Optional<Person> actual = dao.get(24);
+    Optional<Person> actual = dao.get("$");
     Optional<Person> expected = Optional.empty();
     Assert.assertEquals(expected, actual);
   }
-  */
 }

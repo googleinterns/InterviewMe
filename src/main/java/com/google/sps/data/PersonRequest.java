@@ -32,14 +32,12 @@ public class PersonRequest {
       String job,
       String linkedIn,
       EnumSet<Job> qualifiedJobs) {
-    System.out.println("PersonRequest ctor");
     this.firstName = firstName;
     this.lastName = lastName;
     this.company = company;
     this.job = job;
     this.linkedIn = linkedIn;
     this.qualifiedJobs = qualifiedJobs;
-    System.out.println(toString());
   }
 
   public String getFirstName() {
@@ -68,7 +66,7 @@ public class PersonRequest {
 
   public String toString() {
     return String.format(
-            "%s= %s:%s, %s:%s, %s:%s, %s:%s, %s:%s\n",
+            "%s= %s:%s, %s:%s, %s:%s, %s:%s, %s:%s, %s: \n",
             "PutPersonRequest",
             "firstName",
             firstName,
@@ -79,7 +77,8 @@ public class PersonRequest {
             "job",
             job,
             "linkedIn",
-            linkedIn)
+            linkedIn,
+            "qualifiedJobs")
         + qualifiedJobsToString();
   }
 
