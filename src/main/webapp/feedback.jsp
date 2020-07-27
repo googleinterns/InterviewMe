@@ -1,19 +1,21 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%
   Boolean canOpen = (Boolean) request.getAttribute("feedbackOpen");
   String role = (String) request.getAttribute("role");
   pageContext.setAttribute("feedbackOpen", canOpen);
   pageContext.setAttribute("role", role);
   System.out.println(role); 
+  System.out.println(canOpen); 
 %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 
 <c:choose>
-  <c:when test= "${canOpen}">
+  <c:when test= "${canOpen == false}">
     <h2 style="text-align: center">You may not submit feedback yet.</h2>
   </c:when>
   <c:otherwise>
     <c:choose>
-      <c:when test= "${role = Interviewer}">
+      <c:when test= "${role == 'Interviewee'}">
         <h1 class="text-center">Please submit your feedback for your interviewer below</h1>
         <form action="/action_page.php">
           <h5>Please Enter a value between 1 and 10 (1 being strongly disagree and 10 being strongly agree)</h5>
