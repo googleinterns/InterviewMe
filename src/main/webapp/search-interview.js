@@ -41,7 +41,7 @@ function selectInterview(interviewer) {
       `${interviewer.getAttribute('data-job')}. Check your email for more ` +
       `information.`);
     // TODO: Call a servlet to save this selection.
-    //location.reload();
+    location.reload();
   }
 }
 
