@@ -24,7 +24,9 @@ function onProfileLoad() {
 function submitProfileForm(methodType, redirectUrl) {
   if(!validateProfileForm()) {
     return;
-  } 
+  }
+  document.getElementById('company-field').placeholder = '';
+  document.getElementById('linkedin-field').placeholder = '';
   const personJson = {
     firstName: $('#first-name-field').val(),
     lastName: $('#last-name-field').val(),
@@ -72,6 +74,9 @@ function makeEditable() {
     editableField.classList.remove('form-control-plaintext');
     editableField.classList.add('form-control');
   });
+  
+  document.getElementById('company-field').placeholder = 'Company';
+  document.getElementById('linkedin-field').placeholder = 'LinkedIn';
   
   const currentJob = document.getElementById('current-job');
   currentJob.setAttribute('hidden', true);
