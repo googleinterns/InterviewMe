@@ -79,7 +79,12 @@ function autofillForm(person) {
   document.getElementById('company-field').value = person.company;
   document.getElementById('current-job').textContent = person.job;
   document.getElementById('job-field').value = person.job;
-  document.getElementById('linkedin-field').value = person.linkedIn;    
+  document.getElementById('linkedin-field').value = person.linkedIn;
+  
+}
+
+function enumNameToId(enumName) {
+  
 }
 
 // Allows certain fields in the profile to be edited, hides edit button, and displays update button. 
