@@ -68,6 +68,7 @@ function updateAvailability() {
 }
 
 let page = 0;
+const maxWeeksAhead = 3;
 
 function goBack() {
   if (page <= 0) {
@@ -79,8 +80,8 @@ function goBack() {
 }
 
 function goForward() {
-  if (page >= 3) {
-    page = 3;
+  if (page >= maxWeeksAhead) {
+    page = maxWeeksAhead;
     return;
   }
   page += 1;
