@@ -16,19 +16,6 @@ function onIndexLoad() {
   checkLogin();
 }
 
-function testCal() {
-  fetch('/calendar', {
-    mode: 'no-cors',
-    redirect: 'manual'
-  }).then((response) => {
-    console.log(response);
-    console.log(response.url);
-    window.location.href = response.url;
-  }).catch((error) => {
-    console.log('testCal() ' + error);
-  });  
-}
-
 // Disables / enables navbar links and adjusts login / logout tab depending on if user is logged in 
 // or out.
 // If user is logged in but not registered, redirects to registration.

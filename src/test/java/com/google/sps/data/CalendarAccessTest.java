@@ -27,6 +27,7 @@ import org.junit.runners.JUnit4;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import com.google.sps.data.CalendarAccess;
+import java.net.URISyntaxException;
 
 /** */
 @RunWith(JUnit4.class)
@@ -45,8 +46,8 @@ public final class CalendarAccessTest {
   }
 
   @Test
-  public void basic() throws IOException, GeneralSecurityException {
+  public void basic() throws IOException, GeneralSecurityException, URISyntaxException, Exception {
     CalendarAccess cal = new CalendarAccess();
-    cal.getService();
+    // cal.listNextTen();
   }
 }
