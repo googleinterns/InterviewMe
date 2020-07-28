@@ -62,7 +62,7 @@ public class DatastorePersonDaoTest {
     helper.tearDown();
   }
 
-  // Checks that an Person is stored in datastore.
+  // Checks that a Person is stored in datastore.
   @Test
   public void createsPerson() {
     dao.create(a);
@@ -81,7 +81,7 @@ public class DatastorePersonDaoTest {
     Assert.assertEquals(personAWithID, storedPerson);
   }
 
-  // Checks that an Person is updated in datastore.
+  // Checks that a Person is updated in datastore.
   @Test
   public void updatesPerson() {
     dao.create(a);
@@ -103,7 +103,7 @@ public class DatastorePersonDaoTest {
     Assert.assertEquals(update, updatedPerson);
   }
 
-  // Checks that an Person is returned when it exists within datastore.
+  // Checks that a Person is returned when it exists within datastore.
   @Test
   public void getsPerson() {
     dao.create(a);
@@ -124,7 +124,7 @@ public class DatastorePersonDaoTest {
     Assert.assertEquals(expectedPersonOptional, actualPersonOptional);
   }
 
-  // Checks that an empty Optional is returned when an Person does not exist within
+  // Checks that an empty Optional is returned when a Person does not exist within
   // datastore.
   // @Test
   public void failsToGetPerson() {
