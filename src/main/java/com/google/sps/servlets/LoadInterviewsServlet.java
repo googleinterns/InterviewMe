@@ -89,24 +89,25 @@ public class LoadInterviewsServlet extends HttpServlet {
         availabilityDao.getInRangeForAll(range.start(), range.end());
     List<PossibleInterviewSlot> possibleInterviews =
         getPossibleInterviewSlots(availabilitiesInRange, range, timezoneOffset);
-    Set<String> dates = new HashSet<String>();
-    for (PossibleInterviewSlot possibleInterview : possibleInterviews) {
-      dates.add(possibleInterview.date());
-    }
 
+    String date = "";
     List<ArrayList<PossibleInterviewSlot>> possibleInterviewsForWeek =
         new ArrayList<ArrayList<PossibleInterviewSlot>>();
-    for (String date : dates) {
+
+    if (possibleInterviews.size() != 0) {
+      date = possibleInterviews.get(0).date();
       ArrayList<PossibleInterviewSlot> dayOfSlots = new ArrayList<PossibleInterviewSlot>();
       for (PossibleInterviewSlot possibleInterview : possibleInterviews) {
-        if (date.equals(possibleInterview.date())) {
-          dayOfSlots.add(possibleInterview);
+        if (!possibleInterview.date().equals(date)) {
+          possibleInterviewsForWeek.add(dayOfSlots);
+          dayOfSlots = new ArrayList<PossibleInterviewSlot>();
+          date = possibleInterview.date();
         }
+        dayOfSlots.add(possibleInterview);
       }
-      sortInterviews(dayOfSlots);
       possibleInterviewsForWeek.add(dayOfSlots);
     }
-    sortWeek(possibleInterviewsForWeek);
+
     request.setAttribute("weekList", possibleInterviewsForWeek);
     RequestDispatcher rd = request.getRequestDispatcher("/possibleInterviewTimes.jsp");
 
