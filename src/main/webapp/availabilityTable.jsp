@@ -7,9 +7,9 @@
 <%@ page import="java.lang.Integer" %>
 <%
   List<List<AvailabilityTimeSlot>> list = AvailabilityTimeSlotGenerator
-      .timeSlotsForWeek(Instant.now().plus((Integer.parseInt(request
-      .getParameter("page")) * 7), ChronoUnit.DAYS), Integer.parseInt(request
-      .getParameter("timeZoneOffset")), new DatastoreAvailabilityDao());
+    .timeSlotsForWeek(Instant.now().plus((Integer.parseInt(request
+    .getParameter("page")) * 7), ChronoUnit.DAYS), Integer.parseInt(request
+    .getParameter("timeZoneOffset")), new DatastoreAvailabilityDao());
   pageContext.setAttribute("list", list);
 %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
