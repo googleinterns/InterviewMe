@@ -49,7 +49,6 @@ public class CalendarAccess {
   public CalendarAccess()
       throws GeneralSecurityException, IOException, URISyntaxException, Exception {
     String key = new SecretFetcher("interview-me-step-2020").getSecretValue("SERVICE_ACCT_KEY");
-    System.out.println(key);
     GoogleCredential credential =
         GoogleCredential.fromStream(new ByteArrayInputStream(key.getBytes()))
             .createScoped(Collections.singletonList(CalendarScopes.CALENDAR));
@@ -113,25 +112,15 @@ public class CalendarAccess {
     EventDateTime end = new EventDateTime().setDateTime(endDateTime).setTimeZone("America/Toronto");
     event.setEnd(end);
 
-    ConferenceSolutionKey cskey = new ConferenceSolutionKey().setType("hangoutsMeet");
-    // ConferenceSolution conferenceSolution = new ConferenceSolution();
-    // conferenceSolution.setKey(cskey);
-
-    ConferenceData conferenceData = new ConferenceData();
     CreateConferenceRequest createRequest = new CreateConferenceRequest();
-    createRequest.setRequestId("A");
-    createRequest.setConferenceSolutionKey(cskey);
-    System.out.printf("conferenceSolnKey %s\n", cskey);
-    System.out.printf("conferenceData %s\n", conferenceData);
-    System.out.printf("createRequest (%s)\n", createRequest);
-    System.out.printf("conferenceData entry points (%s)\n", conferenceData.getEntryPoints());
+    createRequest.setRequestId("randomstring1");
+    createRequest.setConferenceSolutionKey(new ConferenceSolutionKey().setType("hangoutsMeet"));
 
-    conferenceData.setCreateRequest(createRequest);
-    // conferenceData.setConferenceSolution(conferenceSolution);
+    event.setConferenceData(new ConferenceData().setCreateRequest(createRequest));
 
-    event.setConferenceData(conferenceData);
-
-    event = service.events().insert(CALENDAR_ID, event).execute();
-    System.out.printf("Event created: %s\n", event.getHtmlLink());
+    event = service.events().insert(CALENDAR_ID, event).setConferenceDataVersion(1).execute();
+    System.out.printf("Event created: %s\n", event);
+    System.out.printf(
+        "Meet link: %s\n", event.getConferenceData().getEntryPoints().get(0).getUri());
   }
 }
