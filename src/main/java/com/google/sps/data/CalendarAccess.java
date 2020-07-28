@@ -36,11 +36,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-<<<<<<< HEAD
 // Handles all things Google Calendar (event adding primarily).
-=======
-// Handles all things Google Calendar (event adding primarily). 
->>>>>>> c0d18c18457ab59bd0fc6234982ca0baee9a6547
 public class CalendarAccess {
   private Calendar service;
   private static final String CALENDAR_ID =
