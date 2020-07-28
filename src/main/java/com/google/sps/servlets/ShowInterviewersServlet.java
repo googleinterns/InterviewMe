@@ -130,10 +130,7 @@ public class ShowInterviewersServlet extends HttpServlet {
     availabilities.removeIf(avail -> avail.scheduled());
     // If they have 4 unscheduled availabilities during the hour-long range, then they have
     // a possible interview slot.
-    if (availabilities.size() == 4) {
-      return true;
-    }
-    return false;
+    return availabilities.size() == 4;
   }
 
   private PossibleInterviewer personToPossibleInterviewer(Person person) {
