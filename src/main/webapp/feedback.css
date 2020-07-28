@@ -7,3 +7,9 @@
 input {
   width: 10% !important; 
 }
+
+label {
+  padding-top: 10px; 
+  padding-bottom: 10px; 
+  padding-right: 10px; 
+}
