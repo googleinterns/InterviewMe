@@ -3,9 +3,7 @@
   Boolean canOpen = (Boolean) request.getAttribute("feedbackOpen");
   String role = (String) request.getAttribute("role");
   pageContext.setAttribute("feedbackOpen", canOpen);
-  pageContext.setAttribute("role", role);
-  System.out.println(role); 
-  System.out.println(canOpen); 
+  pageContext.setAttribute("role", role); 
 %>
 
 
@@ -17,6 +15,7 @@
     <c:choose>
       <c:when test= "${role == 'Interviewee'}">
         <h1 class="text-center">Please submit your feedback for your interviewer below</h1>
+        <!-- TODO: Send email on submit -->
         <form action="/action_page.php">
           <h5>Please Enter a value between 1 and 10 (1 being strongly disagree and 10 being strongly agree)</h5>
           <label for="question1">I was comfortable during the interview:</label><br>
@@ -42,6 +41,7 @@
       </c:when>
       <c:otherwise>
         <h1 class="text-center">Please submit your feedback for your interviewee below</h1>
+        <!-- TODO: Send email on submit -->
         <form action="/action_page.php">
           <h4>Please Enter a value between 1 and 10 (1 being strongly disagree and 10 being strongly agree)</h4>
           <label for="question1">The interviewee communicated their thought process as they went along:</label><br>

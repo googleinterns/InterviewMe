@@ -16,8 +16,6 @@ function onFeedbackLoad() {
   const loginInfo = getLoginInfo();
   loginInfo.then(supplyLogoutLinkOrRedirectHome); 
   loginInfo.then(getUserOrRedirectRegistration);
-  getScheduledInterviewId(); 
-  getRole(); 
   loadFeedback(); 
 }
 
@@ -41,7 +39,6 @@ function getScheduledInterviewId() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const interview = urlParams.get('interview')
-  console.log(interview);
   return interview; 
 }
 
@@ -49,6 +46,5 @@ function getRole() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const role = urlParams.get('role')
-  console.log(role);
   return role; 
 }
