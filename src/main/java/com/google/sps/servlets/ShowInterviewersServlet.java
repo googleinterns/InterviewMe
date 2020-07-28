@@ -75,7 +75,7 @@ public class ShowInterviewersServlet extends HttpServlet {
     List<Availability> availabilitiesInRange =
         availabilityDao.getInRangeForAll(range.start(), range.end());
     List<Person> possiblePeople = getPossiblePeople(availabilitiesInRange, range);
-    Set<PossibleInterviewer> possibleInterviewers = getPossibleInterviewers(possiblePeople);
+    Set<PossibleInterviewer> possibleInterviewers = peopleToPossibleInterviewers(possiblePeople);
     request.setAttribute("interviewers", possibleInterviewers);
     RequestDispatcher rd = request.getRequestDispatcher("/possibleInterviewers.jsp");
     try {
@@ -115,7 +115,7 @@ public class ShowInterviewersServlet extends HttpServlet {
     return possibleInterviewers;
   }
 
-  private Set<PossibleInterviewer> getPossibleInterviewers(List<Person> possiblePeople) {
+  private Set<PossibleInterviewer> peopleToPossibleInterviewers(List<Person> possiblePeople) {
     Set<PossibleInterviewer> possibleInterviewers = new HashSet<PossibleInterviewer>();
     for (Person person : possiblePeople) {
       possibleInterviewers.add(personToPossibleInterviewer(person));
