@@ -67,6 +67,9 @@ public class FeedbackServlet extends HttpServlet {
     Instant userTime = Instant.parse(userTimeString);
     TimeRange scheduledInterviewRange =
         scheduledInterviewDao.get(scheduledInterviewId).map(ScheduledInterview::when).orElse(null);
+    if (scheduledInterviewRange == null) {
+      return false;
+    }
     return scheduledInterviewRange.start().minus(5, ChronoUnit.MINUTES).isBefore(userTime);
   }
 }
