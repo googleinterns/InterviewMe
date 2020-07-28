@@ -24,6 +24,7 @@ import com.google.gson.JsonParser;
 import com.google.sps.data.Availability;
 import com.google.sps.data.FakeAvailabilityDao;
 import com.google.sps.data.FakePersonDao;
+import com.google.sps.data.Job;
 import com.google.sps.data.Person;
 import com.google.sps.data.PossibleInterviewer;
 import com.google.sps.data.TimeRange;
@@ -43,6 +44,7 @@ import com.google.gson.JsonSyntaxException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -57,7 +59,15 @@ public final class ShowInterviewersServletTest {
   private final String person1Email = "person1@mail";
   private final String person1Id = String.format("%d", person1Email.hashCode());
   private final Person person1 =
-      Person.create(person1Id, person1Email, "Test", "Subject", "Google", "SWE", "linkedIn");
+      Person.create(
+          person1Id,
+          person1Email,
+          "Test",
+          "Subject",
+          "Google",
+          "SWE",
+          "linkedIn",
+          EnumSet.noneOf(Job.class));
 
   private final Availability person1Avail1 =
       Availability.create(
@@ -94,7 +104,15 @@ public final class ShowInterviewersServletTest {
   private final String person2Email = "person2@mail";
   private final String person2Id = String.format("%d", person2Email.hashCode());
   private final Person person2 =
-      Person.create(person2Id, person2Email, "Test", "Subject", "Google", "SWE", "linkedIn");
+      Person.create(
+          person2Id,
+          person2Email,
+          "Test",
+          "Subject",
+          "Google",
+          "SWE",
+          "linkedIn",
+          EnumSet.noneOf(Job.class));
 
   private final Availability person2Avail1 =
       Availability.create(
