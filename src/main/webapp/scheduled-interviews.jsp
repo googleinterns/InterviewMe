@@ -28,7 +28,7 @@
               <a href="feedback.html?interview=${scheduledInterview.getId()}&role=${scheduledInterview.getRole()}"><button class = "feedbackButton">Submit Feedback</button></a>
             </c:when>
             <c:otherwise>
-              <p>You may submit feedback once the interview has commenced</p>
+              <p style="text-align:center">You may submit feedback once the interview has commenced</p>
             </c:otherwise>
           </c:choose>
         </div>
