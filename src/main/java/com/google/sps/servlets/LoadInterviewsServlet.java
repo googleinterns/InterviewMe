@@ -88,12 +88,11 @@ public class LoadInterviewsServlet extends HttpServlet {
     List<PossibleInterviewSlot> possibleInterviews =
         getPossibleInterviewSlots(range, timezoneOffset);
 
-    String date = "";
+    String date = possibleInterviews.isEmpty() ? "" : possibleInterviews.get(0).date();
     List<ArrayList<PossibleInterviewSlot>> possibleInterviewsForWeek =
         new ArrayList<ArrayList<PossibleInterviewSlot>>();
 
-    if (possibleInterviews.size() != 0) {
-      date = possibleInterviews.get(0).date();
+    if (!possibleInterviews.isEmpty()) {
       ArrayList<PossibleInterviewSlot> dayOfSlots = new ArrayList<PossibleInterviewSlot>();
       for (PossibleInterviewSlot possibleInterview : possibleInterviews) {
         if (!possibleInterview.date().equals(date)) {
