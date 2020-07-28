@@ -27,12 +27,19 @@ function submitProfileForm(methodType, redirectUrl) {
   }
   document.getElementById('company-field').placeholder = '';
   document.getElementById('linkedin-field').placeholder = '';
+  let qualifiedJobs = [];
+  for (let job of possibleQualifiedJobs()) {
+    if (job.checked) {
+      qualifiedJobs.push(job.getAttribute('data-enum-name'));
+    }
+  }
   const personJson = {
     firstName: $('#first-name-field').val(),
     lastName: $('#last-name-field').val(),
     company: $('#company-field').val(),
     job: $('#job-field').val(),
-    linkedin: $('#linkedin-field').val()
+    linkedin: $('#linkedin-field').val(),
+    qualifiedJobs: qualifiedJobs
   };
   fetch('/person',{
     method: methodType,
@@ -42,6 +49,20 @@ function submitProfileForm(methodType, redirectUrl) {
       alert('Error: ' + error + '\nThere was an error submitting your information.' +
       ' Please try again.');
     });
+}
+
+function possibleQualifiedJobs() {
+  let jobs = [];
+  jobs.push(document.getElementById('software-engineer-check'));
+  jobs.push(document.getElementById('product-manager-check'));
+  jobs.push(document.getElementById('business-analyst-check'));
+  jobs.push(document.getElementById('technical-consultant-check'));
+  jobs.push(document.getElementById('software-tester-check'));
+  jobs.push(document.getElementById('technical-sales-check'));
+  jobs.push(document.getElementById('network-engineer-check'));
+  jobs.push(document.getElementById('systems-analyst-check'));
+  jobs.push(document.getElementById('technical-support-check'));
+  return jobs;
 }
 
 function validateProfileForm() {
