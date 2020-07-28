@@ -70,27 +70,8 @@ public final class FeedbackServletTest {
     helper.tearDown();
   }
 
-  // Tests that a valid feedbackServlet request was made.
-  @Test
-  public void validFeedbackServletRequest() throws IOException {
-    FeedbackServlet feedbackServlet = new FeedbackServlet();
-    ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    feedbackServlet.init(scheduledInterviewDao);
-    scheduledInterviewDao.create(scheduledInterview);
-    MockHttpServletRequest getRequest = new MockHttpServletRequest();
-    MockHttpServletResponse getResponse = new MockHttpServletResponse();
-    helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
-    getRequest.addParameter("interview", "-1");
-    getRequest.addParameter("userTime", "2020-07-05T22:00:00Z");
-    getRequest.addParameter("timeZone", "Etc/UCT");
-    getRequest.addParameter("role", "Interviewer");
-    feedbackServlet.doGet(getRequest, getResponse);
-
-    Assert.assertEquals(200, getResponse.getStatus());
-  }
-
-  // Tests that false is returned when a scheduledInterview id does not exist.
-  @Test
+  // Tests that a NullPointerException is thrown when a scheduledInterviewId does not exist.
+  @Test(expected = NullPointerException.class)
   public void interviewIdDoesNotExist() throws IOException {
     FeedbackServlet feedbackServlet = new FeedbackServlet();
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
@@ -104,7 +85,5 @@ public final class FeedbackServletTest {
     getRequest.addParameter("timeZone", "Etc/UCT");
     getRequest.addParameter("role", "Interviewer");
     feedbackServlet.doGet(getRequest, getResponse);
-
-    Assert.assertEquals(false, (boolean) getRequest.getAttribute("feedbackOpen"));
   }
 }

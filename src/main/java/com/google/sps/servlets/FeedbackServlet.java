@@ -68,7 +68,7 @@ public class FeedbackServlet extends HttpServlet {
     TimeRange scheduledInterviewRange =
         scheduledInterviewDao.get(scheduledInterviewId).map(ScheduledInterview::when).orElse(null);
     if (scheduledInterviewRange == null) {
-      return false;
+      throw new NullPointerException("This scheduledInterviewId does not exist");
     }
     return scheduledInterviewRange.start().minus(5, ChronoUnit.MINUTES).isBefore(userTime);
   }
