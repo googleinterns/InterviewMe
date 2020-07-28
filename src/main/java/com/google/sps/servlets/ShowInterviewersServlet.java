@@ -111,7 +111,7 @@ public class ShowInterviewersServlet extends HttpServlet {
         possibleInterviewers.add(personDao.get(interviewer).get());
       }
     }
-
+    
     return possibleInterviewers;
   }
 
@@ -120,7 +120,6 @@ public class ShowInterviewersServlet extends HttpServlet {
     for (Person person : possiblePeople) {
       possibleInterviewers.add(personToPossibleInterviewer(person));
     }
-
     return possibleInterviewers;
   }
 
