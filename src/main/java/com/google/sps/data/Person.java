@@ -75,9 +75,9 @@ public abstract class Person {
         .setEmail(email)
         .setFirstName(personRequest.getFirstName())
         .setLastName(personRequest.getLastName())
-        .setCompany(personRequest.getCompany())
+        .setCompany(company)
         .setJob(personRequest.getJob())
-        .setLinkedIn(personRequest.getLinkedIn())
+        .setLinkedIn(linkedIn)
         .setQualifiedJobs(personRequest.getQualifiedJobs())
         .build();
   }
