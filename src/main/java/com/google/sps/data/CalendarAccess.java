@@ -48,6 +48,7 @@ public class CalendarAccess {
       throws GeneralSecurityException, IOException, URISyntaxException, Exception {
     System.out.println("CalendarAccess()");
     String key = new SecretFetcher("interview-me-step-2020").getSecretValue("SERVICE_ACCT_KEY");
+    System.out.println(key);
     GoogleCredential credential =
         GoogleCredential.fromStream(new ByteArrayInputStream(key.getBytes()))
             .createScoped(Collections.singletonList(CalendarScopes.CALENDAR))
@@ -79,7 +80,6 @@ public class CalendarAccess {
             .setOrderBy("startTime")
             .setSingleEvents(true)
             .execute();
-    System.out.println("events made");
     List<Event> items = events.getItems();
     if (items.isEmpty()) {
       System.out.println("No upcoming events found.");
