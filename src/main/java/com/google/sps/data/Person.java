@@ -62,6 +62,14 @@ public abstract class Person {
 
   // Creates a person from a Person Servlet request.
   public static Person createFromRequest(String id, String email, PersonRequest personRequest) {
+    String company = personRequest.getCompany();
+    if (company == null) {
+      company = "";
+    }
+    String linkedIn = personRequest.getLinkedIn();
+    if (linkedIn == null) {
+      linkedIn = "";
+    }
     return builder()
         .setId(id)
         .setEmail(email)
