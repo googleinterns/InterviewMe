@@ -33,12 +33,6 @@ function toggleTile(tile) {
 }
 
 function loadAvailabilityTable(tableDiv, timezoneOffset) {
-  if (page < 0) {
-    page = 0;
-  }
-  if (page > 3) {
-    page = 3;
-  }
   fetch(`/availabilityTable.jsp?timeZoneOffset=${timezoneOffset}&page=${page}`)
     .then(response => response.text())
     .then(tableContents => {
