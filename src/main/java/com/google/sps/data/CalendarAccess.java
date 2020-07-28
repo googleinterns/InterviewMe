@@ -27,6 +27,8 @@ import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.EventReminder;
 import com.google.api.services.calendar.model.Events;
+import com.google.api.services.calendar.model.*;
+// import com.google.api.services.calendar.model.ConferenceSolution;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,14 +48,11 @@ public class CalendarAccess {
   // per each exception
   public CalendarAccess()
       throws GeneralSecurityException, IOException, URISyntaxException, Exception {
-    System.out.println("CalendarAccess()");
     String key = new SecretFetcher("interview-me-step-2020").getSecretValue("SERVICE_ACCT_KEY");
     System.out.println(key);
     GoogleCredential credential =
         GoogleCredential.fromStream(new ByteArrayInputStream(key.getBytes()))
-            .createScoped(Collections.singletonList(CalendarScopes.CALENDAR))
-            .createDelegated(CALENDAR_ID);
-    System.out.println("getServiceAccountUser: " + credential.getServiceAccountUser());
+            .createScoped(Collections.singletonList(CalendarScopes.CALENDAR));
 
     service =
         new Calendar.Builder(
@@ -114,26 +113,25 @@ public class CalendarAccess {
     EventDateTime end = new EventDateTime().setDateTime(endDateTime).setTimeZone("America/Toronto");
     event.setEnd(end);
 
-    EventAttendee[] attendees =
-        new EventAttendee[] {
-          new EventAttendee().setEmail("the.claire.yang@gmail.com"),
-          new EventAttendee().setEmail("clairexy@umich.edu"),
-        };
-    event.setAttendees(Arrays.asList(attendees));
-    System.out.printf("added attendees");
+    ConferenceSolutionKey cskey = new ConferenceSolutionKey().setType("hangoutsMeet");
+    // ConferenceSolution conferenceSolution = new ConferenceSolution();
+    // conferenceSolution.setKey(cskey);
 
-    EventReminder[] reminderOverrides =
-        new EventReminder[] {
-          new EventReminder().setMethod("email").setMinutes(24 * 60),
-          new EventReminder().setMethod("popup").setMinutes(10),
-        };
-    Event.Reminders reminders =
-        new Event.Reminders().setUseDefault(false).setOverrides(Arrays.asList(reminderOverrides));
-    System.out.printf("added reminders");
+    ConferenceData conferenceData = new ConferenceData();
+    CreateConferenceRequest createRequest = new CreateConferenceRequest();
+    createRequest.setRequestId("A");
+    createRequest.setConferenceSolutionKey(cskey);
+    System.out.printf("conferenceSolnKey %s\n", cskey);
+    System.out.printf("conferenceData %s\n", conferenceData);
+    System.out.printf("createRequest (%s)\n", createRequest);
+    System.out.printf("conferenceData entry points (%s)\n", conferenceData.getEntryPoints());
 
-    event.setReminders(reminders);
+    conferenceData.setCreateRequest(createRequest);
+    // conferenceData.setConferenceSolution(conferenceSolution);
+
+    event.setConferenceData(conferenceData);
 
     event = service.events().insert(CALENDAR_ID, event).execute();
-    // System.out.printf("Event created: %s\n", event.getHtmlLink());
+    System.out.printf("Event created: %s\n", event.getHtmlLink());
   }
 }
