@@ -186,24 +186,17 @@ public class LoadInterviewsServlet extends HttpServlet {
     List<PossibleInterviewSlot> possibleInterviewSlotsForPerson =
         new ArrayList<PossibleInterviewSlot>();
     for (int i = 0; i < availabilities.size() - 3; i++) {
-      if (availabilities.get(i).when().end().equals(availabilities.get(i + 1).when().start())) {
-        if (availabilities
-            .get(i + 1)
-            .when()
-            .end()
-            .equals(availabilities.get(i + 2).when().start())) {
-          if (availabilities
-              .get(i + 2)
-              .when()
-              .end()
-              .equals(availabilities.get(i + 3).when().start())) {
-            possibleInterviewSlotsForPerson.add(
-                PossibleInterviewSlot.create(
-                    availabilities.get(i).when().start().toString(),
-                    getDate(availabilities.get(i).when().start(), timezoneOffset),
-                    getTime(availabilities.get(i).when().start(), timezoneOffset)));
-          }
-        }
+      if (availabilities
+          .get(i)
+          .when()
+          .start()
+          .plus(45, ChronoUnit.MINUTES)
+          .equals(availabilities.get(i + 3).when().start())) {
+        possibleInterviewSlotsForPerson.add(
+            PossibleInterviewSlot.create(
+                availabilities.get(i).when().start().toString(),
+                getDate(availabilities.get(i).when().start(), timezoneOffset),
+                getTime(availabilities.get(i).when().start(), timezoneOffset)));
       }
     }
     return possibleInterviewSlotsForPerson;
