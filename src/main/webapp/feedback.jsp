@@ -62,12 +62,10 @@
           <textarea rows="4" cols="50" id="question8" name="question8"></textarea><br>
           <label for="question9">What is one skill they should work on improving in order to become a better candidate?</label><br>
           <textarea rows="4" cols="50" id="question9" name="question9"></textarea><br>
-          <label for="question10">What is the interviewee's strongest skill?</label><br>
+          <label for="question10">Evaluate this candidate's solution (Keep to three sentences or less).</label><br>
           <textarea rows="4" cols="50" id="question10" name="question10"></textarea><br>
-          <label for="question12">Evaluate this candidate's solution (Keep to three sentences or less).</label><br>
+          <label for="question11">Notes:</label><br>
           <textarea rows="4" cols="50" id="question11" name="question11"></textarea><br>
-          <label for="question12">Notes:</label><br>
-          <textarea rows="4" cols="50" id="question12" name="question12"></textarea><br>
           <input type="submit" value="Submit">
         </form> 
       </c:otherwise>
