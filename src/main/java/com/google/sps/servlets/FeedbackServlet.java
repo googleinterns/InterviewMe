@@ -43,7 +43,7 @@ public class FeedbackServlet extends HttpServlet {
     this.scheduledInterviewDao = scheduledInterviewDao;
   }
 
-  // Gets the current user's email from request and returns the ScheduledInterviews for that person.
+  // Opens the feedback form if the user's time is five minutes before the start of the interview.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long scheduledInterviewId = Long.parseLong(request.getParameter("interview"));

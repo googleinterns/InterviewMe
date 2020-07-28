@@ -52,24 +52,22 @@
           <input type="number" min="1" max="10" id="question3" name="question3"><br>
           <label for="question4">The interviewee came up with an example that they used to test their solution:</label><br>
           <input type="number" min="1" max="10" id="question4" name="question4"><br>
-          <label for="question5">My interviewer answered my questions to the best of their ability:</label><br>
+          <label for="question5">The interviewee listed a handful of edge cases and accounted for their behaviour:</label><br>
           <input type="number" min="1" max="10" id="question5" name="question5"><br>
-          <label for="question6">The interviewee listed a handful of edge cases and accounted for their behaviour:</label><br>
-          <input type="number" min="1" max="10" id="question6" name="question5"><br>
-          <label for="question7">The interviewee asked clarifying questions:</label><br>
+          <label for="question6">The interviewee asked clarifying questions:</label><br>
+          <input type="number" min="1" max="10" id="question6" name="question6"><br>
+          <label for="question7">This InterviewMe experience was helpful:</label><br>
           <input type="number" min="1" max="10" id="question7" name="question7"><br>
-          <label for="question8">This InterviewMe experience was helpful:</label><br>
-          <input type="number" min="1" max="10" id="question8" name="question8"><br>
-          <label for="question9">What is the interviewee's strongest skill?</label><br>
+          <label for="question8">What is the interviewee's strongest skill?</label><br>
+          <textarea rows="4" cols="50" id="question8" name="question8"></textarea><br>
+          <label for="question9">What is one skill they should work on improving in order to become a better candidate?</label><br>
           <textarea rows="4" cols="50" id="question9" name="question9"></textarea><br>
-          <label for="question10">What is one skill they should work on improving in order to become a better candidate?</label><br>
+          <label for="question10">What is the interviewee's strongest skill?</label><br>
           <textarea rows="4" cols="50" id="question10" name="question10"></textarea><br>
-          <label for="question11">What is the interviewee's strongest skill?</label><br>
-          <textarea rows="4" cols="50" id="question11" name="question11"></textarea><br>
           <label for="question12">Evaluate this candidate's solution (Keep to three sentences or less).</label><br>
+          <textarea rows="4" cols="50" id="question11" name="question11"></textarea><br>
+          <label for="question12">Notes:</label><br>
           <textarea rows="4" cols="50" id="question12" name="question12"></textarea><br>
-          <label for="question13">Notes:</label><br>
-          <textarea rows="4" cols="50" id="question13" name="question13"></textarea><br>
           <input type="submit" value="Submit">
         </form> 
       </c:otherwise>

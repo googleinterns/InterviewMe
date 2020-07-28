@@ -64,7 +64,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String timeZoneId = request.getParameter("timeZone");
     String userTime = request.getParameter("userTime");
-    System.out.println(userTime);
     String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
     // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be

@@ -38,13 +38,13 @@ function getCurrentTime() {
 function getScheduledInterviewId() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  const interview = urlParams.get('interview')
+  const interview = urlParams.get('interview');
   return interview; 
 }
 
 function getRole() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  const role = urlParams.get('role')
+  const role = urlParams.get('role');
   return role; 
 }
