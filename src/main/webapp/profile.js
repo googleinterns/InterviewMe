@@ -54,6 +54,7 @@ function autofillForm(person) {
   document.getElementById('first-name-field').value = person.firstName;
   document.getElementById('last-name-field').value = person.lastName;
   document.getElementById('company-field').value = person.company;
+  document.getElementById('current-job').textContent = person.job;
   document.getElementById('job-field').value = person.job;
   document.getElementById('linkedin-field').value = person.linkedIn;    
 }

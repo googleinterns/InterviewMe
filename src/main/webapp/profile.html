@@ -66,13 +66,14 @@
           <div class="col-md-6 mb-3">
             <label for="company-field">Company</label>
             <input type="text" readonly class="form-control-plaintext editable" id="company-field" 
-                placeholder="Google" value="" name="company">
+                value="" name="company">
           </div>
           <div class="form-group col-md-6 mb-3">
             <label for="job-field">Job</label>
-            <p id="current-job">Product Manager</p>    
-            <select hidden readonly class="form-control-plaintext editable" id="job-field" 
+            <p id="current-job"></p>
+            <select hidden readonly class="form-control-plaintext editable" id="job-field"
                 name="job">
+              <option></option>
               <option>Software Engineer</option>
               <option>Product Manager</option>
               <option>Business Analyst</option>
@@ -106,13 +107,49 @@
               Business Analyst
             </label>
           </div>
+          <div class="form-check">
+            <input disabled class="form-check-input check-editable" type="checkbox" id="technical-consultant-check">
+            <label class="form-check-label" for="technical-consultant-check">
+              Technical Consultant
+            </label>
+          </div>
+          <div class="form-check">
+            <input disabled class="form-check-input check-editable" type="checkbox" id="software-tester-check">
+            <label class="form-check-label" for="software-tester-check">
+              Software Tester
+            </label>
+          </div>
+          <div class="form-check">
+            <input disabled class="form-check-input check-editable" type="checkbox" id="technical-sales-check">
+            <label class="form-check-label" for="technical-sales-check">
+              Technical Sales
+            </label>
+          </div>
+          <div class="form-check">
+            <input disabled class="form-check-input check-editable" type="checkbox" id="network-engineer-check">
+            <label class="form-check-label" for="network-engineer-check">
+              Network Engineer
+            </label>
+          </div>
+          <div class="form-check">
+            <input disabled class="form-check-input check-editable" type="checkbox" id="systems-analyst-check">
+            <label class="form-check-label" for="systems-analyst-check">
+              Systems Analyst
+            </label>
+          </div>
+          <div class="form-check">
+            <input disabled class="form-check-input check-editable" type="checkbox" id="technical-support-check">
+            <label class="form-check-label" for="technical-support-check">
+              Technical Support
+            </label>
+          </div>
         </div>
         <br>
         <div class="form-row">
           <div class="col-md-12 mb-3">
             <label for="linkedin-field">LinkedIn URL</label>
             <input type="text" readonly class="form-control-plaintext editable" id="linkedin-field" 
-                placeholder="https://www.linkedin.com/" value="" name="linkedin">
+                value="" name="linkedin">
           </div>
         </div>
         <div class="form-group row d-flex justify-content-center">
