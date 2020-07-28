@@ -85,10 +85,8 @@ public class LoadInterviewsServlet extends HttpServlet {
     // be?
     TimeRange range =
         new TimeRange(utcTime.toInstant(), utcTime.toInstant().plus(6, ChronoUnit.DAYS));
-    List<Availability> availabilitiesInRange =
-        availabilityDao.getInRangeForAll(range.start(), range.end());
     List<PossibleInterviewSlot> possibleInterviews =
-        getPossibleInterviewSlots(availabilitiesInRange, range, timezoneOffset);
+        getPossibleInterviewSlots(range, timezoneOffset);
 
     String date = "";
     List<ArrayList<PossibleInterviewSlot>> possibleInterviewsForWeek =
@@ -130,12 +128,10 @@ public class LoadInterviewsServlet extends HttpServlet {
   }
 
   private List<PossibleInterviewSlot> getPossibleInterviewSlots(
-      List<Availability> allAvailabilities, TimeRange range, ZoneOffset timezoneOffset) {
+      TimeRange range, ZoneOffset timezoneOffset) {
+
+    Set<String> interviewers = availabilityDao.getUsersAvailableInRange(range.start(), range.end());
     Set<PossibleInterviewSlot> possibleInterviews = new HashSet<PossibleInterviewSlot>();
-    Set<String> interviewers = new HashSet<String>();
-    for (Availability avail : allAvailabilities) {
-      interviewers.add(avail.userId());
-    }
 
     // We don't want to schedule an interview for a user with themself, so we are removing
     // the current user's id from the list.

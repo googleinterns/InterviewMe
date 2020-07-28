@@ -19,6 +19,7 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.PropertyProjection;
 import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.api.datastore.TransactionOptions;
 import com.google.appengine.api.datastore.Key;
@@ -36,8 +37,10 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /** Accesses Datastore to support managing Availability entities. */
 public class DatastoreAvailabilityDao implements AvailabilityDao {
@@ -170,5 +173,32 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
             .setFilter(compFilter)
             .addSort("startTime", SortDirection.ASCENDING);
     return datastore.prepare(availQuery).asList(FetchOptions.Builder.withDefaults());
+  }
+
+  // Returns the ids of all users that have availabilities within the specified time range.
+  public Set<String> getUsersAvailableInRange(Instant minTime, Instant maxTime) {
+    Filter minFilter =
+        new FilterPredicate(
+            "startTime", FilterOperator.GREATER_THAN_OR_EQUAL, minTime.toEpochMilli());
+    // Queries can only perform inequality filters on one parameter, and so instead
+    // of using endTime for the maxFilter, startTime is used and the maxTime has 15
+    // minutes subtracted from it to be equal to the latest possible startTime.
+    Filter maxFilter =
+        new FilterPredicate(
+            "startTime",
+            FilterOperator.LESS_THAN_OR_EQUAL,
+            maxTime.minus(15, ChronoUnit.MINUTES).toEpochMilli());
+    CompositeFilter compFilter = CompositeFilterOperator.and(minFilter, maxFilter);
+    Query availQuery = new Query("Availability").setFilter(compFilter);
+    availQuery.addProjection(new PropertyProjection("userId", String.class));
+    availQuery.addProjection(new PropertyProjection("startTime", Long.class));
+    availQuery.setDistinct(true);
+    List<Entity> results =
+        datastore.prepare(availQuery).asList(FetchOptions.Builder.withDefaults());
+    Set<String> userIds = new HashSet<String>();
+    for (Entity result : results) {
+      userIds.add((String) result.getProperty("userId"));
+    }
+    return userIds;
   }
 }
