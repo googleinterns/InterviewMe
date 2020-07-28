@@ -25,6 +25,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.google.sps.data.FakePersonDao;
+import com.google.sps.data.Job;
 import com.google.sps.data.Person;
 import com.google.sps.servlets.ScheduledInterviewServlet;
 import com.google.sps.data.PutAvailabilityRequest;
@@ -34,6 +35,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.EnumSet;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -57,7 +59,7 @@ public final class ScheduledInterviewServletTest {
 
   private final Person person1 =
       Person.create(
-          emailToId("user1@mail"), "user1@mail", "User", "Test", "Google", "SWE", "linkedIn");
+          emailToId("user1@mail"), "user1@mail", "User", "Test", "Google", "SWE", "linkedIn", EnumSet.noneOf(Job.class));
   private final Availability person1Avail1 =
       Availability.create(
           person1.id(),
@@ -89,7 +91,7 @@ public final class ScheduledInterviewServletTest {
 
   private final Person person2 =
       Person.create(
-          emailToId("user2@mail"), "user2@mail", "User", "Test", "Google", "SWE", "linkedIn");
+          emailToId("user2@mail"), "user2@mail", "User", "Test", "Google", "SWE", "linkedIn", EnumSet.noneOf(Job.class));
   private final Availability person2Avail1 =
       Availability.create(
           person2.id(),
@@ -121,7 +123,7 @@ public final class ScheduledInterviewServletTest {
 
   private final Person person3 =
       Person.create(
-          emailToId("user3@mail"), "user3@mail", "User", "Test", "Google", "PM", "linkedIn");
+          emailToId("user3@mail"), "user3@mail", "User", "Test", "Google", "PM", "linkedIn", EnumSet.noneOf(Job.class));
   private final Availability person3Avail1 =
       Availability.create(
           person3.id(),
