@@ -30,7 +30,7 @@
               </a>
             </c:when>
             <c:otherwise>
-              <p style="text-align:center">You may submit feedback once the interview has commenced</p>
+              <p style="text-align:center">You may submit feedback once the interview has commenced.</p>
             </c:otherwise>
           </c:choose>
         </div>

@@ -1,6 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%
-  Boolean canOpen = (Boolean) request.getAttribute("feedbackOpen");
+  boolean canOpen = (boolean) request.getAttribute("feedbackOpen");
   String role = (String) request.getAttribute("role");
   pageContext.setAttribute("feedbackOpen", canOpen);
   pageContext.setAttribute("role", role); 
