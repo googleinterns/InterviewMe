@@ -61,6 +61,9 @@ public class FeedbackServlet extends HttpServlet {
     }
   }
 
+  // Returns whether or not a scheduledInterviewId is found and the start time is at least five
+  // minutes
+  // before the user's current time
   private boolean feedbackIsOpen(
       String userTimeString, String timeZoneString, Long scheduledInterviewId) {
     ZoneId timeZoneId = ZoneId.of(timeZoneString);

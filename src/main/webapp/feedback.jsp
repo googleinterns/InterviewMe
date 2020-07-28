@@ -14,10 +14,11 @@
   <c:otherwise>
     <c:choose>
       <c:when test= "${role == 'Interviewee'}">
-        <h1 class="text-center">Please submit your feedback for your interviewer below</h1>
+        <h1 class="text-center">Feedback</h1>
+        <h4 class="text-center">Please submit your feedback for your interviewer below</h4>
         <!-- TODO: Send email on submit -->
         <form action="/action_page.php" style="text-align:center">
-          <h5>Please Enter a value between 1 and 10 (1 being strongly disagree and 10 being strongly agree)</h5>
+          <h5>Please enter a value between 1 and 10 (1 being strongly disagree and 10 being strongly agree)</h5>
           <label for="question1">I was comfortable during the interview:</label><br>
           <input type="number" min="1" max="10" id="question1" name="question1"><br>
           <label for="question2">My interviewer moved at a decent pace:</label><br>
@@ -40,10 +41,11 @@
         </form>
       </c:when>
       <c:otherwise>
-        <h1 class="text-center">Please submit your feedback for your interviewee below</h1>
+        <h1 class="text-center">Feedback</h1>
+        <h4 class="text-center">Please submit your feedback for your interviewee below</h4>
         <!-- TODO: Send email on submit -->
         <form action="/action_page.php" style="text-align:center">
-          <h4>Please Enter a value between 1 and 10 (1 being strongly disagree and 10 being strongly agree)</h4>
+          <h5>Please enter a value between 1 and 10 (1 being strongly disagree and 10 being strongly agree)</h5>
           <label for="question1">The interviewee communicated their thought process as they went along:</label><br>
           <input type="number" min="1" max="10" id="question1" name="question1"><br>
           <label for="question2">The interviewee understood the time complexity of their solution:</label><br>

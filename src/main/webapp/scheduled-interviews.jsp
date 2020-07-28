@@ -26,11 +26,11 @@
           <c:choose>
             <c:when test= "${scheduledInterview.getHasPassed()}">
               <a href="feedback.html?interview=${scheduledInterview.getId()}&role=${scheduledInterview.getRole()}" style="text-align:center">
-                <button class = "feedbackButton">Submit Feedback</button>
+                <button class="btn btn-primary" type="button">Submit Feedback</button>
               </a>
             </c:when>
             <c:otherwise>
-              <p style="text-align:center">You may submit feedback once the interview has commenced.</p>
+              <p style="text-align:center">You may begin feedback 5 minutes after the interview has started.</p>
             </c:otherwise>
           </c:choose>
         </div>

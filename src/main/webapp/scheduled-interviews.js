@@ -29,8 +29,9 @@ function loadScheduledInterviewCards() {
     .then(listOfCards => {
       document.getElementById('scheduled-interviews-cards').innerHTML = listOfCards;
     });
+}
     
 function getCurrentTime() {
   return new Date().toISOString(); 
 }
-}
+
