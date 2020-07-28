@@ -1,0 +1,14 @@
+Thank your for practicing your interviewing skills using InterviewMe on {{formatted_date}}. Your interviewer has submitted feedback for your interview which you can view below. 
+
+Before the interviewer, you will need to:
+Prepare {{questions_amount}} questions for the interviewer. You may not use all {{questions_amount}} but it is best to be prepared.
+
+Be sure to follow these general guidelines when interviewing:
+Keep the time in mind??
+
+After interviewing:
+Send the interviewee feedback through this form: [TODO].
+Remember:
+Treat this as an actual interview. Be professional.
+
+A Google Calendar event titled "InterviewMe Interview {{interviewer_full_name}} / {{interviewee_full_name}}" was added to your Google Calendar. Please reach out if you have any questions
