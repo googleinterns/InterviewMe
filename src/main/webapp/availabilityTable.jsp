@@ -6,10 +6,13 @@
 <%@ page import="java.time.temporal.ChronoUnit" %>
 <%@ page import="java.lang.Integer" %>
 <%
-  List<List<AvailabilityTimeSlot>> list = AvailabilityTimeSlotGenerator
-    .timeSlotsForWeek(Instant.now().plus((Integer.parseInt(request
-    .getParameter("page")) * 7), ChronoUnit.DAYS), Integer.parseInt(request
-    .getParameter("timeZoneOffset")), new DatastoreAvailabilityDao());
+  int timeZoneOffset = Integer.parseInt(request.getParameter("timeZoneOffset"));
+  int daysOffset = Integer.parseInt(request.getParameter("page")) * 7;
+  List<List<AvailabilityTimeSlot>> list = 
+      AvailabilityTimeSlotGenerator.timeSlotsForWeek(
+          Instant.now().plus(daysOffset, ChronoUnit.DAYS), 
+          timeZoneOffset, 
+          new DatastoreAvailabilityDao());
   pageContext.setAttribute("list", list);
 %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
