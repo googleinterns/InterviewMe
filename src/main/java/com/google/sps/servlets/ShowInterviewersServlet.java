@@ -111,7 +111,6 @@ public class ShowInterviewersServlet extends HttpServlet {
         possibleInterviewers.add(personDao.get(interviewer).get());
       }
     }
-    
     return possibleInterviewers;
   }
 
