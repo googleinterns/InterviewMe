@@ -19,6 +19,18 @@ function onAvailabilityLoad() {
   loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset());
 }
 
+function getClassList(selected, scheduled) {
+  console.log('getClassList was called');
+  let classList = '';
+  if (selected && scheduled) {
+    classList = 'table-danger scheduled-time-slot';
+  }
+  if (selected && ! scheduled) {
+    classList = 'table-success selected-time-slot';
+  }
+  return classList;
+}
+
 // Toggles a tile from selected (green) to un-selected (white) and vice versa when clicked.
 // Scheduled tiles (red) remain unaffected.
 function toggleTile(tile) {
