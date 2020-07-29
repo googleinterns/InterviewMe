@@ -187,10 +187,10 @@ public final class ShowInterviewersServletTest {
     servlet.init(availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
 
-    availabilityDao.create(person1Avail1.scheduledStatus(true));
-    availabilityDao.create(person1Avail2.scheduledStatus(true));
-    availabilityDao.create(person1Avail3.scheduledStatus(true));
-    availabilityDao.create(person1Avail4.scheduledStatus(true));
+    availabilityDao.create(person1Avail1.withScheduled(true));
+    availabilityDao.create(person1Avail2.withScheduled(true));
+    availabilityDao.create(person1Avail3.withScheduled(true));
+    availabilityDao.create(person1Avail4.withScheduled(true));
 
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("utc", "2020-07-07T13:30:00Z");

@@ -160,7 +160,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     affectedAvailability.addAll(interviewerAffectedAvailability);
 
     for (Availability avail : affectedAvailability) {
-      availabilityDao.update(avail.scheduledStatus(true));
+      availabilityDao.update(avail.withScheduled(true));
     }
   }
 

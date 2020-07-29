@@ -43,7 +43,7 @@ public abstract class Availability {
   }
 
   // Returns a new Availability with the old information with an updated scheduled status.
-  public Availability scheduledStatus(boolean scheduled) {
+  public Availability withScheduled(boolean scheduled) {
     return toBuilder().setScheduled(scheduled).build();
   }
 

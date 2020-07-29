@@ -216,10 +216,10 @@ public final class LoadInterviewsServletTest {
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
 
     // A scheduled hour slot
-    availabilityDao.create(person1Avail1.scheduledStatus(true));
-    availabilityDao.create(person1Avail2.scheduledStatus(true));
-    availabilityDao.create(person1Avail3.scheduledStatus(true));
-    availabilityDao.create(person1Avail4.scheduledStatus(true));
+    availabilityDao.create(person1Avail1.withScheduled(true));
+    availabilityDao.create(person1Avail2.withScheduled(true));
+    availabilityDao.create(person1Avail3.withScheduled(true));
+    availabilityDao.create(person1Avail4.withScheduled(true));
 
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("timeZoneOffset", "0");
