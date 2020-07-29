@@ -70,12 +70,12 @@ public class ShowInterviewersServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String utcStartTime = request.getParameter("utcStartTime");
-    TimeRange range =
+    TimeRange interviewTimeRange =
         new TimeRange(
             Instant.parse(utcStartTime), Instant.parse(utcStartTime).plus(1, ChronoUnit.HOURS));
     List<Availability> availabilitiesInRange =
-        availabilityDao.getInRangeForAll(range.start(), range.end());
-    List<Person> possiblePeople = getPossiblePeople(availabilitiesInRange, range);
+        availabilityDao.getInRangeForAll(interviewTimeRange.start(), interviewTimeRange.end());
+    List<Person> possiblePeople = getPossiblePeople(availabilitiesInRange, interviewTimeRange);
     Set<PossibleInterviewer> possibleInterviewers = peopleToPossibleInterviewers(possiblePeople);
     request.setAttribute("interviewers", possibleInterviewers);
     RequestDispatcher rd = request.getRequestDispatcher("/possibleInterviewers.jsp");
