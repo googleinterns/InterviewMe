@@ -24,7 +24,7 @@
             <li class="list-group-item">Interviewer: ${scheduledInterview.getInterviewer()}</li>
           </ul>
           <c:choose>
-            <c:when test= "${scheduledInterview.getHasPassed()}">
+            <c:when test= "${scheduledInterview.getHasStarted()}">
               <a href="feedback.html?interview=${scheduledInterview.getId()}&role=${scheduledInterview.getRole()}" style="text-align:center">
                 <button class="btn btn-primary" type="button">Submit Feedback</button>
               </a>

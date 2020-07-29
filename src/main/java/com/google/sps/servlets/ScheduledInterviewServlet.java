@@ -161,11 +161,11 @@ public class ScheduledInterviewServlet extends HttpServlet {
             .map(Person::firstName)
             .orElse("Nonexistent User");
     String role = getUserRole(scheduledInterview, userId);
-    boolean hasPassed =
+    boolean hasStarted =
         scheduledInterview.when().start().minus(5, ChronoUnit.MINUTES).isBefore(userTime);
 
     return new ScheduledInterviewRequest(
-        scheduledInterview.id(), date, interviewer, interviewee, role, hasPassed);
+        scheduledInterview.id(), date, interviewer, interviewee, role, hasStarted);
   }
 
   static String getUserRole(ScheduledInterview scheduledInterview, String userId) {
