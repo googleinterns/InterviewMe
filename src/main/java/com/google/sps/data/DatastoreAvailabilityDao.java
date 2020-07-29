@@ -152,44 +152,44 @@ public class DatastoreAvailabilityDao implements AvailabilityDao {
 
   private List<Entity> getEntitiesInRange(
       Instant minTime, Instant maxTime, Optional<Filter> filterOpt) {
-    Filter minFilter =
+    Filter startTimeFilter =
         new FilterPredicate(
             "startTime", FilterOperator.GREATER_THAN_OR_EQUAL, minTime.toEpochMilli());
     // Queries can only perform inequality filters on one parameter, and so instead
-    // of using endTime for the maxFilter, startTime is used and the maxTime has 15
+    // of using endTime for the endTimeFilter, startTime is used and the maxTime has 15
     // minutes subtracted from it to be equal to the latest possible startTime.
-    Filter maxFilter =
+    Filter endTimeFilter =
         new FilterPredicate(
             "startTime",
             FilterOperator.LESS_THAN_OR_EQUAL,
             maxTime.minus(15, ChronoUnit.MINUTES).toEpochMilli());
-    CompositeFilter compFilter = CompositeFilterOperator.and(minFilter, maxFilter);
+    CompositeFilter startAndEndFilter = CompositeFilterOperator.and(startTimeFilter, endTimeFilter);
     if (filterOpt.isPresent()) {
-      compFilter = CompositeFilterOperator.and(compFilter, filterOpt.get());
+      startAndEndFilter = CompositeFilterOperator.and(startAndEndFilter, filterOpt.get());
     }
 
     Query availQuery =
         new Query("Availability")
-            .setFilter(compFilter)
+            .setFilter(startAndEndFilter)
             .addSort("startTime", SortDirection.ASCENDING);
     return datastore.prepare(availQuery).asList(FetchOptions.Builder.withDefaults());
   }
 
   // Returns the ids of all users that have availabilities within the specified time range.
   public Set<String> getUsersAvailableInRange(Instant minTime, Instant maxTime) {
-    Filter minFilter =
+    Filter startTimeFilter =
         new FilterPredicate(
             "startTime", FilterOperator.GREATER_THAN_OR_EQUAL, minTime.toEpochMilli());
     // Queries can only perform inequality filters on one parameter, and so instead
-    // of using endTime for the maxFilter, startTime is used and the maxTime has 15
+    // of using endTime for the endTimeFilter, startTime is used and the maxTime has 15
     // minutes subtracted from it to be equal to the latest possible startTime.
-    Filter maxFilter =
+    Filter endTimeFilter =
         new FilterPredicate(
             "startTime",
             FilterOperator.LESS_THAN_OR_EQUAL,
             maxTime.minus(15, ChronoUnit.MINUTES).toEpochMilli());
-    CompositeFilter compFilter = CompositeFilterOperator.and(minFilter, maxFilter);
-    Query availQuery = new Query("Availability").setFilter(compFilter);
+    CompositeFilter startAndEndFilter = CompositeFilterOperator.and(startTimeFilter, endTimeFilter);
+    Query availQuery = new Query("Availability").setFilter(startAndEndFilter);
     availQuery.addProjection(new PropertyProjection("userId", String.class));
     availQuery.addProjection(new PropertyProjection("startTime", Long.class));
     availQuery.setDistinct(true);
