@@ -54,35 +54,35 @@ public class DatastoreAvailabilityDaoTest {
           new TimeRange(
               Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
           /*id=*/ -1,
-          true);
+          /*scheduled=*/ true);
   private final Availability availabilityTwo =
       Availability.create(
           /*userId*/ "user1",
           new TimeRange(
               Instant.parse("2020-07-07T15:45:00Z"), Instant.parse("2020-07-07T16:00:00Z")),
           /*id=*/ -1,
-          false);
+          /*scheduled=*/ false);
   private final Availability availabilityThree =
       Availability.create(
           /*userId*/ "user2",
           new TimeRange(
               Instant.parse("2020-07-07T17:30:00Z"), Instant.parse("2020-07-07T17:45:00Z")),
           /*id=*/ -1,
-          true);
+          /*scheduled=*/ true);
   private final Availability availabilityFour =
       Availability.create(
           /*userId*/ "user1",
           new TimeRange(
               Instant.parse("2020-07-07T22:30:00Z"), Instant.parse("2020-07-07T22:45:00Z")),
           /*id=*/ -1,
-          true);
+          /*scheduled=*/ true);
   private final Availability availabilityFive =
       Availability.create(
           /*userId*/ "user3",
           new TimeRange(
               Instant.parse("2020-07-07T22:30:00Z"), Instant.parse("2020-07-07T22:45:00Z")),
           /*id=*/ -1,
-          true);
+          /*scheduled=*/ true);
 
   @Before
   public void setUp() {
