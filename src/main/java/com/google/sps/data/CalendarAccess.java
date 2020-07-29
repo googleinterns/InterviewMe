@@ -63,6 +63,8 @@ public class CalendarAccess {
             .build();
   }
 
+  // Makes an event in the calendar CALENDAR_ID and returns the Meet Link associated with that
+  // event.
   public String getMeetLink(ScheduledInterview interview)
       throws IOException, GeneralSecurityException {
     Event event =
