@@ -26,9 +26,9 @@
         <td>${interviewer.job()}</td>
         <td>
           <button type="button" class="btn btn-primary" 
-          data-company="${interviewer.company()}" data-job="${interviewer.job()}" 
-          data-utc="${pageScope.utc}" data-time="${pageScope.time}"
-          data-date="${pageScope.date}" onclick="selectInterview(this)">
+              data-company="${interviewer.company()}" data-job="${interviewer.job()}" 
+              data-utc="${pageScope.utc}" data-time="${pageScope.time}"
+              data-date="${pageScope.date}" onclick="selectInterview(this)">
             Select
           </button>
         </td>
