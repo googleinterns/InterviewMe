@@ -1,4 +1,4 @@
-Thank you for practicing your interviewing skills using InterviewMe on {{formatted_date}}. Your interviewer has submitted feedback for your interview which you can view below. 
+Thank you for practicing your interviewing skills using InterviewMe on {{formatted_date}}. Your interviewer has submitted feedback for your interview, which you can view below. 
 
 The values 1-10 represent whether your interviewer strongly disagreed(1) or agreed(10) with the prompt. 
 
@@ -10,10 +10,10 @@ The interviewee listed a handful of edge cases and accounted for their behaviour
 The interviewee asked clarifying questions: {{question_6}}
 This InterviewMe experience was helpful: {{question_7}}
 
-What is the interviewee's strongest skill?:
+What is the interviewee's strongest skill?
 {{question_8}}
 
-What is one skill they should work on improving in order to become a better candidate?:
+What is one skill they should work on improving in order to become a better candidate?
 {{question_9}}
 
 Evaluate this candidate's solution (Keep to three sentences or less):

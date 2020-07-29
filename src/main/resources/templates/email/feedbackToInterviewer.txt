@@ -1,4 +1,4 @@
-Thank you for practicing your interviewing skills using InterviewMe on {{formatted_date}}. Your interviewee has submitted feedback for your interview which you can view below. 
+Thank you for practicing your interviewing skills using InterviewMe on {{formatted_date}}. Your interviewee has submitted feedback for your interview, which you can view below. 
 
 The values 1-10 represent whether your interviewee strongly disagreed(1) or agreed(10) with the prompt. 
 
@@ -10,10 +10,10 @@ My interviewer answered my questions to the best of their ability: {{question_5}
 I felt my interviewer came prepared: {{question_6}}
 This InterviewMe experience was helpful: {{question_7}}
 
-Is there anything in particular that your interviewer did to improve your overall experience?:
+Is there anything in particular that your interviewer did to improve your overall experience?
 {{question_8}}
 
-What is something that you think your interviewer could have done better?:
+What is something that you think your interviewer could have done better?
 {{question_9}}
 
 
