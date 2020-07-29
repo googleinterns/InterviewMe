@@ -43,24 +43,24 @@ function browserTimezoneOffset() {
 // Confirms interview selection with user and sends this selection to Datastore 
 // if confirmed.
 function selectInterview(interviewer) {
+  let date = interviewer.getAttribute('data-date');
+  let time = interviewer.getAttribute('data-time');
+  let company = interviewer.getAttribute('data-company');
+  let job = interviewer.getAttribute('data-job');
+  let utcStartTime = interviewer.getAttribute('data-utc');
   if (confirm(
-      `You selected: ${interviewer.getAttribute('data-date')} from ` +
-      `${interviewer.getAttribute('data-time')} with a ` +
-      `${interviewer.getAttribute('data-company')} ` +
-      `${interviewer.getAttribute('data-job')}. ` +
+      `You selected: ${date} from ${time} with a ` +
+      `${company} ${job}. ` +
       `Click OK if you wish to proceed.`)) {
     alert(
-      `You have scheduled an interview on ${interviewer.getAttribute('data-date')}` +
-      ` from ${interviewer.getAttribute('data-time')} ` +
-      `with a ${interviewer.getAttribute('data-company')} ` +
-      `${interviewer.getAttribute('data-job')}. Check your email for more ` +
+      `You have scheduled an interview on ${date}` +
+      ` from ${time} with a ${company} ` +
+      `${job}. Check your email for more ` +
       `information.`);
-    // TODO: Call a servlet to save this selection. Using interviewer.getAttribute('data-utc').
-    // TODO: Change this to data-id once refactor is merged
     let requestObject = {
-      company: interviewer.getAttribute('data-company'),
-      job: interviewer.getAttribute('data-job'),
-      utcStartTime: interviewer.getAttribute('data-utc')
+      company: company,
+      job: job,
+      utcStartTime: utcStartTime
     };
     let requestBody = JSON.stringify(requestObject);
     let request = new Request('/scheduled-interviews', {method: 'POST', body: requestBody});
