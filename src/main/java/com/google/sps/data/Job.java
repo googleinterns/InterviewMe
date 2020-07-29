@@ -12,21 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function onScheduledInterviewsLoad() {
-  const loginInfo = getLoginInfo();
-  loginInfo.then(supplyLogoutLinkOrRedirectHome); 
-  loginInfo.then(getUserOrRedirectRegistration);
-  loadScheduledInterviewCards(); 
-}
+package com.google.sps.data;
 
-function getBrowserTimeZone() {
-  return Intl.DateTimeFormat().resolvedOptions().timeZone; 
-}
-
-function loadScheduledInterviewCards() {
-  fetch(`/scheduled-interviews?timeZone=${getBrowserTimeZone()}`)
-    .then(response => response.text())
-    .then(listOfCards => {
-      document.getElementById('scheduled-interviews-cards').innerHTML = listOfCards;
-    });
+// Represents all jobs someone could have on our site. Used for current job and positions qualified
+// to give interview.
+public enum Job {
+  SOFTWARE_ENGINEER,
+  PRODUCT_MANAGER,
+  BUSINESS_ANALYST,
+  TECHNICAL_CONSULTANT,
+  SOFTWARE_TESTER,
+  TECHNICAL_SALES,
+  NETWORK_ENGINEER,
+  SYSTEMS_ANALYST,
+  TECHNICAL_SUPPORT;
 }

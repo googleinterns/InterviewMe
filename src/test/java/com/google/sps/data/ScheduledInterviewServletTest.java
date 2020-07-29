@@ -24,6 +24,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import com.google.sps.data.FakePersonDao;
+import com.google.sps.data.Job;
+import com.google.sps.data.Person;
 import com.google.sps.servlets.ScheduledInterviewServlet;
 import com.google.sps.data.PutAvailabilityRequest;
 import java.io.IOException;
@@ -32,6 +35,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.EnumSet;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -43,17 +47,20 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.junit.Test;
 import com.google.gson.JsonSyntaxException;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(JUnit4.class)
 public final class ScheduledInterviewServletTest {
   LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalCapabilitiesServiceTestConfig());
   private FakeScheduledInterviewDao scheduledInterviewDao;
+  private FakePersonDao personDao;
 
   @Before
   public void setUp() {
     helper.setUp();
     scheduledInterviewDao = new FakeScheduledInterviewDao();
+    personDao = new FakePersonDao();
   }
 
   @After
@@ -61,11 +68,45 @@ public final class ScheduledInterviewServletTest {
     helper.tearDown();
   }
 
+  private final Person interviewer =
+      Person.create(
+          emailToId("user@company.org"),
+          "user@company.org",
+          "User1",
+          "Subject",
+          "Google",
+          "SWE",
+          "linkedIn",
+          EnumSet.noneOf(Job.class));
+
+  private final Person interviewee =
+      Person.create(
+          emailToId("user@gmail.com"),
+          "user@gmail.com",
+          "User2",
+          "Subject",
+          "Google",
+          "SWE",
+          "linkedIn",
+          EnumSet.noneOf(Job.class));
+
+  private final Person interviewer1 =
+      Person.create(
+          emailToId("user2@company.org"),
+          "user2@company.org",
+          "User3",
+          "Subject",
+          "Google",
+          "SWE",
+          "linkedIn",
+          EnumSet.noneOf(Job.class));
+
   // Tests whether a scheduledInterview object was added to datastore.
   @Test
   public void validScheduledInterviewServletPostRequest() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(new FakeScheduledInterviewDao());
+    scheduledInterviewServlet.init(scheduledInterviewDao, personDao);
+
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
@@ -82,7 +123,11 @@ public final class ScheduledInterviewServletTest {
   @Test
   public void validScheduledInterviewServletGetRequest() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(new FakeScheduledInterviewDao());
+    scheduledInterviewServlet.init(scheduledInterviewDao, personDao);
+
+    personDao.create(interviewer);
+    personDao.create(interviewee);
+
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -106,6 +151,7 @@ public final class ScheduledInterviewServletTest {
     scheduledInterviewServlet.doPost(postRequest, new MockHttpServletResponse());
 
     getRequest.addParameter("userEmail", "user@company.org");
+    getRequest.addParameter("timeZone", "Etc/UCT");
     scheduledInterviewServlet.doGet(getRequest, getResponse);
 
     Assert.assertEquals(200, getResponse.getStatus());
@@ -115,7 +161,12 @@ public final class ScheduledInterviewServletTest {
   @Test
   public void orderedScheduledInterviewServletGetRequest() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(new FakeScheduledInterviewDao());
+    scheduledInterviewServlet.init(scheduledInterviewDao, personDao);
+
+    personDao.create(interviewer);
+    personDao.create(interviewee);
+    personDao.create(interviewer1);
+
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -140,39 +191,39 @@ public final class ScheduledInterviewServletTest {
     scheduledInterviewServlet.doPost(postRequest, new MockHttpServletResponse());
 
     getRequest.addParameter("userEmail", emailToId("user@gmail.com"));
+    getRequest.addParameter("timeZone", "Etc/UCT");
     scheduledInterviewServlet.doGet(getRequest, getResponse);
 
-    Type scheduledInterviewListType =
-        new TypeToken<ArrayList<ScheduledInterviewRequest>>() {}.getType();
-    JsonElement json = new JsonParser().parse(getResponse.getContentAsString());
-    List<ScheduledInterviewRequest> actual = new Gson().fromJson(json, scheduledInterviewListType);
+    List<ScheduledInterviewRequest> actual =
+        (List<ScheduledInterviewRequest>) getRequest.getAttribute("scheduledInterviews");
 
     ScheduledInterviewRequest scheduledInterview1 =
         new ScheduledInterviewRequest(
             actual.get(0).getId(),
-            new TimeRange(
-                Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
-            emailToId("user@company.org"),
-            emailToId("user@gmail.com"));
+            "Sunday, July 5, 2020 from 6:00 PM to 7:00 PM",
+            "User1",
+            "User2",
+            "Interviewee");
     ScheduledInterviewRequest scheduledInterview2 =
         new ScheduledInterviewRequest(
             actual.get(1).getId(),
-            new TimeRange(
-                Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
-            emailToId("user2@company.org"),
-            emailToId("user@gmail.com"));
+            "Sunday, July 5, 2020 from 8:00 PM to 9:00 PM",
+            "User3",
+            "User2",
+            "Interviewee");
 
     List<ScheduledInterviewRequest> expected = new ArrayList<ScheduledInterviewRequest>();
     expected.add(scheduledInterview1);
     expected.add(scheduledInterview2);
-    Assert.assertEquals(expected, actual);
+    // Used assertThat in order to see what the actual field differences are
+    assertThat(actual).containsExactlyElementsIn(expected);
   }
 
   // Tests errors with Instant parsing.
   @Test
   public void invalidInstant() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(new FakeScheduledInterviewDao());
+    scheduledInterviewServlet.init(scheduledInterviewDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
