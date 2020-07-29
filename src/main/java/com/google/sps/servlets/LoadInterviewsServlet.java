@@ -129,35 +129,27 @@ public class LoadInterviewsServlet extends HttpServlet {
       TimeRange range, ZoneOffset timezoneOffset) {
     Set<String> interviewers = availabilityDao.getUsersAvailableInRange(range.start(), range.end());
     Set<PossibleInterviewSlot> possibleInterviews = new HashSet<PossibleInterviewSlot>();
-
     // We don't want to schedule an interview for a user with themself, so we are removing
     // the current user's id from the list.
     UserService userService = UserServiceFactory.getUserService();
     String userEmail = userService.getCurrentUser().getEmail();
     String userId = userService.getCurrentUser().getUserId();
-
     // Since Users returned from the LocalUserService (in tests) do not have userIds, here we set
     // the userId equal to a hashcode.
     if (userId == null) {
       userId = String.format("%d", userEmail.hashCode());
     }
-
     interviewers.remove(userId);
-
     for (String interviewer : interviewers) {
       possibleInterviews.addAll(
           getPossibleInterviewSlotsForPerson(interviewer, range, timezoneOffset));
     }
-
     // We need to check that the person looking to schedule is not already scheduled during any of
     // the proposed times.
-
     List<ScheduledInterview> userScheduledInterviews =
         scheduledInterviewDao.getScheduledInterviewsInRangeForUser(
             userId, range.start(), range.end());
-
     Set<PossibleInterviewSlot> conflictingInterviews = new HashSet<PossibleInterviewSlot>();
-
     for (PossibleInterviewSlot slot : possibleInterviews) {
       for (ScheduledInterview userInterview : userScheduledInterviews) {
         if (userInterview.when().contains(Instant.parse(slot.utcEncoding()))) {
@@ -165,12 +157,9 @@ public class LoadInterviewsServlet extends HttpServlet {
         }
       }
     }
-
     possibleInterviews.removeAll(conflictingInterviews);
-
     List<PossibleInterviewSlot> possibleInterviewList =
         new ArrayList<PossibleInterviewSlot>(possibleInterviews);
-
     sortInterviews(possibleInterviewList);
     return possibleInterviewList;
   }
@@ -180,7 +169,6 @@ public class LoadInterviewsServlet extends HttpServlet {
     List<Availability> availabilities =
         availabilityDao.getInRangeForUser(userId, range.start(), range.end());
     availabilities.removeIf(avail -> avail.scheduled());
-
     List<PossibleInterviewSlot> possibleInterviewSlotsForPerson =
         new ArrayList<PossibleInterviewSlot>();
     for (int i = 0; i < availabilities.size() - 3; i++) {
