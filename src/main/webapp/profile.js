@@ -30,7 +30,7 @@ function submitProfileForm(methodType, redirectUrl) {
     lastName: $('#last-name-field').val(),
     company: $('#company-field').val(),
     job: $('#job-field').val(),
-    linkedin: $('#linkedin-field').val()
+    linkedIn: $('#linkedin-field').val()
   };
   fetch('/person',{
     method: methodType,
