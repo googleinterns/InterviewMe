@@ -55,7 +55,7 @@ public class LoadInterviewsServlet extends HttpServlet {
 
   private AvailabilityDao availabilityDao;
   private ScheduledInterviewDao scheduledInterviewDao;
-  private Instant instant;
+  private Instant currentTime;
 
   @Override
   public void init() {
@@ -65,10 +65,10 @@ public class LoadInterviewsServlet extends HttpServlet {
   public void init(
       AvailabilityDao availabilityDao,
       ScheduledInterviewDao scheduledInterviewDao,
-      Instant instant) {
+      Instant currentTime) {
     this.availabilityDao = availabilityDao;
     this.scheduledInterviewDao = scheduledInterviewDao;
-    this.instant = instant;
+    this.currentTime = currentTime;
   }
 
   @Override
@@ -79,7 +79,7 @@ public class LoadInterviewsServlet extends HttpServlet {
         "Offset greater than 720 minutes (12 hours): %s",
         timezoneOffsetMinutes);
     ZoneOffset timezoneOffset = convertIntToOffset(timezoneOffsetMinutes);
-    ZonedDateTime day = generateDay(instant, timezoneOffset);
+    ZonedDateTime day = generateDay(currentTime, timezoneOffset);
     ZonedDateTime utcTime = day.withZoneSameInstant(ZoneOffset.UTC);
     // TODO: Decide how precise this range should be. Must start after or at now, when should end
     // be?
