@@ -64,5 +64,5 @@ function updateAvailability() {
   };
   let requestBody = JSON.stringify(requestObject);
   let request = new Request('/availability', {method: 'PUT', body: requestBody});
-  fetch(request).then(unused => {loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset())});
+  fetch(request).then(unused => {location.reload()});
 }
