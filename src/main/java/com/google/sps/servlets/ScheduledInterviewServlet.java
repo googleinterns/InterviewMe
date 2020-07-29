@@ -80,13 +80,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String timeZoneId = request.getParameter("timeZone");
     String userEmail = userService.getCurrentUser().getEmail();
-    String userId = userService.getCurrentUser().getUserId();
+    String userId = getUserId();
 
-    // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
-    // replaced with this hashcode.
-    if (userId == null) {
-      userId = String.format("%d", userEmail.hashCode());
-    }
     List<ScheduledInterviewRequest> scheduledInterviews =
         scheduledInterviewsToRequestObjects(scheduledInterviewDao.getForPerson(userId), timeZoneId);
     request.setAttribute("scheduledInterviews", scheduledInterviews);
@@ -102,15 +97,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String intervieweeEmail = userService.getCurrentUser().getEmail();
-    String intervieweeId = userService.getCurrentUser().getUserId();
-
-    // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
-    // replaced with this hashcode.
-    if (intervieweeId == null) {
-      intervieweeId = String.format("%d", intervieweeEmail.hashCode());
-    }
-
-    // TODO: Put this null id check in a separate method to call from both Get and Post.
+    String intervieweeId = getUserId();
 
     InterviewPostRequest postRequest;
     try {
@@ -206,12 +193,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
   private ScheduledInterviewRequest makeScheduledInterviewRequest(
       ScheduledInterview scheduledInterview, ZoneId timeZoneId) {
     String userEmail = userService.getCurrentUser().getEmail();
-    String userId = userService.getCurrentUser().getUserId();
-    // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
-    // replaced with this hashcode.
-    if (userId == null) {
-      userId = String.format("%d", userEmail.hashCode());
-    }
+    String userId = getUserId();
     String date = getDateString(scheduledInterview.when(), timeZoneId);
     String role = getUserRole(scheduledInterview, userId);
     String interviewer =
@@ -237,5 +219,15 @@ public class ScheduledInterviewServlet extends HttpServlet {
       return "Interviewee";
     }
     return "unknown";
+  }
+
+  private String getUserId() {
+    String userId = userService.getCurrentUser().getUserId();
+    // Since Users returned from the LocalUserService (in tests) do not have userIds, here we set
+    // the userId equal to a hashcode.
+    if (userId == null) {
+      userId = String.format("%d", userService.getCurrentUser().getEmail().hashCode());
+    }
+    return userId;
   }
 }

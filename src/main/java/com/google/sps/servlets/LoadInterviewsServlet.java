@@ -138,8 +138,8 @@ public class LoadInterviewsServlet extends HttpServlet {
     String userEmail = userService.getCurrentUser().getEmail();
     String userId = userService.getCurrentUser().getUserId();
 
-    // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
-    // replaced with this hashcode.
+    // Since Users returned from the LocalUserService (in tests) do not have userIds, here we set
+    // the userId equal to a hashcode.
     if (userId == null) {
       userId = String.format("%d", userEmail.hashCode());
     }
