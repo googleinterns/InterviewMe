@@ -59,6 +59,22 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
   }
 
   /**
+   * Returns a list of all scheduled ScheduledInterview objects whose startTime is between minTime
+   * and maxTime. minTime and maxTime are in milliseconds.
+   */
+  public List<ScheduledInterview> getInRange(Instant minTime, Instant maxTime) {
+    TimeRange range = new TimeRange(minTime, maxTime);
+    List<ScheduledInterview> scheduledInterviewsInRange = new ArrayList<>();
+    List<ScheduledInterview> scheduledInterviews = new ArrayList<ScheduledInterview>(data.values());
+    for (ScheduledInterview scheduledInterview : scheduledInterviews) {
+      if (range.contains(scheduledInterview.when())) {
+        scheduledInterviewsInRange.add(scheduledInterview);
+      }
+    }
+    return scheduledInterviewsInRange;
+  }
+
+  /**
    * Retrieves all scheduledInterview entities from storage that involve a particular user and
    * returns them as a list of ScheduledInterview objects in the order in which they occur.
    */
