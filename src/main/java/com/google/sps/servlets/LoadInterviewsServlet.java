@@ -171,13 +171,10 @@ public class LoadInterviewsServlet extends HttpServlet {
     availabilities.removeIf(avail -> avail.scheduled());
     List<PossibleInterviewSlot> possibleInterviewSlotsForPerson =
         new ArrayList<PossibleInterviewSlot>();
-    for (int i = 0; i < availabilities.size() - 3; i++) {
-      if (availabilities
-          .get(i)
-          .when()
-          .start()
-          .plus(45, ChronoUnit.MINUTES)
-          .equals(availabilities.get(i + 3).when().start())) {
+    int numberOfSlotsAfterFirstInAnHour = 3;
+    int lastFirstSlotOfAnHour = availabilities.size() - numberOfSlotsAfterFirstInAnHour;
+    for (int i = 0; i < lastFirstSlotOfAnHour; i++) {
+      if (isAnHourWorthOfSlots(availabilities, i, numberOfSlotsAfterFirstInAnHour)) {
         possibleInterviewSlotsForPerson.add(
             PossibleInterviewSlot.create(
                 availabilities.get(i).when().start().toString(),
@@ -186,6 +183,18 @@ public class LoadInterviewsServlet extends HttpServlet {
       }
     }
     return possibleInterviewSlotsForPerson;
+  }
+
+  // The current indexed slot is the start of an hour of availability if there are 3 other
+  // slots right after the current slot.
+  private boolean isAnHourWorthOfSlots(
+      List<Availability> availabilities, int index, int numberOfSlotsAfterFirstInAnHour) {
+    return availabilities
+        .get(index)
+        .when()
+        .start()
+        .plus(45, ChronoUnit.MINUTES)
+        .equals(availabilities.get(index + numberOfSlotsAfterFirstInAnHour).when().start());
   }
 
   private String getDate(Instant instant, ZoneOffset timezoneOffset) {
