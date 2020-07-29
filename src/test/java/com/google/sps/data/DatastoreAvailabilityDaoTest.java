@@ -50,7 +50,7 @@ public class DatastoreAvailabilityDaoTest {
 
   private final Availability availabilityOne =
       Availability.create(
-          "user1",
+          /*userId*/ "user1",
           new TimeRange(
               Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
           /*id=*/ -1,
@@ -58,7 +58,7 @@ public class DatastoreAvailabilityDaoTest {
 
   private final Availability availabilityTwo =
       Availability.create(
-          "user1",
+          /*userId*/ "user1",
           new TimeRange(
               Instant.parse("2020-07-07T15:45:00Z"), Instant.parse("2020-07-07T16:00:00Z")),
           /*id=*/ -1,
@@ -66,7 +66,7 @@ public class DatastoreAvailabilityDaoTest {
 
   private final Availability availabilityThree =
       Availability.create(
-          "user2",
+          /*userId*/ "user2",
           new TimeRange(
               Instant.parse("2020-07-07T17:30:00Z"), Instant.parse("2020-07-07T17:45:00Z")),
           /*id=*/ -1,
@@ -74,7 +74,7 @@ public class DatastoreAvailabilityDaoTest {
 
   private final Availability availabilityFour =
       Availability.create(
-          "user1",
+          /*userId*/ "user1",
           new TimeRange(
               Instant.parse("2020-07-07T22:30:00Z"), Instant.parse("2020-07-07T22:45:00Z")),
           /*id=*/ -1,
@@ -82,7 +82,7 @@ public class DatastoreAvailabilityDaoTest {
 
   private final Availability availabilityFive =
       Availability.create(
-          "user3",
+          /*userId*/ "user3",
           new TimeRange(
               Instant.parse("2020-07-07T22:30:00Z"), Instant.parse("2020-07-07T22:45:00Z")),
           /*id=*/ -1,
