@@ -193,14 +193,11 @@ public final class ScheduledInterviewServletTest {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
     scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail(person1.email()).setEnvAuthDomain("auth");
-
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
-
     personDao.create(person1);
     personDao.create(person2);
     personDao.create(person3);
-
     scheduledInterviewDao.create(
         ScheduledInterview.create(
             /*id=*/ -1,
@@ -208,7 +205,6 @@ public final class ScheduledInterviewServletTest {
                 Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
             person1.id(),
             person2.id()));
-
     scheduledInterviewDao.create(
         ScheduledInterview.create(
             /*id=*/ -1,
@@ -216,13 +212,10 @@ public final class ScheduledInterviewServletTest {
                 Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
             person2.id(),
             person3.id()));
-
     getRequest.addParameter("timeZone", "America/New_York");
     scheduledInterviewServlet.doGet(getRequest, getResponse);
-
     List<ScheduledInterviewRequest> actual =
         (List<ScheduledInterviewRequest>) getRequest.getAttribute("scheduledInterviews");
-
     ScheduledInterviewRequest expectedInterview =
         new ScheduledInterviewRequest(
             actual.get(0).getId(),
@@ -230,10 +223,8 @@ public final class ScheduledInterviewServletTest {
             person1.firstName(),
             person2.firstName(),
             "Interviewer");
-
     List<ScheduledInterviewRequest> expected = new ArrayList<ScheduledInterviewRequest>();
     expected.add(expectedInterview);
-
     Assert.assertEquals(expected, actual);
   }
 
@@ -245,11 +236,9 @@ public final class ScheduledInterviewServletTest {
     helper.setEnvIsLoggedIn(true).setEnvEmail(person1.email()).setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
-
     personDao.create(person1);
     personDao.create(person2);
     personDao.create(person3);
-
     scheduledInterviewDao.create(
         ScheduledInterview.create(
             /*id=*/ -1,
@@ -257,7 +246,6 @@ public final class ScheduledInterviewServletTest {
                 Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
             person1.id(),
             person2.id()));
-
     scheduledInterviewDao.create(
         ScheduledInterview.create(
             /*id=*/ -1,
@@ -265,13 +253,10 @@ public final class ScheduledInterviewServletTest {
                 Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
             person1.id(),
             person2.id()));
-
     getRequest.addParameter("timeZone", "Etc/UCT");
     scheduledInterviewServlet.doGet(getRequest, getResponse);
-
     List<ScheduledInterviewRequest> actual =
         (List<ScheduledInterviewRequest>) getRequest.getAttribute("scheduledInterviews");
-
     ScheduledInterviewRequest scheduledInterview1 =
         new ScheduledInterviewRequest(
             actual.get(0).getId(),
@@ -286,7 +271,6 @@ public final class ScheduledInterviewServletTest {
             person1.firstName(),
             person2.firstName(),
             "Interviewer");
-
     List<ScheduledInterviewRequest> expected = new ArrayList<ScheduledInterviewRequest>();
     expected.add(scheduledInterview1);
     expected.add(scheduledInterview2);
@@ -307,7 +291,6 @@ public final class ScheduledInterviewServletTest {
     availabilityDao.create(person3Avail2);
     availabilityDao.create(person3Avail3);
     availabilityDao.create(person3Avail4);
-
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
     scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
@@ -316,14 +299,12 @@ public final class ScheduledInterviewServletTest {
     String jsonString =
         "{\"company\":\"Google\",\"job\":\"SWE\",\"utcStartTime\":\"2020-07-20T12:45:00Z\"}";
     postRequest.setContent(jsonString.getBytes(StandardCharsets.UTF_8));
-
     scheduledInterviewServlet.doPost(postRequest, postResponse);
     List<ScheduledInterview> actual =
         scheduledInterviewDao.getScheduledInterviewsInRangeForUser(
             person1.id(),
             Instant.parse("2020-07-20T12:45:00Z"),
             Instant.parse("2020-07-20T13:45:00Z"));
-
     ScheduledInterview expected =
         ScheduledInterview.create(
             actual.get(0).id(),
@@ -347,7 +328,6 @@ public final class ScheduledInterviewServletTest {
     availabilityDao.create(person2Avail2);
     availabilityDao.create(person2Avail3);
     availabilityDao.create(person2Avail4);
-
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
     scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
@@ -356,14 +336,12 @@ public final class ScheduledInterviewServletTest {
     String jsonString =
         "{\"company\":\"Google\",\"job\":\"SWE\",\"utcStartTime\":\"2020-07-20T12:45:00Z\"}";
     postRequest.setContent(jsonString.getBytes(StandardCharsets.UTF_8));
-
     scheduledInterviewServlet.doPost(postRequest, postResponse);
     List<ScheduledInterview> actual =
         scheduledInterviewDao.getScheduledInterviewsInRangeForUser(
             emailToId("user@company.org"),
             Instant.parse("2020-07-20T12:45:00Z"),
             Instant.parse("2020-07-20T13:45:00Z"));
-
     ScheduledInterview expected1 =
         ScheduledInterview.create(
             actual.get(0).id(),
@@ -371,7 +349,6 @@ public final class ScheduledInterviewServletTest {
                 Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
             person1.id(),
             emailToId("user@company.org"));
-
     ScheduledInterview expected2 =
         ScheduledInterview.create(
             actual.get(0).id(),
@@ -379,10 +356,8 @@ public final class ScheduledInterviewServletTest {
                 Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
             person2.id(),
             emailToId("user@company.org"));
-
     boolean actualIsExpectedOneOrTwo =
         actual.get(0).equals(expected1) || actual.get(0).equals(expected2);
-
     Assert.assertTrue(actualIsExpectedOneOrTwo);
   }
 
@@ -401,7 +376,6 @@ public final class ScheduledInterviewServletTest {
                 Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:00:00Z")),
             /*id=*/ -1,
             false));
-
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
     scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
@@ -410,11 +384,8 @@ public final class ScheduledInterviewServletTest {
     String jsonString =
         "{\"company\":\"Google\",\"job\":\"SWE\",\"utcStartTime\":\"2020-07-20T12:45:00Z\"}";
     postRequest.setContent(jsonString.getBytes(StandardCharsets.UTF_8));
-
     scheduledInterviewServlet.doPost(postRequest, postResponse);
-
     boolean allAvailabilitiesAreScheduled = true;
-
     List<Availability> affectedAvailabilityForInterviewer =
         availabilityDao.getInRangeForUser(
             person1.id(),
@@ -428,13 +399,11 @@ public final class ScheduledInterviewServletTest {
     List<Availability> allAffectedAvailability = new ArrayList<Availability>();
     allAffectedAvailability.addAll(affectedAvailabilityForInterviewer);
     allAffectedAvailability.addAll(affectedAvailabilityForInterviewee);
-
     for (Availability avail : allAffectedAvailability) {
       if (!avail.scheduled()) {
         allAvailabilitiesAreScheduled = false;
       }
     }
-
     Assert.assertTrue(allAvailabilitiesAreScheduled);
   }
 
@@ -450,7 +419,6 @@ public final class ScheduledInterviewServletTest {
     String jsonString =
         "{\"company\":\"Google\",\"job\":\"SWE\",\"utcStartTime\":\"2020-0720T12:45:00Z\"}";
     postRequest.setContent(jsonString.getBytes(StandardCharsets.UTF_8));
-
     scheduledInterviewServlet.doPost(postRequest, postResponse);
     Assert.assertEquals(400, postResponse.getStatus());
   }

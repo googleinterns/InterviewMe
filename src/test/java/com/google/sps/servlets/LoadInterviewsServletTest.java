@@ -63,7 +63,6 @@ public final class LoadInterviewsServletTest {
               Instant.parse("2020-07-07T16:30:00Z"), Instant.parse("2020-07-07T16:45:00Z")),
           /*id=*/ -1,
           false);
-
   private final Availability person1Avail2 =
       Availability.create(
           person1Id,
@@ -71,7 +70,6 @@ public final class LoadInterviewsServletTest {
               Instant.parse("2020-07-07T16:45:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
           /*id=*/ -1,
           false);
-
   private final Availability person1Avail3 =
       Availability.create(
           person1Id,
@@ -79,7 +77,6 @@ public final class LoadInterviewsServletTest {
               Instant.parse("2020-07-07T17:00:00Z"), Instant.parse("2020-07-07T17:15:00Z")),
           /*id=*/ -1,
           false);
-
   private final Availability person1Avail4 =
       Availability.create(
           person1Id,
@@ -135,7 +132,6 @@ public final class LoadInterviewsServletTest {
     LoadInterviewsServlet servlet = new LoadInterviewsServlet();
     servlet.init(availabilityDao, scheduledInterviewDao, Instant.parse("2020-07-07T13:15:00Z"));
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
-
     // A 15 minute slot
     availabilityDao.create(
         Availability.create(
@@ -144,7 +140,6 @@ public final class LoadInterviewsServletTest {
                 Instant.parse("2020-07-07T13:30:00Z"), Instant.parse("2020-07-07T13:45:00Z")),
             /*id=*/ -1,
             false));
-
     // A 30 minute slot
     availabilityDao.create(
         Availability.create(
@@ -153,7 +148,6 @@ public final class LoadInterviewsServletTest {
                 Instant.parse("2020-07-07T14:30:00Z"), Instant.parse("2020-07-07T14:45:00Z")),
             /*id=*/ -1,
             false));
-
     availabilityDao.create(
         Availability.create(
             "user1",
@@ -161,7 +155,6 @@ public final class LoadInterviewsServletTest {
                 Instant.parse("2020-07-07T14:45:00Z"), Instant.parse("2020-07-07T15:00:00Z")),
             /*id=*/ -1,
             false));
-
     // A 45 minute slot
     availabilityDao.create(
         Availability.create(
@@ -170,7 +163,6 @@ public final class LoadInterviewsServletTest {
                 Instant.parse("2020-07-07T15:30:00Z"), Instant.parse("2020-07-07T15:45:00Z")),
             /*id=*/ -1,
             false));
-
     availabilityDao.create(
         Availability.create(
             "user1",
@@ -178,7 +170,6 @@ public final class LoadInterviewsServletTest {
                 Instant.parse("2020-07-07T15:45:00Z"), Instant.parse("2020-07-07T16:00:00Z")),
             /*id=*/ -1,
             false));
-
     availabilityDao.create(
         Availability.create(
             "user1",
@@ -186,13 +177,11 @@ public final class LoadInterviewsServletTest {
                 Instant.parse("2020-07-07T16:00:00Z"), Instant.parse("2020-07-07T16:15:00Z")),
             /*id=*/ -1,
             false));
-
     // An hour slot
     availabilityDao.create(person1Avail1);
     availabilityDao.create(person1Avail2);
     availabilityDao.create(person1Avail3);
     availabilityDao.create(person1Avail4);
-
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("timeZoneOffset", "60");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -214,13 +203,11 @@ public final class LoadInterviewsServletTest {
     LoadInterviewsServlet servlet = new LoadInterviewsServlet();
     servlet.init(availabilityDao, scheduledInterviewDao, Instant.parse("2020-07-07T13:15:00Z"));
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
-
     // A scheduled hour slot
     availabilityDao.create(person1Avail1.withScheduled(true));
     availabilityDao.create(person1Avail2.withScheduled(true));
     availabilityDao.create(person1Avail3.withScheduled(true));
     availabilityDao.create(person1Avail4.withScheduled(true));
-
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("timeZoneOffset", "0");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -238,7 +225,6 @@ public final class LoadInterviewsServletTest {
     servlet.init(availabilityDao, scheduledInterviewDao, Instant.parse("2020-07-07T13:15:00Z"));
     String userEmail = "person@gmail.com";
     helper.setEnvIsLoggedIn(true).setEnvEmail(userEmail).setEnvAuthDomain("auth");
-
     // A scheduled interview for the current user that overlaps with the only possible interviewer
     // time.
     scheduledInterviewDao.create(
@@ -248,13 +234,11 @@ public final class LoadInterviewsServletTest {
                 Instant.parse("2020-07-07T16:00:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
             "interviewerId",
             String.format("%d", userEmail.hashCode())));
-
     // An unscheduled hour slot for an interviewer
     availabilityDao.create(person1Avail1);
     availabilityDao.create(person1Avail2);
     availabilityDao.create(person1Avail3);
     availabilityDao.create(person1Avail4);
-
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("timeZoneOffset", "0");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -271,13 +255,11 @@ public final class LoadInterviewsServletTest {
     LoadInterviewsServlet servlet = new LoadInterviewsServlet();
     servlet.init(availabilityDao, scheduledInterviewDao, Instant.parse("2020-07-07T13:15:00Z"));
     helper.setEnvIsLoggedIn(true).setEnvEmail(person1Email).setEnvAuthDomain("auth");
-
     // An hour of the user's availability
     availabilityDao.create(person1Avail1);
     availabilityDao.create(person1Avail2);
     availabilityDao.create(person1Avail3);
     availabilityDao.create(person1Avail4);
-
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("timeZoneOffset", "0");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -294,13 +276,11 @@ public final class LoadInterviewsServletTest {
     LoadInterviewsServlet servlet = new LoadInterviewsServlet();
     servlet.init(availabilityDao, scheduledInterviewDao, Instant.parse("2020-07-07T13:15:00Z"));
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
-
     // An hour and 15 minute slot
     availabilityDao.create(person1Avail1);
     availabilityDao.create(person1Avail2);
     availabilityDao.create(person1Avail3);
     availabilityDao.create(person1Avail4);
-
     availabilityDao.create(
         Availability.create(
             person1Id,
@@ -332,13 +312,11 @@ public final class LoadInterviewsServletTest {
     LoadInterviewsServlet servlet = new LoadInterviewsServlet();
     servlet.init(availabilityDao, scheduledInterviewDao, Instant.parse("2020-07-07T13:15:00Z"));
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
-
     // An hour slot on 7/7
     availabilityDao.create(person1Avail1);
     availabilityDao.create(person1Avail2);
     availabilityDao.create(person1Avail3);
     availabilityDao.create(person1Avail4);
-
     // An hour slot on 7/8
     availabilityDao.create(
         Availability.create(
@@ -347,7 +325,6 @@ public final class LoadInterviewsServletTest {
                 Instant.parse("2020-07-08T16:30:00Z"), Instant.parse("2020-07-08T16:45:00Z")),
             /*id=*/ -1,
             false));
-
     availabilityDao.create(
         Availability.create(
             "user1",
@@ -355,7 +332,6 @@ public final class LoadInterviewsServletTest {
                 Instant.parse("2020-07-08T16:45:00Z"), Instant.parse("2020-07-08T17:00:00Z")),
             /*id=*/ -1,
             false));
-
     availabilityDao.create(
         Availability.create(
             "user1",
@@ -363,7 +339,6 @@ public final class LoadInterviewsServletTest {
                 Instant.parse("2020-07-08T17:00:00Z"), Instant.parse("2020-07-08T17:15:00Z")),
             /*id=*/ -1,
             false));
-
     availabilityDao.create(
         Availability.create(
             "user1",
@@ -371,7 +346,6 @@ public final class LoadInterviewsServletTest {
                 Instant.parse("2020-07-08T17:15:00Z"), Instant.parse("2020-07-08T17:30:00Z")),
             /*id=*/ -1,
             false));
-
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("timeZoneOffset", "0");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();

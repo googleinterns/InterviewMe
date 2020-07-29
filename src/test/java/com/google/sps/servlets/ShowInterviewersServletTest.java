@@ -68,7 +68,6 @@ public final class ShowInterviewersServletTest {
           "SWE",
           "linkedIn",
           EnumSet.noneOf(Job.class));
-
   private final Availability person1Avail1 =
       Availability.create(
           person1.id(),
@@ -76,7 +75,6 @@ public final class ShowInterviewersServletTest {
               Instant.parse("2020-07-07T13:30:00Z"), Instant.parse("2020-07-07T13:45:00Z")),
           /*id=*/ -1,
           false);
-
   private final Availability person1Avail2 =
       Availability.create(
           person1.id(),
@@ -84,7 +82,6 @@ public final class ShowInterviewersServletTest {
               Instant.parse("2020-07-07T13:45:00Z"), Instant.parse("2020-07-07T14:00:00Z")),
           /*id=*/ -1,
           false);
-
   private final Availability person1Avail3 =
       Availability.create(
           person1.id(),
@@ -92,7 +89,6 @@ public final class ShowInterviewersServletTest {
               Instant.parse("2020-07-07T14:00:00Z"), Instant.parse("2020-07-07T14:15:00Z")),
           /*id=*/ -1,
           false);
-
   private final Availability person1Avail4 =
       Availability.create(
           person1.id(),
@@ -113,7 +109,6 @@ public final class ShowInterviewersServletTest {
           "SWE",
           "linkedIn",
           EnumSet.noneOf(Job.class));
-
   private final Availability person2Avail1 =
       Availability.create(
           person2.id(),
@@ -121,7 +116,6 @@ public final class ShowInterviewersServletTest {
               Instant.parse("2020-07-07T13:30:00Z"), Instant.parse("2020-07-07T13:45:00Z")),
           /*id=*/ -1,
           false);
-
   private final Availability person2Avail2 =
       Availability.create(
           person2.id(),
@@ -129,7 +123,6 @@ public final class ShowInterviewersServletTest {
               Instant.parse("2020-07-07T13:45:00Z"), Instant.parse("2020-07-07T14:00:00Z")),
           /*id=*/ -1,
           false);
-
   private final Availability person2Avail3 =
       Availability.create(
           person2.id(),
@@ -137,7 +130,6 @@ public final class ShowInterviewersServletTest {
               Instant.parse("2020-07-07T14:00:00Z"), Instant.parse("2020-07-07T14:15:00Z")),
           /*id=*/ -1,
           false);
-
   private final Availability person2Avail4 =
       Availability.create(
           person2.id(),
@@ -164,11 +156,9 @@ public final class ShowInterviewersServletTest {
     ShowInterviewersServlet servlet = new ShowInterviewersServlet();
     servlet.init(availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
-
     availabilityDao.create(person1Avail1);
     availabilityDao.create(person1Avail2);
     availabilityDao.create(person1Avail3);
-
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("utcStartTime", "2020-07-07T13:30:00Z");
     getRequest.addParameter("date", "Tuesday 7/7");
@@ -186,12 +176,10 @@ public final class ShowInterviewersServletTest {
     ShowInterviewersServlet servlet = new ShowInterviewersServlet();
     servlet.init(availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
-
     availabilityDao.create(person1Avail1.withScheduled(true));
     availabilityDao.create(person1Avail2.withScheduled(true));
     availabilityDao.create(person1Avail3.withScheduled(true));
     availabilityDao.create(person1Avail4.withScheduled(true));
-
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("utcStartTime", "2020-07-07T13:30:00Z");
     getRequest.addParameter("date", "Tuesday 7/7");
@@ -208,12 +196,10 @@ public final class ShowInterviewersServletTest {
     ShowInterviewersServlet servlet = new ShowInterviewersServlet();
     servlet.init(availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail(person1.email()).setEnvAuthDomain("auth");
-
     availabilityDao.create(person1Avail1);
     availabilityDao.create(person1Avail2);
     availabilityDao.create(person1Avail3);
     availabilityDao.create(person1Avail4);
-
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("utcStartTime", "2020-07-07T13:30:00Z");
     getRequest.addParameter("date", "Tuesday 7/7");
@@ -231,12 +217,10 @@ public final class ShowInterviewersServletTest {
     ShowInterviewersServlet servlet = new ShowInterviewersServlet();
     servlet.init(availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
-
     availabilityDao.create(person1Avail1);
     availabilityDao.create(person1Avail2);
     availabilityDao.create(person1Avail3);
     availabilityDao.create(person1Avail4);
-
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("utcStartTime", "2020-07-07T13:30:00Z");
     getRequest.addParameter("date", "Tuesday 7/7");
@@ -259,7 +243,6 @@ public final class ShowInterviewersServletTest {
     ShowInterviewersServlet servlet = new ShowInterviewersServlet();
     servlet.init(availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("person@gmail.com").setEnvAuthDomain("auth");
-
     availabilityDao.create(person1Avail1);
     availabilityDao.create(person1Avail2);
     availabilityDao.create(person1Avail3);
@@ -268,7 +251,6 @@ public final class ShowInterviewersServletTest {
     availabilityDao.create(person2Avail2);
     availabilityDao.create(person2Avail3);
     availabilityDao.create(person2Avail4);
-
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("utcStartTime", "2020-07-07T13:30:00Z");
     getRequest.addParameter("date", "Tuesday 7/7");
