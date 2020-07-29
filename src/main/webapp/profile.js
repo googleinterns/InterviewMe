@@ -45,7 +45,7 @@ function submitProfileForm(methodType, redirectUrl) {
   fetch('/person',{
     method: methodType,
     body: JSON.stringify(personJson)
-  }).then(window.location.replace(redirectUrl))
+  }).then(() => window.location.replace(redirectUrl))
     .catch((error) => {
       alert('Error: ' + error + '\nThere was an error submitting your information.' +
       ' Please try again.');
