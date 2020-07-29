@@ -42,10 +42,10 @@
       <h5 class="text-center lead">Select the position you'd like to be interviewed for and search for possible times!</h5>
       <br>
       <form>
-        <div class="form-group">
+        <div class="form-group mb-3">
           <!-- TODO: add parameters for this form. -->
           <label for="job-field">Position</label>
-          <select id="job-field" name="job">
+          <select id="job-field" class="form-control" name="job">
             <option>Software Engineer</option>
             <option>Product Manager</option>
             <option>Business Analyst</option>
@@ -57,7 +57,9 @@
             <option>Technical Support</option>
           </select>
         </div>
-        <button type="button" class="btn btn-primary" onclick="loadInterviews()">Search</button>
+        <div id="search-button-container">
+          <button type="button" class="btn btn-primary" onclick="loadInterviews()">Search</button>
+        </div>
       </form>
       <br>      
       <section hidden id="search-results">
