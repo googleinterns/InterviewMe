@@ -21,7 +21,6 @@ import com.google.cloud.secretmanager.v1.SecretVersionName;
 
 // Handles getting secrets we define in our GCP's SecretManager.
 public class SecretFetcher {
-
   // The ID of the project secrets are being fetched from.
   private final String projectId;
 

@@ -39,7 +39,6 @@ import java.net.URL;
 // Handles sending emails.
 @WebServlet("/email")
 public class EmailSender {
-
   // The email messages are being sent from.
   private final Email sender;
   private final SendGrid sg;
