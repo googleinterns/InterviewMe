@@ -24,6 +24,8 @@ function loadInterviews() {
   // TODO: fetch and get all interviews instead of unhiding something hidden
   const searchResultsDiv = document.getElementById("search-results");
   searchResultsDiv.removeAttribute("hidden");
+  const position = document.getElementById('position').value;
+  // TODO: Include this position in the search process.
 }
 
 // Confirms interview selection with user and sends this selection to Datastore 
