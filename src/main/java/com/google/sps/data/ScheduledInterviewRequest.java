@@ -80,18 +80,7 @@ public class ScheduledInterviewRequest {
 
   public String toString() {
     return String.format(
-        "{%s:%s, %s:%s, %s:%s, %s:%s, %s:%s}",
-        "id",
-        id,
-        "dateString",
-        dateString,
-        "interviewer",
-        interviewer,
-        "interviewee",
-        interviewee,
-        "role",
-        role,
-        "hasStarted",
-        hasStarted);
+        "id:%s, dateString:%s, interviewer:%s, interviewee:%s, role:%s, hasStarted:%s",
+        id, dateString, interviewer, interviewee, role, hasStarted);
   }
 }
