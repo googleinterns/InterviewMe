@@ -83,10 +83,10 @@ public class LoadInterviewsServlet extends HttpServlet {
     ZonedDateTime utcTime = day.withZoneSameInstant(ZoneOffset.UTC);
     // The user will be shown available interview times for the next four weeks, starting from the
     // current time.
-    TimeRange range =
+    TimeRange interviewSearchTimeRange =
         new TimeRange(utcTime.toInstant(), utcTime.toInstant().plus(27, ChronoUnit.DAYS));
     List<PossibleInterviewSlot> possibleInterviews =
-        getPossibleInterviewSlots(range, timezoneOffset);
+        getPossibleInterviewSlots(interviewSearchTimeRange, timezoneOffset);
 
     String date = possibleInterviews.isEmpty() ? "" : possibleInterviews.get(0).date();
     List<ArrayList<PossibleInterviewSlot>> possibleInterviewsForWeek =
