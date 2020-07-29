@@ -170,7 +170,7 @@ public final class ShowInterviewersServletTest {
     availabilityDao.create(person1Avail3);
 
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
-    getRequest.addParameter("utc", "2020-07-07T13:30:00Z");
+    getRequest.addParameter("utcStartTime", "2020-07-07T13:30:00Z");
     getRequest.addParameter("date", "Tuesday 7/7");
     getRequest.addParameter("time", "1:30 PM - 2:30 PM");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -193,7 +193,7 @@ public final class ShowInterviewersServletTest {
     availabilityDao.create(person1Avail4.withScheduled(true));
 
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
-    getRequest.addParameter("utc", "2020-07-07T13:30:00Z");
+    getRequest.addParameter("utcStartTime", "2020-07-07T13:30:00Z");
     getRequest.addParameter("date", "Tuesday 7/7");
     getRequest.addParameter("time", "1:30 PM - 2:30 PM");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -215,7 +215,7 @@ public final class ShowInterviewersServletTest {
     availabilityDao.create(person1Avail4);
 
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
-    getRequest.addParameter("utc", "2020-07-07T13:30:00Z");
+    getRequest.addParameter("utcStartTime", "2020-07-07T13:30:00Z");
     getRequest.addParameter("date", "Tuesday 7/7");
     getRequest.addParameter("time", "1:30 PM - 2:30 PM");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -238,7 +238,7 @@ public final class ShowInterviewersServletTest {
     availabilityDao.create(person1Avail4);
 
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
-    getRequest.addParameter("utc", "2020-07-07T13:30:00Z");
+    getRequest.addParameter("utcStartTime", "2020-07-07T13:30:00Z");
     getRequest.addParameter("date", "Tuesday 7/7");
     getRequest.addParameter("time", "1:30 PM - 2:30 PM");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -270,7 +270,7 @@ public final class ShowInterviewersServletTest {
     availabilityDao.create(person2Avail4);
 
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
-    getRequest.addParameter("utc", "2020-07-07T13:30:00Z");
+    getRequest.addParameter("utcStartTime", "2020-07-07T13:30:00Z");
     getRequest.addParameter("date", "Tuesday 7/7");
     getRequest.addParameter("time", "1:30 PM - 2:30 PM");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();

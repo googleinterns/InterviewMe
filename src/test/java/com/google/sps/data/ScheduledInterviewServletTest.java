@@ -313,7 +313,8 @@ public final class ScheduledInterviewServletTest {
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
-    String jsonString = "{\"company\":\"Google\",\"job\":\"SWE\",\"utc\":\"2020-07-20T12:45:00Z\"}";
+    String jsonString =
+        "{\"company\":\"Google\",\"job\":\"SWE\",\"utcStartTime\":\"2020-07-20T12:45:00Z\"}";
     postRequest.setContent(jsonString.getBytes(StandardCharsets.UTF_8));
 
     scheduledInterviewServlet.doPost(postRequest, postResponse);
@@ -352,7 +353,8 @@ public final class ScheduledInterviewServletTest {
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
-    String jsonString = "{\"company\":\"Google\",\"job\":\"SWE\",\"utc\":\"2020-07-20T12:45:00Z\"}";
+    String jsonString =
+        "{\"company\":\"Google\",\"job\":\"SWE\",\"utcStartTime\":\"2020-07-20T12:45:00Z\"}";
     postRequest.setContent(jsonString.getBytes(StandardCharsets.UTF_8));
 
     scheduledInterviewServlet.doPost(postRequest, postResponse);
@@ -405,7 +407,8 @@ public final class ScheduledInterviewServletTest {
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
-    String jsonString = "{\"company\":\"Google\",\"job\":\"SWE\",\"utc\":\"2020-07-20T12:45:00Z\"}";
+    String jsonString =
+        "{\"company\":\"Google\",\"job\":\"SWE\",\"utcStartTime\":\"2020-07-20T12:45:00Z\"}";
     postRequest.setContent(jsonString.getBytes(StandardCharsets.UTF_8));
 
     scheduledInterviewServlet.doPost(postRequest, postResponse);
@@ -444,7 +447,8 @@ public final class ScheduledInterviewServletTest {
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
     // No dash between 07 and 20
-    String jsonString = "{\"company\":\"Google\",\"job\":\"SWE\",\"utc\":\"2020-0720T12:45:00Z\"}";
+    String jsonString =
+        "{\"company\":\"Google\",\"job\":\"SWE\",\"utcStartTime\":\"2020-0720T12:45:00Z\"}";
     postRequest.setContent(jsonString.getBytes(StandardCharsets.UTF_8));
 
     scheduledInterviewServlet.doPost(postRequest, postResponse);

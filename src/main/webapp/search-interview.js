@@ -60,7 +60,7 @@ function selectInterview(interviewer) {
     let requestObject = {
       company: interviewer.getAttribute('data-company'),
       job: interviewer.getAttribute('data-job'),
-      utc: interviewer.getAttribute('data-utc')
+      utcStartTime: interviewer.getAttribute('data-utc')
     };
     let requestBody = JSON.stringify(requestObject);
     let request = new Request('/scheduled-interviews', {method: 'POST', body: requestBody});
@@ -74,7 +74,7 @@ function showInterviewers(selectButton) {
   const time = document.getElementById(date).innerText;
   const reformattedTime = time.replace('-', 'to');
   const utc = document.getElementById(date).value;
-  fetch(`/show-interviewers?utc=${utc}&date=${date}&time=${reformattedTime}`)
+  fetch(`/show-interviewers?utcStartTime=${utc}&date=${date}&time=${reformattedTime}`)
   .then(response => response.text())
     .then(interviewers => {
       $('#modal-body').html(interviewers);

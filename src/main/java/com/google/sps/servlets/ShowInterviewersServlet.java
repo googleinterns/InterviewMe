@@ -69,7 +69,7 @@ public class ShowInterviewersServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String utcStartTime = request.getParameter("utc");
+    String utcStartTime = request.getParameter("utcStartTime");
     TimeRange range =
         new TimeRange(
             Instant.parse(utcStartTime), Instant.parse(utcStartTime).plus(1, ChronoUnit.HOURS));

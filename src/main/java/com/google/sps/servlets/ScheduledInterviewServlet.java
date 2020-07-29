@@ -113,12 +113,14 @@ public class ScheduledInterviewServlet extends HttpServlet {
 
     String interviewerCompany = postRequest.getCompany();
     String interviewerJob = postRequest.getJob();
-    String utc = postRequest.getUtc();
+    String utcStartTime = postRequest.getUtcStartTime();
 
     TimeRange range;
 
     try {
-      range = new TimeRange(Instant.parse(utc), Instant.parse(utc).plus(1, ChronoUnit.HOURS));
+      range =
+          new TimeRange(
+              Instant.parse(utcStartTime), Instant.parse(utcStartTime).plus(1, ChronoUnit.HOURS));
     } catch (DateTimeParseException e) {
       response.sendError(400, e.getMessage());
       return;

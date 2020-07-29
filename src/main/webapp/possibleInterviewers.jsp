@@ -3,7 +3,7 @@
 <%
   Set<PossibleInterviewer> set = (Set<PossibleInterviewer>) request.getAttribute("interviewers");
   pageContext.setAttribute("set", set);
-  String utc = request.getParameter("utc");
+  String utc = request.getParameter("utcStartTime");
   pageContext.setAttribute("utc", utc);
   String time = request.getParameter("time");
   pageContext.setAttribute("time", time);

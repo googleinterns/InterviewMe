@@ -19,17 +19,17 @@ import java.util.ArrayList;
 /**
  * An InterviewPostRequest is used to schedule an interview for the current user with an interviewer
  * who has the selected company and job and is available at the specified time, which is represented
- * by the utc String.
+ * by the utcStartTime String.
  */
 public class InterviewPostRequest {
   private String company;
   private String job;
-  private String utc;
+  private String utcStartTime;
 
-  public InterviewPostRequest(String company, String job, String utc) {
+  public InterviewPostRequest(String company, String job, String utcStartTime) {
     this.company = company;
     this.job = job;
-    this.utc = utc;
+    this.utcStartTime = utcStartTime;
   }
 
   public String getCompany() {
@@ -40,15 +40,16 @@ public class InterviewPostRequest {
     return job;
   }
 
-  public String getUtc() {
-    return utc;
+  public String getUtcStartTime() {
+    return utcStartTime;
   }
 
   public boolean allFieldsPopulated() {
-    return !(company == null || job == null || utc == null);
+    return !(company == null || job == null || utcStartTime == null);
   }
 
   public String toString() {
-    return String.format("InterviewPostRequest= company:%s, job:%s, utc:%s", company, job, utc);
+    return String.format(
+        "InterviewPostRequest= company:%s, job:%s, utcStartTime:%s", company, job, utcStartTime);
   }
 }
