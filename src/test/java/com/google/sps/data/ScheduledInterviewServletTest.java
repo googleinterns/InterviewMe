@@ -72,28 +72,28 @@ public final class ScheduledInterviewServletTest {
           person1.id(),
           new TimeRange(
               Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:00:00Z")),
-          -1,
+          /*id=*/ -1,
           false);
   private final Availability person1Avail2 =
       Availability.create(
           person1.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:00:00Z"), Instant.parse("2020-07-20T13:15:00Z")),
-          -1,
+          /*id=*/ -1,
           false);
   private final Availability person1Avail3 =
       Availability.create(
           person1.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:15:00Z"), Instant.parse("2020-07-20T13:30:00Z")),
-          -1,
+          /*id=*/ -1,
           false);
   private final Availability person1Avail4 =
       Availability.create(
           person1.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:30:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
-          -1,
+          /*id=*/ -1,
           false);
 
   private final Person person2 =
@@ -111,28 +111,28 @@ public final class ScheduledInterviewServletTest {
           person2.id(),
           new TimeRange(
               Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:00:00Z")),
-          -1,
+          /*id=*/ -1,
           false);
   private final Availability person2Avail2 =
       Availability.create(
           person2.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:00:00Z"), Instant.parse("2020-07-20T13:15:00Z")),
-          -1,
+          /*id=*/ -1,
           false);
   private final Availability person2Avail3 =
       Availability.create(
           person2.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:15:00Z"), Instant.parse("2020-07-20T13:30:00Z")),
-          -1,
+          /*id=*/ -1,
           false);
   private final Availability person2Avail4 =
       Availability.create(
           person2.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:30:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
-          -1,
+          /*id=*/ -1,
           false);
 
   private final Person person3 =
@@ -150,28 +150,28 @@ public final class ScheduledInterviewServletTest {
           person3.id(),
           new TimeRange(
               Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:00:00Z")),
-          -1,
+          /*id=*/ -1,
           false);
   private final Availability person3Avail2 =
       Availability.create(
           person3.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:00:00Z"), Instant.parse("2020-07-20T13:15:00Z")),
-          -1,
+          /*id=*/ -1,
           false);
   private final Availability person3Avail3 =
       Availability.create(
           person3.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:15:00Z"), Instant.parse("2020-07-20T13:30:00Z")),
-          -1,
+          /*id=*/ -1,
           false);
   private final Availability person3Avail4 =
       Availability.create(
           person3.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:30:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
-          -1,
+          /*id=*/ -1,
           false);
 
   @Before
@@ -203,7 +203,7 @@ public final class ScheduledInterviewServletTest {
 
     scheduledInterviewDao.create(
         ScheduledInterview.create(
-            -1,
+            /*id=*/ -1,
             new TimeRange(
                 Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
             person1.id(),
@@ -211,7 +211,7 @@ public final class ScheduledInterviewServletTest {
 
     scheduledInterviewDao.create(
         ScheduledInterview.create(
-            -1,
+            /*id=*/ -1,
             new TimeRange(
                 Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
             person2.id(),
@@ -252,7 +252,7 @@ public final class ScheduledInterviewServletTest {
 
     scheduledInterviewDao.create(
         ScheduledInterview.create(
-            -1,
+            /*id=*/ -1,
             new TimeRange(
                 Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
             person1.id(),
@@ -260,7 +260,7 @@ public final class ScheduledInterviewServletTest {
 
     scheduledInterviewDao.create(
         ScheduledInterview.create(
-            -1,
+            /*id=*/ -1,
             new TimeRange(
                 Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
             person1.id(),
@@ -399,7 +399,7 @@ public final class ScheduledInterviewServletTest {
             emailToId("user@company.org"),
             new TimeRange(
                 Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:00:00Z")),
-            -1,
+            /*id=*/ -1,
             false));
 
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();

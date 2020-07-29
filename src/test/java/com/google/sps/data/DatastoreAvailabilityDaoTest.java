@@ -53,7 +53,7 @@ public class DatastoreAvailabilityDaoTest {
           "user1",
           new TimeRange(
               Instant.parse("2020-07-07T12:00:00Z"), Instant.parse("2020-07-07T12:15:00Z")),
-          (long) -1,
+          /*id=*/ -1,
           true);
 
   private final Availability availabilityTwo =
@@ -61,7 +61,7 @@ public class DatastoreAvailabilityDaoTest {
           "user1",
           new TimeRange(
               Instant.parse("2020-07-07T15:45:00Z"), Instant.parse("2020-07-07T16:00:00Z")),
-          (long) -1,
+          /*id=*/ -1,
           false);
 
   private final Availability availabilityThree =
@@ -69,7 +69,7 @@ public class DatastoreAvailabilityDaoTest {
           "user2",
           new TimeRange(
               Instant.parse("2020-07-07T17:30:00Z"), Instant.parse("2020-07-07T17:45:00Z")),
-          (long) -1,
+          /*id=*/ -1,
           true);
 
   private final Availability availabilityFour =
@@ -77,7 +77,7 @@ public class DatastoreAvailabilityDaoTest {
           "user1",
           new TimeRange(
               Instant.parse("2020-07-07T22:30:00Z"), Instant.parse("2020-07-07T22:45:00Z")),
-          (long) -1,
+          /*id=*/ -1,
           true);
 
   private final Availability availabilityFive =
@@ -85,7 +85,7 @@ public class DatastoreAvailabilityDaoTest {
           "user3",
           new TimeRange(
               Instant.parse("2020-07-07T22:30:00Z"), Instant.parse("2020-07-07T22:45:00Z")),
-          (long) -1,
+          /*id=*/ -1,
           true);
 
   @Before

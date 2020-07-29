@@ -61,7 +61,7 @@ public final class LoadInterviewsServletTest {
           person1Id,
           new TimeRange(
               Instant.parse("2020-07-07T16:30:00Z"), Instant.parse("2020-07-07T16:45:00Z")),
-          -1,
+          /*id=*/ -1,
           false);
 
   private final Availability person1Avail2 =
@@ -69,7 +69,7 @@ public final class LoadInterviewsServletTest {
           person1Id,
           new TimeRange(
               Instant.parse("2020-07-07T16:45:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
-          -1,
+          /*id=*/ -1,
           false);
 
   private final Availability person1Avail3 =
@@ -77,7 +77,7 @@ public final class LoadInterviewsServletTest {
           person1Id,
           new TimeRange(
               Instant.parse("2020-07-07T17:00:00Z"), Instant.parse("2020-07-07T17:15:00Z")),
-          -1,
+          /*id=*/ -1,
           false);
 
   private final Availability person1Avail4 =
@@ -85,7 +85,7 @@ public final class LoadInterviewsServletTest {
           person1Id,
           new TimeRange(
               Instant.parse("2020-07-07T17:15:00Z"), Instant.parse("2020-07-07T17:30:00Z")),
-          -1,
+          /*id=*/ -1,
           false);
 
   @Before
@@ -142,7 +142,7 @@ public final class LoadInterviewsServletTest {
             "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T13:30:00Z"), Instant.parse("2020-07-07T13:45:00Z")),
-            -1,
+            /*id=*/ -1,
             false));
 
     // A 30 minute slot
@@ -151,7 +151,7 @@ public final class LoadInterviewsServletTest {
             "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T14:30:00Z"), Instant.parse("2020-07-07T14:45:00Z")),
-            -1,
+            /*id=*/ -1,
             false));
 
     availabilityDao.create(
@@ -159,7 +159,7 @@ public final class LoadInterviewsServletTest {
             "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T14:45:00Z"), Instant.parse("2020-07-07T15:00:00Z")),
-            -1,
+            /*id=*/ -1,
             false));
 
     // A 45 minute slot
@@ -168,7 +168,7 @@ public final class LoadInterviewsServletTest {
             "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T15:30:00Z"), Instant.parse("2020-07-07T15:45:00Z")),
-            -1,
+            /*id=*/ -1,
             false));
 
     availabilityDao.create(
@@ -176,7 +176,7 @@ public final class LoadInterviewsServletTest {
             "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T15:45:00Z"), Instant.parse("2020-07-07T16:00:00Z")),
-            -1,
+            /*id=*/ -1,
             false));
 
     availabilityDao.create(
@@ -184,7 +184,7 @@ public final class LoadInterviewsServletTest {
             "user1",
             new TimeRange(
                 Instant.parse("2020-07-07T16:00:00Z"), Instant.parse("2020-07-07T16:15:00Z")),
-            -1,
+            /*id=*/ -1,
             false));
 
     // An hour slot
@@ -243,7 +243,7 @@ public final class LoadInterviewsServletTest {
     // time.
     scheduledInterviewDao.create(
         ScheduledInterview.create(
-            -1,
+            /*id=*/ -1,
             new TimeRange(
                 Instant.parse("2020-07-07T16:00:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
             "interviewerId",
@@ -306,7 +306,7 @@ public final class LoadInterviewsServletTest {
             person1Id,
             new TimeRange(
                 Instant.parse("2020-07-07T17:30:00Z"), Instant.parse("2020-07-07T17:45:00Z")),
-            -1,
+            /*id=*/ -1,
             false));
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("timeZoneOffset", "0");
@@ -345,7 +345,7 @@ public final class LoadInterviewsServletTest {
             "user1",
             new TimeRange(
                 Instant.parse("2020-07-08T16:30:00Z"), Instant.parse("2020-07-08T16:45:00Z")),
-            -1,
+            /*id=*/ -1,
             false));
 
     availabilityDao.create(
@@ -353,7 +353,7 @@ public final class LoadInterviewsServletTest {
             "user1",
             new TimeRange(
                 Instant.parse("2020-07-08T16:45:00Z"), Instant.parse("2020-07-08T17:00:00Z")),
-            -1,
+            /*id=*/ -1,
             false));
 
     availabilityDao.create(
@@ -361,7 +361,7 @@ public final class LoadInterviewsServletTest {
             "user1",
             new TimeRange(
                 Instant.parse("2020-07-08T17:00:00Z"), Instant.parse("2020-07-08T17:15:00Z")),
-            -1,
+            /*id=*/ -1,
             false));
 
     availabilityDao.create(
@@ -369,7 +369,7 @@ public final class LoadInterviewsServletTest {
             "user1",
             new TimeRange(
                 Instant.parse("2020-07-08T17:15:00Z"), Instant.parse("2020-07-08T17:30:00Z")),
-            -1,
+            /*id=*/ -1,
             false));
 
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
