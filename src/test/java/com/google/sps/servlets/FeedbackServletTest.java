@@ -56,8 +56,8 @@ public final class FeedbackServletTest {
           (long) -1,
           new TimeRange(
               Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
-          "user@company.org",
-          "user@mail.com");
+          emailToId("user@company.org"),
+          emailToId("user@mail.com"));
 
   @Before
   public void setUp() {
@@ -85,5 +85,9 @@ public final class FeedbackServletTest {
     getRequest.addParameter("timeZone", "Etc/UCT");
     getRequest.addParameter("role", "Interviewer");
     feedbackServlet.doGet(getRequest, getResponse);
+  }
+
+  private String emailToId(String email) {
+    return String.format("%d", email.hashCode());
   }
 }

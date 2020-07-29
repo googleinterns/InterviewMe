@@ -56,8 +56,8 @@ public final class IntervieweeFeedbackServletTest {
           (long) -1,
           new TimeRange(
               Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
-          "user@company.org",
-          "user@mail.com");
+          emailToId("user@company.org"),
+          emailToId("user@mail.com"));
 
   @Before
   public void setUp() {
@@ -82,5 +82,41 @@ public final class IntervieweeFeedbackServletTest {
     postRequest.addParameter("interviewId", "1");
     intervieweeFeedbackServlet.doPost(postRequest, postResponse);
     Assert.assertEquals(404, postResponse.getStatus());
+  }
+
+  // Tests that users who are not the interviewer may not submit feedback for the interviewee.
+  @Test
+  public void invalidUser() throws IOException {
+    IntervieweeFeedbackServlet intervieweeFeedbackServlet = new IntervieweeFeedbackServlet();
+    helper.setEnvIsLoggedIn(true).setEnvEmail("user@mail.com").setEnvAuthDomain("auth");
+    intervieweeFeedbackServlet.init(scheduledInterviewDao);
+    scheduledInterviewDao.create(scheduledInterview);
+    List<ScheduledInterview> scheduledInterviews =
+        scheduledInterviewDao.getForPerson(emailToId("user@mail.com"));
+    MockHttpServletRequest postRequest = new MockHttpServletRequest();
+    MockHttpServletResponse postResponse = new MockHttpServletResponse();
+    postRequest.addParameter("interviewId", String.valueOf(scheduledInterviews.get(0).id()));
+    intervieweeFeedbackServlet.doPost(postRequest, postResponse);
+    Assert.assertEquals(401, postResponse.getStatus());
+  }
+
+  // Tests that a user successfully submits feedback and is redirected.
+  @Test
+  public void validUser() throws IOException {
+    IntervieweeFeedbackServlet intervieweeFeedbackServlet = new IntervieweeFeedbackServlet();
+    helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
+    intervieweeFeedbackServlet.init(scheduledInterviewDao);
+    scheduledInterviewDao.create(scheduledInterview);
+    List<ScheduledInterview> scheduledInterviews =
+        scheduledInterviewDao.getForPerson(emailToId("user@company.org"));
+    MockHttpServletRequest postRequest = new MockHttpServletRequest();
+    MockHttpServletResponse postResponse = new MockHttpServletResponse();
+    postRequest.addParameter("interviewId", String.valueOf(scheduledInterviews.get(0).id()));
+    intervieweeFeedbackServlet.doPost(postRequest, postResponse);
+    Assert.assertEquals(302, postResponse.getStatus());
+  }
+
+  private String emailToId(String email) {
+    return String.format("%d", email.hashCode());
   }
 }

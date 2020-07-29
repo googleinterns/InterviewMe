@@ -14,6 +14,8 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.ScheduledInterviewDao;
@@ -58,8 +60,20 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
     String question10 = request.getParameter("question10");
     String question11 = request.getParameter("question11");
 
+    String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
+    String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
+    // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
+    // replaced with this hashcode.
+    if (userId == null) {
+      userId = String.format("%d", userEmail.hashCode());
+    }
+
     if (interviewExists(scheduledInterviewId)) {
-      response.sendRedirect("/scheduled-interviews.html");
+      if (isParticipant(scheduledInterviewId, userId)) {
+        response.sendRedirect("/scheduled-interviews.html");
+        return;
+      }
+      response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
       return;
     } else {
       response.sendError(404);
@@ -68,7 +82,14 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
   }
 
   private boolean interviewExists(long scheduledInterviewId) {
-    System.out.println(scheduledInterviewDao.get(scheduledInterviewId).isPresent());
     return scheduledInterviewDao.get(scheduledInterviewId).isPresent();
+  }
+
+  private boolean isParticipant(long scheduledInterviewId, String userId) {
+    ScheduledInterview scheduledInterview = scheduledInterviewDao.get(scheduledInterviewId).get();
+    if ((!scheduledInterview.interviewerId().equals(userId))) {
+      return false;
+    }
+    return true;
   }
 }
