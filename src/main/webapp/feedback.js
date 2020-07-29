@@ -28,16 +28,6 @@ function loadFeedback() {
     }); 
 }
 
-// Returns the timezone of the user.
-function getBrowserTimeZone() {
-  return Intl.DateTimeFormat().resolvedOptions().timeZone; 
-}
-
-// Returns the user's current time.
-function getCurrentTime() {
-  return new Date().toISOString(); 
-}
-
 // Returns the id of the interview that feedback is for.
 function getScheduledInterviewId() {
   return new URLSearchParams(window.location.search).get('interview');  

@@ -68,7 +68,7 @@
               <label for="question7">This InterviewMe experience was helpful:</label><br>
               <input type="number" class="form-control" min="1" max="10" id="question7" name="question7"><br>
             </div>
-              <label for="question8">What is the interviewee's strongest skill?</label><br>
+            <label for="question8">What is the interviewee's strongest skill?</label><br>
             <textarea rows="4" cols="50" class="form-control" id="question8" name="question8"></textarea><br>
             <label for="question9">What is one skill they should work on improving in order to become a better candidate?</label><br>
             <textarea rows="4" cols="50" class="form-control" id="question9" name="question9"></textarea><br>

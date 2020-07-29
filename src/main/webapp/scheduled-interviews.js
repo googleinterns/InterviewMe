@@ -19,10 +19,6 @@ function onScheduledInterviewsLoad() {
   loadScheduledInterviewCards(); 
 }
 
-function getBrowserTimeZone() {
-  return Intl.DateTimeFormat().resolvedOptions().timeZone; 
-}
-
 function loadScheduledInterviewCards() {
   fetch(`/scheduled-interviews?timeZone=${getBrowserTimeZone()}&userTime=${getCurrentTime()}`)
     .then(response => response.text())
@@ -30,8 +26,3 @@ function loadScheduledInterviewCards() {
       document.getElementById('scheduled-interviews-cards').innerHTML = listOfCards;
     });
 }
-    
-function getCurrentTime() {
-  return new Date().toISOString(); 
-}
-
