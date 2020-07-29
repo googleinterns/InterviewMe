@@ -49,8 +49,6 @@ public class InterviewPostRequest {
   }
 
   public String toString() {
-    return String.format(
-        "%s= %s:%s, %s:%s, %s:%s",
-        "InterviewPostRequest", "company", company, "job", job, "utc", utc);
+    return String.format("InterviewPostRequest= company:%s, job:%s, utc:%s", company, job, utc);
   }
 }
