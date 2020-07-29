@@ -22,16 +22,28 @@
             <div class="form-group form-inline"> 
               <label for="question1">I was comfortable during the interview:</label><br>
               <input type="number" class="form-control" min="1" max="10" id="question1" name="question1"><br>
+            </div>
+            <div class="form-group form-inline">
               <label for="question2">My interviewer moved at a decent pace:</label><br>
               <input type="number" class="form-control" min="1" max="10" id="question2" name="question2"><br>
+            </div>
+            <div class="form-group form-inline">
               <label for="question3">My interviewer was able to stay on topic:</label><br>
               <input type="number" class="form-control" min="1" max="10" id="question3" name="question3"><br>
-              <label for="question4">My interviewer was able to provide advice or suggestions along the way when I got stuck:</label><br>
+            </div>
+            <div class="form-group form-inline">
+              <label for="question4">My interviewer was able to provide advice or suggestions:</label><br>
               <input type="number" class="form-control" min="1" max="10" id="question4" name="question4"><br>
+            </div>
+            <div class="form-group form-inline">
               <label for="question5">My interviewer answered my questions to the best of their ability:</label><br>
               <input type="number" class="form-control" min="1" max="10" id="question5" name="question5"><br>
+            </div>
+            <div class="form-group form-inline">
               <label for="question6">I felt my interviewer came prepared:</label><br>
               <input type="number" class="form-control"min="1" max="10" id="question6" name="question5"><br>
+            </div>
+            <div class="form-group form-inline">
               <label for="question7">This InterviewMe experience was helpful:</label><br>
               <input type="number" class="form-control" min="1" max="10" id="question7" name="question7"><br>
             </div>
