@@ -196,8 +196,7 @@ public class AvailabilityTimeSlotGenerator {
     return instant.atZone(ZoneId.ofOffset("UTC", convertIntToOffset(timezoneOffsetMinutes)));
   }
 
-  // This method takes the timezoneOffsetMinutes int and converts it
-  // into a proper ZoneOffset instance.
+  // Converts the timezoneOffsetMinutes int into a proper ZoneOffset instance.
   private static ZoneOffset convertIntToOffset(int timezoneOffsetMinutes) {
     return ZoneOffset.ofHoursMinutes((timezoneOffsetMinutes / 60), (timezoneOffsetMinutes % 60));
   }
@@ -207,7 +206,7 @@ public class AvailabilityTimeSlotGenerator {
     return String.format("%s %d/%d", dayOfWeek, month, dayOfMonth);
   }
 
-  // This method tells whether or not a time slot has already been selected (Whether or not
+  // Tells whether or not a time slot has already been selected (Whether or not
   // it is already in datastore).
   private static boolean getSelectedStatus(
       String utcEncoding, Map<Instant, Availability> userAvailabilityForWeek) {
@@ -218,7 +217,7 @@ public class AvailabilityTimeSlotGenerator {
     return true;
   }
 
-  // This methods tells whether or not a time slot has already been scheduled over.
+  // Tells whether or not a time slot has already been scheduled over.
   private static boolean getScheduledStatus(
       String utcEncoding, Map<Instant, Availability> userAvailabilityForWeek) {
     if (!getSelectedStatus(utcEncoding, userAvailabilityForWeek)) {

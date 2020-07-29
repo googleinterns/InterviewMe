@@ -120,8 +120,7 @@ public class LoadInterviewsServlet extends HttpServlet {
     return instant.atZone(ZoneId.ofOffset("UTC", timezoneOffset));
   }
 
-  // This method takes the timezoneOffsetMinutes int and converts it
-  // into a proper ZoneOffset instance.
+  // Converts the timezoneOffsetMinutes int into a proper ZoneOffset instance.
   private static ZoneOffset convertIntToOffset(int timezoneOffsetMinutes) {
     return ZoneOffset.ofHoursMinutes((timezoneOffsetMinutes / 60), (timezoneOffsetMinutes % 60));
   }
