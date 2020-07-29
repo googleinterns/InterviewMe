@@ -81,10 +81,10 @@ public class LoadInterviewsServlet extends HttpServlet {
     ZoneOffset timezoneOffset = convertIntToOffset(timezoneOffsetMinutes);
     ZonedDateTime day = generateDay(currentTime, timezoneOffset);
     ZonedDateTime utcTime = day.withZoneSameInstant(ZoneOffset.UTC);
-    // TODO: Decide how precise this range should be. Must start after or at now, when should end
-    // be?
+    // The user will be shown available interview times for the next four weeks, starting from the
+    // current time.
     TimeRange range =
-        new TimeRange(utcTime.toInstant(), utcTime.toInstant().plus(6, ChronoUnit.DAYS));
+        new TimeRange(utcTime.toInstant(), utcTime.toInstant().plus(27, ChronoUnit.DAYS));
     List<PossibleInterviewSlot> possibleInterviews =
         getPossibleInterviewSlots(range, timezoneOffset);
 
