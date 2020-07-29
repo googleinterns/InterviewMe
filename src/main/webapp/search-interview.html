@@ -39,14 +39,13 @@
       </nav>
       <br>
       <h1 class="text-center">Search for an Interview</h1>
-      <h5 class="text-center lead">Search for possible times in which you will be interviewed!</h5>
+      <h5 class="text-center lead">Select the position you'd like to be interviewed for and search for possible times!</h5>
       <br>
       <form>
         <div class="form-group">
           <!-- TODO: add parameters for this form. -->
           <label for="job-field">Position</label>
-          <select class="form-control-plaintext editable" id="job-field" 
-              name="job">
+          <select id="job-field" name="job">
             <option>Software Engineer</option>
             <option>Product Manager</option>
             <option>Business Analyst</option>
@@ -57,8 +56,8 @@
             <option>Systems Analyst</option>
             <option>Technical Support</option>
           </select>
-          <button type="button" class="btn btn-primary" onclick="loadInterviews()">Search</button>
         </div>
+        <button type="button" class="btn btn-primary" onclick="loadInterviews()">Search</button>
       </form>
       <br>      
       <section hidden id="search-results">
