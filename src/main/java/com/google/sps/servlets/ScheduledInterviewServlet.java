@@ -55,7 +55,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
   private AvailabilityDao availabilityDao;
   private PersonDao personDao;
   private final UserService userService = UserServiceFactory.getUserService();
-  private ShowInterviewersServlet interviewerServlet = new ShowInterviewersServlet();
+  // private ShowInterviewersServlet interviewerServlet = new ShowInterviewersServlet();
 
   @Override
   public void init() {
@@ -72,7 +72,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     this.scheduledInterviewDao = scheduledInterviewDao;
     this.availabilityDao = availabilityDao;
     this.personDao = personDao;
-    interviewerServlet.init(availabilityDao, personDao);
+    // interviewerServlet.init(availabilityDao, personDao);
   }
 
   // Gets the current user's email and returns the ScheduledInterviews for that person.
@@ -129,7 +129,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
     List<Availability> availabilitiesInRange =
         availabilityDao.getInRangeForAll(range.start(), range.end());
     List<Person> allAvailableInterviewers =
-        interviewerServlet.getPossiblePeople(availabilitiesInRange, range);
+        ShowInterviewersServlet.getPossiblePeople(
+            personDao, availabilityDao, availabilitiesInRange, range);
     List<String> possibleInterviewers =
         getPossibleInterviewerIds(allAvailableInterviewers, interviewerCompany, interviewerJob);
 

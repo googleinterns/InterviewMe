@@ -75,7 +75,8 @@ public class ShowInterviewersServlet extends HttpServlet {
             Instant.parse(utcStartTime), Instant.parse(utcStartTime).plus(1, ChronoUnit.HOURS));
     List<Availability> availabilitiesInRange =
         availabilityDao.getInRangeForAll(interviewTimeRange.start(), interviewTimeRange.end());
-    List<Person> possiblePeople = getPossiblePeople(availabilitiesInRange, interviewTimeRange);
+    List<Person> possiblePeople =
+        getPossiblePeople(personDao, availabilityDao, availabilitiesInRange, interviewTimeRange);
     Set<PossibleInterviewer> possibleInterviewers = peopleToPossibleInterviewers(possiblePeople);
     request.setAttribute("interviewers", possibleInterviewers);
     RequestDispatcher rd = request.getRequestDispatcher("/possibleInterviewers.jsp");
@@ -86,7 +87,11 @@ public class ShowInterviewersServlet extends HttpServlet {
     }
   }
 
-  List<Person> getPossiblePeople(List<Availability> allAvailabilities, TimeRange range) {
+  static List<Person> getPossiblePeople(
+      PersonDao personDao,
+      AvailabilityDao availabilityDao,
+      List<Availability> allAvailabilities,
+      TimeRange range) {
     Set<String> allInterviewers = new HashSet<String>();
     for (Availability avail : allAvailabilities) {
       allInterviewers.add(avail.userId());
@@ -104,7 +109,7 @@ public class ShowInterviewersServlet extends HttpServlet {
     allInterviewers.remove(userId);
     List<Person> possibleInterviewers = new ArrayList<Person>();
     for (String interviewer : allInterviewers) {
-      if (personHasPossibleInterviewSlot(interviewer, range)) {
+      if (personHasPossibleInterviewSlot(availabilityDao, interviewer, range)) {
         possibleInterviewers.add(personDao.get(interviewer).get());
       }
     }
@@ -119,7 +124,8 @@ public class ShowInterviewersServlet extends HttpServlet {
     return possibleInterviewers;
   }
 
-  boolean personHasPossibleInterviewSlot(String userId, TimeRange range) {
+  static boolean personHasPossibleInterviewSlot(
+      AvailabilityDao availabilityDao, String userId, TimeRange range) {
     List<Availability> availabilities =
         availabilityDao.getInRangeForUser(userId, range.start(), range.end());
     availabilities.removeIf(avail -> avail.scheduled());
