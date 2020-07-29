@@ -74,28 +74,28 @@ public final class ShowInterviewersServletTest {
           new TimeRange(
               Instant.parse("2020-07-07T13:30:00Z"), Instant.parse("2020-07-07T13:45:00Z")),
           /*id=*/ -1,
-          false);
+          /*scheduled=*/ false);
   private final Availability person1Avail2 =
       Availability.create(
           person1.id(),
           new TimeRange(
               Instant.parse("2020-07-07T13:45:00Z"), Instant.parse("2020-07-07T14:00:00Z")),
           /*id=*/ -1,
-          false);
+          /*scheduled=*/ false);
   private final Availability person1Avail3 =
       Availability.create(
           person1.id(),
           new TimeRange(
               Instant.parse("2020-07-07T14:00:00Z"), Instant.parse("2020-07-07T14:15:00Z")),
           /*id=*/ -1,
-          false);
+          /*scheduled=*/ false);
   private final Availability person1Avail4 =
       Availability.create(
           person1.id(),
           new TimeRange(
               Instant.parse("2020-07-07T14:15:00Z"), Instant.parse("2020-07-07T14:30:00Z")),
           /*id=*/ -1,
-          false);
+          /*scheduled=*/ false);
 
   private final String person2Email = "person2@mail";
   private final String person2Id = String.format("%d", person2Email.hashCode());
@@ -115,28 +115,28 @@ public final class ShowInterviewersServletTest {
           new TimeRange(
               Instant.parse("2020-07-07T13:30:00Z"), Instant.parse("2020-07-07T13:45:00Z")),
           /*id=*/ -1,
-          false);
+          /*scheduled=*/ false);
   private final Availability person2Avail2 =
       Availability.create(
           person2.id(),
           new TimeRange(
               Instant.parse("2020-07-07T13:45:00Z"), Instant.parse("2020-07-07T14:00:00Z")),
           /*id=*/ -1,
-          false);
+          /*scheduled=*/ false);
   private final Availability person2Avail3 =
       Availability.create(
           person2.id(),
           new TimeRange(
               Instant.parse("2020-07-07T14:00:00Z"), Instant.parse("2020-07-07T14:15:00Z")),
           /*id=*/ -1,
-          false);
+          /*scheduled=*/ false);
   private final Availability person2Avail4 =
       Availability.create(
           person2.id(),
           new TimeRange(
               Instant.parse("2020-07-07T14:15:00Z"), Instant.parse("2020-07-07T14:30:00Z")),
           /*id=*/ -1,
-          false);
+          /*scheduled=*/ false);
 
   @Before
   public void setUp() {

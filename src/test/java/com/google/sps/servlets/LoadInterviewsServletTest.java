@@ -62,28 +62,28 @@ public final class LoadInterviewsServletTest {
           new TimeRange(
               Instant.parse("2020-07-07T16:30:00Z"), Instant.parse("2020-07-07T16:45:00Z")),
           /*id=*/ -1,
-          false);
+          /*scheduled=*/ false);
   private final Availability person1Avail2 =
       Availability.create(
           person1Id,
           new TimeRange(
               Instant.parse("2020-07-07T16:45:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
           /*id=*/ -1,
-          false);
+          /*scheduled=*/ false);
   private final Availability person1Avail3 =
       Availability.create(
           person1Id,
           new TimeRange(
               Instant.parse("2020-07-07T17:00:00Z"), Instant.parse("2020-07-07T17:15:00Z")),
           /*id=*/ -1,
-          false);
+          /*scheduled=*/ false);
   private final Availability person1Avail4 =
       Availability.create(
           person1Id,
           new TimeRange(
               Instant.parse("2020-07-07T17:15:00Z"), Instant.parse("2020-07-07T17:30:00Z")),
           /*id=*/ -1,
-          false);
+          /*scheduled=*/ false);
 
   @Before
   public void setUp() {
