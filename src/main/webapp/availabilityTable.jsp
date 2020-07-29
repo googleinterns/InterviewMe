@@ -31,9 +31,20 @@
     <c:forEach var = "i" begin = "0" end = "${pageScope.list.get(0).size() - 1}">
       <tr>
         <c:forEach items = "${pageScope.list}" var = "day">
+          <%
+            String classList = "";
+            boolean selectedAndScheduled = day.get(i).selected() && day.get(i).scheduled();
+            boolean selectedAndNotScheduled = day.get(i).selected() && ! day.get(i).scheduled();
+            if (selectedAndScheduled) {
+              classList = "table-danger scheduled-time-slot";
+            }
+            if (selectedAndNotScheduled) {
+              classList = "table-success selected-time-slot";
+            }
+            pageContext.setAttribute("classList", classList);
+          %>
           <td onclick="toggleTile(this)" data-utc="${day.get(i).utcEncoding()}" 
-              class="${day.get(i).selected() ? (day.get(i).scheduled() ? 
-              'table-danger scheduled-time-slot' : 'table-success selected-time-slot') : ''}">
+              class="${pageScope.classList}">
             ${day.get(i).time()}
           </td>
         </c:forEach>
