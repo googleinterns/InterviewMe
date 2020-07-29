@@ -128,7 +128,6 @@ public class LoadInterviewsServlet extends HttpServlet {
 
   private List<PossibleInterviewSlot> getPossibleInterviewSlots(
       TimeRange range, ZoneOffset timezoneOffset) {
-
     Set<String> interviewers = availabilityDao.getUsersAvailableInRange(range.start(), range.end());
     Set<PossibleInterviewSlot> possibleInterviews = new HashSet<PossibleInterviewSlot>();
 
