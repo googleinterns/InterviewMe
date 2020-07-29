@@ -37,13 +37,3 @@ function getUserOrRedirectRegistration(loginInfo){
       return response.json();
     });
 }
-
-// Returns the timezone of the user.
-function getBrowserTimeZone() {
-  return Intl.DateTimeFormat().resolvedOptions().timeZone; 
-}
-
-// Returns the user's current time.
-function getCurrentTime() {
-  return new Date().toISOString(); 
-}
