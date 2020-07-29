@@ -64,5 +64,8 @@ function updateAvailability() {
   };
   let requestBody = JSON.stringify(requestObject);
   let request = new Request('/availability', {method: 'PUT', body: requestBody});
-  fetch(request).then(unused => {location.reload()});
+  fetch(request).then(() => location.reload()).catch((error) => {
+    alert('Error: ' + error + '\nThere was an error submitting your availability.' +
+      ' Please try again.');
+    });
 }
