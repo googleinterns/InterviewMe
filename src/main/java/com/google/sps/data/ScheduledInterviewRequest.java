@@ -21,14 +21,16 @@ public class ScheduledInterviewRequest {
   private String interviewer;
   private String interviewee;
   private String role;
+  private boolean hasShadow;
 
   public ScheduledInterviewRequest(
-      long id, String dateString, String interviewer, String interviewee, String role) {
+      long id, String dateString, String interviewer, String interviewee, String role,boolean hasShadow) {
     this.id = id;
     this.dateString = dateString;
     this.interviewer = interviewer;
     this.interviewee = interviewee;
     this.role = role;
+    this.hasShadow = hasShadow;
   }
 
   public long getId() {
@@ -49,6 +51,9 @@ public class ScheduledInterviewRequest {
 
   public String getRole() {
     return role;
+  }
+public boolean getHasShadow() {
+    return hasShadow;
   }
 
   public boolean equals(Object o) {
