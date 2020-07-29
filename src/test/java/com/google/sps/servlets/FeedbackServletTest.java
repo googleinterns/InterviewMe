@@ -56,8 +56,8 @@ public final class FeedbackServletTest {
           (long) -1,
           new TimeRange(
               Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
-          "user@company.org",
-          "user@mail.com");
+          emailToId("user@company.org"),
+          emailToId("user@mail.com"));
 
   @Before
   public void setUp() {
@@ -85,5 +85,29 @@ public final class FeedbackServletTest {
     getRequest.addParameter("timeZone", "Etc/UCT");
     getRequest.addParameter("role", "Interviewer");
     feedbackServlet.doGet(getRequest, getResponse);
+  }
+
+  // Tests that a valid Feedback request was made.
+  @Test
+  public void validRequest() throws IOException {
+    FeedbackServlet feedbackServlet = new FeedbackServlet();
+    feedbackServlet.init(scheduledInterviewDao);
+    scheduledInterviewDao.create(scheduledInterview);
+    List<ScheduledInterview> scheduledInterviews =
+        scheduledInterviewDao.getForPerson(emailToId("user@company.org"));
+    MockHttpServletRequest getRequest = new MockHttpServletRequest();
+    MockHttpServletResponse getResponse = new MockHttpServletResponse();
+    helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
+    getRequest.addParameter("interview", String.valueOf(scheduledInterviews.get(0).id()));
+    getRequest.addParameter("userTime", "2020-07-05T22:00:00Z");
+    getRequest.addParameter("timeZone", "Etc/UCT");
+    getRequest.addParameter("role", "Interviewer");
+    feedbackServlet.doGet(getRequest, getResponse);
+
+    Assert.assertEquals(200, getResponse.getStatus());
+  }
+
+  private String emailToId(String email) {
+    return String.format("%d", email.hashCode());
   }
 }
