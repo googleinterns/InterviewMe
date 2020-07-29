@@ -18,7 +18,7 @@
         <h4 class="text-center">Please submit your feedback for your interviewer below</h4>
         <h5 class="text-center lead">Please enter a value between 1 and 10 (1 being strongly disagree and 10 being strongly agree)</h5>
         <!-- TODO: Send email on submit -->
-        <form>
+        <form name="feedbackForm" method="POST" onSubmit="doSubmit()" action="/interviewer-feedback">
           <div class="form-group">
             <div class="form-group form-inline"> 
               <label for="question1">I was comfortable during the interview:</label><br>
@@ -39,7 +39,8 @@
             <label for="question8">Is there anything in particular that your interviewer did to improve your overall experience?</label><br>
             <textarea rows="4" cols="50" class="form-control" id="question8" name="question8"></textarea><br>
             <label for="question9">What is something that you think your interviewer could have done better?</label><br>
-            <textarea rows="4" cols="50" class="form-control" id="question9" name="question8"></textarea><br>
+            <textarea rows="4" cols="50" class="form-control" id="question9" name="question9"></textarea><br>
+            <input type="hidden" id="interviewId" name="interviewId" value="getScheduledInterviewId()">
           </div>
           <div style="text-align: center">
             <button class="btn btn-primary" type="submit" style="text-align: center">Submit</button>
@@ -51,7 +52,7 @@
         <h5 class="text-center">Please submit your feedback for your interviewee below</h4>
         <h5 class="text-center lead">Please enter a value between 1 and 10 (1 being strongly disagree and 10 being strongly agree)</h5>
         <!-- TODO: Send email on submit -->
-        <form>
+        <form name="feedbackForm" method="POST" onSubmit="doSubmit()" action="/interviewee-feedback">
           <div class="form-group">
             <div class="form-group form-inline"> 
               <label for="question1">The interviewee communicated their thought process as they went along:</label><br>
@@ -77,6 +78,7 @@
             <textarea rows="4" cols="50" class="form-control" id="question10" name="question10"></textarea><br>
             <label for="question11">Notes:</label><br>
             <textarea rows="4" cols="50" class="form-control" id="question11" name="question11"></textarea><br>
+            <input type="hidden" id="interviewId" name="interviewId" value="getScheduledInterviewId()">
           </div>
           <div style="text-align: center">
             <button class="btn btn-primary" type="submit" style="text-align: center">Submit</button>

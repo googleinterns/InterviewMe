@@ -47,3 +47,10 @@ function getScheduledInterviewId() {
 function getRole() {
   return new URLSearchParams(window.location.search).get('role'); 
 }
+
+// Sends the feedback forms
+function doSubmit() {
+  document.feedbackForm.interviewId.value = getScheduledInterviewId();
+  return true;
+}
+

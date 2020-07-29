@@ -14,28 +14,61 @@
 
 package com.google.sps.servlets;
 
+import com.google.sps.data.DatastoreScheduledInterviewDao;
+import com.google.sps.data.ScheduledInterview;
+import com.google.sps.data.ScheduledInterviewDao;
+import com.google.sps.data.TimeRange;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.time.ZoneId;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 
 // Servlet that gets the feedback for an interviewer
 @WebServlet("/interviewee-feedback")
 public class IntervieweeFeedbackServlet extends HttpServlet {
+  private ScheduledInterviewDao scheduledInterviewDao;
+
+  @Override
+  public void init() {
+    init(new DatastoreScheduledInterviewDao());
+  }
+
+  public void init(ScheduledInterviewDao scheduledInterviewDao) {
+    this.scheduledInterviewDao = scheduledInterviewDao;
+  }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String question1 = request.getParameter("question1"); 
-    String question2 = request.getParameter("question2"); 
-    String question3 = request.getParameter("question3"); 
-    String question4 = request.getParameter("question4"); 
-    String question5 = request.getParameter("question5"); 
-    String question6 = request.getParameter("question6"); 
-    String question7 = request.getParameter("question7"); 
-    String question8 = request.getParameter("question8"); 
-    String question9 = request.getParameter("question9"); 
-    String question10 = request.getParameter("question10"); 
-    String question11 = request.getParameter("question11"); 
+    long scheduledInterviewId = Long.parseLong(request.getParameter("interviewId"));
+    String question1 = request.getParameter("question1");
+    String question2 = request.getParameter("question2");
+    String question3 = request.getParameter("question3");
+    String question4 = request.getParameter("question4");
+    String question5 = request.getParameter("question5");
+    String question6 = request.getParameter("question6");
+    String question7 = request.getParameter("question7");
+    String question8 = request.getParameter("question8");
+    String question9 = request.getParameter("question9");
+    String question10 = request.getParameter("question10");
+    String question11 = request.getParameter("question11");
+
+    if (interviewExists(scheduledInterviewId)) {
+      response.sendRedirect("/scheduled-interviews.html");
+      return;
+    } else {
+      response.sendError(404);
+      return;
+    }
+  }
+
+  private boolean interviewExists(long scheduledInterviewId) {
+    System.out.println(scheduledInterviewDao.get(scheduledInterviewId).isPresent());
+    return scheduledInterviewDao.get(scheduledInterviewId).isPresent();
   }
 }
