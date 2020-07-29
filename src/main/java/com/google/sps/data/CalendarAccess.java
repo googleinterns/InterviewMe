@@ -22,27 +22,28 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.calendar.model.ConferenceData;
+import com.google.api.services.calendar.model.ConferenceSolution;
+import com.google.api.services.calendar.model.ConferenceSolutionKey;
+import com.google.api.services.calendar.model.CreateConferenceRequest;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.EventReminder;
 import com.google.api.services.calendar.model.Events;
-import com.google.api.services.calendar.model.*;
-// import com.google.api.services.calendar.model.ConferenceSolution;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-// Handles all things Google Calendar (event adding primarily).
+// Handles all things Google Calendar (for now just getting a Meet link).
 public class CalendarAccess {
   private Calendar service;
-  private static final String CALENDAR_ID =
-      "info@jqed.dev"; // also the person we're trying to impersonate
+  private static final String CALENDAR_ID = "info@jqed.dev";
 
   // TODO: remember to write tests in the code that calls CalendarAccess() that handle what happens
   // per each exception
@@ -60,67 +61,31 @@ public class CalendarAccess {
                 credential)
             .setApplicationName("Interview Me CalendarAccess")
             .build();
-    System.out.println("calendarService built");
   }
 
-  public void listNextTen() throws IOException {
-    System.out.println("listNextTen");
-    System.out.println(service.calendars().get(CALENDAR_ID).execute());
-
-    // List the next 10 events from the primary calendar.
-    DateTime now = new DateTime(System.currentTimeMillis());
-    Events events =
-        service
-            .events()
-            .list("interviewme.business@gmail.com")
-            .setMaxResults(10)
-            .setTimeMin(now)
-            .setOrderBy("startTime")
-            .setSingleEvents(true)
-            .execute();
-    List<Event> items = events.getItems();
-    if (items.isEmpty()) {
-      System.out.println("No upcoming events found.");
-    } else {
-      System.out.println("Upcoming events");
-      for (Event event : items) {
-        DateTime start = event.getStart().getDateTime();
-        if (start == null) {
-          start = event.getStart().getDate();
-        }
-        System.out.printf("%s (%s)\n", event.getSummary(), start);
-      }
-    }
-  }
-
-  public void addEvent() throws IOException, GeneralSecurityException {
-    System.out.println("addEvent");
-
+  public String getMeetLink(ScheduledInterview interview)
+      throws IOException, GeneralSecurityException {
     Event event =
         new Event()
-            .setSummary("Google I/O 2015")
-            .setLocation("800 Howard St., San Francisco, CA 94103")
-            .setDescription("A chance to hear more about Google's developer products.");
+            .setSummary("Interview")
+            .setDescription(
+                "This event won't be shown to users, just used to \"reserve\" a Meet link.");
 
-    DateTime startDateTime = new DateTime("2020-07-31T09:00:00-07:00");
+    DateTime startDateTime = new DateTime(interview.when().start().toString());
     EventDateTime start =
         new EventDateTime().setDateTime(startDateTime).setTimeZone("America/Toronto");
     event.setStart(start);
-    System.out.printf("%s (%s)\n", event.getSummary(), start);
 
-    DateTime endDateTime = new DateTime("2020-07-31T17:00:00-07:00");
+    DateTime endDateTime = new DateTime(interview.when().end().toString());
     EventDateTime end = new EventDateTime().setDateTime(endDateTime).setTimeZone("America/Toronto");
     event.setEnd(end);
 
     CreateConferenceRequest createRequest = new CreateConferenceRequest();
-    createRequest.setRequestId("randomstring1");
+    createRequest.setRequestId("randomstring");
     createRequest.setConferenceSolutionKey(new ConferenceSolutionKey().setType("hangoutsMeet"));
-
     event.setConferenceData(new ConferenceData().setCreateRequest(createRequest));
 
     event = service.events().insert(CALENDAR_ID, event).setConferenceDataVersion(1).execute();
-    System.out.printf("Event created: %s\n", event);
-    System.out.printf(
-        "Meet link: %s\n", event.getConferenceData().getEntryPoints().get(0).getUri());
+    return event.getConferenceData().getEntryPoints().get(0).getUri();
   }
 }
