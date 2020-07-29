@@ -30,12 +30,12 @@ function submitProfileForm(methodType, redirectUrl) {
     lastName: $('#last-name-field').val(),
     company: $('#company-field').val(),
     job: $('#job-field').val(),
-    linkedin: $('#linkedin-field').val()
+    linkedIn: $('#linkedin-field').val()
   };
   fetch('/person',{
     method: methodType,
     body: JSON.stringify(personJson)
-  }).then(window.location.replace(redirectUrl))
+  }).then(() => window.location.href = redirectUrl)
     .catch((error) => {
       alert('Error: ' + error + '\nThere was an error submitting your information.' +
       ' Please try again.');
