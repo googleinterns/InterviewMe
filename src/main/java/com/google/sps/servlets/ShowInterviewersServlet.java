@@ -91,21 +91,17 @@ public class ShowInterviewersServlet extends HttpServlet {
     for (Availability avail : allAvailabilities) {
       allInterviewers.add(avail.userId());
     }
-
     // We don't want to schedule an interview for a user with themself, so we are removing
     // the current user's id from the list.
     UserService userService = UserServiceFactory.getUserService();
     String userEmail = userService.getCurrentUser().getEmail();
     String userId = userService.getCurrentUser().getUserId();
-
     // Since Users returned from the LocalUserService (in tests) do not have userIds, here we set
     // the userId equal to a hashcode.
     if (userId == null) {
       userId = String.format("%d", userEmail.hashCode());
     }
-
     allInterviewers.remove(userId);
-
     List<Person> possibleInterviewers = new ArrayList<Person>();
     for (String interviewer : allInterviewers) {
       if (personHasPossibleInterviewSlot(interviewer, range)) {
