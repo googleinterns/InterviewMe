@@ -69,9 +69,10 @@ public class ShowInterviewersServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String utc = request.getParameter("utc");
+    String utcStartTime = request.getParameter("utc");
     TimeRange range =
-        new TimeRange(Instant.parse(utc), Instant.parse(utc).plus(1, ChronoUnit.HOURS));
+        new TimeRange(
+            Instant.parse(utcStartTime), Instant.parse(utcStartTime).plus(1, ChronoUnit.HOURS));
     List<Availability> availabilitiesInRange =
         availabilityDao.getInRangeForAll(range.start(), range.end());
     List<Person> possiblePeople = getPossiblePeople(availabilitiesInRange, range);
