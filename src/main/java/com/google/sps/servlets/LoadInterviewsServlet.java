@@ -224,25 +224,12 @@ public class LoadInterviewsServlet extends HttpServlet {
   private void sortInterviews(List<PossibleInterviewSlot> possibleInterviewSlots) {
     possibleInterviewSlots.sort(
         (PossibleInterviewSlot p1, PossibleInterviewSlot p2) -> {
-          if (Instant.parse(p1.utcEncoding()).equals(Instant.parse(p2.utcEncoding()))) {
+          Instant p1Instant = Instant.parse(p1.utcEncoding());
+          Instant p2Instant = Instant.parse(p2.utcEncoding());
+          if (p1Instant.equals(p2Instant)) {
             return 0;
           }
-          if (Instant.parse(p1.utcEncoding()).isBefore(Instant.parse(p2.utcEncoding()))) {
-            return -1;
-          }
-          return 1;
-        });
-  }
-
-  private void sortWeek(List<ArrayList<PossibleInterviewSlot>> possibleInterviewsForWeek) {
-    possibleInterviewsForWeek.sort(
-        (ArrayList<PossibleInterviewSlot> d1, ArrayList<PossibleInterviewSlot> d2) -> {
-          if (Instant.parse(d1.get(0).utcEncoding())
-              .equals(Instant.parse(d2.get(0).utcEncoding()))) {
-            return 0;
-          }
-          if (Instant.parse(d1.get(0).utcEncoding())
-              .isBefore(Instant.parse(d2.get(0).utcEncoding()))) {
+          if (p1Instant.isBefore(p2Instant)) {
             return -1;
           }
           return 1;
