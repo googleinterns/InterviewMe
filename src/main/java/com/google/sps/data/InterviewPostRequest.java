@@ -16,6 +16,11 @@ package com.google.sps.data;
 
 import java.util.ArrayList;
 
+/**
+ * An InterviewPostRequest is used to schedule an interview for the current user with an interviewer
+ * who has the selected company and job and is available at the specified time, which is represented
+ * by the utc String.
+ */
 public class InterviewPostRequest {
   private String company;
   private String job;
