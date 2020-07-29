@@ -19,7 +19,7 @@ function onFeedbackLoad() {
   loadFeedback(); 
 }
 
-// Calls the feedback servlet which determines whether or not the feedback form is submitted or not
+// Calls the feedback servlet which determines whether or not the feedback form is submitted or not.
 function loadFeedback() {
   fetch(`/feedback?timeZone=${getBrowserTimeZone()}&userTime=${getCurrentTime()}&interview=${getScheduledInterviewId()}&role=${getRole()}`)
     .then(response => response.text())
@@ -28,22 +28,22 @@ function loadFeedback() {
     }); 
 }
 
-// Returns the timezone of the user
+// Returns the timezone of the user.
 function getBrowserTimeZone() {
   return Intl.DateTimeFormat().resolvedOptions().timeZone; 
 }
 
-// Returns the user's current time
+// Returns the user's current time.
 function getCurrentTime() {
   return new Date().toISOString(); 
 }
 
-// Returns the id of the interview that feedback is for
+// Returns the id of the interview that feedback is for.
 function getScheduledInterviewId() {
   return new URLSearchParams(window.location.search).get('interview');  
 }
 
-// Returns the role a particular user 
+// Returns the role of a particular user. 
 function getRole() {
   return new URLSearchParams(window.location.search).get('role'); 
 }

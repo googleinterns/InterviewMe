@@ -6,7 +6,6 @@
   pageContext.setAttribute("role", role); 
 %>
 
-
 <c:choose>
   <c:when test= "${canOpen == false}">
     <h2 style="text-align: center">You may not submit feedback yet.</h2>
@@ -15,8 +14,8 @@
     <c:choose>
       <c:when test= "${role == 'Interviewee'}">
         <h1 class="text-center">Feedback</h1>
-        <h4 class="text-center">Please submit your feedback for your interviewer below</h4>
-        <h5 class="text-center lead">Please enter a value between 1 and 10 (1 being strongly disagree and 10 being strongly agree)</h5>
+        <h4 class="text-center">Please submit your feedback for your interviewer below.</h4>
+        <h5 class="text-center lead">Please enter a value between 1 and 10 (1 being strongly disagree and 10 being strongly agree).</h5>
         <!-- TODO: Send email on submit -->
         <form>
           <div class="form-group">
@@ -48,7 +47,7 @@
       </c:when>
       <c:otherwise>
         <h1 class="text-center">Feedback</h1>
-        <h5 class="text-center">Please submit your feedback for your interviewee below</h4>
+        <h5 class="text-center">Please submit your feedback for your interviewee below.</h4>
         <h5 class="text-center lead">Please enter a value between 1 and 10 (1 being strongly disagree and 10 being strongly agree)</h5>
         <!-- TODO: Send email on submit -->
         <form>
