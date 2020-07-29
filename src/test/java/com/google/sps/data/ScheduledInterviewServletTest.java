@@ -67,28 +67,28 @@ public final class ScheduledInterviewServletTest {
           "SWE",
           "linkedIn",
           EnumSet.noneOf(Job.class));
-  private final Availability person1Avail1 =
+  private final Availability person1Avail_1245PM_UTC =
       Availability.create(
           person1.id(),
           new TimeRange(
               Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:00:00Z")),
           /*id=*/ -1,
           false);
-  private final Availability person1Avail2 =
+  private final Availability person1Avail_0100PM_UTC =
       Availability.create(
           person1.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:00:00Z"), Instant.parse("2020-07-20T13:15:00Z")),
           /*id=*/ -1,
           false);
-  private final Availability person1Avail3 =
+  private final Availability person1Avail_0115PM_UTC =
       Availability.create(
           person1.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:15:00Z"), Instant.parse("2020-07-20T13:30:00Z")),
           /*id=*/ -1,
           false);
-  private final Availability person1Avail4 =
+  private final Availability person1Avail_0130PM_UTC =
       Availability.create(
           person1.id(),
           new TimeRange(
@@ -106,28 +106,28 @@ public final class ScheduledInterviewServletTest {
           "SWE",
           "linkedIn",
           EnumSet.noneOf(Job.class));
-  private final Availability person2Avail1 =
+  private final Availability person2Avail_1245PM_UTC =
       Availability.create(
           person2.id(),
           new TimeRange(
               Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:00:00Z")),
           /*id=*/ -1,
           false);
-  private final Availability person2Avail2 =
+  private final Availability person2Avail_0100PM_UTC =
       Availability.create(
           person2.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:00:00Z"), Instant.parse("2020-07-20T13:15:00Z")),
           /*id=*/ -1,
           false);
-  private final Availability person2Avail3 =
+  private final Availability person2Avail_0115PM_UTC =
       Availability.create(
           person2.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:15:00Z"), Instant.parse("2020-07-20T13:30:00Z")),
           /*id=*/ -1,
           false);
-  private final Availability person2Avail4 =
+  private final Availability person2Avail_0130PM_UTC =
       Availability.create(
           person2.id(),
           new TimeRange(
@@ -145,28 +145,28 @@ public final class ScheduledInterviewServletTest {
           "PM",
           "linkedIn",
           EnumSet.noneOf(Job.class));
-  private final Availability person3Avail1 =
+  private final Availability person3Avail_1245PM_UTC =
       Availability.create(
           person3.id(),
           new TimeRange(
               Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:00:00Z")),
           /*id=*/ -1,
           false);
-  private final Availability person3Avail2 =
+  private final Availability person3Avail_0100PM_UTC =
       Availability.create(
           person3.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:00:00Z"), Instant.parse("2020-07-20T13:15:00Z")),
           /*id=*/ -1,
           false);
-  private final Availability person3Avail3 =
+  private final Availability person3Avail_0115PM_UTC =
       Availability.create(
           person3.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:15:00Z"), Instant.parse("2020-07-20T13:30:00Z")),
           /*id=*/ -1,
           false);
-  private final Availability person3Avail4 =
+  private final Availability person3Avail_0130PM_UTC =
       Availability.create(
           person3.id(),
           new TimeRange(
@@ -282,15 +282,15 @@ public final class ScheduledInterviewServletTest {
   @Test
   public void onlyOnePossibleInterviewer() throws IOException {
     personDao.create(person1);
-    availabilityDao.create(person1Avail1);
-    availabilityDao.create(person1Avail2);
-    availabilityDao.create(person1Avail3);
-    availabilityDao.create(person1Avail4);
+    availabilityDao.create(person1Avail_1245PM_UTC);
+    availabilityDao.create(person1Avail_0100PM_UTC);
+    availabilityDao.create(person1Avail_0115PM_UTC);
+    availabilityDao.create(person1Avail_0130PM_UTC);
     personDao.create(person3);
-    availabilityDao.create(person3Avail1);
-    availabilityDao.create(person3Avail2);
-    availabilityDao.create(person3Avail3);
-    availabilityDao.create(person3Avail4);
+    availabilityDao.create(person3Avail_1245PM_UTC);
+    availabilityDao.create(person3Avail_0100PM_UTC);
+    availabilityDao.create(person3Avail_0115PM_UTC);
+    availabilityDao.create(person3Avail_0130PM_UTC);
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
     scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
@@ -319,15 +319,15 @@ public final class ScheduledInterviewServletTest {
   @Test
   public void picksOneOfThePossibleInterviewers() throws IOException {
     personDao.create(person1);
-    availabilityDao.create(person1Avail1);
-    availabilityDao.create(person1Avail2);
-    availabilityDao.create(person1Avail3);
-    availabilityDao.create(person1Avail4);
+    availabilityDao.create(person1Avail_1245PM_UTC);
+    availabilityDao.create(person1Avail_0100PM_UTC);
+    availabilityDao.create(person1Avail_0115PM_UTC);
+    availabilityDao.create(person1Avail_0130PM_UTC);
     personDao.create(person2);
-    availabilityDao.create(person2Avail1);
-    availabilityDao.create(person2Avail2);
-    availabilityDao.create(person2Avail3);
-    availabilityDao.create(person2Avail4);
+    availabilityDao.create(person2Avail_1245PM_UTC);
+    availabilityDao.create(person2Avail_0100PM_UTC);
+    availabilityDao.create(person2Avail_0115PM_UTC);
+    availabilityDao.create(person2Avail_);
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
     scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
