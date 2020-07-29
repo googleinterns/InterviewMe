@@ -77,9 +77,13 @@ public class AvailabilityTimeSlotGenerator {
    */
   public static List<List<AvailabilityTimeSlot>> timeSlotsForWeek(
       Instant instant, int timezoneOffsetMinutes, AvailabilityDao availabilityDao) {
+    int maxTimezoneOffsetMinutes = 720;
+    int maxTimezoneOffsetHours = 12;
     Preconditions.checkArgument(
-        Math.abs(timezoneOffsetMinutes) <= 720,
-        "Offset greater than 720 minutes (12 hours): %s",
+        Math.abs(timezoneOffsetMinutes) <= maxTimezoneOffsetMinutes,
+        "Offset greater than %d minutes (%d hours): %d",
+        maxTimezoneOffsetMinutes,
+        maxTimezoneOffsetHours,
         timezoneOffsetMinutes);
     List<Instant> startAndEndOfWeek = getStartAndEndOfWeek(instant, timezoneOffsetMinutes);
     UserService userService = UserServiceFactory.getUserService();

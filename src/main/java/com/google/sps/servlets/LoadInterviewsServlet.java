@@ -74,9 +74,13 @@ public class LoadInterviewsServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     int timezoneOffsetMinutes = Integer.parseInt(request.getParameter("timeZoneOffset"));
+    int maxTimezoneOffsetMinutes = 720;
+    int maxTimezoneOffsetHours = 12;
     Preconditions.checkArgument(
-        Math.abs(timezoneOffsetMinutes) <= 720,
-        "Offset greater than 720 minutes (12 hours): %d",
+        Math.abs(timezoneOffsetMinutes) <= maxTimezoneOffsetMinutes,
+        "Offset greater than %d minutes (%d hours): %d",
+        maxTimezoneOffsetMinutes,
+        maxTimezoneOffsetHours,
         timezoneOffsetMinutes);
     ZoneOffset timezoneOffset = convertIntToOffset(timezoneOffsetMinutes);
     ZonedDateTime day = generateDay(currentTime, timezoneOffset);
