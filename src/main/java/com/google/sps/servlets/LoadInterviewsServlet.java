@@ -144,6 +144,11 @@ public class LoadInterviewsServlet extends HttpServlet {
       userId = String.format("%d", userEmail.hashCode());
     }
     interviewers.remove(userId);
+    
+    // We need to check that the interviewers are qualified to give an interview for the specified position
+    
+    
+    
     for (String interviewer : interviewers) {
       possibleInterviews.addAll(
           getPossibleInterviewSlotsForPerson(interviewer, range, timezoneOffset));
