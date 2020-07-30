@@ -59,8 +59,8 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
   }
 
   /**
-   * Returns a list of all scheduled ScheduledInterview objects whose startTime is between minTime
-   * and maxTime. minTime and maxTime are in milliseconds.
+   * Returns a list, sorted by start time, of all scheduled ScheduledInterview objects between
+   * minTime and maxTime.
    */
   public List<ScheduledInterview> getInRange(Instant minTime, Instant maxTime) {
     TimeRange range = new TimeRange(minTime, maxTime);
@@ -71,6 +71,16 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
         scheduledInterviewsInRange.add(scheduledInterview);
       }
     }
+    scheduledInterviews.sort(
+        (ScheduledInterview s1, ScheduledInterview s2) -> {
+          if (s1.when().start().equals(s2.when().start())) {
+            return 0;
+          }
+          if (s1.when().start().isBefore(s2.when().start())) {
+            return -1;
+          }
+          return 1;
+        });
     return scheduledInterviewsInRange;
   }
 
@@ -129,7 +139,7 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
             generatedId,
             scheduledInterview.when(),
             scheduledInterview.interviewerId(),
-            scheduledInterview.intervieweeId());
+            scheduledInterview.intervieweeId(),scheduledInterview.hasShadow());
     data.put(generatedId, storedScheduledInterview);
   }
 

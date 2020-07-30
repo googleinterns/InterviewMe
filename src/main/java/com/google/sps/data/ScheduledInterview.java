@@ -26,7 +26,7 @@ public abstract class ScheduledInterview {
   public abstract String interviewerId();
 
   public abstract String intervieweeId();
-  
+
   public abstract boolean hasShadow();
 
   /**
@@ -34,12 +34,13 @@ public abstract class ScheduledInterview {
    * attendees.
    */
   public static ScheduledInterview create(
-      long id, TimeRange when, String interviewerId, String intervieweeId,boolean hasShadow) {
+      long id, TimeRange when, String interviewerId, String intervieweeId, boolean hasShadow) {
     return builder()
         .setId(id)
         .setWhen(when)
         .setInterviewerId(interviewerId)
-        .setIntervieweeId(intervieweeId).hasShadow(hasShadow)
+        .setIntervieweeId(intervieweeId)
+        .setHasShadow(hasShadow)
         .build();
   }
 
@@ -56,7 +57,8 @@ public abstract class ScheduledInterview {
     abstract Builder setInterviewerId(String interviewerId);
 
     abstract Builder setIntervieweeId(String intervieweeId);
-  abstract Builder setHasShadow(boolean hasShadow);
+
+    abstract Builder setHasShadow(boolean hasShadow);
 
     abstract ScheduledInterview build();
   }

@@ -61,8 +61,8 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
   }
 
   /**
-   * Returns a list of all scheduled ScheduledInterview objects whose startTime is between minTime
-   * and maxTime. minTime and maxTime are in milliseconds.
+   * Returns a list, sorted by start time, of all scheduled ScheduledInterview objects between
+   * minTime and maxTime.
    */
   public List<ScheduledInterview> getInRange(Instant minTime, Instant maxTime) {
     List<Entity> entities = getEntitiesInRange(minTime, maxTime, Optional.empty());
@@ -98,10 +98,7 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
     return relevantInterviews;
   }
 
-  /**
-   * Returns a list of all scheduledInterviews ranging from minTime to maxTime of a user. minTime
-   * and maxTime are in milliseconds.
-   */
+  /** Returns a list of all scheduledInterviews ranging from minTime to maxTime of a user. */
   @Override
   public List<ScheduledInterview> getScheduledInterviewsInRangeForUser(
       String userId, Instant minTime, Instant maxTime) {
