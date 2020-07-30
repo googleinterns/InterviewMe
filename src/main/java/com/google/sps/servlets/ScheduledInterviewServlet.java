@@ -112,7 +112,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String interviewerCompany = postRequest.getCompany();
     String interviewerJob = postRequest.getJob();
     String utcStartTime = postRequest.getUtcStartTime();
-
     TimeRange range;
 
     try {
