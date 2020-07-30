@@ -43,7 +43,6 @@ function submitProfileForm(methodType, redirectUrl) {
     qualifiedJobs: qualifiedJobs,
     okShadow: $('#ok-shadow-check').val()
   };
-  console.log(personJson);
   fetch('/person',{
     method: methodType,
     body: JSON.stringify(personJson)
