@@ -67,7 +67,8 @@ public final class ShowInterviewersServletTest {
           "Google",
           "SWE",
           "linkedIn",
-          EnumSet.noneOf(Job.class));
+          EnumSet.noneOf(Job.class),
+          true);
   private final Availability person1Avail1 =
       Availability.create(
           person1.id(),
@@ -108,7 +109,8 @@ public final class ShowInterviewersServletTest {
           "Google",
           "SWE",
           "linkedIn",
-          EnumSet.noneOf(Job.class));
+          EnumSet.noneOf(Job.class),
+          true);
   private final Availability person2Avail1 =
       Availability.create(
           person2.id(),

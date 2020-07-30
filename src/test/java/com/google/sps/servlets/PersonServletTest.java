@@ -67,7 +67,7 @@ public final class PersonServletTest {
         new Gson()
             .toJson(
                 Person.create(
-                    "id_a", "a@gmail.com", "a", "a", "", "", "", EnumSet.noneOf(Job.class)));
+                    "id_a", "a@gmail.com", "a", "a", "", "", "", EnumSet.noneOf(Job.class), true));
     // a is logged in.
     helper.setEnvIsLoggedIn(true).setEnvEmail("a@gmail.com").setEnvAuthDomain("auth");
 
