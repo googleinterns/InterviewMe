@@ -72,12 +72,12 @@ public class CalendarAccess {
                 "This event won't be shown to users, just used to \"reserve\" a Meet link.");
 
     DateTime startDateTime = new DateTime(interview.when().start().toString());
-    EventDateTime start =
-        new EventDateTime().setDateTime(startDateTime).setTimeZone("America/Toronto");
+    EventDateTime start = new EventDateTime().setDateTime(startDateTime);
+    System.out.println(start.getTimeZone());
     event.setStart(start);
 
     DateTime endDateTime = new DateTime(interview.when().end().toString());
-    EventDateTime end = new EventDateTime().setDateTime(endDateTime).setTimeZone("America/Toronto");
+    EventDateTime end = new EventDateTime().setDateTime(endDateTime);
     event.setEnd(end);
 
     CreateConferenceRequest createRequest = new CreateConferenceRequest();
