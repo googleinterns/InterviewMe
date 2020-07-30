@@ -40,6 +40,8 @@ public class AvailabilityTimeSlotGenerator {
   private static final int LATEST_HOUR = 19;
   // A list of hours and minutes representing permitted time slots.
   private static final ImmutableList<HoursAndMinutes> ALL_HOURS_AND_MINUTES = allHoursAndMinutes();
+  private static final int maxTimezoneOffsetMinutes = 720;
+  private static final int maxTimezoneOffsetHours = 12;
 
   @AutoValue
   abstract static class HoursAndMinutes {
@@ -77,8 +79,6 @@ public class AvailabilityTimeSlotGenerator {
    */
   public static List<List<AvailabilityTimeSlot>> timeSlotsForWeek(
       Instant instant, int timezoneOffsetMinutes, AvailabilityDao availabilityDao) {
-    int maxTimezoneOffsetMinutes = 720;
-    int maxTimezoneOffsetHours = 12;
     Preconditions.checkArgument(
         Math.abs(timezoneOffsetMinutes) <= maxTimezoneOffsetMinutes,
         "Offset greater than %d minutes (%d hours): %d",

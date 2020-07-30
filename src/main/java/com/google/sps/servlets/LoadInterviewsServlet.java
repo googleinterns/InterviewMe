@@ -56,6 +56,8 @@ public class LoadInterviewsServlet extends HttpServlet {
   private AvailabilityDao availabilityDao;
   private ScheduledInterviewDao scheduledInterviewDao;
   private Instant currentTime;
+  private final int maxTimezoneOffsetMinutes = 720;
+  private final int maxTimezoneOffsetHours = 12;
 
   @Override
   public void init() {
@@ -74,8 +76,6 @@ public class LoadInterviewsServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     int timezoneOffsetMinutes = Integer.parseInt(request.getParameter("timeZoneOffset"));
-    int maxTimezoneOffsetMinutes = 720;
-    int maxTimezoneOffsetHours = 12;
     Preconditions.checkArgument(
         Math.abs(timezoneOffsetMinutes) <= maxTimezoneOffsetMinutes,
         "Offset greater than %d minutes (%d hours): %d",
