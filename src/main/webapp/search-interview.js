@@ -35,11 +35,6 @@ function interviewTimesDiv() {
   return document.getElementById('interview-times-container');
 }
 
-function browserTimezoneOffset() {
-  let date = new Date();
-  return (-1) * date.getTimezoneOffset();
-}
-
 // Confirms interview selection with user and sends this selection to Datastore 
 // if confirmed.
 function selectInterview(interviewer) {
