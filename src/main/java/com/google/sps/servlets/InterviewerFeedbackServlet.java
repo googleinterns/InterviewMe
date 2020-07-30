@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 
-// Servlet that gets the feedback for an interviewer
+// Servlet that gets the feedback from an interviewee to an interviewer
 @WebServlet("/interviewer-feedback")
 public class InterviewerFeedbackServlet extends HttpServlet {
   private ScheduledInterviewDao scheduledInterviewDao;
@@ -48,15 +50,16 @@ public class InterviewerFeedbackServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long scheduledInterviewId = Long.parseLong(request.getParameter("interviewId"));
-    String question1 = request.getParameter("question1");
-    String question2 = request.getParameter("question2");
-    String question3 = request.getParameter("question3");
-    String question4 = request.getParameter("question4");
-    String question5 = request.getParameter("question5");
-    String question6 = request.getParameter("question6");
-    String question7 = request.getParameter("question7");
-    String question8 = request.getParameter("question8");
-    String question9 = request.getParameter("question9");
+    List<String> answers = new ArrayList<String>();
+    answers.add(request.getParameter("question1"));
+    answers.add(request.getParameter("question2"));
+    answers.add(request.getParameter("question3"));
+    answers.add(request.getParameter("question4"));
+    answers.add(request.getParameter("question5"));
+    answers.add(request.getParameter("question6"));
+    answers.add(request.getParameter("question7"));
+    answers.add(request.getParameter("question8"));
+    answers.add(request.getParameter("question9"));
 
     String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
@@ -74,7 +77,7 @@ public class InterviewerFeedbackServlet extends HttpServlet {
       response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
       return;
     } else {
-      response.sendError(404);
+      response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
   }
@@ -85,9 +88,6 @@ public class InterviewerFeedbackServlet extends HttpServlet {
 
   private boolean isInterviewee(long scheduledInterviewId, String userId) {
     ScheduledInterview scheduledInterview = scheduledInterviewDao.get(scheduledInterviewId).get();
-    if ((!scheduledInterview.intervieweeId().equals(userId))) {
-      return false;
-    }
-    return true;
+    return scheduledInterview.intervieweeId().equals(userId);
   }
 }
