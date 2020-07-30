@@ -2,22 +2,21 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Availability</title>
+    <title>Feedback</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
       integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" href="global.css">
-    <link rel="stylesheet" href="availability.css">
+    <link rel="stylesheet" href="feedback.css">
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
       integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
       integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
       integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <script src="availability.js"></script>
+    <script src="feedback.js"></script>
     <script src="authentication.js"></script>
-    <script src="timezone-offset.js"></script>
+    <script src="userTimeInfo.js"></script>
   </head>
-  <body onload="onAvailabilityLoad()">
+  <body onload="onFeedbackLoad()">
     <div id="content">
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <span class="navbar-brand mb-0 h1">InterviewMe</span>
@@ -30,8 +29,8 @@
           <div class="navbar-nav">
             <a class="nav-item nav-link" href="index.html">Home</a>
             <a class="nav-item nav-link" href="profile.html">Profile</a>
-            <a class="nav-item nav-link" href="scheduled-interviews.html">Events</a>
-            <a class="nav-item nav-link active" href="#">Availability</a>
+            <a class="nav-item nav-link active" href="scheduled-interviews.html">Events</a>
+            <a class="nav-item nav-link" href="availability.html">Availability</a>
             <a class="nav-item nav-link" href="search-interview.html">Scheduling</a>
             <!--TODO: Move this to the right of the navbar-->
             <a class="nav-item nav-link" href="#" id="login-tab">Logout</a>
@@ -39,25 +38,7 @@
         </div>
       </nav>
       <br>
-      <h1 class="text-center">Availability</h1>
-      <h5 class="text-center lead">
-        Update your availability to be an Interviewer for the week below. Remember that an interview
-        lasts for an hour.
-      </h5>
-      <br>
-      <div id="page-buttons">
-        <button id="back-button" class="btn btn-secondary mb-2 btn-sm" onclick="goBack()">&lt Previous Week</button>
-        <button id="forward-button" class="btn btn-secondary mb-2 btn-sm" onclick="goForward()">Next Week &gt</button>
-      </div>
-      <br>
-      <!-- This table-container is filled with a JSP page onload.-->
-      <div id="table-container">
-        <!-- This is a place holder for when the page is slow to load.-->
-        <p class="text-center">Loading your interview availability...</p>
-      </div>
-      <div id="submit-button-container">
-        <button type="submit" class="btn btn-primary mb-2 submit-button" onclick="updateAvailability()">Update Availability</button>
-      </div>
+      <div id="feedBackForm"></div>
       <br><br><br>
     </div>
   </body>
