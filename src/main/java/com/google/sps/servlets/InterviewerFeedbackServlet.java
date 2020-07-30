@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
+import com.google.sps.data.EmailSender;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.ScheduledInterviewDao;
 import com.google.sps.data.TimeRange;
