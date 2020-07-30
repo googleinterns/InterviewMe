@@ -25,10 +25,10 @@ function loadInterviews() {
   searchResultsDiv.removeAttribute("hidden");
 
   fetch(`/load-interviews?timeZoneOffset=${browserTimezoneOffset()}`)
-    .then(response => response.text())
-      .then(interviewTimes => {
-        interviewTimesDiv().innerHTML = interviewTimes;
-      });
+  .then(response => response.text())
+  .then(interviewTimes => {
+    interviewTimesDiv().innerHTML = interviewTimes;
+  });
 }
 
 function interviewTimesDiv() {
@@ -76,10 +76,10 @@ function showInterviewers(selectButton) {
   const reformattedTime = time.replace('-', 'to');
   const utc = select.value;
   fetch(`/show-interviewers?utcStartTime=${utc}&date=${date}&time=${reformattedTime}`)
-    .then(response => response.text())
-      .then(interviewers => {
-        $('#modal-body').html(interviewers);
-        $('#modal-title').text(`Interviewers Information for ${date} from ${reformattedTime}`);
-      });
+  .then(response => response.text())
+  .then(interviewers => {
+    $('#modal-body').html(interviewers);
+    $('#modal-title').text(`Interviewers Information for ${date} from ${reformattedTime}`);
+  });
   $('#interviewer-modal').modal('show');
 }
