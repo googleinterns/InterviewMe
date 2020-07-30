@@ -33,16 +33,11 @@ function toggleTile(tile) {
 }
 
 function loadAvailabilityTable(tableDiv, timezoneOffset) {
-  fetch(`/availabilityTable.jsp?timeZoneOffset=${timezoneOffset}`)
+  fetch(`/availabilityTable.jsp?timeZoneOffset=${timezoneOffset}&page=${page}`)
     .then(response => response.text())
     .then(tableContents => {
       tableDiv.innerHTML = tableContents;
     });
-}
-
-function browserTimezoneOffset() {
-  let date = new Date();
-  return (-1) * date.getTimezoneOffset();
 }
 
 function availabilityTableDiv() {
@@ -64,5 +59,29 @@ function updateAvailability() {
   };
   let requestBody = JSON.stringify(requestObject);
   let request = new Request('/availability', {method: 'PUT', body: requestBody});
-  fetch(request).then(unused => {loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset())});
+  fetch(request).then(() => location.reload()).catch((error) => {
+    alert('Error: ' + error + '\nThere was an error submitting your availability.' +
+      ' Please try again.');
+    });
+}
+
+let page = 0;
+const maxWeeksAhead = 3;
+
+function goBack() {
+  if (page <= 0) {
+    page = 0;
+    return;
+  }
+  page -= 1;
+  loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset());
+}
+
+function goForward() {
+  if (page >= maxWeeksAhead) {
+    page = maxWeeksAhead;
+    return;
+  }
+  page += 1;
+  loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset());
 }
