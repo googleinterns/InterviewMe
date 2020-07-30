@@ -1,14 +1,10 @@
 <%@ page import="java.util.Set" %>
 <%@ page import="com.google.sps.data.PossibleInterviewer" %>
 <%
-  Set<PossibleInterviewer> set = (Set<PossibleInterviewer>) request.getAttribute("interviewers");
-  pageContext.setAttribute("set", set);
-  String utc = request.getParameter("utcStartTime");
-  pageContext.setAttribute("utc", utc);
-  String time = request.getParameter("time");
-  pageContext.setAttribute("time", time);
-  String date = request.getParameter("date");
-  pageContext.setAttribute("date", date);
+  pageContext.setAttribute("set", (Set<PossibleInterviewer>) request.getAttribute("interviewers"));
+  pageContext.setAttribute("utc", request.getParameter("utcStartTime"));
+  pageContext.setAttribute("time", request.getParameter("time"));
+  pageContext.setAttribute("date", request.getParameter("date"));
 %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 

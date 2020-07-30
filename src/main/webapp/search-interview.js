@@ -71,9 +71,10 @@ function selectInterview(interviewer) {
 // Fills in the modal with interviewer info from Datastore and shows it.
 function showInterviewers(selectButton) {
   const date = selectButton.getAttribute('data-date');
-  const time = document.getElementById(date).innerText;
+  const select = document.getElementById(date);
+  const time = select.options[select.selectedIndex].text;
   const reformattedTime = time.replace('-', 'to');
-  const utc = document.getElementById(date).value;
+  const utc = select.value;
   fetch(`/show-interviewers?utcStartTime=${utc}&date=${date}&time=${reformattedTime}`)
     .then(response => response.text())
       .then(interviewers => {

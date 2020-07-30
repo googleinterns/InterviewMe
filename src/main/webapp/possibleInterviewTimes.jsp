@@ -1,8 +1,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.google.sps.data.PossibleInterviewSlot" %>
 <%
-  List<List<PossibleInterviewSlot>> list = (List<List<PossibleInterviewSlot>>) request.getAttribute("weekList");
-  pageContext.setAttribute("list", list);
+  pageContext.setAttribute("list", (List<List<PossibleInterviewSlot>>) request.getAttribute("weekList"));
 %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
