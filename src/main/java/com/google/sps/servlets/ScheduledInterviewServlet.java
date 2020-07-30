@@ -126,11 +126,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
       return;
     }
 
-    List<Availability> availabilitiesInRange =
-        availabilityDao.getInRangeForAll(range.start(), range.end());
     List<Person> allAvailableInterviewers =
-        ShowInterviewersServlet.getPossiblePeople(
-            personDao, availabilityDao, availabilitiesInRange, range);
+        ShowInterviewersServlet.getPossiblePeople(personDao, availabilityDao, range);
     List<String> possibleInterviewers =
         getPossibleInterviewerIds(allAvailableInterviewers, interviewerCompany, interviewerJob);
 

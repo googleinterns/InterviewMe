@@ -73,10 +73,7 @@ public class ShowInterviewersServlet extends HttpServlet {
     TimeRange interviewTimeRange =
         new TimeRange(
             Instant.parse(utcStartTime), Instant.parse(utcStartTime).plus(1, ChronoUnit.HOURS));
-    List<Availability> availabilitiesInRange =
-        availabilityDao.getInRangeForAll(interviewTimeRange.start(), interviewTimeRange.end());
-    List<Person> possiblePeople =
-        getPossiblePeople(personDao, availabilityDao, availabilitiesInRange, interviewTimeRange);
+    List<Person> possiblePeople = getPossiblePeople(personDao, availabilityDao, interviewTimeRange);
     Set<PossibleInterviewer> possibleInterviewers = peopleToPossibleInterviewers(possiblePeople);
     request.setAttribute("interviewers", possibleInterviewers);
     RequestDispatcher rd = request.getRequestDispatcher("/possibleInterviewers.jsp");
@@ -88,14 +85,9 @@ public class ShowInterviewersServlet extends HttpServlet {
   }
 
   static List<Person> getPossiblePeople(
-      PersonDao personDao,
-      AvailabilityDao availabilityDao,
-      List<Availability> allAvailabilities,
-      TimeRange range) {
-    Set<String> allInterviewers = new HashSet<String>();
-    for (Availability avail : allAvailabilities) {
-      allInterviewers.add(avail.userId());
-    }
+      PersonDao personDao, AvailabilityDao availabilityDao, TimeRange range) {
+    Set<String> allInterviewers =
+        availabilityDao.getUsersAvailableInRange(range.start(), range.end());
     // We don't want to schedule an interview for a user with themself, so we are removing
     // the current user's id from the list.
     UserService userService = UserServiceFactory.getUserService();
