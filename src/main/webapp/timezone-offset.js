@@ -12,17 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function onScheduledInterviewsLoad() {
-  const loginInfo = getLoginInfo();
-  loginInfo.then(supplyLogoutLinkOrRedirectHome); 
-  loginInfo.then(getUserOrRedirectRegistration);
-  loadScheduledInterviewCards(); 
-}
-
-function loadScheduledInterviewCards() {
-  fetch(`/scheduled-interviews?timeZone=${getBrowserTimeZone()}&userTime=${getCurrentTime()}`)
-    .then(response => response.text())
-    .then(listOfCards => {
-      document.getElementById('scheduled-interviews-cards').innerHTML = listOfCards;
-    });
+function browserTimezoneOffset() {
+  let date = new Date();
+  return (-1) * date.getTimezoneOffset();
 }
