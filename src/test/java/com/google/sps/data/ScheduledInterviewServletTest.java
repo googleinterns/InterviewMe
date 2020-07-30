@@ -57,7 +57,7 @@ public final class ScheduledInterviewServletTest {
   private FakeAvailabilityDao availabilityDao;
   private FakePersonDao personDao;
 
-  private final Person GoogleSWE1 =
+  private final Person googleSWE1 =
       Person.create(
           emailToId("user1@mail"),
           "user1@mail",
@@ -67,36 +67,36 @@ public final class ScheduledInterviewServletTest {
           "SWE",
           "linkedIn",
           EnumSet.noneOf(Job.class));
-  private final Availability GoogleSWE1Avail1 =
+  private final Availability googleSWE1Avail1 =
       Availability.create(
-          GoogleSWE1.id(),
+          googleSWE1.id(),
           new TimeRange(
               Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:00:00Z")),
           /*id=*/ -1,
           /*scheduled=*/ false);
-  private final Availability GoogleSWE1Avail2 =
+  private final Availability googleSWE1Avail2 =
       Availability.create(
-          GoogleSWE1.id(),
+          googleSWE1.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:00:00Z"), Instant.parse("2020-07-20T13:15:00Z")),
           /*id=*/ -1,
           /*scheduled=*/ false);
-  private final Availability GoogleSWE1Avail3 =
+  private final Availability googleSWE1Avail3 =
       Availability.create(
-          GoogleSWE1.id(),
+          googleSWE1.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:15:00Z"), Instant.parse("2020-07-20T13:30:00Z")),
           /*id=*/ -1,
           /*scheduled=*/ false);
-  private final Availability GoogleSWE1Avail4 =
+  private final Availability googleSWE1Avail4 =
       Availability.create(
-          GoogleSWE1.id(),
+          googleSWE1.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:30:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
           /*id=*/ -1,
           /*scheduled=*/ false);
 
-  private final Person GoogleSWE2 =
+  private final Person googleSWE2 =
       Person.create(
           emailToId("user2@mail"),
           "user2@mail",
@@ -106,36 +106,36 @@ public final class ScheduledInterviewServletTest {
           "SWE",
           "linkedIn",
           EnumSet.noneOf(Job.class));
-  private final Availability GoogleSWE2Avail1 =
+  private final Availability googleSWE2Avail1 =
       Availability.create(
-          GoogleSWE2.id(),
+          googleSWE2.id(),
           new TimeRange(
               Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:00:00Z")),
           /*id=*/ -1,
           /*scheduled=*/ false);
-  private final Availability GoogleSWE2Avail2 =
+  private final Availability googleSWE2Avail2 =
       Availability.create(
-          GoogleSWE2.id(),
+          googleSWE2.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:00:00Z"), Instant.parse("2020-07-20T13:15:00Z")),
           /*id=*/ -1,
           /*scheduled=*/ false);
-  private final Availability GoogleSWE2Avail3 =
+  private final Availability googleSWE2Avail3 =
       Availability.create(
-          GoogleSWE2.id(),
+          googleSWE2.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:15:00Z"), Instant.parse("2020-07-20T13:30:00Z")),
           /*id=*/ -1,
           /*scheduled=*/ false);
-  private final Availability GoogleSWE2Avail4 =
+  private final Availability googleSWE2Avail4 =
       Availability.create(
-          GoogleSWE2.id(),
+          googleSWE2.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:30:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
           /*id=*/ -1,
           /*scheduled=*/ false);
 
-  private final Person GooglePM =
+  private final Person googlePM =
       Person.create(
           emailToId("user3@mail"),
           "user3@mail",
@@ -145,30 +145,30 @@ public final class ScheduledInterviewServletTest {
           "PM",
           "linkedIn",
           EnumSet.noneOf(Job.class));
-  private final Availability GooglePMAvail1 =
+  private final Availability googlePMAvail1 =
       Availability.create(
-          GooglePM.id(),
+          googlePM.id(),
           new TimeRange(
               Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:00:00Z")),
           /*id=*/ -1,
           /*scheduled=*/ false);
-  private final Availability GooglePMAvail2 =
+  private final Availability googlePMAvail2 =
       Availability.create(
-          GooglePM.id(),
+          googlePM.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:00:00Z"), Instant.parse("2020-07-20T13:15:00Z")),
           /*id=*/ -1,
           /*scheduled=*/ false);
-  private final Availability GooglePMAvail3 =
+  private final Availability googlePMAvail3 =
       Availability.create(
-          GooglePM.id(),
+          googlePM.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:15:00Z"), Instant.parse("2020-07-20T13:30:00Z")),
           /*id=*/ -1,
           /*scheduled=*/ false);
-  private final Availability GooglePMAvail4 =
+  private final Availability googlePMAvail4 =
       Availability.create(
-          GooglePM.id(),
+          googlePM.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:30:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
           /*id=*/ -1,
@@ -192,26 +192,26 @@ public final class ScheduledInterviewServletTest {
   public void returnsScheduledInterviewsForUser() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
     scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
-    helper.setEnvIsLoggedIn(true).setEnvEmail(GoogleSWE1.email()).setEnvAuthDomain("auth");
+    helper.setEnvIsLoggedIn(true).setEnvEmail(googleSWE1.email()).setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
-    personDao.create(GoogleSWE1);
-    personDao.create(GoogleSWE2);
-    personDao.create(GooglePM);
+    personDao.create(googleSWE1);
+    personDao.create(googleSWE2);
+    personDao.create(googlePM);
     scheduledInterviewDao.create(
         ScheduledInterview.create(
             /*id=*/ -1,
             new TimeRange(
                 Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
-            GoogleSWE1.id(),
-            GoogleSWE2.id()));
+            googleSWE1.id(),
+            googleSWE2.id()));
     scheduledInterviewDao.create(
         ScheduledInterview.create(
             /*id=*/ -1,
             new TimeRange(
                 Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
-            GoogleSWE2.id(),
-            GooglePM.id()));
+            googleSWE2.id(),
+            googlePM.id()));
     getRequest.addParameter("timeZone", "America/New_York");
     scheduledInterviewServlet.doGet(getRequest, getResponse);
     List<ScheduledInterviewRequest> actual =
@@ -220,8 +220,8 @@ public final class ScheduledInterviewServletTest {
         new ScheduledInterviewRequest(
             actual.get(0).getId(),
             "Sunday, July 5, 2020 from 2:00 PM to 3:00 PM",
-            GoogleSWE1.firstName(),
-            GoogleSWE2.firstName(),
+            googleSWE1.firstName(),
+            googleSWE2.firstName(),
             "Interviewer");
     List<ScheduledInterviewRequest> expected = new ArrayList<ScheduledInterviewRequest>();
     expected.add(expectedInterview);
@@ -233,26 +233,26 @@ public final class ScheduledInterviewServletTest {
   public void returnsScheduledInterviewsInOrder() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
     scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
-    helper.setEnvIsLoggedIn(true).setEnvEmail(GoogleSWE1.email()).setEnvAuthDomain("auth");
+    helper.setEnvIsLoggedIn(true).setEnvEmail(googleSWE1.email()).setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
-    personDao.create(GoogleSWE1);
-    personDao.create(GoogleSWE2);
-    personDao.create(GooglePM);
+    personDao.create(googleSWE1);
+    personDao.create(googleSWE2);
+    personDao.create(googlePM);
     scheduledInterviewDao.create(
         ScheduledInterview.create(
             /*id=*/ -1,
             new TimeRange(
                 Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
-            GoogleSWE1.id(),
-            GoogleSWE2.id()));
+            googleSWE1.id(),
+            googleSWE2.id()));
     scheduledInterviewDao.create(
         ScheduledInterview.create(
             /*id=*/ -1,
             new TimeRange(
                 Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
-            GoogleSWE1.id(),
-            GoogleSWE2.id()));
+            googleSWE1.id(),
+            googleSWE2.id()));
     getRequest.addParameter("timeZone", "Etc/UCT");
     scheduledInterviewServlet.doGet(getRequest, getResponse);
     List<ScheduledInterviewRequest> actual =
@@ -261,15 +261,15 @@ public final class ScheduledInterviewServletTest {
         new ScheduledInterviewRequest(
             actual.get(0).getId(),
             "Sunday, July 5, 2020 from 6:00 PM to 7:00 PM",
-            GoogleSWE1.firstName(),
-            GoogleSWE2.firstName(),
+            googleSWE1.firstName(),
+            googleSWE2.firstName(),
             "Interviewer");
     ScheduledInterviewRequest scheduledInterview2 =
         new ScheduledInterviewRequest(
             actual.get(1).getId(),
             "Sunday, July 5, 2020 from 8:00 PM to 9:00 PM",
-            GoogleSWE1.firstName(),
-            GoogleSWE2.firstName(),
+            googleSWE1.firstName(),
+            googleSWE2.firstName(),
             "Interviewer");
     List<ScheduledInterviewRequest> expected = new ArrayList<ScheduledInterviewRequest>();
     expected.add(scheduledInterview1);
@@ -281,16 +281,16 @@ public final class ScheduledInterviewServletTest {
   // Tests whether a scheduledInterview object was added to datastore with one possible interviewer.
   @Test
   public void onlyOnePossibleInterviewer() throws IOException {
-    personDao.create(GoogleSWE1);
-    availabilityDao.create(GoogleSWE1Avail1);
-    availabilityDao.create(GoogleSWE1Avail2);
-    availabilityDao.create(GoogleSWE1Avail3);
-    availabilityDao.create(GoogleSWE1Avail4);
-    personDao.create(GooglePM);
-    availabilityDao.create(GooglePMAvail1);
-    availabilityDao.create(GooglePMAvail2);
-    availabilityDao.create(GooglePMAvail3);
-    availabilityDao.create(GooglePMAvail4);
+    personDao.create(googleSWE1);
+    availabilityDao.create(googleSWE1Avail1);
+    availabilityDao.create(googleSWE1Avail2);
+    availabilityDao.create(googleSWE1Avail3);
+    availabilityDao.create(googleSWE1Avail4);
+    personDao.create(googlePM);
+    availabilityDao.create(googlePMAvail1);
+    availabilityDao.create(googlePMAvail2);
+    availabilityDao.create(googlePMAvail3);
+    availabilityDao.create(googlePMAvail4);
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
     scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
@@ -302,7 +302,7 @@ public final class ScheduledInterviewServletTest {
     scheduledInterviewServlet.doPost(postRequest, postResponse);
     List<ScheduledInterview> actual =
         scheduledInterviewDao.getScheduledInterviewsInRangeForUser(
-            GoogleSWE1.id(),
+            googleSWE1.id(),
             Instant.parse("2020-07-20T12:45:00Z"),
             Instant.parse("2020-07-20T13:45:00Z"));
     ScheduledInterview expected =
@@ -310,7 +310,7 @@ public final class ScheduledInterviewServletTest {
             actual.get(0).id(),
             new TimeRange(
                 Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
-            GoogleSWE1.id(),
+            googleSWE1.id(),
             emailToId("user@company.org"));
     Assert.assertEquals(expected, actual.get(0));
   }
@@ -318,16 +318,16 @@ public final class ScheduledInterviewServletTest {
   // Tests that the selected interviewer is one of the possible interviewers.
   @Test
   public void picksOneOfThePossibleInterviewers() throws IOException {
-    personDao.create(GoogleSWE1);
-    availabilityDao.create(GoogleSWE1Avail1);
-    availabilityDao.create(GoogleSWE1Avail2);
-    availabilityDao.create(GoogleSWE1Avail3);
-    availabilityDao.create(GoogleSWE1Avail4);
-    personDao.create(GoogleSWE2);
-    availabilityDao.create(GoogleSWE2Avail1);
-    availabilityDao.create(GoogleSWE2Avail2);
-    availabilityDao.create(GoogleSWE2Avail3);
-    availabilityDao.create(GoogleSWE2Avail4);
+    personDao.create(googleSWE1);
+    availabilityDao.create(googleSWE1Avail1);
+    availabilityDao.create(googleSWE1Avail2);
+    availabilityDao.create(googleSWE1Avail3);
+    availabilityDao.create(googleSWE1Avail4);
+    personDao.create(googleSWE2);
+    availabilityDao.create(googleSWE2Avail1);
+    availabilityDao.create(googleSWE2Avail2);
+    availabilityDao.create(googleSWE2Avail3);
+    availabilityDao.create(googleSWE2Avail4);
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
     scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
@@ -347,14 +347,14 @@ public final class ScheduledInterviewServletTest {
             actual.get(0).id(),
             new TimeRange(
                 Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
-            GoogleSWE1.id(),
+            googleSWE1.id(),
             emailToId("user@company.org"));
     ScheduledInterview expected2 =
         ScheduledInterview.create(
             actual.get(0).id(),
             new TimeRange(
                 Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
-            GoogleSWE2.id(),
+            googleSWE2.id(),
             emailToId("user@company.org"));
     boolean actualIsExpectedOneOrTwo =
         actual.get(0).equals(expected1) || actual.get(0).equals(expected2);
@@ -364,11 +364,11 @@ public final class ScheduledInterviewServletTest {
   // Tests that the availabilities for the involved parties are marked as scheduled.
   @Test
   public void availabilitiesAreScheduled() throws IOException {
-    personDao.create(GoogleSWE1);
-    availabilityDao.create(GoogleSWE1Avail1);
-    availabilityDao.create(GoogleSWE1Avail2);
-    availabilityDao.create(GoogleSWE1Avail3);
-    availabilityDao.create(GoogleSWE1Avail4);
+    personDao.create(googleSWE1);
+    availabilityDao.create(googleSWE1Avail1);
+    availabilityDao.create(googleSWE1Avail2);
+    availabilityDao.create(googleSWE1Avail3);
+    availabilityDao.create(googleSWE1Avail4);
     availabilityDao.create(
         Availability.create(
             emailToId("user@company.org"),
@@ -388,7 +388,7 @@ public final class ScheduledInterviewServletTest {
     boolean allAvailabilitiesAreScheduled = true;
     List<Availability> affectedAvailabilityForInterviewer =
         availabilityDao.getInRangeForUser(
-            GoogleSWE1.id(),
+            googleSWE1.id(),
             Instant.parse("2020-07-20T12:45:00Z"),
             Instant.parse("2020-07-20T13:45:00Z"));
     List<Availability> affectedAvailabilityForInterviewee =
