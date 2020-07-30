@@ -72,16 +72,7 @@ public class PersonRequest {
 
   public String toString() {
     return String.format(
-            "PutPersonRequest= firstName:%s, lastName:%s, company:%s, job:%s, linkedIn:%s, okShadow: %b, qualifiedJobs: \n",
-            firstName, lastName, company, job, linkedIn, okShadow)
-        + qualifiedJobsToString();
-  }
-
-  private String qualifiedJobsToString() {
-    StringBuilder sb = new StringBuilder();
-    for (Job job : qualifiedJobs) {
-      sb.append(job.toString() + " ");
-    }
-    return sb.toString();
+        "PutPersonRequest= firstName:%s, lastName:%s, company:%s, job:%s, linkedIn:%s, qualifiedJobs: %s, okShadow: %s",
+        firstName, lastName, company, job, linkedIn, qualifiedJobs, okShadow);
   }
 }

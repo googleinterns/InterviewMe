@@ -50,7 +50,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-// TODO: test the servlet's ability to get/update ScheduledInterviews when okShadow changes 
+// TODO: test the servlet's ability to get/update ScheduledInterviews when okShadow changes
 @RunWith(JUnit4.class)
 public final class ScheduledInterviewServletTest {
   LocalServiceTestHelper helper =
