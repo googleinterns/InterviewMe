@@ -36,9 +36,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 // Handles all things Google Calendar (for now just getting a Meet link).
 public class CalendarAccess {
