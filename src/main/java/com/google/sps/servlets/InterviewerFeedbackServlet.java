@@ -67,7 +67,7 @@ public class InterviewerFeedbackServlet extends HttpServlet {
     }
 
     if (interviewExists(scheduledInterviewId)) {
-      if (isParticipant(scheduledInterviewId, userId)) {
+      if (isInterviewee(scheduledInterviewId, userId)) {
         response.sendRedirect("/scheduled-interviews.html");
         return;
       }
@@ -83,7 +83,7 @@ public class InterviewerFeedbackServlet extends HttpServlet {
     return scheduledInterviewDao.get(scheduledInterviewId).isPresent();
   }
 
-  private boolean isParticipant(long scheduledInterviewId, String userId) {
+  private boolean isInterviewee(long scheduledInterviewId, String userId) {
     ScheduledInterview scheduledInterview = scheduledInterviewDao.get(scheduledInterviewId).get();
     if ((!scheduledInterview.intervieweeId().equals(userId))) {
       return false;
