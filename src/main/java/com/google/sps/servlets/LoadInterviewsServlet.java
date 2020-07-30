@@ -89,6 +89,11 @@ public class LoadInterviewsServlet extends HttpServlet {
     // current time.
     TimeRange interviewSearchTimeRange =
         new TimeRange(utcTime.toInstant(), utcTime.toInstant().plus(27, ChronoUnit.DAYS));
+        
+        
+    String position = request.getParameter("position");
+    
+    
     List<PossibleInterviewSlot> possibleInterviews =
         getPossibleInterviewSlots(interviewSearchTimeRange, timezoneOffset);
 

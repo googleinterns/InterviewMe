@@ -23,10 +23,11 @@ function onSearchInterviewLoad() {
 function loadInterviews() {
   const searchResultsDiv = document.getElementById("search-results");
   searchResultsDiv.removeAttribute("hidden");
-  const position = document.getElementById('position').value;
+  let position = document.getElementById('position').value;
+  let enumPosition = position.toUpperCase().replace(' ', '_');
   // TODO: Include this position in the search process.
 
-  fetch(`/load-interviews?timeZoneOffset=${browserTimezoneOffset()}`)
+  fetch(`/load-interviews?timeZoneOffset=${browserTimezoneOffset()}&position=${enumPosition}`)
   .then(response => response.text())
   .then(interviewTimes => {
     interviewTimesDiv().innerHTML = interviewTimes;
