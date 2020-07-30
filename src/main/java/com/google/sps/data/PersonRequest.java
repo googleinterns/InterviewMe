@@ -24,6 +24,7 @@ public class PersonRequest {
   private String job;
   private String linkedIn;
   private EnumSet<Job> qualifiedJobs;
+  private boolean okShadow;
 
   public PersonRequest(
       String firstName,
@@ -38,6 +39,7 @@ public class PersonRequest {
     this.job = job;
     this.linkedIn = linkedIn;
     this.qualifiedJobs = qualifiedJobs;
+    this.okShadow = okShadow;
   }
 
   public String getFirstName() {
@@ -64,21 +66,14 @@ public class PersonRequest {
     return qualifiedJobs;
   }
 
+  public boolean getOkShadow() {
+    return okShadow;
+  }
+
   public String toString() {
     return String.format(
-            "%s= %s:%s, %s:%s, %s:%s, %s:%s, %s:%s, %s: \n",
-            "PutPersonRequest",
-            "firstName",
-            firstName,
-            "lastName",
-            lastName,
-            "company",
-            company,
-            "job",
-            job,
-            "linkedIn",
-            linkedIn,
-            "qualifiedJobs")
+            "PutPersonRequest= firstName:%s, lastName:%s, company:%s, job:%s, linkedIn:%s, okShadow: %b, qualifiedJobs: \n",
+            firstName, lastName, company, job, linkedIn, okShadow)
         + qualifiedJobsToString();
   }
 

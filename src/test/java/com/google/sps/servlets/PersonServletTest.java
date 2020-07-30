@@ -74,12 +74,13 @@ public final class PersonServletTest {
                     "",
                     "",
                     "",
-                    EnumSet.of(Job.SOFTWARE_ENGINEER, Job.NETWORK_ENGINEER)));
+                    EnumSet.of(Job.SOFTWARE_ENGINEER, Job.NETWORK_ENGINEER),
+                    true));
     String personB =
         new Gson()
             .toJson(
                 Person.create(
-                    "id_b", "b@gmail.com", "b", "b", "", "", "", EnumSet.allOf(Job.class)));
+                    "id_b", "b@gmail.com", "b", "b", "", "", "", EnumSet.allOf(Job.class), false));
 
     // a is logged in.
     helper.setEnvIsLoggedIn(true).setEnvEmail("a@gmail.com").setEnvAuthDomain("auth");
@@ -120,7 +121,15 @@ public final class PersonServletTest {
         new Gson()
             .toJson(
                 Person.create(
-                    "id_a", "a@gmail.com", "old", "old", "", "", "", EnumSet.noneOf(Job.class)));
+                    "id_a",
+                    "a@gmail.com",
+                    "old",
+                    "old",
+                    "",
+                    "",
+                    "",
+                    EnumSet.noneOf(Job.class),
+                    true));
     // a is logged in.
     helper.setEnvIsLoggedIn(true).setEnvEmail("a@gmail.com").setEnvAuthDomain("auth");
 
@@ -136,7 +145,15 @@ public final class PersonServletTest {
         new Gson()
             .toJson(
                 Person.create(
-                    "id_a", "a@gmail.com", "new", "new", "", "", "", EnumSet.noneOf(Job.class)));
+                    "id_a",
+                    "a@gmail.com",
+                    "new",
+                    "new",
+                    "",
+                    "",
+                    "",
+                    EnumSet.noneOf(Job.class),
+                    false));
     MockHttpServletRequest putRequest =
         put("/person").content(personA).buildRequest(new MockServletContext());
     personServlet.doPut(putRequest, new MockHttpServletResponse());
@@ -150,6 +167,7 @@ public final class PersonServletTest {
     JsonObject person = new JsonParser().parse(getResponse.getContentAsString()).getAsJsonObject();
     assertEquals(person.get("firstName").getAsString(), "new");
     assertEquals(person.get("lastName").getAsString(), "new");
+    assertEquals(person.get("okShadow").getAsString(), "false");
   }
 
   // First time user, not registered, not in database yet.

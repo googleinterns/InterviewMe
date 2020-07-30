@@ -14,6 +14,8 @@
 
 package com.google.sps.data;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.appengine.tools.development.testing.LocalCapabilitiesServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.base.Preconditions;
@@ -23,6 +25,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.google.sps.data.FakePersonDao;
 import com.google.sps.data.Job;
@@ -42,13 +45,12 @@ import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.junit.Test;
-import com.google.gson.JsonSyntaxException;
-import static com.google.common.truth.Truth.assertThat;
 
+// TODO: test the servlet's ability to get/update ScheduledInterviews when okShadow changes 
 @RunWith(JUnit4.class)
 public final class ScheduledInterviewServletTest {
   LocalServiceTestHelper helper =
@@ -77,7 +79,8 @@ public final class ScheduledInterviewServletTest {
           "Google",
           "SWE",
           "linkedIn",
-          EnumSet.noneOf(Job.class));
+          EnumSet.noneOf(Job.class),
+          true);
 
   private final Person interviewee =
       Person.create(
@@ -88,7 +91,8 @@ public final class ScheduledInterviewServletTest {
           "Google",
           "SWE",
           "linkedIn",
-          EnumSet.noneOf(Job.class));
+          EnumSet.noneOf(Job.class),
+          false);
 
   private final Person interviewer1 =
       Person.create(
@@ -99,7 +103,8 @@ public final class ScheduledInterviewServletTest {
           "Google",
           "SWE",
           "linkedIn",
-          EnumSet.noneOf(Job.class));
+          EnumSet.noneOf(Job.class),
+          true);
 
   // Tests whether a scheduledInterview object was added to datastore.
   @Test

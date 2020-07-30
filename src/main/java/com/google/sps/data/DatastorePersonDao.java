@@ -27,7 +27,6 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -90,7 +89,8 @@ public class DatastorePersonDao implements PersonDao {
         (String) personEntity.getProperty("company"),
         (String) personEntity.getProperty("job"),
         (String) personEntity.getProperty("linkedIn"),
-        entityBooleansToEnumSet(personEntity));
+        entityBooleansToEnumSet(personEntity),
+        (boolean) personEntity.getProperty("okShadow"));
   }
 
   public static Entity personToEntity(Person person) {
@@ -102,6 +102,7 @@ public class DatastorePersonDao implements PersonDao {
     personEntity.setProperty("company", person.company());
     personEntity.setProperty("job", person.job());
     personEntity.setProperty("linkedIn", person.linkedIn());
+    personEntity.setProperty("okShadow", person.okShadow());
     for (Job job : person.qualifiedJobs()) {
       personEntity.setProperty(job.toString(), true);
     }
