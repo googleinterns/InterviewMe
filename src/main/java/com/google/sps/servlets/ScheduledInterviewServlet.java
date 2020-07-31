@@ -153,13 +153,24 @@ public class ScheduledInterviewServlet extends HttpServlet {
         ScheduledInterview.create(-1, range, interviewerId, intervieweeId));
 
     HashMap<String, String> emailedDetails = new HashMap<String, String>();
+    String interviewId = getScheduledInterviewId(intervieweeId, range);
+    String intervieweeFeedbackLink =
+        String.format(
+            "http://interview-me-step-2020.appspot.com/feedback.html?interview=%s&role=interviewee",
+            interviewId);
+    String interviewerFeedbackLink =
+        String.format(
+            "http://interview-me-step-2020.appspot.com/feedback.html?interview=%s&role=interviewee",
+            interviewId);
     emailedDetails.put("{{formatted_date}}", getDateString(range));
     emailedDetails.put("{{interviewer_first_name}}", getFirstName(interviewerId));
     emailedDetails.put("{{interviewee_first_name}}", getFirstName(intervieweeId));
+    emailedDetails.put("{{form_link}}", intervieweeFeedbackLink);
 
     try {
-      sendInterviewerEmail(interviewerId, emailedDetails);
       sendIntervieweeEmail(intervieweeId, emailedDetails);
+      emailedDetails.put("{{form_link}}", interviewerFeedbackLink);
+      sendInterviewerEmail(interviewerId, emailedDetails);
     } catch (Exception e) {
       response.sendError(500);
       return;
@@ -275,7 +286,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
       throws IOException, Exception {
     EmailSender emailSender = new EmailSender(new Email("interviewme.business@gmail.com"));
     String subject = "You have been requested to conduct a mock interview!";
-    Email recipient = new Email(getEmail(interviewerId));
+    Email recipient = new Email("grantflash@gmail.com");
+    // Email recipient = new Email(getEmail(interviewerId));
     String contentString =
         emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewer.txt");
     Content content =
@@ -287,11 +299,23 @@ public class ScheduledInterviewServlet extends HttpServlet {
       throws IOException, Exception {
     EmailSender emailSender = new EmailSender(new Email("interviewme.business@gmail.com"));
     String subject = "You have been registered for a mock interview!";
-    Email recipient = new Email(getEmail(intervieweeId));
+    Email recipient = new Email("grantflash@gmail.com");
+    // Email recipient = new Email(getEmail(intervieweeId));
     String contentString =
         emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewee.txt");
     Content content =
         new Content("text/plain", emailSender.replaceAllPairs(emailedDetails, contentString));
     emailSender.sendEmail(recipient, subject, content);
+  }
+
+  private String getScheduledInterviewId(String userId, TimeRange range) {
+    List<ScheduledInterview> possibleInterviews = scheduledInterviewDao.getForPerson(userId);
+    for (ScheduledInterview scheduledInterview : possibleInterviews) {
+      if (userId.equals(scheduledInterview.intervieweeId())
+          && scheduledInterview.when().equals(range)) {
+        return String.valueOf(scheduledInterview.id());
+      }
+    }
+    return "";
   }
 }
