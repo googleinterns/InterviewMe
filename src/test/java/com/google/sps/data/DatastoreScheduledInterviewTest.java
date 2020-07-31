@@ -241,7 +241,7 @@ public class DatastoreScheduledInterviewTest {
 
   // Tests retrieving all scheduledInterviews from Datastore, non-empty result.
   @Test
-  public void getsScheduledInterviewInRange() {
+  public void getsScheduledInterviewsInRange() {
     dao.create(scheduledInterview1);
     dao.create(scheduledInterview2);
     dao.create(scheduledInterview3);
@@ -285,7 +285,7 @@ public class DatastoreScheduledInterviewTest {
 
   // Tests retrieving all scheduledInterviews from Datastore, empty result.
   @Test
-  public void getsScheduledInterviewInRangeEmpty() {
+  public void getsScheduledInterviewsInRangeEmpty() {
     dao.create(scheduledInterview1);
     dao.create(scheduledInterview2);
     dao.create(scheduledInterview3);
