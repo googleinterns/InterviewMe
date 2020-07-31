@@ -23,6 +23,7 @@ import com.google.sps.data.Person;
 import com.google.sps.data.PersonDao;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.ScheduledInterviewDao;
+import com.google.sps.data.TimeRange;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
@@ -31,7 +32,10 @@ import com.sendgrid.helpers.mail.objects.Email;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -67,7 +71,6 @@ public class InterviewerFeedbackServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long scheduledInterviewId = Long.parseLong(request.getParameter("interviewId"));
     HashMap<String, String> answers = new HashMap<String, String>();
-    answers.put("{{formatted_date}}", "Insert Date");
     for (int i = 0; i < 9; i++) {
       String number = Integer.toString(i + 1);
       answers.put("{{question_" + number + "}}", request.getParameter("question" + number));
@@ -82,6 +85,7 @@ public class InterviewerFeedbackServlet extends HttpServlet {
     }
 
     if (interviewExists(scheduledInterviewId)) {
+      answers.put("{{formatted_date}}", getDateString(scheduledInterviewId));
       if (isInterviewee(scheduledInterviewId, userId)) {
         try {
           sendFeedback(getInterviewerEmail(scheduledInterviewId), answers);
@@ -119,16 +123,14 @@ public class InterviewerFeedbackServlet extends HttpServlet {
         .orElse("Email not found");
   }
 
-  /*
-  private String getDateString(TimeRange when, ZoneId timeZoneId) {
-    LocalDateTime start = LocalDateTime.ofInstant(when.start(), timeZoneId);
-    LocalDateTime end = LocalDateTime.ofInstant(when.end(), timeZoneId);
+  private String getDateString(long scheduledInterviewId) {
+    ScheduledInterview scheduledInterview = scheduledInterviewDao.get(scheduledInterviewId).get();
+    TimeRange when = scheduledInterview.when();
+    LocalDateTime start = LocalDateTime.ofInstant(when.start(), ZoneId.systemDefault());
     String startTime = start.format(DateTimeFormatter.ofPattern("h:mm a"));
-    String endTime = end.format(DateTimeFormatter.ofPattern("h:mm a"));
     String day = start.format(DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy"));
-    return String.format("%s from %s to %s", day, startTime, endTime);
+    return String.format("%s at %s UTC", day, startTime);
   }
-  */
 
   private void sendFeedback(String intervieweeEmail, HashMap<String, String> answers)
       throws IOException, Exception {

@@ -32,9 +32,12 @@ import com.sendgrid.helpers.mail.objects.Email;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.time.ZoneId;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +71,6 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long scheduledInterviewId = Long.parseLong(request.getParameter("interviewId"));
     HashMap<String, String> answers = new HashMap<String, String>();
-    answers.put("{{formatted_date}}", "Insert Date");
     for (int i = 0; i < 11; i++) {
       String number = Integer.toString(i + 1);
       answers.put("{{question_" + number + "}}", request.getParameter("question" + number));
@@ -83,9 +85,10 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
     }
 
     if (interviewExists(scheduledInterviewId)) {
+      answers.put("{{formatted_date}}", getDateString(scheduledInterviewId));
       if (isInterviewer(scheduledInterviewId, userId)) {
         try {
-          sendFeedback(getIntervieweeEmail(scheduledInterviewId), answers);
+          sendFeedback("grantflash@gmail.com", answers);
         } catch (Exception e) {
           e.printStackTrace();
           response.sendError(500);
@@ -118,6 +121,15 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
         .get(scheduledInterview.intervieweeId())
         .map(Person::email)
         .orElse("Email not found");
+  }
+
+  private String getDateString(long scheduledInterviewId) {
+    ScheduledInterview scheduledInterview = scheduledInterviewDao.get(scheduledInterviewId).get();
+    TimeRange when = scheduledInterview.when();
+    LocalDateTime start = LocalDateTime.ofInstant(when.start(), ZoneId.systemDefault());
+    String startTime = start.format(DateTimeFormatter.ofPattern("h:mm a"));
+    String day = start.format(DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy"));
+    return String.format("%s at %s UTC", day, startTime);
   }
 
   private void sendFeedback(String intervieweeEmail, HashMap<String, String> answers)
