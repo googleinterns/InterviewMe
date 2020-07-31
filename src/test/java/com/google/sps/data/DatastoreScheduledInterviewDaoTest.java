@@ -298,19 +298,22 @@ public class DatastoreScheduledInterviewDaoTest {
             scheduledInterviews.get(1).id(),
             scheduledInterview2.when(),
             scheduledInterview2.interviewerId(),
-            scheduledInterview2.intervieweeId());
+            scheduledInterview2.intervieweeId(),
+            scheduledInterview2.shadowId());
     ScheduledInterview expectedScheduledInterview2 =
         ScheduledInterview.create(
             scheduledInterviews.get(2).id(),
             scheduledInterview3.when(),
             scheduledInterview3.interviewerId(),
-            scheduledInterview3.intervieweeId());
+            scheduledInterview3.intervieweeId(),
+            scheduledInterview3.shadowId());
     ScheduledInterview expectedScheduledInterview3 =
         ScheduledInterview.create(
             scheduledInterviews.get(3).id(),
             scheduledInterview4.when(),
             scheduledInterview4.interviewerId(),
-            scheduledInterview4.intervieweeId());
+            scheduledInterview4.intervieweeId(),
+            scheduledInterview4.shadowId());
     List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
     expected.add(expectedScheduledInterview1);
     expected.add(expectedScheduledInterview2);
