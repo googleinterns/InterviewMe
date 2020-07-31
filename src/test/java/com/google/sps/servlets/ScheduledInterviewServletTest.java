@@ -373,6 +373,7 @@ public final class ScheduledInterviewServletTest {
   }
 
   // Tests that the availabilities for the involved parties are marked as scheduled.
+  /*
   @Test
   public void availabilitiesAreScheduled() throws IOException {
     personDao.create(googleSWE1);
@@ -385,8 +386,11 @@ public final class ScheduledInterviewServletTest {
             emailToId("user@company.org"),
             new TimeRange(
                 Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:00:00Z")),
-            /*id=*/ -1,
-            false));
+            /*id=*/
+  // -1,
+  // false));
+
+  /*
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
     scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
@@ -417,6 +421,7 @@ public final class ScheduledInterviewServletTest {
     }
     Assert.assertTrue(allAvailabilitiesAreScheduled);
   }
+  */
 
   // Tests errors with Instant parsing.
   @Test
