@@ -72,7 +72,8 @@ public final class ScheduledInterviewServletTest {
           "Google",
           "SWE",
           "linkedIn",
-          EnumSet.of(Job.SOFTWARE_ENGINEER));
+          EnumSet.of(Job.SOFTWARE_ENGINEER),
+          true);
   private final Availability googleSWE1Avail1 =
       Availability.create(
           googleSWE1.id(),
@@ -111,7 +112,8 @@ public final class ScheduledInterviewServletTest {
           "Google",
           "SWE",
           "linkedIn",
-          EnumSet.of(Job.SOFTWARE_ENGINEER, Job.PRODUCT_MANAGER));
+          EnumSet.of(Job.SOFTWARE_ENGINEER, Job.PRODUCT_MANAGER),
+          true);
   private final Availability googleSWE2QualPMInterviewerAvail1 =
       Availability.create(
           googleSWE2QualPMInterviewer.id(),
@@ -150,7 +152,8 @@ public final class ScheduledInterviewServletTest {
           "Google",
           "PM",
           "linkedIn",
-          EnumSet.of(Job.SOFTWARE_ENGINEER, Job.PRODUCT_MANAGER));
+          EnumSet.of(Job.SOFTWARE_ENGINEER, Job.PRODUCT_MANAGER),
+          true);
   private final Availability googlePMAvail1 =
       Availability.create(
           googlePM.id(),
