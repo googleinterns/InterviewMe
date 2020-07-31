@@ -24,6 +24,7 @@ import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
 import com.google.sps.data.EmailSender;
 import com.google.sps.data.InterviewPostRequest;
+import com.google.sps.data.Job;
 import com.google.sps.data.Person;
 import com.google.sps.data.PersonDao;
 import com.google.sps.data.ScheduledInterview;
@@ -48,6 +49,7 @@ import java.util.HashMap;
 import java.time.temporal.ChronoUnit;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
 import javax.servlet.annotation.WebServlet;
@@ -127,10 +129,12 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String interviewerCompany = postRequest.getCompany();
     String interviewerJob = postRequest.getJob();
     String utcStartTime = postRequest.getUtcStartTime();
-    TimeRange range;
+    String position = postRequest.getPosition();
+    Job selectedPosition = Job.valueOf(Job.class, position);
+    TimeRange interviewRange;
 
     try {
-      range =
+      interviewRange =
           new TimeRange(
               Instant.parse(utcStartTime), Instant.parse(utcStartTime).plus(1, ChronoUnit.HOURS));
     } catch (DateTimeParseException e) {
@@ -138,11 +142,9 @@ public class ScheduledInterviewServlet extends HttpServlet {
       return;
     }
 
-    List<Availability> availabilitiesInRange =
-        availabilityDao.getInRangeForAll(range.start(), range.end());
     List<Person> allAvailableInterviewers =
         ShowInterviewersServlet.getPossiblePeople(
-            personDao, availabilityDao, availabilitiesInRange, range);
+            personDao, availabilityDao, selectedPosition, interviewRange);
     List<String> possibleInterviewers =
         getPossibleInterviewerIds(allAvailableInterviewers, interviewerCompany, interviewerJob);
 
@@ -150,7 +152,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String interviewerId = possibleInterviewers.get(randomNumber);
 
     scheduledInterviewDao.create(
-        ScheduledInterview.create(-1, range, interviewerId, intervieweeId));
+        ScheduledInterview.create(-1, interviewRange, interviewerId, intervieweeId));
 
     HashMap<String, String> emailedDetails = new HashMap<String, String>();
     String interviewId = getScheduledInterviewId(intervieweeId, range);
@@ -179,9 +181,11 @@ public class ScheduledInterviewServlet extends HttpServlet {
     // Since an interview was scheduled, both parties' availabilities must be updated
     List<Availability> affectedAvailability = new ArrayList<Availability>();
     List<Availability> intervieweeAffectedAvailability =
-        availabilityDao.getInRangeForUser(intervieweeId, range.start(), range.end());
+        availabilityDao.getInRangeForUser(
+            intervieweeId, interviewRange.start(), interviewRange.end());
     List<Availability> interviewerAffectedAvailability =
-        availabilityDao.getInRangeForUser(interviewerId, range.start(), range.end());
+        availabilityDao.getInRangeForUser(
+            interviewerId, interviewRange.start(), interviewRange.end());
     affectedAvailability.addAll(intervieweeAffectedAvailability);
     affectedAvailability.addAll(interviewerAffectedAvailability);
 
