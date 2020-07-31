@@ -22,6 +22,7 @@ import com.google.sps.data.AvailabilityDao;
 import com.google.sps.data.DatastoreAvailabilityDao;
 import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
+import com.google.sps.data.EmailSender;
 import com.google.sps.data.InterviewPostRequest;
 import com.google.sps.data.Person;
 import com.google.sps.data.PersonDao;
@@ -29,6 +30,13 @@ import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.ScheduledInterviewDao;
 import com.google.sps.data.ScheduledInterviewRequest;
 import com.google.sps.data.TimeRange;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
+import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.time.temporal.ChronoUnit;
@@ -36,6 +44,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.time.temporal.ChronoUnit;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -56,6 +65,9 @@ public class ScheduledInterviewServlet extends HttpServlet {
   private AvailabilityDao availabilityDao;
   private PersonDao personDao;
   private final UserService userService = UserServiceFactory.getUserService();
+  private Path emailsPath =
+      Paths.get(
+          System.getProperty("user.home") + "/InterviewMe/src/main/resources/templates/email");
 
   @Override
   public void init() {
@@ -140,6 +152,19 @@ public class ScheduledInterviewServlet extends HttpServlet {
     scheduledInterviewDao.create(
         ScheduledInterview.create(-1, range, interviewerId, intervieweeId));
 
+    HashMap<String, String> emailedDetails = new HashMap<String, String>();
+    emailedDetails.put("{{formatted_date}}", getDateString(range));
+    emailedDetails.put("{{interviewer_first_name}}", getFirstName(interviewerId));
+    emailedDetails.put("{{interviewee_first_name}}", getFirstName(intervieweeId));
+
+    try {
+      sendInterviewerEmail(interviewerId, emailedDetails);
+      sendIntervieweeEmail(intervieweeId, emailedDetails);
+    } catch (Exception e) {
+      response.sendError(500);
+      return;
+    }
+
     // Since an interview was scheduled, both parties' availabilities must be updated
     List<Availability> affectedAvailability = new ArrayList<Availability>();
     List<Availability> intervieweeAffectedAvailability =
@@ -201,16 +226,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String userEmail = userService.getCurrentUser().getEmail();
     String userId = getUserId();
     String date = getDateString(scheduledInterview.when(), timeZoneId);
-    String interviewer =
-        personDao
-            .get(scheduledInterview.interviewerId())
-            .map(Person::firstName)
-            .orElse("Nonexistent User");
-    String interviewee =
-        personDao
-            .get(scheduledInterview.intervieweeId())
-            .map(Person::firstName)
-            .orElse("Nonexistent User");
+    String interviewer = getFirstName(scheduledInterview.interviewerId());
+    String interviewee = getFirstName(scheduledInterview.intervieweeId());
     String role = getUserRole(scheduledInterview, userId);
     boolean hasStarted =
         scheduledInterview.when().start().minus(5, ChronoUnit.MINUTES).isBefore(userTime);
@@ -237,5 +254,44 @@ public class ScheduledInterviewServlet extends HttpServlet {
       userId = String.format("%d", userService.getCurrentUser().getEmail().hashCode());
     }
     return userId;
+  }
+
+  private String getDateString(TimeRange when) {
+    LocalDateTime start = LocalDateTime.ofInstant(when.start(), ZoneId.systemDefault());
+    String startTime = start.format(DateTimeFormatter.ofPattern("h:mm a"));
+    String day = start.format(DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy"));
+    return String.format("%s at %s UTC", day, startTime);
+  }
+
+  private String getEmail(String participantId) {
+    return personDao.get(participantId).map(Person::email).orElse("Nonexistent User");
+  }
+
+  private String getFirstName(String participantId) {
+    return personDao.get(participantId).map(Person::firstName).orElse("Nonexistent User");
+  }
+
+  private void sendInterviewerEmail(String interviewerId, HashMap<String, String> emailedDetails)
+      throws IOException, Exception {
+    EmailSender emailSender = new EmailSender(new Email("interviewme.business@gmail.com"));
+    String subject = "You have been requested to conduct a mock interview!";
+    Email recipient = new Email(getEmail(interviewerId));
+    String contentString =
+        emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewer.txt");
+    Content content =
+        new Content("text/plain", emailSender.replaceAllPairs(emailedDetails, contentString));
+    emailSender.sendEmail(recipient, subject, content);
+  }
+
+  private void sendIntervieweeEmail(String intervieweeId, HashMap<String, String> emailedDetails)
+      throws IOException, Exception {
+    EmailSender emailSender = new EmailSender(new Email("interviewme.business@gmail.com"));
+    String subject = "You have been registered for a mock interview!";
+    Email recipient = new Email("grantflash@gmail.com");
+    String contentString =
+        emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewee.txt");
+    Content content =
+        new Content("text/plain", emailSender.replaceAllPairs(emailedDetails, contentString));
+    emailSender.sendEmail(recipient, subject, content);
   }
 }
