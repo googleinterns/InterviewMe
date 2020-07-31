@@ -71,8 +71,8 @@ public class InterviewerFeedbackServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long scheduledInterviewId = Long.parseLong(request.getParameter("interviewId"));
     HashMap<String, String> answers = new HashMap<String, String>();
-    for (int i = 0; i < 9; i++) {
-      String number = Integer.toString(i + 1);
+    for (int i = 1; i < 10; i++) {
+      String number = Integer.toString(i);
       answers.put("{{question_" + number + "}}", request.getParameter("question" + number));
     }
 
