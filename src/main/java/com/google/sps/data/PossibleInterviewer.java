@@ -28,10 +28,10 @@ public abstract class PossibleInterviewer {
 
   public static PossibleInterviewer create(String company, String job) {
     if (company.equals("")) {
-      company = "<Not specified>";
+      company = "&lt;Not specified&gt;";
     }
     if (job.equals("")) {
-      job = "<Not specified>";
+      job = "&lt;Not specified&gt;";
     }
     return builder().setCompany(company).setJob(job).build();
   }
