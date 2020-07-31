@@ -114,6 +114,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
       return;
     }
 
+    postRequest.fixNotSpecifiedFields();
     String interviewerCompany = postRequest.getCompany();
     String interviewerJob = postRequest.getJob();
     String utcStartTime = postRequest.getUtcStartTime();

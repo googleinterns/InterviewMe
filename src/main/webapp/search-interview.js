@@ -48,6 +48,8 @@ function selectInterview(interviewer) {
   let job = interviewer.getAttribute('data-job');
   let utcStartTime = interviewer.getAttribute('data-utc');
   let position = document.getElementById('position').value;
+  console.log('Company String: ' + company);
+  console.log('Job: ' + job);
   if (confirm(
       `You selected: ${date} from ${time} with a ` +
       `${company} ${job}. ` +
@@ -65,7 +67,7 @@ function selectInterview(interviewer) {
     };
     let requestBody = JSON.stringify(requestObject);
     let request = new Request('/scheduled-interviews', {method: 'POST', body: requestBody});
-    fetch(request).then(unused => {window.location.replace('/scheduled-interviews.html');});
+    fetch(request).then(() => {window.location.replace('/scheduled-interviews.html');});
   }
 }
 

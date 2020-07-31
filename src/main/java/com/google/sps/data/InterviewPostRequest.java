@@ -28,16 +28,20 @@ public class InterviewPostRequest {
   private String position;
 
   public InterviewPostRequest(String company, String job, String utcStartTime, String position) {
+    this.company = company;
+    this.job = job;
+    this.utcStartTime = utcStartTime;
+    this.position = position;
+  }
+
+  public void fixNotSpecifiedFields() {
     if (company.equals("<Not specified>")) {
       company = "";
     }
     if (job.equals("<Not specified>")) {
       job = "";
     }
-    this.company = company;
-    this.job = job;
-    this.utcStartTime = utcStartTime;
-    this.position = position;
+    return;
   }
 
   public String getCompany() {
