@@ -40,11 +40,6 @@ function loadAvailabilityTable(tableDiv, timezoneOffset) {
     });
 }
 
-function browserTimezoneOffset() {
-  let date = new Date();
-  return (-1) * date.getTimezoneOffset();
-}
-
 function availabilityTableDiv() {
   return document.getElementById('table-container');
 }
@@ -64,7 +59,10 @@ function updateAvailability() {
   };
   let requestBody = JSON.stringify(requestObject);
   let request = new Request('/availability', {method: 'PUT', body: requestBody});
-  fetch(request).then(unused => {loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset())});
+  fetch(request).then(() => location.reload()).catch((error) => {
+    alert('Error: ' + error + '\nThere was an error submitting your availability.' +
+      ' Please try again.');
+    });
 }
 
 let page = 0;
