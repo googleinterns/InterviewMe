@@ -160,7 +160,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
             interviewId);
     String interviewerFeedbackLink =
         String.format(
-            "http://interview-me-step-2020.appspot.com/feedback.html?interview=%s&role=interviewee",
+            "http://interview-me-step-2020.appspot.com/feedback.html?interview=%s&role=interviewer",
             interviewId);
     emailedDetails.put("{{formatted_date}}", getDateString(range));
     emailedDetails.put("{{interviewer_first_name}}", getFirstName(interviewerId));
