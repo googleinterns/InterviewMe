@@ -89,7 +89,7 @@ public class InterviewerFeedbackServlet extends HttpServlet {
     if (interviewExists(scheduledInterviewId)) {
       if (isInterviewee(scheduledInterviewId, userId)) {
         try {
-          sendFeedback("grantflash@gmail.com", answers);
+          sendFeedback(getInterviewerEmail(scheduledInterviewId), answers);
         } catch (Exception e) {
           e.printStackTrace();
           response.sendError(500);
