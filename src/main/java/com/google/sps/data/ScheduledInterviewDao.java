@@ -27,7 +27,7 @@ public interface ScheduledInterviewDao {
   public Optional<ScheduledInterview> get(long id);
 
   // Returns a list, sorted by start time, of all scheduled ScheduledInterview objects ranging from
-  // minTime to maxTime. minTime and maxTime are in milliseconds.
+  // minTime to maxTime.
   public List<ScheduledInterview> getInRange(Instant minTime, Instant maxTime);
 
   // Returns a list, sorted by start time, of the ScheduledInterview objects that the user
@@ -35,7 +35,7 @@ public interface ScheduledInterviewDao {
   public List<ScheduledInterview> getForPerson(String email);
 
   // Returns a list, sorted by start time, of all scheduled ScheduledInterview objects ranging from
-  // minTime to maxTime of a user. minTime and maxTime are in milliseconds.
+  // minTime to maxTime of a user.
   public List<ScheduledInterview> getScheduledInterviewsInRangeForUser(
       String email, Instant minTime, Instant maxTime);
 
