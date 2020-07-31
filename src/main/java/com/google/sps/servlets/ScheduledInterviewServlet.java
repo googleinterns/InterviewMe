@@ -155,7 +155,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
         ScheduledInterview.create(-1, interviewRange, interviewerId, intervieweeId));
 
     HashMap<String, String> emailedDetails = new HashMap<String, String>();
-    String interviewId = getScheduledInterviewId(intervieweeId, range);
+    String interviewId = getScheduledInterviewId(intervieweeId, interviewRange);
     String intervieweeFeedbackLink =
         String.format(
             "http://interview-me-step-2020.appspot.com/feedback.html?interview=%s&role=interviewee",
@@ -164,10 +164,11 @@ public class ScheduledInterviewServlet extends HttpServlet {
         String.format(
             "http://interview-me-step-2020.appspot.com/feedback.html?interview=%s&role=interviewer",
             interviewId);
-    emailedDetails.put("{{formatted_date}}", getDateString(range));
+    emailedDetails.put("{{formatted_date}}", getDateString(interviewRange));
     emailedDetails.put("{{interviewer_first_name}}", getFirstName(interviewerId));
     emailedDetails.put("{{interviewee_first_name}}", getFirstName(intervieweeId));
     emailedDetails.put("{{form_link}}", intervieweeFeedbackLink);
+    emailedDetails.put("{{position}}", position);
 
     try {
       sendIntervieweeEmail(intervieweeId, emailedDetails);
@@ -290,7 +291,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
       throws IOException, Exception {
     EmailSender emailSender = new EmailSender(new Email("interviewme.business@gmail.com"));
     String subject = "You have been requested to conduct a mock interview!";
-    Email recipient = new Email(getEmail(interviewerId));
+    // Email recipient = new Email(getEmail(interviewerId));
+    Email recipient = new Email("grantflash@gmail.com");
     String contentString =
         emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewer.txt");
     Content content =
@@ -302,7 +304,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
       throws IOException, Exception {
     EmailSender emailSender = new EmailSender(new Email("interviewme.business@gmail.com"));
     String subject = "You have been registered for a mock interview!";
-    Email recipient = new Email(getEmail(intervieweeId));
+    // Email recipient = new Email(getEmail(intervieweeId));
+    Email recipient = new Email("grantflash@gmail.com");
     String contentString =
         emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewee.txt");
     Content content =
