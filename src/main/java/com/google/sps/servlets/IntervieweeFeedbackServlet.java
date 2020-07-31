@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.time.ZoneId;
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
@@ -66,18 +67,19 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long scheduledInterviewId = Long.parseLong(request.getParameter("interviewId"));
-    List<String> answers = new ArrayList<String>();
-    answers.add(request.getParameter("question1"));
-    answers.add(request.getParameter("question2"));
-    answers.add(request.getParameter("question3"));
-    answers.add(request.getParameter("question4"));
-    answers.add(request.getParameter("question5"));
-    answers.add(request.getParameter("question6"));
-    answers.add(request.getParameter("question7"));
-    answers.add(request.getParameter("question8"));
-    answers.add(request.getParameter("question9"));
-    answers.add(request.getParameter("question10"));
-    answers.add(request.getParameter("question11"));
+    HashMap<String, String> answers = new HashMap<String, String>();
+    answers.put("{{formatted_date}}", "Insert Date");
+    answers.put("{{question_1}}", request.getParameter("question1"));
+    answers.put("{{question_2}}", request.getParameter("question2"));
+    answers.put("{{question_3}}", request.getParameter("question3"));
+    answers.put("{{question_4}}", request.getParameter("question4"));
+    answers.put("{{question_5}}", request.getParameter("question5"));
+    answers.put("{{question_6}}", request.getParameter("question6"));
+    answers.put("{{question_7}}", request.getParameter("question7"));
+    answers.put("{{question_8}}", request.getParameter("question8"));
+    answers.put("{{question_9}}", request.getParameter("question9"));
+    answers.put("{{question_10}}", request.getParameter("question10"));
+    answers.put("{{question_11}}", request.getParameter("question11"));
 
     String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
@@ -90,11 +92,10 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
     if (interviewExists(scheduledInterviewId)) {
       if (isInterviewer(scheduledInterviewId, userId)) {
         try {
-          sendFeedback("grantflash@gmail.com");
+          sendFeedback("grantflash@gmail.com", answers);
         } catch (Exception e) {
           e.printStackTrace();
           response.sendError(500);
-
           return;
         }
         response.sendRedirect("/scheduled-interviews.html");
@@ -126,13 +127,15 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
         .orElse("Email not found");
   }
 
-  private void sendFeedback(String intervieweeEmail) throws IOException, Exception {
+  private void sendFeedback(String intervieweeEmail, HashMap<String, String> answers)
+      throws IOException, Exception {
     EmailSender emailSender = new EmailSender(new Email("interviewme.business@gmail.com"));
     String subject = "Your Interviewer has submitted some feedback for your interview!";
     Email recipient = new Email(intervieweeEmail);
     String contentString =
-        EmailSender.fileContentToString(emailsPath + "/feedbackToInterviewee.txt");
-    Content content = new Content("text/plain", contentString);
+        emailSender.fileContentToString(emailsPath + "/feedbackToInterviewee.txt");
+    Content content =
+        new Content("text/plain", emailSender.replaceAllPairs(answers, contentString));
     emailSender.sendEmail(recipient, subject, content);
   }
 }
