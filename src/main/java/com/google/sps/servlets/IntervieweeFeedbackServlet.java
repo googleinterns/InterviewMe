@@ -88,7 +88,7 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
       answers.put("{{formatted_date}}", getDateString(scheduledInterviewId));
       if (isInterviewer(scheduledInterviewId, userId)) {
         try {
-          sendFeedback("grantflash@gmail.com", answers);
+          sendFeedback(getIntervieweeEmail(scheduledInterviewId), answers);
         } catch (Exception e) {
           e.printStackTrace();
           response.sendError(500);
