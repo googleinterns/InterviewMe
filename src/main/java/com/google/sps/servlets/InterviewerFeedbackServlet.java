@@ -125,7 +125,7 @@ public class InterviewerFeedbackServlet extends HttpServlet {
 
   private void sendFeedback(String intervieweeEmail) throws IOException, Exception {
     EmailSender emailSender = new EmailSender(new Email("interviewme.business@gmail.com"));
-    String subject = "Your Interviewer has submitted some feedback for your interview!";
+    String subject = "Your Interviewee has submitted some feedback for your interview!";
     Email recipient = new Email(intervieweeEmail);
     String contentString =
         EmailSender.fileContentToString(emailsPath + "/feedbackToInterviewer.txt");
