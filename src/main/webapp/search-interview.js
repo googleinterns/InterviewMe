@@ -21,13 +21,19 @@ function onSearchInterviewLoad() {
 // Queries Datastore for available interview times and renders them on the
 // page.
 function loadInterviews() {
-  const searchResultsDiv = document.getElementById("search-results");
-  searchResultsDiv.removeAttribute("hidden");
-  fetch(`/load-interviews?timeZoneOffset=${browserTimezoneOffset()}&position=${selectedPosition()}`)
-  .then(response => response.text())
-  .then(interviewTimes => {
-    interviewTimesDiv().innerHTML = interviewTimes;
-  });
+  const searchResultsDiv = document.getElementById('search-results');
+  searchResultsDiv.removeAttribute('hidden');
+  const role = document.getElementById('role').value;
+  if (role === 'Interviewee') {
+    fetch(`/load-interviews?timeZoneOffset=${browserTimezoneOffset()}&position=${selectedPosition()}`)
+    .then(response => response.text())
+    .then(interviewTimes => {
+      interviewTimesDiv().innerHTML = interviewTimes;
+    });
+  }
+  if (role === 'Shadow') {
+    // TODO: Create new Servlet that returns scheduled interviews in range that don't already have a shadow.
+  }
 }
 
 function selectedPosition() {
