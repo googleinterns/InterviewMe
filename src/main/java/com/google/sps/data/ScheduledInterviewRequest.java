@@ -22,6 +22,7 @@ public class ScheduledInterviewRequest {
   private String interviewee;
   private String role;
   private boolean hasStarted;
+  private String shadow;
 
   public ScheduledInterviewRequest(
       long id,
@@ -29,13 +30,15 @@ public class ScheduledInterviewRequest {
       String interviewer,
       String interviewee,
       String role,
-      boolean hasStarted) {
+      boolean hasStarted,
+      String shadow) {
     this.id = id;
     this.dateString = dateString;
     this.interviewer = interviewer;
     this.interviewee = interviewee;
     this.role = role;
     this.hasStarted = hasStarted;
+    this.shadow = shadow;
   }
 
   public long getId() {
@@ -62,6 +65,10 @@ public class ScheduledInterviewRequest {
     return hasStarted;
   }
 
+  public String getShadow() {
+    return shadow;
+  }
+
   public boolean equals(Object o) {
     if (o == this) {
       return true;
@@ -73,14 +80,15 @@ public class ScheduledInterviewRequest {
           && this.getInterviewer().equals(that.getInterviewer())
           && this.getInterviewee().equals(that.getInterviewee())
           && this.getRole().equals(that.getRole())
-          && this.getHasStarted() == that.getHasStarted();
+          && this.getHasStarted() == that.getHasStarted()
+          && this.getShadow() == that.getShadow();
     }
     return false;
   }
 
   public String toString() {
     return String.format(
-        "id:%s, dateString:%s, interviewer:%s, interviewee:%s, role:%s, hasStarted:%s",
-        id, dateString, interviewer, interviewee, role, hasStarted);
+        "id:%s, dateString:%s, interviewer:%s, interviewee:%s, role:%s, hasStarted:%s, shadow:%s",
+        id, dateString, interviewer, interviewee, role, hasStarted, shadow);
   }
 }
