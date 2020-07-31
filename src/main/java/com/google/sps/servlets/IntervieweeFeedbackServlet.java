@@ -49,7 +49,7 @@ import javax.servlet.ServletException;
 public class IntervieweeFeedbackServlet extends HttpServlet {
   private ScheduledInterviewDao scheduledInterviewDao;
   private PersonDao personDao;
-  Path emailsPath =
+  private Path emailsPath =
       Paths.get(
           System.getProperty("user.home") + "/InterviewMe/src/main/resources/templates/email");
 

@@ -16,11 +16,20 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
 import com.google.sps.data.EmailSender;
+import com.google.sps.data.Person;
+import com.google.sps.data.PersonDao;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.ScheduledInterviewDao;
-import com.google.sps.data.TimeRange;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
+import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -38,14 +47,19 @@ import javax.servlet.ServletException;
 @WebServlet("/interviewer-feedback")
 public class InterviewerFeedbackServlet extends HttpServlet {
   private ScheduledInterviewDao scheduledInterviewDao;
+  private PersonDao personDao;
+  private Path emailsPath =
+      Paths.get(
+          System.getProperty("user.home") + "/InterviewMe/src/main/resources/templates/email");
 
   @Override
   public void init() {
-    init(new DatastoreScheduledInterviewDao());
+    init(new DatastoreScheduledInterviewDao(), new DatastorePersonDao());
   }
 
-  public void init(ScheduledInterviewDao scheduledInterviewDao) {
+  public void init(ScheduledInterviewDao scheduledInterviewDao, PersonDao personDao) {
     this.scheduledInterviewDao = scheduledInterviewDao;
+    this.personDao = personDao;
   }
 
   @Override
@@ -72,11 +86,20 @@ public class InterviewerFeedbackServlet extends HttpServlet {
 
     if (interviewExists(scheduledInterviewId)) {
       if (isInterviewee(scheduledInterviewId, userId)) {
+        try {
+          sendFeedback("grantflash@gmail.com");
+        } catch (Exception e) {
+          e.printStackTrace();
+          response.sendError(500);
+
+          return;
+        }
         response.sendRedirect("/scheduled-interviews.html");
         return;
+      } else {
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        return;
       }
-      response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-      return;
     } else {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
@@ -90,5 +113,23 @@ public class InterviewerFeedbackServlet extends HttpServlet {
   private boolean isInterviewee(long scheduledInterviewId, String userId) {
     ScheduledInterview scheduledInterview = scheduledInterviewDao.get(scheduledInterviewId).get();
     return scheduledInterview.intervieweeId().equals(userId);
+  }
+
+  private String getInterviewerEmail(long scheduledInterviewId) {
+    ScheduledInterview scheduledInterview = scheduledInterviewDao.get(scheduledInterviewId).get();
+    return personDao
+        .get(scheduledInterview.interviewerId())
+        .map(Person::email)
+        .orElse("Email not found");
+  }
+
+  private void sendFeedback(String intervieweeEmail) throws IOException, Exception {
+    EmailSender emailSender = new EmailSender(new Email("interviewme.business@gmail.com"));
+    String subject = "Your Interviewer has submitted some feedback for your interview!";
+    Email recipient = new Email(intervieweeEmail);
+    String contentString =
+        EmailSender.fileContentToString(emailsPath + "/feedbackToInterviewer.txt");
+    Content content = new Content("text/plain", contentString);
+    emailSender.sendEmail(recipient, subject, content);
   }
 }
