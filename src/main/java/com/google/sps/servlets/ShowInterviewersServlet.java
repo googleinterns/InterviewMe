@@ -23,6 +23,7 @@ import com.google.sps.data.AvailabilityDao;
 import com.google.sps.data.DatastoreAvailabilityDao;
 import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
+import com.google.sps.data.Job;
 import com.google.sps.data.Person;
 import com.google.sps.data.PersonDao;
 import com.google.sps.data.PossibleInterviewer;
@@ -40,6 +41,7 @@ import java.time.ZonedDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
@@ -73,7 +75,10 @@ public class ShowInterviewersServlet extends HttpServlet {
     TimeRange interviewTimeRange =
         new TimeRange(
             Instant.parse(utcStartTime), Instant.parse(utcStartTime).plus(1, ChronoUnit.HOURS));
-    List<Person> possiblePeople = getPossiblePeople(personDao, availabilityDao, interviewTimeRange);
+    String position = request.getParameter("position");
+    Job selectedPosition = Job.valueOf(Job.class, position);
+    List<Person> possiblePeople =
+        getPossiblePeople(personDao, availabilityDao, selectedPosition, interviewTimeRange);
     Set<PossibleInterviewer> possibleInterviewers = peopleToPossibleInterviewers(possiblePeople);
     request.setAttribute("interviewers", possibleInterviewers);
     RequestDispatcher rd = request.getRequestDispatcher("/possibleInterviewers.jsp");
@@ -85,7 +90,7 @@ public class ShowInterviewersServlet extends HttpServlet {
   }
 
   static List<Person> getPossiblePeople(
-      PersonDao personDao, AvailabilityDao availabilityDao, TimeRange range) {
+      PersonDao personDao, AvailabilityDao availabilityDao, Job position, TimeRange range) {
     Set<String> allInterviewers =
         availabilityDao.getUsersAvailableInRange(range.start(), range.end());
     // We don't want to schedule an interview for a user with themself, so we are removing
@@ -99,6 +104,10 @@ public class ShowInterviewersServlet extends HttpServlet {
       userId = String.format("%d", userEmail.hashCode());
     }
     allInterviewers.remove(userId);
+    // We need to check that the interviewers are qualified to give an interview for the specified
+    // position
+    allInterviewers.removeIf(
+        interviewer -> !personDao.get(interviewer).get().qualifiedJobs().contains(position));
     List<Person> possibleInterviewers = new ArrayList<Person>();
     for (String interviewer : allInterviewers) {
       if (personHasPossibleInterviewSlot(availabilityDao, interviewer, range)) {
