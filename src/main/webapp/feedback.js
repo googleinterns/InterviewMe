@@ -41,5 +41,4 @@ function getRole() {
 // Sends the feedback forms.
 function doSubmit() {
   document.feedbackForm.interviewId.value = getScheduledInterviewId();
-  return true;
 }
