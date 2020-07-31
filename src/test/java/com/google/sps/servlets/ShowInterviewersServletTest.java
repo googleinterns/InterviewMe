@@ -151,7 +151,8 @@ public final class ShowInterviewersServletTest {
           "Google",
           "NE",
           "linkedIn",
-          EnumSet.of(Job.NETWORK_ENGINEER));
+          EnumSet.of(Job.NETWORK_ENGINEER),
+          true);
   private final Availability googleNEAvail1 =
       Availability.create(
           googleNE.id(),

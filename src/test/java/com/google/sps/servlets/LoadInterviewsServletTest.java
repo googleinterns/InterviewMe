@@ -70,7 +70,8 @@ public final class LoadInterviewsServletTest {
           "Google",
           "SWE",
           "linkedIn",
-          EnumSet.of(Job.SOFTWARE_ENGINEER, Job.NETWORK_ENGINEER));
+          EnumSet.of(Job.SOFTWARE_ENGINEER, Job.NETWORK_ENGINEER),
+          true);
   private final Availability qualifiedSWEAndNEAvail1 =
       Availability.create(
           qualifiedSWEAndNE.id(),
@@ -111,7 +112,8 @@ public final class LoadInterviewsServletTest {
           "Google",
           "SWE",
           "linkedIn",
-          EnumSet.of(Job.SOFTWARE_ENGINEER));
+          EnumSet.of(Job.SOFTWARE_ENGINEER),
+          true);
   private final Availability qualifiedSWEAvail1 =
       Availability.create(
           qualifiedSWE.id(),
