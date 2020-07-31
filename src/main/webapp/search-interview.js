@@ -48,8 +48,6 @@ function selectInterview(interviewer) {
   let job = interviewer.getAttribute('data-job');
   let utcStartTime = interviewer.getAttribute('data-utc');
   let position = document.getElementById('position').value;
-  console.log('Company String: ' + company);
-  console.log('Job: ' + job);
   if (confirm(
       `You selected: ${date} from ${time} with a ` +
       `${company} ${job}. ` +
