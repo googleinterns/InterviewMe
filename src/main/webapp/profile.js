@@ -40,7 +40,8 @@ function submitProfileForm(methodType, redirectUrl) {
     company: $('#company-field').val(),
     job: $('#job-field').val(),
     linkedIn: $('#linkedin-field').val(),
-    qualifiedJobs: qualifiedJobs
+    qualifiedJobs: qualifiedJobs,
+    okShadow: $('#ok-shadow-check').val()
   };
   fetch('/person',{
     method: methodType,
