@@ -60,6 +60,33 @@ public final class PersonServletTest {
     helper.tearDown();
   }
 
+  // Creates a Person with no qualifications.
+  @Test
+  public void createsUnqualifiedPerson() throws IOException, UnsupportedEncodingException {
+    String unqualified =
+        new Gson()
+            .toJson(
+                Person.create(
+                    "id_a", "a@gmail.com", "a", "a", "", "", "", EnumSet.noneOf(Job.class), true));
+    // a is logged in.
+    helper.setEnvIsLoggedIn(true).setEnvEmail("a@gmail.com").setEnvAuthDomain("auth");
+
+    // Post person a.
+    MockHttpServletRequest postRequest =
+        post("/person").content(unqualified).buildRequest(new MockServletContext());
+    PersonServlet personServlet = new PersonServlet();
+    personServlet.init(new FakePersonDao());
+    personServlet.doPost(postRequest, new MockHttpServletResponse());
+
+    MockHttpServletRequest getRequest = new MockHttpServletRequest();
+    MockHttpServletResponse getResponse = new MockHttpServletResponse();
+    personServlet.doGet(getRequest, getResponse);
+
+    // a should be the result of the doGet().
+    JsonObject person = new JsonParser().parse(getResponse.getContentAsString()).getAsJsonObject();
+    assertEquals(person.get("email").getAsString(), "a@gmail.com");
+  }
+
   // Two people, get the right one.
   @Test
   public void getOneOutOfTwo() throws IOException, UnsupportedEncodingException {
@@ -74,12 +101,13 @@ public final class PersonServletTest {
                     "",
                     "",
                     "",
-                    EnumSet.of(Job.SOFTWARE_ENGINEER, Job.NETWORK_ENGINEER)));
+                    EnumSet.of(Job.SOFTWARE_ENGINEER, Job.NETWORK_ENGINEER),
+                    true));
     String personB =
         new Gson()
             .toJson(
                 Person.create(
-                    "id_b", "b@gmail.com", "b", "b", "", "", "", EnumSet.allOf(Job.class)));
+                    "id_b", "b@gmail.com", "b", "b", "", "", "", EnumSet.allOf(Job.class), false));
 
     // a is logged in.
     helper.setEnvIsLoggedIn(true).setEnvEmail("a@gmail.com").setEnvAuthDomain("auth");
@@ -120,7 +148,15 @@ public final class PersonServletTest {
         new Gson()
             .toJson(
                 Person.create(
-                    "id_a", "a@gmail.com", "old", "old", "", "", "", EnumSet.noneOf(Job.class)));
+                    "id_a",
+                    "a@gmail.com",
+                    "old",
+                    "old",
+                    "",
+                    "",
+                    "",
+                    EnumSet.noneOf(Job.class),
+                    true));
     // a is logged in.
     helper.setEnvIsLoggedIn(true).setEnvEmail("a@gmail.com").setEnvAuthDomain("auth");
 
@@ -136,7 +172,15 @@ public final class PersonServletTest {
         new Gson()
             .toJson(
                 Person.create(
-                    "id_a", "a@gmail.com", "new", "new", "", "", "", EnumSet.noneOf(Job.class)));
+                    "id_a",
+                    "a@gmail.com",
+                    "new",
+                    "new",
+                    "",
+                    "",
+                    "",
+                    EnumSet.noneOf(Job.class),
+                    false));
     MockHttpServletRequest putRequest =
         put("/person").content(personA).buildRequest(new MockServletContext());
     personServlet.doPut(putRequest, new MockHttpServletResponse());
@@ -150,6 +194,7 @@ public final class PersonServletTest {
     JsonObject person = new JsonParser().parse(getResponse.getContentAsString()).getAsJsonObject();
     assertEquals(person.get("firstName").getAsString(), "new");
     assertEquals(person.get("lastName").getAsString(), "new");
+    assertEquals(person.get("okShadow").getAsString(), "false");
   }
 
   // First time user, not registered, not in database yet.
