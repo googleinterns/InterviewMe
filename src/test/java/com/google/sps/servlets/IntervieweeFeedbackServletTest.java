@@ -103,33 +103,6 @@ public final class IntervieweeFeedbackServletTest {
     Assert.assertEquals(401, postResponse.getStatus());
   }
 
-  // Tests that a user successfully submits feedback and is redirected.
-  @Test
-  public void validUser() throws IOException {
-    IntervieweeFeedbackServlet intervieweeFeedbackServlet = new IntervieweeFeedbackServlet();
-    helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
-    intervieweeFeedbackServlet.init(scheduledInterviewDao, personDao);
-    scheduledInterviewDao.create(scheduledInterview);
-    List<ScheduledInterview> scheduledInterviews =
-        scheduledInterviewDao.getForPerson(emailToId("user@company.org"));
-    MockHttpServletRequest postRequest = new MockHttpServletRequest();
-    MockHttpServletResponse postResponse = new MockHttpServletResponse();
-    postRequest.addParameter("interviewId", String.valueOf(scheduledInterviews.get(0).id()));
-    postRequest.addParameter("question1", "1");
-    postRequest.addParameter("question2", "2");
-    postRequest.addParameter("question3", "3");
-    postRequest.addParameter("question4", "4");
-    postRequest.addParameter("question5", "5");
-    postRequest.addParameter("question6", "6");
-    postRequest.addParameter("question7", "7");
-    postRequest.addParameter("question8", "8");
-    postRequest.addParameter("question9", "9");
-    postRequest.addParameter("question10", "10");
-    postRequest.addParameter("question11", "11");
-    intervieweeFeedbackServlet.doPost(postRequest, postResponse);
-    Assert.assertEquals(302, postResponse.getStatus());
-  }
-
   private String emailToId(String email) {
     return String.format("%d", email.hashCode());
   }
