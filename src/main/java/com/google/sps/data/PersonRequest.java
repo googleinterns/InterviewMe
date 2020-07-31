@@ -32,7 +32,8 @@ public class PersonRequest {
       String company,
       String job,
       String linkedIn,
-      EnumSet<Job> qualifiedJobs) {
+      EnumSet<Job> qualifiedJobs,
+      boolean okShadow) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.company = company;
