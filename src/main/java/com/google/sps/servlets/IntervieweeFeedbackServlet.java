@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 
-// Servlet that gets the feedback for to an interviewer sends to an interviewee
+// Servlet that gets the feedback from an interviwer and sends it to an interviewee.
 @WebServlet("/interviewee-feedback")
 public class IntervieweeFeedbackServlet extends HttpServlet {
   private ScheduledInterviewDao scheduledInterviewDao;
@@ -72,14 +72,14 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
     long scheduledInterviewId = Long.parseLong(request.getParameter("interviewId"));
     HashMap<String, String> answers = new HashMap<String, String>();
     for (int i = 1; i < 12; i++) {
-      String number = Integer.toString(i);
-      answers.put("{{question_" + number + "}}", request.getParameter("question" + number));
+      String template = String.format("{{question_%s}}", i);
+      String param = String.format("question%s", i);
+      answers.put(template, request.getParameter(param));
     }
 
     String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
-    // Since UserId does not have a valid Mock, if the id is null (as when testing), it will be
-    // replaced with this hashcode.
+    // Since Users returned from the LocalUserService (in tests) do not have userIds, here we set the userId equal to a hashcode.
     if (userId == null) {
       userId = String.format("%d", userEmail.hashCode());
     }
@@ -135,7 +135,7 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
   private void sendFeedback(String intervieweeEmail, HashMap<String, String> answers)
       throws IOException, Exception {
     EmailSender emailSender = new EmailSender(new Email("interviewme.business@gmail.com"));
-    String subject = "Your Interviewer has submitted some feedback for your interview!";
+    String subject = "Your Interviewer has submitted feedback for your interview!";
     Email recipient = new Email(intervieweeEmail);
     String contentString =
         emailSender.fileContentToString(emailsPath + "/feedbackToInterviewee.txt");
