@@ -291,8 +291,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
       throws IOException, Exception {
     EmailSender emailSender = new EmailSender(new Email("interviewme.business@gmail.com"));
     String subject = "You have been requested to conduct a mock interview!";
-    // Email recipient = new Email(getEmail(interviewerId));
-    Email recipient = new Email("grantflash@gmail.com");
+    Email recipient = new Email(getEmail(interviewerId));
     String contentString =
         emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewer.txt");
     Content content =
@@ -304,8 +303,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
       throws IOException, Exception {
     EmailSender emailSender = new EmailSender(new Email("interviewme.business@gmail.com"));
     String subject = "You have been registered for a mock interview!";
-    // Email recipient = new Email(getEmail(intervieweeId));
-    Email recipient = new Email("grantflash@gmail.com");
+    Email recipient = new Email(getEmail(intervieweeId));
     String contentString =
         emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewee.txt");
     Content content =
