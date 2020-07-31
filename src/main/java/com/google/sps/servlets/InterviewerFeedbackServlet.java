@@ -68,15 +68,10 @@ public class InterviewerFeedbackServlet extends HttpServlet {
     long scheduledInterviewId = Long.parseLong(request.getParameter("interviewId"));
     HashMap<String, String> answers = new HashMap<String, String>();
     answers.put("{{formatted_date}}", "Insert Date");
-    answers.put("{{question_1}}", request.getParameter("question1"));
-    answers.put("{{question_2}}", request.getParameter("question2"));
-    answers.put("{{question_3}}", request.getParameter("question3"));
-    answers.put("{{question_4}}", request.getParameter("question4"));
-    answers.put("{{question_5}}", request.getParameter("question5"));
-    answers.put("{{question_6}}", request.getParameter("question6"));
-    answers.put("{{question_7}}", request.getParameter("question7"));
-    answers.put("{{question_8}}", request.getParameter("question8"));
-    answers.put("{{question_9}}", request.getParameter("question9"));
+    for (int i = 0; i < 9; i++) {
+      String number = Integer.toString(i + 1);
+      answers.put("{{question_" + number + "}}", request.getParameter("question" + number));
+    }
 
     String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
