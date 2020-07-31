@@ -158,7 +158,7 @@ public class LoadInterviewsServlet extends HttpServlet {
     }
     interviewers.remove(userId);
     // We need to check that the interviewers are qualified to give an interview for the specified
-    // position
+    // position.
     interviewers.removeIf(
         interviewer -> !personDao.get(interviewer).get().qualifiedJobs().contains(position));
     for (String interviewer : interviewers) {
