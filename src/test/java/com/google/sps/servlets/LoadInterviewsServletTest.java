@@ -233,7 +233,8 @@ public final class LoadInterviewsServletTest {
             new TimeRange(
                 Instant.parse("2020-07-07T16:00:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
             "interviewerId",
-            String.format("%d", userEmail.hashCode())));
+            String.format("%d", userEmail.hashCode()),
+            ""));
     // An unscheduled hour slot for an interviewer
     availabilityDao.create(person1Avail1);
     availabilityDao.create(person1Avail2);
