@@ -16,7 +16,6 @@
         <h1 class="text-center">Feedback</h1>
         <h4 class="text-center">Please submit your feedback for your interviewer below.</h4>
         <h5 class="text-center lead">Please enter a value between 1 and 10 (1 being strongly disagree and 10 being strongly agree).</h5>
-        <!-- TODO: Send email on submit -->
         <form name="feedbackForm" method="POST" onSubmit="doSubmit()" action="/interviewer-feedback" class="needs-validation" novalidate>
           <div class="form-group">
             <div class="form-group form-inline"> 
@@ -63,7 +62,6 @@
             <h1 class="text-center">Feedback</h1>
             <h5 class="text-center">Please submit your feedback for your interviewee below.</h4>
             <h5 class="text-center lead">Please enter a value between 1 and 10 (1 being strongly disagree and 10 being strongly agree)</h5>
-            <!-- TODO: Send email on submit -->
             <form name="feedbackForm" method="POST" onSubmit="doSubmit()" action="/interviewee-feedback" class="needs-validation" novalidate>
               <div class="form-group">
                 <div class="form-group form-inline"> 
