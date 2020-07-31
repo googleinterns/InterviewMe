@@ -81,7 +81,7 @@ public class ScheduledInterviewRequest {
           && this.getInterviewee().equals(that.getInterviewee())
           && this.getRole().equals(that.getRole())
           && this.getHasStarted() == that.getHasStarted()
-          && this.getShadow() == that.getShadow();
+          && this.getShadow().equals(that.getShadow());
     }
     return false;
   }

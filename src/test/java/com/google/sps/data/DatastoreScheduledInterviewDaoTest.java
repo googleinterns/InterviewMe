@@ -75,7 +75,7 @@ public class DatastoreScheduledInterviewDaoTest {
               Instant.parse("2020-07-06T20:00:10Z"), Instant.parse("2020-07-06T21:00:10Z")),
           "user@company.org",
           "user2@mail.com",
-          "user@company.org");
+          "");
 
   private final ScheduledInterview scheduledInterview5 =
       ScheduledInterview.create(
@@ -85,7 +85,22 @@ public class DatastoreScheduledInterviewDaoTest {
           "user@company.org",
           "user3@mail.com",
           "");
-
+  private final ScheduledInterview scheduledInterview6 =
+      ScheduledInterview.create(
+          (long) -1,
+          new TimeRange(
+              Instant.parse("2020-07-06T21:30:10Z"), Instant.parse("2020-07-06T22:30:10Z")),
+          "user2@mail.com",
+          "user@company.org",
+          "");
+  private final ScheduledInterview scheduledInterview7 =
+      ScheduledInterview.create(
+          (long) -1,
+          new TimeRange(
+              Instant.parse("2020-07-06T22:00:10Z"), Instant.parse("2020-07-06T23:00:10Z")),
+          "user2@mail.com",
+          "user3@mail.com",
+          "user@company.org");
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
           new LocalDatastoreServiceTestConfig()
@@ -117,78 +132,38 @@ public class DatastoreScheduledInterviewDaoTest {
     Assert.assertEquals(copyScheduledInterview1, storedScheduledInterview);
   }
 
-  // Tests whether all scheduledInterviews for a particular user when they are interviewer are
-  // retrieved.
+  // Tests whether all scheduledInterviews for a particular user are retrieved. Tests all 3 roles.
   @Test
-  public void getForPersonAsInterviewer() {
-    dao.create(scheduledInterview1);
-    dao.create(scheduledInterview2);
-    dao.create(scheduledInterview3);
+  public void getForPerson() {
+    dao.create(scheduledInterview5);
+    dao.create(scheduledInterview6);
+    dao.create(scheduledInterview7);
     List<ScheduledInterview> result = dao.getForPerson(scheduledInterview1.interviewerId());
     ScheduledInterview copyScheduledInterview1 =
         ScheduledInterview.create(
             result.get(0).id(),
-            scheduledInterview1.when(),
-            scheduledInterview1.interviewerId(),
-            scheduledInterview1.intervieweeId(),
-            scheduledInterview1.shadowId());
+            scheduledInterview5.when(),
+            scheduledInterview5.interviewerId(),
+            scheduledInterview5.intervieweeId(),
+            scheduledInterview5.shadowId());
     ScheduledInterview copyScheduledInterview2 =
         ScheduledInterview.create(
             result.get(1).id(),
-            scheduledInterview2.when(),
-            scheduledInterview2.interviewerId(),
-            scheduledInterview2.intervieweeId(),
-            scheduledInterview2.shadowId());
+            scheduledInterview6.when(),
+            scheduledInterview6.interviewerId(),
+            scheduledInterview6.intervieweeId(),
+            scheduledInterview6.shadowId());
+    ScheduledInterview copyScheduledInterview3 =
+        ScheduledInterview.create(
+            result.get(2).id(),
+            scheduledInterview7.when(),
+            scheduledInterview7.interviewerId(),
+            scheduledInterview7.intervieweeId(),
+            scheduledInterview7.shadowId());
     List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
     expected.add(copyScheduledInterview1);
     expected.add(copyScheduledInterview2);
-    Assert.assertEquals(expected, result);
-  }
-
-  // Tests whether all scheduledInterviews for a particular user when they are interviewee are
-  // retrieved.
-  @Test
-  public void getForPersonAsInterviewee() {
-    dao.create(scheduledInterview1);
-    dao.create(scheduledInterview2);
-    dao.create(scheduledInterview3);
-    List<ScheduledInterview> result = dao.getForPerson(scheduledInterview2.intervieweeId());
-    ScheduledInterview copyScheduledInterview1 =
-        ScheduledInterview.create(
-            result.get(0).id(),
-            scheduledInterview2.when(),
-            scheduledInterview2.interviewerId(),
-            scheduledInterview2.intervieweeId(),
-            scheduledInterview2.shadowId());
-    ScheduledInterview copyScheduledInterview2 =
-        ScheduledInterview.create(
-            result.get(1).id(),
-            scheduledInterview3.when(),
-            scheduledInterview3.interviewerId(),
-            scheduledInterview3.intervieweeId(),
-            scheduledInterview3.shadowId());
-    List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
-    expected.add(copyScheduledInterview1);
-    expected.add(copyScheduledInterview2);
-    Assert.assertEquals(expected, result);
-  }
-
-  // Tests whether all scheduledInterviews for a particular user when they are shadow are
-  // retrieved.
-  @Test
-  public void getForPersonAsShadow() {
-    dao.create(scheduledInterview3);
-    dao.create(scheduledInterview4);
-    List<ScheduledInterview> result = dao.getForPerson(scheduledInterview4.shadowId());
-    ScheduledInterview copyScheduledInterview1 =
-        ScheduledInterview.create(
-            result.get(0).id(),
-            scheduledInterview4.when(),
-            scheduledInterview4.interviewerId(),
-            scheduledInterview4.intervieweeId(),
-            scheduledInterview4.shadowId());
-    List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
-    expected.add(copyScheduledInterview1);
+    expected.add(copyScheduledInterview3);
     Assert.assertEquals(expected, result);
   }
 
