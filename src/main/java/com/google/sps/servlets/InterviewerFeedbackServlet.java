@@ -79,7 +79,8 @@ public class InterviewerFeedbackServlet extends HttpServlet {
 
     String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();
     String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
-    // Since Users returned from the LocalUserService (in tests) do not have userIds, here we set the userId equal to a hashcode.
+    // Since Users returned from the LocalUserService (in tests) do not have userIds, here we set
+    // the userId equal to a hashcode.
     if (userId == null) {
       userId = String.format("%d", userEmail.hashCode());
     }

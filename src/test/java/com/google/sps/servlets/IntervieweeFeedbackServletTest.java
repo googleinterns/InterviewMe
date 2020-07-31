@@ -55,11 +55,11 @@ public final class IntervieweeFeedbackServletTest {
   private FakePersonDao personDao;
   private final ScheduledInterview scheduledInterview =
       ScheduledInterview.create(
-          (long) -1,
-          new TimeRange(
+          /*id=*/ (long) -1,
+          /*when=*/ new TimeRange(
               Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
-          emailToId("user@company.org"),
-          emailToId("user@mail.com"));
+          /*interviewerId=*/ emailToId("user@company.org"),
+          /*intervieweeId=*/ emailToId("user@mail.com"));
 
   @Before
   public void setUp() {
