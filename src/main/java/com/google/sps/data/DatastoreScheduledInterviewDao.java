@@ -61,6 +61,19 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
   }
 
   /**
+   * Returns a list, sorted by start time, of all scheduled ScheduledInterview objects between
+   * minTime and maxTime.
+   */
+  public List<ScheduledInterview> getInRange(Instant minTime, Instant maxTime) {
+    List<Entity> entities = getEntitiesInRange(minTime, maxTime, Optional.empty());
+    List<ScheduledInterview> scheduledInterviews = new ArrayList<ScheduledInterview>();
+    for (Entity entity : entities) {
+      scheduledInterviews.add(entityToScheduledInterview(entity));
+    }
+    return scheduledInterviews;
+  }
+
+  /**
    * Retrieves all scheduledInterview entities from Datastore that involve a particular user and
    * returns them as a list of ScheduledInterview objects in the order in which they occur.
    */
@@ -85,10 +98,7 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
     return relevantInterviews;
   }
 
-  /**
-   * Returns a list of all scheduledInterviews ranging from minTime to maxTime of a user. minTime
-   * and maxTime are in milliseconds.
-   */
+  /** Returns a list of all scheduledInterviews ranging from minTime to maxTime of a user. */
   @Override
   public List<ScheduledInterview> getScheduledInterviewsInRangeForUser(
       String userId, Instant minTime, Instant maxTime) {
@@ -158,9 +168,9 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
   }
 
   /**
-   * Returns interviews within a desired range in the order in which they occur. For example:
-   * scheduledInterviews starting >= 2:00PM and ending <= 6:00PM on a certain date. The maxTime is
-   * 6:00PM on that day.
+   * Returns interviews within a desired range in the order in which they occur. For example: to get
+   * scheduledInterviews starting >= 2:00PM and ending <= 6:00PM on a certain date, set the maxTime
+   * to be 6:00PM on that date.
    */
   private List<Entity> getEntitiesInRange(
       Instant minTime, Instant maxTime, Optional<Filter> filterOpt) {

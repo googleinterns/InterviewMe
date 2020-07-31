@@ -200,7 +200,7 @@ public class DatastoreScheduledInterviewTest {
 
   // Tests retrieving all scheduledInterviews for a particular user in a certain range
   @Test
-  public void getsScheduledInterviewsInRange() {
+  public void getsScheduledInterviewsInRangeForUser() {
     dao.create(scheduledInterview1);
     dao.create(scheduledInterview2);
     dao.create(scheduledInterview3);
@@ -237,5 +237,63 @@ public class DatastoreScheduledInterviewTest {
     expected.add(expectedScheduledInterview2);
 
     Assert.assertEquals(expected, result);
+  }
+
+  // Tests retrieving all scheduledInterviews from Datastore, non-empty result.
+  @Test
+  public void getsScheduledInterviewsInRange() {
+    dao.create(scheduledInterview1);
+    dao.create(scheduledInterview2);
+    dao.create(scheduledInterview3);
+    dao.create(scheduledInterview4);
+    dao.create(scheduledInterview5);
+    List<ScheduledInterview> result =
+        dao.getInRange(scheduledInterview2.when().start(), scheduledInterview4.when().end());
+    List<Entity> entities =
+        datastore
+            .prepare(new Query("ScheduledInterview").addSort("startTime", SortDirection.ASCENDING))
+            .asList(FetchOptions.Builder.withDefaults());
+    List<ScheduledInterview> scheduledInterviews = new ArrayList<ScheduledInterview>();
+    for (Entity entity : entities) {
+      scheduledInterviews.add(dao.entityToScheduledInterview(entity));
+    }
+    ScheduledInterview expectedScheduledInterview1 =
+        ScheduledInterview.create(
+            scheduledInterviews.get(1).id(),
+            scheduledInterview2.when(),
+            scheduledInterview2.interviewerId(),
+            scheduledInterview2.intervieweeId());
+    ScheduledInterview expectedScheduledInterview2 =
+        ScheduledInterview.create(
+            scheduledInterviews.get(2).id(),
+            scheduledInterview3.when(),
+            scheduledInterview3.interviewerId(),
+            scheduledInterview3.intervieweeId());
+    ScheduledInterview expectedScheduledInterview3 =
+        ScheduledInterview.create(
+            scheduledInterviews.get(3).id(),
+            scheduledInterview4.when(),
+            scheduledInterview4.interviewerId(),
+            scheduledInterview4.intervieweeId());
+    List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
+    expected.add(expectedScheduledInterview1);
+    expected.add(expectedScheduledInterview2);
+    expected.add(expectedScheduledInterview3);
+
+    Assert.assertEquals(expected, result);
+  }
+
+  // Tests retrieving all scheduledInterviews from Datastore, empty result.
+  @Test
+  public void getsScheduledInterviewsInRangeEmpty() {
+    dao.create(scheduledInterview1);
+    dao.create(scheduledInterview2);
+    dao.create(scheduledInterview3);
+    dao.create(scheduledInterview4);
+    dao.create(scheduledInterview5);
+    List<ScheduledInterview> observed =
+        dao.getInRange(
+            Instant.parse("2020-07-06T11:00:10Z"), Instant.parse("2020-07-06T12:00:10Z"));
+    Assert.assertEquals(observed.size(), 0);
   }
 }
