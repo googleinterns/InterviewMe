@@ -412,7 +412,7 @@ public final class ScheduledInterviewServletTest {
     allAffectedAvailability.addAll(affectedAvailabilityForInterviewee);
     for (Availability avail : allAffectedAvailability) {
       if (!avail.scheduled()) {
-        allAvailabilitiesAreScheduled = true;
+        allAvailabilitiesAreScheduled = false;
       }
     }
     Assert.assertTrue(allAvailabilitiesAreScheduled);
