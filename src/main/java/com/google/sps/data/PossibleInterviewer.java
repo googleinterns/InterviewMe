@@ -27,12 +27,6 @@ public abstract class PossibleInterviewer {
   public abstract String job();
 
   public static PossibleInterviewer create(String company, String job) {
-    if (company.equals("")) {
-      company = "&lt;Not specified&gt;";
-    }
-    if (job.equals("")) {
-      job = "&lt;Not specified&gt;";
-    }
     return builder().setCompany(company).setJob(job).build();
   }
 

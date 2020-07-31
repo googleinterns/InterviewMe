@@ -46,6 +46,12 @@ function selectInterview(interviewer) {
   let time = interviewer.getAttribute('data-time');
   let company = interviewer.getAttribute('data-company');
   let job = interviewer.getAttribute('data-job');
+  if (company === '') {
+    company = '<Not specified>';
+  }
+  if (job === '') {
+    job = '<Not specified>';
+  }
   let utcStartTime = interviewer.getAttribute('data-utc');
   let position = document.getElementById('position').value;
   if (confirm(
@@ -57,6 +63,12 @@ function selectInterview(interviewer) {
       ` from ${time} with a ${company} ` +
       `${job}. Check your email for more ` +
       `information.`);
+    if (company === '<Not specified>') {
+      company = '';
+    }
+    if (job === '<Not specified>') {
+      job = '';
+    }
     let requestObject = {
       company: company,
       job: job,
@@ -81,6 +93,15 @@ function showInterviewers(selectButton) {
   .then(interviewers => {
     $('#modal-body').html(interviewers);
     $('#modal-title').text(`Qualified Interviewers Information for ${date} from ${reformattedTime}`);
+    $('#interviewer-modal').modal('show');
+    checkIfSpecified();
   });
-  $('#interviewer-modal').modal('show');
+}
+
+function checkIfSpecified() {
+  $('.check-specified').each((index, el) => {
+    if (el.innerHTML === '') {
+      el.innerHTML = '&lt;Not specified&gt;';
+    }
+  });
 }

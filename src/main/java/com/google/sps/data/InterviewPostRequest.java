@@ -34,16 +34,6 @@ public class InterviewPostRequest {
     this.position = position;
   }
 
-  public void fixNotSpecifiedFields() {
-    if (company.equals("<Not specified>")) {
-      company = "";
-    }
-    if (job.equals("<Not specified>")) {
-      job = "";
-    }
-    return;
-  }
-
   public String getCompany() {
     return company;
   }
