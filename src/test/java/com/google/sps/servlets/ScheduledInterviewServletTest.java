@@ -73,7 +73,7 @@ public final class ScheduledInterviewServletTest {
           "SWE",
           "linkedIn",
           EnumSet.noneOf(Job.class),
-          true);
+          /*okShadow=*/ true);
   private final Availability googleSWE1Avail1 =
       Availability.create(
           googleSWE1.id(),
@@ -153,7 +153,7 @@ public final class ScheduledInterviewServletTest {
           "PM",
           "linkedIn",
           EnumSet.noneOf(Job.class),
-          true);
+          /*okShadow=*/ true);
   private final Availability googlePMAvail1 =
       Availability.create(
           googlePM.id(),
@@ -191,7 +191,8 @@ public final class ScheduledInterviewServletTest {
           "",
           "",
           "",
-          EnumSet.noneOf(Job.class));
+          EnumSet.noneOf(Job.class),
+          /*okShadow=*/ true);
 
   @Before
   public void setUp() {

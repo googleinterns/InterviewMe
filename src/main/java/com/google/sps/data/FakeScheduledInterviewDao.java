@@ -116,7 +116,6 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
             scheduledInterview.interviewerId(),
             scheduledInterview.intervieweeId(),
             scheduledInterview.shadowId());
-    System.out.println(scheduledInterview.shadowId());
     data.put(generatedId, storedScheduledInterview);
   }
 
