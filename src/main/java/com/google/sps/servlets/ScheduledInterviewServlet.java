@@ -137,7 +137,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     int randomNumber = (int) (Math.random() * possibleInterviewers.size());
     String interviewerId = possibleInterviewers.get(randomNumber);
 
-    // Shadow is 'None' because when an interview is first made, only interviewee and
+    // Shadow is empty because when an interview is first made, only interviewee and
     // interviewer are involved.
     scheduledInterviewDao.create(
         ScheduledInterview.create(-1, range, interviewerId, intervieweeId, ""));
