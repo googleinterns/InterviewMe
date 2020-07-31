@@ -45,20 +45,8 @@ public class CalendarAccess {
 
   // TODO: remember to write tests in the code that calls CalendarAccess() that handle what happens
   // per each exception
-  public CalendarAccess()
-      throws GeneralSecurityException, IOException, URISyntaxException, Exception {
-    String key = new SecretFetcher("interview-me-step-2020").getSecretValue("SERVICE_ACCT_KEY");
-    GoogleCredential credential =
-        GoogleCredential.fromStream(new ByteArrayInputStream(key.getBytes()))
-            .createScoped(Collections.singletonList(CalendarScopes.CALENDAR));
-
-    service =
-        new Calendar.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                JacksonFactory.getDefaultInstance(),
-                credential)
-            .setApplicationName("Interview Me CalendarAccess")
-            .build();
+  public CalendarAccess(Calendar service) {
+    this.service = service;
   }
 
   // Makes an event in the calendar CALENDAR_ID and returns the Meet Link associated with that
@@ -73,7 +61,6 @@ public class CalendarAccess {
 
     DateTime startDateTime = new DateTime(interview.when().start().toString());
     EventDateTime start = new EventDateTime().setDateTime(startDateTime);
-    System.out.println(start.getTimeZone());
     event.setStart(start);
 
     DateTime endDateTime = new DateTime(interview.when().end().toString());
@@ -81,11 +68,23 @@ public class CalendarAccess {
     event.setEnd(end);
 
     CreateConferenceRequest createRequest = new CreateConferenceRequest();
-    createRequest.setRequestId("randomstring");
+    createRequest.setRequestId(String.valueOf(interview.id()));
     createRequest.setConferenceSolutionKey(new ConferenceSolutionKey().setType("hangoutsMeet"));
     event.setConferenceData(new ConferenceData().setCreateRequest(createRequest));
 
     event = service.events().insert(CALENDAR_ID, event).setConferenceDataVersion(1).execute();
     return event.getConferenceData().getEntryPoints().get(0).getUri();
+  }
+
+  public static Calendar MakeCalendar(SecretFetcher secretFetcher)
+      throws GeneralSecurityException, IOException, Exception {
+    String key = secretFetcher.getSecretValue("SERVICE_ACCT_KEY");
+    return new Calendar.Builder(
+            GoogleNetHttpTransport.newTrustedTransport(),
+            JacksonFactory.getDefaultInstance(),
+            GoogleCredential.fromStream(new ByteArrayInputStream(key.getBytes()))
+                .createScoped(Collections.singletonList(CalendarScopes.CALENDAR)))
+        .setApplicationName("Interview Me CalendarAccess")
+        .build();
   }
 }
