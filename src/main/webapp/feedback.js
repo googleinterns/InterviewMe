@@ -38,7 +38,7 @@ function getRole() {
   return new URLSearchParams(window.location.search).get('role'); 
 }
 
-// Sends the feedback forms.
+// Adds the scheduledInterviewId to the request when the form is submitted.
 function doSubmit() {
   document.feedbackForm.interviewId.value = getScheduledInterviewId();
 }
