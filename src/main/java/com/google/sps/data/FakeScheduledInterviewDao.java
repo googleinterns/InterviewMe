@@ -105,7 +105,8 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
 
     for (ScheduledInterview scheduledInterview : scheduledInterviews) {
       if (userId.equals(scheduledInterview.interviewerId())
-          || userId.equals(scheduledInterview.intervieweeId())) {
+          || userId.equals(scheduledInterview.intervieweeId())
+          || userId.equals(scheduledInterview.shadowId())) {
         relevantInterviews.add(scheduledInterview);
       }
     }
@@ -139,7 +140,8 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
             generatedId,
             scheduledInterview.when(),
             scheduledInterview.interviewerId(),
-            scheduledInterview.intervieweeId(),scheduledInterview.hasShadow());
+            scheduledInterview.intervieweeId(),
+            scheduledInterview.shadowId());
     data.put(generatedId, storedScheduledInterview);
   }
 

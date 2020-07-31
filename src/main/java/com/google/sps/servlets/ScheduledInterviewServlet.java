@@ -138,7 +138,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String interviewerId = possibleInterviewers.get(randomNumber);
 
     scheduledInterviewDao.create(
-        ScheduledInterview.create(-1, range, interviewerId, intervieweeId));
+        ScheduledInterview.create(-1, range, interviewerId, intervieweeId, ""));
 
     // Since an interview was scheduled, both parties' availabilities must be updated
     List<Availability> affectedAvailability = new ArrayList<Availability>();
