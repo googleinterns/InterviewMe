@@ -208,7 +208,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
                 || !personDao.get(interview.interviewerId()).get().job().equals(interviewerJob));
     int randomNumber = (int) (Math.random() * possibleInterviews.size());
     ScheduledInterview selectedInterview = possibleInterviews.get(randomNumber);
-    // TODO: Create a withShadow(shadowId) method.
     scheduledInterviewDao.update(selectedInterview.withShadow(shadowId));
 
     // Since the shadow commited to this interview, their availabilities must be updated
