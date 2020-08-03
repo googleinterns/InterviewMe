@@ -22,7 +22,10 @@ public class ScheduledInterviewRequest {
   private String interviewee;
   private String role;
   private boolean hasStarted;
+  private String meetLink;
+  private String position;
   private String shadow;
+  // TODO: display meetLink and position in JSP page
 
   public ScheduledInterviewRequest(
       long id,
@@ -31,6 +34,8 @@ public class ScheduledInterviewRequest {
       String interviewee,
       String role,
       boolean hasStarted,
+      String meetLink,
+      String position,
       String shadow) {
     this.id = id;
     this.dateString = dateString;
@@ -38,6 +43,8 @@ public class ScheduledInterviewRequest {
     this.interviewee = interviewee;
     this.role = role;
     this.hasStarted = hasStarted;
+    this.meetLink = meetLink;
+    this.position = position;
     this.shadow = shadow;
   }
 
@@ -65,6 +72,14 @@ public class ScheduledInterviewRequest {
     return hasStarted;
   }
 
+  public String getMeetLink() {
+    return meetLink;
+  }
+
+  public String getPosition() {
+    return position;
+  }
+
   public String getShadow() {
     return shadow;
   }
@@ -81,6 +96,8 @@ public class ScheduledInterviewRequest {
           && this.getInterviewee().equals(that.getInterviewee())
           && this.getRole().equals(that.getRole())
           && this.getHasStarted() == that.getHasStarted()
+          && this.getMeetLink().equals(that.getMeetLink())
+          && this.getPosition().equals(that.getPosition())
           && this.getShadow().equals(that.getShadow());
     }
     return false;
@@ -88,7 +105,7 @@ public class ScheduledInterviewRequest {
 
   public String toString() {
     return String.format(
-        "id:%s, dateString:%s, interviewer:%s, interviewee:%s, role:%s, hasStarted:%s, shadow:%s",
-        id, dateString, interviewer, interviewee, role, hasStarted, shadow);
+        "id:%s, dateString:%s, interviewer:%s, interviewee:%s, role:%s, hasStarted:%s, meetLink:%s, position:%s, shadow:%s",
+        id, dateString, interviewer, interviewee, role, hasStarted, meetLink, position, shadow);
   }
 }

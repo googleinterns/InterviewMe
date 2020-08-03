@@ -301,7 +301,9 @@ public final class LoadInterviewsServletTest {
                 Instant.parse("2020-07-07T16:00:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
             "interviewerId",
             String.format("%d", userEmail.hashCode()),
-            ""));
+            "meet_link",
+            Job.SOFTWARE_ENGINEER,
+            "shadow_id"));
     // An unscheduled hour slot for an interviewer
     availabilityDao.create(qualifiedSWEAndNEAvail1);
     availabilityDao.create(qualifiedSWEAndNEAvail2);
