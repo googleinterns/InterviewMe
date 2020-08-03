@@ -44,7 +44,8 @@ public final class GoogleCalendarAccessTest {
 
   LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalUserServiceTestConfig());
   private final ScheduledInterview interview1 =
-      ScheduledInterview.create(-1, new TimeRange(TIME_430PM, TIME_530PM), "interviewer_id", "interviewee_id");
+      ScheduledInterview.create(
+          -1, new TimeRange(TIME_430PM, TIME_530PM), "interviewer_id", "interviewee_id");
 
   @Before
   public void setUp() {
@@ -58,10 +59,7 @@ public final class GoogleCalendarAccessTest {
 
   @Test
   public void basic() throws IOException, GeneralSecurityException, URISyntaxException, Exception {
-    GoogleCalendarAccess cal =
-        new GoogleCalendarAccess(
-            GoogleCalendarAccess.MakeCalendar(new SecretFetcher("interview-me-step-2020")));
-    Event observed = cal.getEvent(interview1);
+    Event observed = GoogleCalendarAccess.getEvent(interview1);
 
     EventDateTime expStart =
         new EventDateTime().setDateTime(new DateTime(interview1.when().start().toString()));

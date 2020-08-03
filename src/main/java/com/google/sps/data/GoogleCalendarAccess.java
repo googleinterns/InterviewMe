@@ -49,7 +49,7 @@ public class GoogleCalendarAccess implements CalendarAccess {
 
   // Makes an event in the calendar CALENDAR_ID and returns the Meet Link associated with that
   // event.
-  public Event getEvent(ScheduledInterview interview) {
+  public static Event getEvent(ScheduledInterview interview) {
     Event event =
         new Event()
             .setSummary("Interview")
