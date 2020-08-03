@@ -39,6 +39,6 @@ function getRole() {
 }
 
 // Adds the scheduledInterviewId to the request when the form is submitted.
-function doSubmit() {
+function addScheduledInterviewId() {
   document.feedbackForm.interviewId.value = getScheduledInterviewId();
 }

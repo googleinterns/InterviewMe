@@ -23,25 +23,17 @@ import com.google.sps.data.Person;
 import com.google.sps.data.PersonDao;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.ScheduledInterviewDao;
-import com.google.sps.data.SendgridEmailSender;
-import com.google.sps.data.TimeRange;
-import com.sendgrid.Response;
-import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.time.ZoneId;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -80,8 +72,9 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long scheduledInterviewId = Long.parseLong(request.getParameter("interviewId"));
+    int numberOfQuestions = Integer.parseInt(request.getParameter("questionCount"));
     HashMap<String, String> answers = new HashMap<String, String>();
-    for (int i = 1; i < 12; i++) {
+    for (int i = 1; i <= numberOfQuestions; i++) {
       String template = String.format("{{question_%s}}", i);
       String param = String.format("question%s", i);
       answers.put(template, request.getParameter(param));
@@ -95,52 +88,44 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
       userId = String.format("%d", userEmail.hashCode());
     }
 
-    if (interviewExists(scheduledInterviewId)) {
-      answers.put("{{formatted_date}}", getDateString(scheduledInterviewId));
-      if (isInterviewer(scheduledInterviewId, userId)) {
-        try {
-          sendFeedback(getIntervieweeEmail(scheduledInterviewId), answers);
-        } catch (Exception e) {
-          e.printStackTrace();
-          response.sendError(500);
-          return;
-        }
-        response.sendRedirect("/scheduled-interviews.html");
-        return;
-      } else {
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-        return;
-      }
-    } else {
+    Optional<ScheduledInterview> scheduledInterview = getInterview(scheduledInterviewId);
+    if (!scheduledInterview.isPresent()) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
+
+    answers.put("{{formatted_date}}", scheduledInterview.get().getDateString());
+    if (!isInterviewer(scheduledInterview.get(), userId)) {
+      response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+      return;
+    }
+
+    if (!getIntervieweeEmail(scheduledInterview.get()).isPresent()) {
+      response.sendError(HttpServletResponse.SC_NOT_FOUND);
+      return;
+    }
+
+    try {
+      sendFeedback(getIntervieweeEmail(scheduledInterview.get()).get().email(), answers);
+    } catch (Exception e) {
+      e.printStackTrace();
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      return;
+    }
+    response.sendRedirect("/scheduled-interviews.html");
+    return;
   }
 
-  private boolean interviewExists(long scheduledInterviewId) {
-    return scheduledInterviewDao.get(scheduledInterviewId).isPresent();
+  private Optional<ScheduledInterview> getInterview(long scheduledInterviewId) {
+    return scheduledInterviewDao.get(scheduledInterviewId);
   }
 
-  private boolean isInterviewer(long scheduledInterviewId, String userId) {
-    ScheduledInterview scheduledInterview = scheduledInterviewDao.get(scheduledInterviewId).get();
+  private boolean isInterviewer(ScheduledInterview scheduledInterview, String userId) {
     return scheduledInterview.interviewerId().equals(userId);
   }
 
-  private String getIntervieweeEmail(long scheduledInterviewId) {
-    ScheduledInterview scheduledInterview = scheduledInterviewDao.get(scheduledInterviewId).get();
-    return personDao
-        .get(scheduledInterview.intervieweeId())
-        .map(Person::email)
-        .orElse("Email not found");
-  }
-
-  private String getDateString(long scheduledInterviewId) {
-    ScheduledInterview scheduledInterview = scheduledInterviewDao.get(scheduledInterviewId).get();
-    TimeRange when = scheduledInterview.when();
-    LocalDateTime start = LocalDateTime.ofInstant(when.start(), ZoneId.systemDefault());
-    String startTime = start.format(DateTimeFormatter.ofPattern("h:mm a"));
-    String day = start.format(DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy"));
-    return String.format("%s at %s UTC", day, startTime);
+  private Optional<Person> getIntervieweeEmail(ScheduledInterview scheduledInterview) {
+    return personDao.get(scheduledInterview.intervieweeId());
   }
 
   private void sendFeedback(String intervieweeEmail, HashMap<String, String> answers)

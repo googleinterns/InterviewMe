@@ -23,6 +23,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.google.sps.data.FakeEmailSender;
 import com.google.sps.data.FakeScheduledInterviewDao;
@@ -43,11 +44,10 @@ import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.junit.Test;
-import com.google.gson.JsonSyntaxException;
 
 @RunWith(JUnit4.class)
 public final class InterviewerFeedbackServletTest {
@@ -91,6 +91,7 @@ public final class InterviewerFeedbackServletTest {
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
     postRequest.addParameter("interviewId", "1");
+    postRequest.addParameter("questionCount", "9");
     interviewerFeedbackServlet.doPost(postRequest, postResponse);
     Assert.assertEquals(404, postResponse.getStatus());
   }
@@ -107,6 +108,7 @@ public final class InterviewerFeedbackServletTest {
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
     postRequest.addParameter("interviewId", String.valueOf(scheduledInterviews.get(0).id()));
+    postRequest.addParameter("questionCount", "9");
     interviewerFeedbackServlet.doPost(postRequest, postResponse);
     Assert.assertEquals(401, postResponse.getStatus());
   }
