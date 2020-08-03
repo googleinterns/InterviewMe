@@ -195,9 +195,9 @@ public class ScheduledInterviewServlet extends HttpServlet {
       return;
     }
 
-    // TODO: Call the new DAO method. Create a withShadow(shadowId) method.
-    // List<ScheduledInterview> possibleInterviews = scheduledInterviewDao.???
-    /*
+    List<ScheduledInterview> possibleInterviews = scheduledInterviewDao.getForPositionWithoutShadowInRange(
+      String shadowId, Job position, Instant minTime, Instant maxTime);
+      
     possibleInterviews.removeIf(
         interview ->
             !personDao.get(interview.intervieweeId()).get().okShadow()
@@ -208,6 +208,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
                 || !personDao.get(interview.interviewerId()).get().job().equals(interviewerJob));
     int randomNumber = (int) (Math.random() * possibleInterviews.size());
     ScheduledInterview selectedInterview = possibleInterviews.get(randomNumber);
+    // TODO: Create a withShadow(shadowId) method.
     scheduledInterviewDao.update(selectedInterview.withShadow(shadowId));
 
     // Since the shadow commited to this interview, their availabilities must be updated
@@ -216,7 +217,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
     for (Availability avail : affectedAvailability) {
       availabilityDao.update(avail.withScheduled(true));
     }
-    */
   }
 
   // Get Json from request body.

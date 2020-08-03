@@ -101,12 +101,9 @@ public class ShadowLoadInterviewsServlet extends HttpServlet {
       userId = String.format("%d", userEmail.hashCode());
     }
 
-    // TODO: Come up with a new DAO method that returns Scheduled Interviews in range that do not
-    // involve the current user, are for the selected position, and do not already have a shadow.
-    // Will result in possibleInterviews.
-    // List<ScheduledInterview> possibleInterviews = scheduledInterviewDao.???
+    List<ScheduledInterview> possibleInterviews = scheduledInterviewDao.getForPositionWithoutShadowInRange(
+      userId, selctedPosition, interviewSearchTimeRange.start(), interviewSearchTimeRange.end());
 
-    /*
     possibleInterviews.removeIf(
         interview ->
             !personDao.get(interview.intervieweeId()).get().okShadow()
@@ -139,7 +136,6 @@ public class ShadowLoadInterviewsServlet extends HttpServlet {
     } catch (ServletException e) {
       throw new RuntimeException(e);
     }
-    */
   }
 
   // Uses an Instant and a timezoneOffset to create a ZonedDateTime instance.

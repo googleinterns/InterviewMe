@@ -76,11 +76,18 @@ public class ShadowShowInterviewersServlet extends HttpServlet {
             Instant.parse(utcStartTime), Instant.parse(utcStartTime).plus(1, ChronoUnit.HOURS));
     String position = request.getParameter("position");
     Job selectedPosition = Job.valueOf(Job.class, position);
-    // TODO: Call the new Scheduled Interview DAO method to get possibleInterviews
-    // (List<ScheduledInterview>).
-    // List<ScheduledInterview> possibleInterviews = scheduledInterviewDao.???
+    UserService userService = UserServiceFactory.getUserService();
+    String userEmail = userService.getCurrentUser().getEmail();
+    String userId = userService.getCurrentUser().getUserId();
+    // Since Users returned from the LocalUserService (in tests) do not have userIds, here we set
+    // the userId equal to a hashcode.
+    if (userId == null) {
+      userId = String.format("%d", userEmail.hashCode());
+    }
+    
+    List<ScheduledInterview> possibleInterviews = scheduledInterviewDao.getForPositionWithoutShadowInRange(
+      userId, selctedPosition, interviewTimeRange.start(), interviewTimeRange.end());
 
-    /*
     possibleInterviews.removeIf(
         interview ->
             !personDao.get(interview.intervieweeId()).get().okShadow()
@@ -99,6 +106,5 @@ public class ShadowShowInterviewersServlet extends HttpServlet {
     } catch (ServletException e) {
       throw new RuntimeException(e);
     }
-    */
   }
 }
