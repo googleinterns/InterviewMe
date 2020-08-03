@@ -33,6 +33,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -77,28 +78,33 @@ public class InterviewerFeedbackServlet extends HttpServlet {
     if (userId == null) {
       userId = String.format("%d", userEmail.hashCode());
     }
-    
+
     Optional<ScheduledInterview> scheduledInterview = getInterview(scheduledInterviewId);
-    if (scheduledInterview.empty()) {
+    if (!scheduledInterview.isPresent()) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
-    
-    answers.put("{{formatted_date}}", scheduledInterview.getDateString());
-    if (!isInterviewee(scheduledInterview, userId)) {
+
+    answers.put("{{formatted_date}}", scheduledInterview.get().getDateString());
+    if (!isInterviewee(scheduledInterview.get(), userId)) {
       response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
       return;
     }
-    
-    try {
-        sendFeedback(getInterviewerEmail(scheduledInterview), answers);
-      } catch (Exception e) {
-        e.printStackTrace();
-        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        return;
-      }
-      response.sendRedirect("/scheduled-interviews.html");
+
+    if (!getInterviewerEmail(scheduledInterview.get()).isPresent()) {
+      response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
+    }
+
+    try {
+      sendFeedback(getInterviewerEmail(scheduledInterview.get()).get().email(), answers);
+    } catch (Exception e) {
+      e.printStackTrace();
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      return;
+    }
+    response.sendRedirect("/scheduled-interviews.html");
+    return;
   }
 
   private Optional<ScheduledInterview> getInterview(long scheduledInterviewId) {
@@ -110,8 +116,7 @@ public class InterviewerFeedbackServlet extends HttpServlet {
   }
 
   private Optional<Person> getInterviewerEmail(ScheduledInterview scheduledInterview) {
-    return personDao
-        .get(scheduledInterview.interviewerId()); 
+    return personDao.get(scheduledInterview.interviewerId());
   }
 
   private void sendFeedback(String interviewerEmail, HashMap<String, String> answers)
