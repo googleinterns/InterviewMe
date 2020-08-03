@@ -29,6 +29,7 @@ import com.google.api.services.calendar.model.CreateConferenceRequest;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.Events;
+import com.google.common.annotations.VisibleForTesting;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.IOException;
@@ -47,9 +48,9 @@ public class GoogleCalendarAccess implements CalendarAccess {
     this.service = service;
   }
 
-  // Makes an event in the calendar CALENDAR_ID and returns the Meet Link associated with that
-  // event.
-  public static Event getEvent(ScheduledInterview interview) {
+  // Defines an event.
+  @VisibleForTesting
+  static Event makeEvent(ScheduledInterview interview) {
     Event event =
         new Event()
             .setSummary("Interview")
@@ -71,16 +72,17 @@ public class GoogleCalendarAccess implements CalendarAccess {
     return event;
   }
 
-  // Makes an event in the calendar CALENDAR_ID and returns the Meet Link associated with that
+  // Creates an event in the calendar CALENDAR_ID and returns the Meet Link associated with that
   // event.
   @Override
   public String getMeetLink(ScheduledInterview interview)
       throws IOException, GeneralSecurityException {
-    Event event = getEvent(interview);
+    Event event = makeEvent(interview);
     event = service.events().insert(CALENDAR_ID, event).setConferenceDataVersion(1).execute();
     return event.getConferenceData().getEntryPoints().get(0).getUri();
   }
 
+  // Makes a Calendar service.
   public static Calendar MakeCalendar(SecretFetcher secretFetcher)
       throws GeneralSecurityException, IOException, Exception {
     String key = secretFetcher.getSecretValue("SERVICE_ACCT_KEY");

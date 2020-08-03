@@ -20,6 +20,8 @@ import java.security.GeneralSecurityException;
 // Handles all things Calendar (for now just getting a Meet link).
 public interface CalendarAccess {
 
+  // Creates an event in the calendar CALENDAR_ID and returns the Meet Link associated with that
+  // event.
   public String getMeetLink(ScheduledInterview interview)
       throws IOException, GeneralSecurityException;
 }

@@ -58,8 +58,8 @@ public final class GoogleCalendarAccessTest {
   }
 
   @Test
-  public void basic() throws IOException, GeneralSecurityException, URISyntaxException, Exception {
-    Event observed = GoogleCalendarAccess.getEvent(interview1);
+  public void basic() throws Exception {
+    Event observed = GoogleCalendarAccess.makeEvent(interview1);
 
     EventDateTime expStart =
         new EventDateTime().setDateTime(new DateTime(interview1.when().start().toString()));

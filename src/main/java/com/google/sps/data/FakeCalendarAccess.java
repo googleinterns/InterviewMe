@@ -19,7 +19,8 @@ import java.security.GeneralSecurityException;
 
 // A stub of CalendarAccess.
 public class FakeCalendarAccess implements CalendarAccess {
-
+  // Creates an event in the calendar CALENDAR_ID and returns the Meet Link associated with that
+  // event.
   public String getMeetLink(ScheduledInterview interview)
       throws IOException, GeneralSecurityException {
     // ID is a unique identifier for an interview.
