@@ -74,6 +74,15 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
   }
 
   /**
+   * Returns a list, sorted by start time, of all ScheduledInterview objects ranging from
+   * minTime to maxTime that are for the selected position, do not include the proposed shadow,
+   * and do not already have a shadow.
+   */
+  public List<ScheduledInterview> getForPositionWithoutShadowInRange(String shadowId, Job position, Instant minTime, Instant maxTime) {
+    
+  }
+
+  /**
    * Retrieves all scheduledInterview entities from Datastore that involve a particular user and
    * returns them as a list of ScheduledInterview objects in the order in which they occur.
    */

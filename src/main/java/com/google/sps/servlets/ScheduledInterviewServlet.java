@@ -22,7 +22,7 @@ import com.google.sps.data.AvailabilityDao;
 import com.google.sps.data.DatastoreAvailabilityDao;
 import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
-import com.google.sps.data.InterviewPostRequest;
+import com.google.sps.data.InterviewPostOrPutRequest;
 import com.google.sps.data.Job;
 import com.google.sps.data.Person;
 import com.google.sps.data.PersonDao;
@@ -102,9 +102,9 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String intervieweeEmail = userService.getCurrentUser().getEmail();
     String intervieweeId = getUserId();
 
-    InterviewPostRequest postRequest;
+    InterviewPostOrPutRequest postRequest;
     try {
-      postRequest = new Gson().fromJson(getJsonString(request), InterviewPostRequest.class);
+      postRequest = new Gson().fromJson(getJsonString(request), InterviewPostOrPutRequest.class);
     } catch (Exception JsonSyntaxException) {
       response.sendError(400);
       return;
@@ -156,6 +156,65 @@ public class ScheduledInterviewServlet extends HttpServlet {
     for (Availability avail : affectedAvailability) {
       availabilityDao.update(avail.withScheduled(true));
     }
+  }
+
+  // Send the request's contents to Datastore in the form of an updated ScheduledInterview object.
+  // Adds a shadow.
+  @Override
+  public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String shadowEmail = userService.getCurrentUser().getEmail();
+    String shadowId = getUserId();
+
+    InterviewPostOrPutRequest putRequest;
+    try {
+      putRequest = new Gson().fromJson(getJsonString(request), InterviewPostOrPutRequest.class);
+    } catch (Exception JsonSyntaxException) {
+      response.sendError(400);
+      return;
+    }
+    if (!putRequest.allFieldsPopulated()) {
+      response.sendError(400);
+      return;
+    }
+
+    String interviewerCompany = putRequest.getCompany();
+    String interviewerJob = putRequest.getJob();
+    String utcStartTime = putRequest.getUtcStartTime();
+    String position = putRequest.getPosition();
+    Job selectedPosition = Job.valueOf(Job.class, position);
+    TimeRange interviewRange;
+
+    try {
+      interviewRange =
+          new TimeRange(
+              Instant.parse(utcStartTime), Instant.parse(utcStartTime).plus(1, ChronoUnit.HOURS));
+    } catch (DateTimeParseException e) {
+      response.sendError(400, e.getMessage());
+      return;
+    }
+
+    // TODO: Call the new DAO method. Create a withShadow(shadowId) method.
+    // List<ScheduledInterview> possibleInterviews = scheduledInterviewDao.???
+    /*
+    possibleInterviews.removeIf(
+        interview ->
+            !personDao.get(interview.intervieweeId()).get().okShadow()
+                || !personDao.get(interview.interviewerId()).get().okShadow());
+    possibleInterviews.removeIf(
+        interview ->
+            !personDao.get(interview.interviewerId()).get().company().equals(interviewerCompany)
+                || !personDao.get(interview.interviewerId()).get().job().equals(interviewerJob));
+    int randomNumber = (int) (Math.random() * possibleInterviews.size());
+    ScheduledInterview selectedInterview = possibleInterviews.get(randomNumber);
+    scheduledInterviewDao.update(selectedInterview.withShadow(shadowId));
+
+    // Since the shadow commited to this interview, their availabilities must be updated
+    List<Availability> affectedAvailability =
+        availabilityDao.getInRangeForUser(shadowId, interviewRange.start(), interviewRange.end());
+    for (Availability avail : affectedAvailability) {
+      availabilityDao.update(avail.withScheduled(true));
+    }
+    */
   }
 
   // Get Json from request body.
