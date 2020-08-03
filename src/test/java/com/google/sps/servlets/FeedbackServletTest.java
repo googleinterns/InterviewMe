@@ -59,7 +59,8 @@ public final class FeedbackServletTest {
           emailToId("user@company.org"),
           emailToId("user@mail.com"),
           "meet_link",
-          Job.PRODUCT_MANAGER);
+          Job.PRODUCT_MANAGER,
+          /*shadowId=*/ "");
 
   @Before
   public void setUp() {

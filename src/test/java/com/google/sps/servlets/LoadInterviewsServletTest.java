@@ -70,7 +70,8 @@ public final class LoadInterviewsServletTest {
           "Google",
           "SWE",
           "linkedIn",
-          EnumSet.of(Job.SOFTWARE_ENGINEER, Job.NETWORK_ENGINEER));
+          EnumSet.of(Job.SOFTWARE_ENGINEER, Job.NETWORK_ENGINEER),
+          /*okShadow=*/ true);
   private final Availability qualifiedSWEAndNEAvail1 =
       Availability.create(
           qualifiedSWEAndNE.id(),
@@ -111,7 +112,8 @@ public final class LoadInterviewsServletTest {
           "Google",
           "SWE",
           "linkedIn",
-          EnumSet.of(Job.SOFTWARE_ENGINEER));
+          EnumSet.of(Job.SOFTWARE_ENGINEER),
+          /*okShadow=*/ true);
   private final Availability qualifiedSWEAvail1 =
       Availability.create(
           qualifiedSWE.id(),
@@ -300,7 +302,8 @@ public final class LoadInterviewsServletTest {
             "interviewerId",
             String.format("%d", userEmail.hashCode()),
             "meet_link",
-            Job.SOFTWARE_ENGINEER));
+            Job.SOFTWARE_ENGINEER,
+            "shadow_id"));
     // An unscheduled hour slot for an interviewer
     availabilityDao.create(qualifiedSWEAndNEAvail1);
     availabilityDao.create(qualifiedSWEAndNEAvail2);

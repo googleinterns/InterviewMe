@@ -31,6 +31,8 @@ public abstract class ScheduledInterview {
 
   public abstract Job position();
 
+  public abstract String shadowId();
+
   /**
    * Creates a scheduled interview that contains a timerange, the date and the emails of the
    * attendees.
@@ -41,7 +43,8 @@ public abstract class ScheduledInterview {
       String interviewerId,
       String intervieweeId,
       String meetLink,
-      Job position) {
+      Job position,
+      String shadowId) {
     return builder()
         .setId(id)
         .setWhen(when)
@@ -49,6 +52,7 @@ public abstract class ScheduledInterview {
         .setIntervieweeId(intervieweeId)
         .setMeetLink(meetLink)
         .setPosition(position)
+        .setShadowId(shadowId)
         .build();
   }
 
@@ -69,6 +73,8 @@ public abstract class ScheduledInterview {
     abstract Builder setMeetLink(String meetLink);
 
     abstract Builder setPosition(Job position);
+
+    abstract Builder setShadowId(String shadowId);
 
     abstract ScheduledInterview build();
   }
