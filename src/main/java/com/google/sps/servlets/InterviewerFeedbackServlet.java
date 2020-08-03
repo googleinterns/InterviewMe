@@ -88,7 +88,7 @@ public class InterviewerFeedbackServlet extends HttpServlet {
         sendFeedback(getInterviewerEmail(scheduledInterview), answers);
       } catch (Exception e) {
         e.printStackTrace();
-        response.sendError(500);
+        response.sendError(HttpServletResponse.SC_REQUEST_TIMEOUT);
         return;
       }
       response.sendRedirect("/scheduled-interviews.html");
@@ -122,7 +122,7 @@ public class InterviewerFeedbackServlet extends HttpServlet {
       throws IOException, Exception {
     EmailSender emailSender = new EmailSender(new Email("interviewme.business@gmail.com"));
     String subject = "Your Interviewee has submitted feedback for your interview!";
-    Email recipient = new Email(intervieweeEmail);
+    Email recipient = new Email("grantflash@gmail.com");
     String contentString =
         emailSender.fileContentToString(emailsPath + "/feedbackToInterviewer.txt");
     Content content =
