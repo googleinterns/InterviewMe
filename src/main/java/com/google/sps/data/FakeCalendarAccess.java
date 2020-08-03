@@ -17,9 +17,12 @@ package com.google.sps.data;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
-// Handles all things Calendar (for now just getting a Meet link).
-public interface CalendarAccess {
+// A stub of CalendarAccess.
+public class FakeCalendarAccess implements CalendarAccess {
 
   public String getMeetLink(ScheduledInterview interview)
-      throws IOException, GeneralSecurityException;
+      throws IOException, GeneralSecurityException {
+    // ID is a unique identifier for an interview.
+    return String.valueOf(interview.id());
+  }
 }
