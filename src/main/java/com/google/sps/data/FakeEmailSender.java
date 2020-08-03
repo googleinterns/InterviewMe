@@ -14,24 +14,55 @@
 
 package com.google.sps.data;
 
+// using SendGrid's Java Library
+// https://github.com/sendgrid/sendgrid-java
+import com.sendgrid.Method;
+import com.sendgrid.Request;
 import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
+import java.util.Map;
 import java.util.HashMap;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.net.URL;
 
-/**
- * EmailSenderInterface includes the basic methods anything managing sending emails must support.
- */
-public interface EmailSender {
+// Handles sending emails.
+@WebServlet("/email")
+public class FakeEmailSender implements EmailSender {
+  // The email messages are being sent from.
+  private final Email sender;
+  // private final SendGrid sg;
+
+  public FakeEmailSender(Email sender) throws Exception {
+    this.sender = sender;
+    // this.sg = "";
+  }
 
   // Sends an email from the "from" Email to the "to" Email, with specified subject and content.
+  @Override
   public Response sendEmail(Email recipient, String subject, Content content)
-      throws IOException, Exception;
+      throws IOException, Exception {
+    Response response;
+    response.setStatusCode(200);
+    return response;
+  }
 
   // Returns the contents of the file specified at filePath as a String. Useful for converting
   // predifined email templates to text.
-  public String fileContentToString(String filePath) throws IOException;
+  @Override
+  public String fileContentToString(String filePath) throws IOException {
+    return "";
+  }
 
   /**
    * Modifies and returns @param str. Replaces all occurences in @param str of each key in @param
@@ -40,5 +71,8 @@ public interface EmailSender {
   // Ex. str = "You will be mock interviewing {{interviewee_full_name}} on {{formatted_date}}."
   // toReplace = { ("{{interviewee_full_name}}","Tess"), ("{{formatted_date}}", "June 6, 2022") }
   // Returned: "You will be mock interviewing Tess on June 6, 2022."
-  public String replaceAllPairs(HashMap<String, String> toReplace, String str);
+  @Override
+  public String replaceAllPairs(HashMap<String, String> toReplace, String str) {
+    return "";
+  }
 }

@@ -25,6 +25,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.sps.data.Availability;
 import com.google.sps.data.FakeAvailabilityDao;
+import com.google.sps.data.FakeEmailSender;
 import com.google.sps.data.FakePersonDao;
 import com.google.sps.data.FakeScheduledInterviewDao;
 import com.google.sps.data.ScheduledInterview;
@@ -62,6 +63,7 @@ public final class ScheduledInterviewServletTest {
   private FakeScheduledInterviewDao scheduledInterviewDao;
   private FakeAvailabilityDao availabilityDao;
   private FakePersonDao personDao;
+  private FakeEmailSender emailSender;
 
   private final Person googleSWE1 =
       Person.create(
@@ -389,7 +391,7 @@ public final class ScheduledInterviewServletTest {
             false));
 
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
+    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao, emailSender);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();

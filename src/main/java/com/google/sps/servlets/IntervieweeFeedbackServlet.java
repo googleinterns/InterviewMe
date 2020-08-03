@@ -23,6 +23,7 @@ import com.google.sps.data.Person;
 import com.google.sps.data.PersonDao;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.ScheduledInterviewDao;
+import com.google.sps.data.SendgridEmailSender;
 import com.google.sps.data.TimeRange;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
@@ -53,18 +54,24 @@ import javax.servlet.ServletException;
 public class IntervieweeFeedbackServlet extends HttpServlet {
   private ScheduledInterviewDao scheduledInterviewDao;
   private PersonDao personDao;
+  private EmailSender emailSender;
   private Path emailsPath =
       Paths.get(
           System.getProperty("user.home") + "/InterviewMe/src/main/resources/templates/email");
 
   @Override
   public void init() {
-    init(new DatastoreScheduledInterviewDao(), new DatastorePersonDao());
+    init(
+        new DatastoreScheduledInterviewDao(),
+        new DatastorePersonDao(),
+        new SendgridEmailSender(new Email("interviewme.business@gmail.com")));
   }
 
-  public void init(ScheduledInterviewDao scheduledInterviewDao, PersonDao personDao) {
+  public void init(
+      ScheduledInterviewDao scheduledInterviewDao, PersonDao personDao, EmailSender emailSender) {
     this.scheduledInterviewDao = scheduledInterviewDao;
     this.personDao = personDao;
+    this.emailSender = emailSender;
   }
 
   @Override
@@ -135,7 +142,6 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
 
   private void sendFeedback(String intervieweeEmail, HashMap<String, String> answers)
       throws IOException, Exception {
-    EmailSender emailSender = new EmailSender(new Email("interviewme.business@gmail.com"));
     String subject = "Your Interviewer has submitted feedback for your interview!";
     Email recipient = new Email(intervieweeEmail);
     String contentString =

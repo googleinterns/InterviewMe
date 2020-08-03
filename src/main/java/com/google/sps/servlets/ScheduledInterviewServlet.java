@@ -30,6 +30,7 @@ import com.google.sps.data.PersonDao;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.ScheduledInterviewDao;
 import com.google.sps.data.ScheduledInterviewRequest;
+import com.google.sps.data.SendgridEmailSender;
 import com.google.sps.data.TimeRange;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
@@ -66,6 +67,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
   private ScheduledInterviewDao scheduledInterviewDao;
   private AvailabilityDao availabilityDao;
   private PersonDao personDao;
+  private EmailSender emailSender;
   private final UserService userService = UserServiceFactory.getUserService();
   private Path emailsPath =
       Paths.get(
@@ -76,16 +78,19 @@ public class ScheduledInterviewServlet extends HttpServlet {
     init(
         new DatastoreScheduledInterviewDao(),
         new DatastoreAvailabilityDao(),
-        new DatastorePersonDao());
+        new DatastorePersonDao(),
+        new SendgridEmailSender(new Email("interviewme.business@gmail.com")));
   }
 
   public void init(
       ScheduledInterviewDao scheduledInterviewDao,
       AvailabilityDao availabilityDao,
-      PersonDao personDao) {
+      PersonDao personDao,
+      EmailSender emailSender) {
     this.scheduledInterviewDao = scheduledInterviewDao;
     this.availabilityDao = availabilityDao;
     this.personDao = personDao;
+    this.emailSender = emailSender;
   }
 
   // Gets the current user's email and returns the ScheduledInterviews for that person.
@@ -290,7 +295,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
 
   private void sendInterviewerEmail(String interviewerId, HashMap<String, String> emailedDetails)
       throws IOException, Exception {
-    EmailSender emailSender = new EmailSender(new Email("interviewme.business@gmail.com"));
+    // EmailSender emailSender = new EmailSender(new Email("interviewme.business@gmail.com"));
     String subject = "You have been requested to conduct a mock interview!";
     Email recipient = new Email(getEmail(interviewerId));
     String contentString =
@@ -302,7 +307,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
 
   private void sendIntervieweeEmail(String intervieweeId, HashMap<String, String> emailedDetails)
       throws IOException, Exception {
-    EmailSender emailSender = new EmailSender(new Email("interviewme.business@gmail.com"));
+    // EmailSender emailSender = new EmailSender(new Email("interviewme.business@gmail.com"));
     String subject = "You have been registered for a mock interview!";
     Email recipient = new Email(getEmail(intervieweeId));
     String contentString =
