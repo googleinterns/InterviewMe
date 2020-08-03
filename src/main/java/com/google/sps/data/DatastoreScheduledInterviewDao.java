@@ -145,6 +145,8 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
             Instant.ofEpochMilli((long) scheduledInterviewEntity.getProperty("endTime"))),
         (String) scheduledInterviewEntity.getProperty("interviewer"),
         (String) scheduledInterviewEntity.getProperty("interviewee"),
+        (String) scheduledInterviewEntity.getProperty("meetLink"),
+        Job.valueOf((String) scheduledInterviewEntity.getProperty("position")),
         (String) scheduledInterviewEntity.getProperty("shadow"));
   }
 
@@ -156,6 +158,8 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
     scheduledInterviewEntity.setProperty("endTime", scheduledInterview.when().end().toEpochMilli());
     scheduledInterviewEntity.setProperty("interviewer", scheduledInterview.interviewerId());
     scheduledInterviewEntity.setProperty("interviewee", scheduledInterview.intervieweeId());
+    scheduledInterviewEntity.setProperty("meetLink", scheduledInterview.meetLink());
+    scheduledInterviewEntity.setProperty("position", scheduledInterview.position().name());
     scheduledInterviewEntity.setProperty("shadow", scheduledInterview.shadowId());
     return scheduledInterviewEntity;
   }
@@ -168,6 +172,8 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
     scheduledInterviewEntity.setProperty("endTime", scheduledInterview.when().end().toEpochMilli());
     scheduledInterviewEntity.setProperty("interviewer", scheduledInterview.interviewerId());
     scheduledInterviewEntity.setProperty("interviewee", scheduledInterview.intervieweeId());
+    scheduledInterviewEntity.setProperty("meetLink", scheduledInterview.meetLink());
+    scheduledInterviewEntity.setProperty("position", scheduledInterview.position().name());
     scheduledInterviewEntity.setProperty("shadow", scheduledInterview.shadowId());
     return scheduledInterviewEntity;
   }

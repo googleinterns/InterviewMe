@@ -48,7 +48,9 @@ public class DatastoreScheduledInterviewDaoTest {
               Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
           "user@company.org",
           "user@mail.com",
-          "");
+          "meet_link",
+          Job.TECHNICAL_SALES,
+          /*shadowId=*/ "");
 
   private final ScheduledInterview scheduledInterview2 =
       ScheduledInterview.create(
@@ -57,7 +59,9 @@ public class DatastoreScheduledInterviewDaoTest {
               Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
           "user@company.org",
           "user2@mail.com",
-          "");
+          "meet_link",
+          Job.PRODUCT_MANAGER,
+          /*shadowId=*/ "");
 
   private final ScheduledInterview scheduledInterview3 =
       ScheduledInterview.create(
@@ -66,7 +70,9 @@ public class DatastoreScheduledInterviewDaoTest {
               Instant.parse("2020-07-06T19:00:10Z"), Instant.parse("2020-07-06T20:00:10Z")),
           "user3@company.org",
           "user2@mail.com",
-          "");
+          "meet_link",
+          Job.PRODUCT_MANAGER,
+          /*shadowId=*/ "");
 
   private final ScheduledInterview scheduledInterview4 =
       ScheduledInterview.create(
@@ -75,7 +81,9 @@ public class DatastoreScheduledInterviewDaoTest {
               Instant.parse("2020-07-06T20:00:10Z"), Instant.parse("2020-07-06T21:00:10Z")),
           "user@company.org",
           "user2@mail.com",
-          "");
+          "meet_link",
+          Job.PRODUCT_MANAGER,
+          /*shadowId=*/ "");
 
   private final ScheduledInterview scheduledInterview5 =
       ScheduledInterview.create(
@@ -84,7 +92,9 @@ public class DatastoreScheduledInterviewDaoTest {
               Instant.parse("2020-07-06T21:00:10Z"), Instant.parse("2020-07-06T22:00:10Z")),
           "user@company.org",
           "user3@mail.com",
-          "");
+          "meet_link",
+          Job.SOFTWARE_ENGINEER,
+          /*shadowId=*/ "");
   private final ScheduledInterview scheduledInterview6 =
       ScheduledInterview.create(
           (long) -1,
@@ -92,7 +102,9 @@ public class DatastoreScheduledInterviewDaoTest {
               Instant.parse("2020-07-06T21:30:10Z"), Instant.parse("2020-07-06T22:30:10Z")),
           "user2@mail.com",
           "user@company.org",
-          "");
+          "meet_link",
+          Job.SOFTWARE_ENGINEER,
+          /*shadowId=*/ "");
   private final ScheduledInterview scheduledInterview7 =
       ScheduledInterview.create(
           (long) -1,
@@ -100,7 +112,10 @@ public class DatastoreScheduledInterviewDaoTest {
               Instant.parse("2020-07-06T22:00:10Z"), Instant.parse("2020-07-06T23:00:10Z")),
           "user2@mail.com",
           "user3@mail.com",
-          "user@company.org");
+          "meet_link",
+          Job.SOFTWARE_ENGINEER,
+          /*shadowId=*/ "user@company.org");
+
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
           new LocalDatastoreServiceTestConfig()
@@ -128,6 +143,8 @@ public class DatastoreScheduledInterviewDaoTest {
             scheduledInterview1.when(),
             scheduledInterview1.interviewerId(),
             scheduledInterview1.intervieweeId(),
+            scheduledInterview1.meetLink(),
+            scheduledInterview1.position(),
             scheduledInterview1.shadowId());
     Assert.assertEquals(copyScheduledInterview1, storedScheduledInterview);
   }
@@ -145,6 +162,8 @@ public class DatastoreScheduledInterviewDaoTest {
             scheduledInterview5.when(),
             scheduledInterview5.interviewerId(),
             scheduledInterview5.intervieweeId(),
+            scheduledInterview5.meetLink(),
+            scheduledInterview5.position(),
             scheduledInterview5.shadowId());
     ScheduledInterview copyScheduledInterview2 =
         ScheduledInterview.create(
@@ -152,6 +171,8 @@ public class DatastoreScheduledInterviewDaoTest {
             scheduledInterview6.when(),
             scheduledInterview6.interviewerId(),
             scheduledInterview6.intervieweeId(),
+            scheduledInterview6.meetLink(),
+            scheduledInterview6.position(),
             scheduledInterview6.shadowId());
     ScheduledInterview copyScheduledInterview3 =
         ScheduledInterview.create(
@@ -159,6 +180,8 @@ public class DatastoreScheduledInterviewDaoTest {
             scheduledInterview7.when(),
             scheduledInterview7.interviewerId(),
             scheduledInterview7.intervieweeId(),
+            scheduledInterview7.meetLink(),
+            scheduledInterview7.position(),
             scheduledInterview7.shadowId());
     List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
     expected.add(copyScheduledInterview1);
@@ -182,6 +205,8 @@ public class DatastoreScheduledInterviewDaoTest {
             scheduledInterview2.when(),
             scheduledInterview2.interviewerId(),
             scheduledInterview2.intervieweeId(),
+            scheduledInterview2.meetLink(),
+            scheduledInterview2.position(),
             scheduledInterview2.shadowId());
     Assert.assertEquals(copyScheduledInterview2, storedScheduledInterview);
   }
@@ -198,6 +223,8 @@ public class DatastoreScheduledInterviewDaoTest {
             scheduledInterview2.when(),
             scheduledInterview2.interviewerId(),
             scheduledInterview2.intervieweeId(),
+            scheduledInterview2.meetLink(),
+            scheduledInterview2.position(),
             scheduledInterview2.shadowId());
     dao.update(updatedStoredScheduledInterview);
     Entity updatedEntity = datastore.prepare(new Query("ScheduledInterview")).asSingleEntity();
@@ -219,6 +246,8 @@ public class DatastoreScheduledInterviewDaoTest {
             scheduledInterview1.when(),
             scheduledInterview1.interviewerId(),
             scheduledInterview1.intervieweeId(),
+            scheduledInterview1.meetLink(),
+            scheduledInterview1.position(),
             scheduledInterview1.shadowId());
     Optional<ScheduledInterview> expectedScheduledInterviewOptional =
         Optional.of(expectedScheduledInterview);
@@ -259,6 +288,8 @@ public class DatastoreScheduledInterviewDaoTest {
             scheduledInterview2.when(),
             scheduledInterview2.interviewerId(),
             scheduledInterview2.intervieweeId(),
+            scheduledInterview2.meetLink(),
+            scheduledInterview2.position(),
             scheduledInterview2.shadowId());
 
     ScheduledInterview expectedScheduledInterview2 =
@@ -267,6 +298,8 @@ public class DatastoreScheduledInterviewDaoTest {
             scheduledInterview4.when(),
             scheduledInterview4.interviewerId(),
             scheduledInterview4.intervieweeId(),
+            scheduledInterview4.meetLink(),
+            scheduledInterview4.position(),
             scheduledInterview4.shadowId());
     List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
     expected.add(expectedScheduledInterview1);
@@ -299,6 +332,8 @@ public class DatastoreScheduledInterviewDaoTest {
             scheduledInterview2.when(),
             scheduledInterview2.interviewerId(),
             scheduledInterview2.intervieweeId(),
+            scheduledInterview2.meetLink(),
+            scheduledInterview2.position(),
             scheduledInterview2.shadowId());
     ScheduledInterview expectedScheduledInterview2 =
         ScheduledInterview.create(
@@ -306,6 +341,8 @@ public class DatastoreScheduledInterviewDaoTest {
             scheduledInterview3.when(),
             scheduledInterview3.interviewerId(),
             scheduledInterview3.intervieweeId(),
+            scheduledInterview3.meetLink(),
+            scheduledInterview3.position(),
             scheduledInterview3.shadowId());
     ScheduledInterview expectedScheduledInterview3 =
         ScheduledInterview.create(
@@ -313,6 +350,8 @@ public class DatastoreScheduledInterviewDaoTest {
             scheduledInterview4.when(),
             scheduledInterview4.interviewerId(),
             scheduledInterview4.intervieweeId(),
+            scheduledInterview4.meetLink(),
+            scheduledInterview4.position(),
             scheduledInterview4.shadowId());
     List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
     expected.add(expectedScheduledInterview1);
