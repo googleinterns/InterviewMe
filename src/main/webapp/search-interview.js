@@ -31,7 +31,6 @@ function loadInterviews() {
       interviewTimesDiv().innerHTML = interviewTimes;
     });
   }
-  /*
   if (role === 'Shadow') {
     fetch(`/shadow-load-interviews?timeZoneOffset=${browserTimezoneOffset()}&position=${selectedEnumPosition()}`)
     .then(response => response.text())
@@ -39,7 +38,6 @@ function loadInterviews() {
       interviewTimesDiv().innerHTML = interviewTimes;
     })
   }
-  */
 }
 
 function selectedRole() {
@@ -98,7 +96,6 @@ function selectInterview(interviewer) {
       fetch(request).then(() => {window.location.replace('/scheduled-interviews.html');});
     }
   }
-  /*
   if (role === 'Shadow') {
     if (confirm(
         `You selected: ${date} from ${time} with a ` +
@@ -126,7 +123,6 @@ function selectInterview(interviewer) {
       fetch(request).then(() => {window.location.replace('/scheduled-interviews.html');});
     }
   }
-  */
 }
 
 // Fills in the modal with interviewer info from Datastore and shows it.
@@ -147,7 +143,6 @@ function showInterviewers(selectButton) {
       checkIfSpecified();
     });
   }
-  /*
   if (role === 'Shadow') {
     fetch(`/shadow-show-interviewers?utcStartTime=${utc}&date=${date}&time=${reformattedTime}&position=${selectedPosition()}`)
     .then(response => response.text())
@@ -158,7 +153,6 @@ function showInterviewers(selectButton) {
       checkIfSpecified();
     });
   }
-  */
 }
 
 function checkIfSpecified() {
