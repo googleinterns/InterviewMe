@@ -57,7 +57,9 @@ public final class FeedbackServletTest {
           new TimeRange(
               Instant.parse("2020-07-06T17:00:10Z"), Instant.parse("2020-07-06T18:00:10Z")),
           emailToId("user@company.org"),
-          emailToId("user@mail.com"));
+          emailToId("user@mail.com"),
+          "meet_link",
+          "PROGRAM_MANAGER");
 
   @Before
   public void setUp() {

@@ -24,14 +24,16 @@ public class ScheduledInterviewRequest {
   private boolean hasStarted;
   private String meetLink;
   private String position;
-// TODO: display meetLink and position in JSP page
+  // TODO: display meetLink and position in JSP page
   public ScheduledInterviewRequest(
       long id,
       String dateString,
       String interviewer,
       String interviewee,
       String role,
-      boolean hasStarted,String meetLink,String position) {
+      boolean hasStarted,
+      String meetLink,
+      String position) {
     this.id = id;
     this.dateString = dateString;
     this.interviewer = interviewer;
@@ -65,11 +67,12 @@ public class ScheduledInterviewRequest {
   public boolean getHasStarted() {
     return hasStarted;
   }
-  
+
   public String getMeetLink() {
     return meetLink;
   }
-  public boolean getPosition() {
+
+  public String getPosition() {
     return position;
   }
 

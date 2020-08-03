@@ -210,14 +210,18 @@ public final class ScheduledInterviewServletTest {
             new TimeRange(
                 Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
             googleSWE1.id(),
-            googleSWE2QualPMInterviewer.id()));
+            googleSWE2QualPMInterviewer.id(),
+            "meet_link",
+            "PRODUCT_MANAGER"));
     scheduledInterviewDao.create(
         ScheduledInterview.create(
             /*id=*/ -1,
             new TimeRange(
                 Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
             googleSWE2QualPMInterviewer.id(),
-            googlePM.id()));
+            googlePM.id(),
+            "meet_link",
+            "SOFTWARE_ENGINEER"));
     getRequest.addParameter("timeZone", "America/New_York");
     getRequest.addParameter("userTime", "2020-07-05T22:00:00Z");
     scheduledInterviewServlet.doGet(getRequest, getResponse);
@@ -230,7 +234,9 @@ public final class ScheduledInterviewServletTest {
             googleSWE1.firstName(),
             googleSWE2QualPMInterviewer.firstName(),
             "Interviewer",
-            true);
+            /*hasStarted=*/ true,
+            "meet_link",
+            "PRODUCT_MANAGER");
     List<ScheduledInterviewRequest> expected = new ArrayList<ScheduledInterviewRequest>();
     expected.add(expectedInterview);
     Assert.assertEquals(expected, actual);
@@ -253,14 +259,18 @@ public final class ScheduledInterviewServletTest {
             new TimeRange(
                 Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
             googleSWE1.id(),
-            googleSWE2QualPMInterviewer.id()));
+            googleSWE2QualPMInterviewer.id(),
+            "meet_link",
+            "PRODUCT_MANAGER"));
     scheduledInterviewDao.create(
         ScheduledInterview.create(
             /*id=*/ -1,
             new TimeRange(
                 Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
             googleSWE1.id(),
-            googleSWE2QualPMInterviewer.id()));
+            googleSWE2QualPMInterviewer.id(),
+            "meet_link",
+            "PRODUCT_MANAGER"));
     getRequest.addParameter("timeZone", "Etc/UCT");
     getRequest.addParameter("userTime", "2020-07-05T22:00:00Z");
     scheduledInterviewServlet.doGet(getRequest, getResponse);
@@ -273,7 +283,9 @@ public final class ScheduledInterviewServletTest {
             googleSWE1.firstName(),
             googleSWE2QualPMInterviewer.firstName(),
             "Interviewer",
-            true);
+            true,
+            "meet_link",
+            "PRODUCT_MANAGER");
     ScheduledInterviewRequest scheduledInterview2 =
         new ScheduledInterviewRequest(
             actual.get(1).getId(),
@@ -281,7 +293,9 @@ public final class ScheduledInterviewServletTest {
             googleSWE1.firstName(),
             googleSWE2QualPMInterviewer.firstName(),
             "Interviewer",
-            true);
+            true,
+            "meet_link",
+            "PRODUCT_MANAGER");
     List<ScheduledInterviewRequest> expected = new ArrayList<ScheduledInterviewRequest>();
     expected.add(scheduledInterview1);
     expected.add(scheduledInterview2);
@@ -322,7 +336,9 @@ public final class ScheduledInterviewServletTest {
             new TimeRange(
                 Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
             googleSWE1.id(),
-            emailToId("user@company.org"));
+            emailToId("user@company.org"),
+            "meet_link",
+            "SOFTWARE_ENGINEER");
     Assert.assertEquals(expected, actual.get(0));
   }
 
@@ -359,14 +375,18 @@ public final class ScheduledInterviewServletTest {
             new TimeRange(
                 Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
             googleSWE1.id(),
-            emailToId("user@company.org"));
+            emailToId("user@company.org"),
+            "meet_link",
+            "SOFTWARE_ENGINEER");
     ScheduledInterview expected2 =
         ScheduledInterview.create(
             actual.get(0).id(),
             new TimeRange(
                 Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
             googleSWE2QualPMInterviewer.id(),
-            emailToId("user@company.org"));
+            emailToId("user@company.org"),
+            "meet_link",
+            "PRODUCT_MANAGER");
     boolean actualIsExpectedOneOrTwo =
         actual.get(0).equals(expected1) || actual.get(0).equals(expected2);
     Assert.assertTrue(actualIsExpectedOneOrTwo);
@@ -470,7 +490,9 @@ public final class ScheduledInterviewServletTest {
             new TimeRange(
                 Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
             googleSWE2QualPMInterviewer.id(),
-            emailToId("user@company.org"));
+            emailToId("user@company.org"),
+            "meet_link",
+            "PRODUCT_MANAGER");
     Assert.assertEquals(expected, actual.get(0));
   }
 }

@@ -139,10 +139,10 @@ public class ScheduledInterviewServlet extends HttpServlet {
     int randomNumber = (int) (Math.random() * possibleInterviewers.size());
     String interviewerId = possibleInterviewers.get(randomNumber);
 
-    String meetLink="fake_meet_link"; //TODO: replace with real MeetLink from Calendar Access
-    String position="fake_position"; //TODO: send this info over from front end
+    String meetLink = "fake_meet_link"; // TODO: replace with real MeetLink from Calendar Access
     scheduledInterviewDao.create(
-        ScheduledInterview.create(-1, interviewRange, interviewerId, intervieweeId, meetLink, position));
+        ScheduledInterview.create(
+            -1, interviewRange, interviewerId, intervieweeId, meetLink, position));
 
     // Since an interview was scheduled, both parties' availabilities must be updated
     List<Availability> affectedAvailability = new ArrayList<Availability>();
@@ -220,10 +220,17 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String role = getUserRole(scheduledInterview, userId);
     boolean hasStarted =
         scheduledInterview.when().start().minus(5, ChronoUnit.MINUTES).isBefore(userTime);
-String meetLink=scheduledInterview.meetLink();
-String position=scheduledInterview.position();
+    String meetLink = scheduledInterview.meetLink();
+    String position = scheduledInterview.position();
     return new ScheduledInterviewRequest(
-        scheduledInterview.id(), date, interviewer, interviewee, role, hasStarted,meetLink,position);
+        scheduledInterview.id(),
+        date,
+        interviewer,
+        interviewee,
+        role,
+        hasStarted,
+        meetLink,
+        position);
   }
 
   static String getUserRole(ScheduledInterview scheduledInterview, String userId) {

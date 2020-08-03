@@ -134,8 +134,7 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
         (String) scheduledInterviewEntity.getProperty("interviewer"),
         (String) scheduledInterviewEntity.getProperty("interviewee"),
         (String) scheduledInterviewEntity.getProperty("meetLink"),
-        (String) scheduledInterviewEntity.getProperty("position"),        
-        );
+        (String) scheduledInterviewEntity.getProperty("position"));
   }
 
   /** Creates a scheduledInterview Entity from a scheduledInterview object. */
