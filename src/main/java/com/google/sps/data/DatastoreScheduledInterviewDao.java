@@ -83,8 +83,8 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
     List<Filter> allFilters = new ArrayList<>();
     allFilters.add(getNotUserFilter(shadowId));
     allFilters.add(getTimeFilter(minTime, maxTime));
-    allFilters.add(new FilterPredicate("position", FilterOperator.EQUAL, position));
-    allFilters.add(new FilterPredicate("shadowId", FilterOperator.EQUAL, ""));
+    allFilters.add(new FilterPredicate("position", FilterOperator.EQUAL, position.name()));
+    allFilters.add(new FilterPredicate("shadow", FilterOperator.EQUAL, ""));
     CompositeFilter forPositionWithoutShadowInRange = CompositeFilterOperator.and(allFilters);
 
     Query query =

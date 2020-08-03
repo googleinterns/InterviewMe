@@ -101,23 +101,27 @@ public class ShadowLoadInterviewsServlet extends HttpServlet {
       userId = String.format("%d", userEmail.hashCode());
     }
 
-    List<ScheduledInterview> possibleInterviews = scheduledInterviewDao.getForPositionWithoutShadowInRange(
-      userId, selctedPosition, interviewSearchTimeRange.start(), interviewSearchTimeRange.end());
+    List<ScheduledInterview> possibleInterviews =
+        scheduledInterviewDao.getForPositionWithoutShadowInRange(
+            userId,
+            selectedPosition,
+            interviewSearchTimeRange.start(),
+            interviewSearchTimeRange.end());
 
     possibleInterviews.removeIf(
         interview ->
             !personDao.get(interview.intervieweeId()).get().okShadow()
                 || !personDao.get(interview.interviewerId()).get().okShadow());
     List<PossibleInterviewSlot> possibleInterviewSlots =
-        scheduledInterviewsToPossibleInterviewSlots(possibleInterviews);
+        scheduledInterviewsToPossibleInterviewSlots(possibleInterviews, timezoneOffset);
 
-    String date = possibleInterviews.isEmpty() ? "" : possibleInterviews.get(0).date();
+    String date = possibleInterviewSlots.isEmpty() ? "" : possibleInterviewSlots.get(0).date();
     List<ArrayList<PossibleInterviewSlot>> possibleInterviewsForWeek =
         new ArrayList<ArrayList<PossibleInterviewSlot>>();
 
-    if (!possibleInterviews.isEmpty()) {
+    if (!possibleInterviewSlots.isEmpty()) {
       ArrayList<PossibleInterviewSlot> dayOfSlots = new ArrayList<PossibleInterviewSlot>();
-      for (PossibleInterviewSlot possibleInterview : possibleInterviews) {
+      for (PossibleInterviewSlot possibleInterview : possibleInterviewSlots) {
         if (!possibleInterview.date().equals(date)) {
           possibleInterviewsForWeek.add(dayOfSlots);
           dayOfSlots = new ArrayList<PossibleInterviewSlot>();

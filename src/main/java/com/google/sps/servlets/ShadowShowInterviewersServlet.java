@@ -84,9 +84,10 @@ public class ShadowShowInterviewersServlet extends HttpServlet {
     if (userId == null) {
       userId = String.format("%d", userEmail.hashCode());
     }
-    
-    List<ScheduledInterview> possibleInterviews = scheduledInterviewDao.getForPositionWithoutShadowInRange(
-      userId, selctedPosition, interviewTimeRange.start(), interviewTimeRange.end());
+
+    List<ScheduledInterview> possibleInterviews =
+        scheduledInterviewDao.getForPositionWithoutShadowInRange(
+            userId, selectedPosition, interviewTimeRange.start(), interviewTimeRange.end());
 
     possibleInterviews.removeIf(
         interview ->

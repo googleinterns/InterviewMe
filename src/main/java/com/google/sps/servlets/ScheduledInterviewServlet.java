@@ -150,7 +150,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
             interviewerId,
             intervieweeId,
             meetLink,
-            Job.valueOf(position),
+            selectedPosition,
             /*shadowId=*/ ""));
 
     // Since an interview was scheduled, both parties' availabilities must be updated
@@ -204,9 +204,10 @@ public class ScheduledInterviewServlet extends HttpServlet {
       return;
     }
 
-    List<ScheduledInterview> possibleInterviews = scheduledInterviewDao.getForPositionWithoutShadowInRange(
-      String shadowId, Job position, Instant minTime, Instant maxTime);
-      
+    List<ScheduledInterview> possibleInterviews =
+        scheduledInterviewDao.getForPositionWithoutShadowInRange(
+            shadowId, selectedPosition, interviewRange.start(), interviewRange.end());
+
     possibleInterviews.removeIf(
         interview ->
             !personDao.get(interview.intervieweeId()).get().okShadow()
