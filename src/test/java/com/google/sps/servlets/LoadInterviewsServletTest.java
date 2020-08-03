@@ -71,7 +71,7 @@ public final class LoadInterviewsServletTest {
           "SWE",
           "linkedIn",
           EnumSet.of(Job.SOFTWARE_ENGINEER, Job.NETWORK_ENGINEER),
-          true);
+          /*okShadow=*/ true);
   private final Availability qualifiedSWEAndNEAvail1 =
       Availability.create(
           qualifiedSWEAndNE.id(),
@@ -113,7 +113,7 @@ public final class LoadInterviewsServletTest {
           "SWE",
           "linkedIn",
           EnumSet.of(Job.SOFTWARE_ENGINEER),
-          true);
+          /*okShadow=*/ true);
   private final Availability qualifiedSWEAvail1 =
       Availability.create(
           qualifiedSWE.id(),
@@ -300,7 +300,8 @@ public final class LoadInterviewsServletTest {
             new TimeRange(
                 Instant.parse("2020-07-07T16:00:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
             "interviewerId",
-            String.format("%d", userEmail.hashCode())));
+            String.format("%d", userEmail.hashCode()),
+            ""));
     // An unscheduled hour slot for an interviewer
     availabilityDao.create(qualifiedSWEAndNEAvail1);
     availabilityDao.create(qualifiedSWEAndNEAvail2);

@@ -68,7 +68,7 @@ public final class ShowInterviewersServletTest {
           "SWE",
           "linkedIn",
           EnumSet.of(Job.SOFTWARE_ENGINEER),
-          true);
+          /*okShadow=*/ true);
   private final Availability googleSWE1Avail1 =
       Availability.create(
           googleSWE1.id(),
@@ -110,7 +110,7 @@ public final class ShowInterviewersServletTest {
           "SWE",
           "linkedIn",
           EnumSet.of(Job.SOFTWARE_ENGINEER),
-          true);
+          /*okShadow=*/ true);
   private final Availability googleSWE2Avail1 =
       Availability.create(
           googleSWE2.id(),
@@ -152,7 +152,7 @@ public final class ShowInterviewersServletTest {
           "NE",
           "linkedIn",
           EnumSet.of(Job.NETWORK_ENGINEER),
-          true);
+          /*okShadow=*/ true);
   private final Availability googleNEAvail1 =
       Availability.create(
           googleNE.id(),
