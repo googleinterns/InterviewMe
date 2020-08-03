@@ -72,8 +72,8 @@ public final class ScheduledInterviewServletTest {
           "Google",
           "SWE",
           "linkedIn",
-          EnumSet.noneOf(Job.class),
-          true);
+          EnumSet.of(Job.SOFTWARE_ENGINEER),
+          /*okShadow=*/ true);
   private final Availability googleSWE1Avail1 =
       Availability.create(
           googleSWE1.id(),
@@ -103,7 +103,7 @@ public final class ScheduledInterviewServletTest {
           /*id=*/ -1,
           /*scheduled=*/ false);
 
-  private final Person googleSWE2 =
+  private final Person googleSWE2QualPMInterviewer =
       Person.create(
           emailToId("user2@mail"),
           "user2@mail",
@@ -112,32 +112,32 @@ public final class ScheduledInterviewServletTest {
           "Google",
           "SWE",
           "linkedIn",
-          EnumSet.noneOf(Job.class),
-          true);
-  private final Availability googleSWE2Avail1 =
+          EnumSet.of(Job.SOFTWARE_ENGINEER, Job.PRODUCT_MANAGER),
+          /*okShadow=*/ true);
+  private final Availability googleSWE2QualPMInterviewerAvail1 =
       Availability.create(
-          googleSWE2.id(),
+          googleSWE2QualPMInterviewer.id(),
           new TimeRange(
               Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:00:00Z")),
           /*id=*/ -1,
           /*scheduled=*/ false);
-  private final Availability googleSWE2Avail2 =
+  private final Availability googleSWE2QualPMInterviewerAvail2 =
       Availability.create(
-          googleSWE2.id(),
+          googleSWE2QualPMInterviewer.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:00:00Z"), Instant.parse("2020-07-20T13:15:00Z")),
           /*id=*/ -1,
           /*scheduled=*/ false);
-  private final Availability googleSWE2Avail3 =
+  private final Availability googleSWE2QualPMInterviewerAvail3 =
       Availability.create(
-          googleSWE2.id(),
+          googleSWE2QualPMInterviewer.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:15:00Z"), Instant.parse("2020-07-20T13:30:00Z")),
           /*id=*/ -1,
           /*scheduled=*/ false);
-  private final Availability googleSWE2Avail4 =
+  private final Availability googleSWE2QualPMInterviewerAvail4 =
       Availability.create(
-          googleSWE2.id(),
+          googleSWE2QualPMInterviewer.id(),
           new TimeRange(
               Instant.parse("2020-07-20T13:30:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
           /*id=*/ -1,
@@ -152,8 +152,8 @@ public final class ScheduledInterviewServletTest {
           "Google",
           "PM",
           "linkedIn",
-          EnumSet.noneOf(Job.class),
-          true);
+          EnumSet.of(Job.SOFTWARE_ENGINEER, Job.PRODUCT_MANAGER),
+          /*okShadow=*/ true);
   private final Availability googlePMAvail1 =
       Availability.create(
           googlePM.id(),
@@ -205,7 +205,7 @@ public final class ScheduledInterviewServletTest {
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
     personDao.create(googleSWE1);
-    personDao.create(googleSWE2);
+    personDao.create(googleSWE2QualPMInterviewer);
     personDao.create(googlePM);
     scheduledInterviewDao.create(
         ScheduledInterview.create(
@@ -213,13 +213,13 @@ public final class ScheduledInterviewServletTest {
             new TimeRange(
                 Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
             googleSWE1.id(),
-            googleSWE2.id()));
+            googleSWE2QualPMInterviewer.id()));
     scheduledInterviewDao.create(
         ScheduledInterview.create(
             /*id=*/ -1,
             new TimeRange(
                 Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
-            googleSWE2.id(),
+            googleSWE2QualPMInterviewer.id(),
             googlePM.id()));
     getRequest.addParameter("timeZone", "America/New_York");
     getRequest.addParameter("userTime", "2020-07-05T22:00:00Z");
@@ -231,7 +231,7 @@ public final class ScheduledInterviewServletTest {
             actual.get(0).getId(),
             "Sunday, July 5, 2020 from 2:00 PM to 3:00 PM",
             googleSWE1.firstName(),
-            googleSWE2.firstName(),
+            googleSWE2QualPMInterviewer.firstName(),
             "Interviewer",
             true);
     List<ScheduledInterviewRequest> expected = new ArrayList<ScheduledInterviewRequest>();
@@ -248,7 +248,7 @@ public final class ScheduledInterviewServletTest {
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
     personDao.create(googleSWE1);
-    personDao.create(googleSWE2);
+    personDao.create(googleSWE2QualPMInterviewer);
     personDao.create(googlePM);
     scheduledInterviewDao.create(
         ScheduledInterview.create(
@@ -256,14 +256,14 @@ public final class ScheduledInterviewServletTest {
             new TimeRange(
                 Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
             googleSWE1.id(),
-            googleSWE2.id()));
+            googleSWE2QualPMInterviewer.id()));
     scheduledInterviewDao.create(
         ScheduledInterview.create(
             /*id=*/ -1,
             new TimeRange(
                 Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
             googleSWE1.id(),
-            googleSWE2.id()));
+            googleSWE2QualPMInterviewer.id()));
     getRequest.addParameter("timeZone", "Etc/UCT");
     getRequest.addParameter("userTime", "2020-07-05T22:00:00Z");
     scheduledInterviewServlet.doGet(getRequest, getResponse);
@@ -274,7 +274,7 @@ public final class ScheduledInterviewServletTest {
             actual.get(0).getId(),
             "Sunday, July 5, 2020 from 6:00 PM to 7:00 PM",
             googleSWE1.firstName(),
-            googleSWE2.firstName(),
+            googleSWE2QualPMInterviewer.firstName(),
             "Interviewer",
             true);
     ScheduledInterviewRequest scheduledInterview2 =
@@ -282,7 +282,7 @@ public final class ScheduledInterviewServletTest {
             actual.get(1).getId(),
             "Sunday, July 5, 2020 from 8:00 PM to 9:00 PM",
             googleSWE1.firstName(),
-            googleSWE2.firstName(),
+            googleSWE2QualPMInterviewer.firstName(),
             "Interviewer",
             true);
     List<ScheduledInterviewRequest> expected = new ArrayList<ScheduledInterviewRequest>();
@@ -294,7 +294,7 @@ public final class ScheduledInterviewServletTest {
 
   // Tests whether a scheduledInterview object was added to datastore with one possible interviewer.
   @Test
-  public void onlyOnePossibleInterviewer() throws IOException {
+  public void onlyReturnsInterviewersWithMatchingCompanyAndJob() throws IOException {
     personDao.create(googleSWE1);
     availabilityDao.create(googleSWE1Avail1);
     availabilityDao.create(googleSWE1Avail2);
@@ -311,7 +311,7 @@ public final class ScheduledInterviewServletTest {
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
     String jsonString =
-        "{\"company\":\"Google\",\"job\":\"SWE\",\"utcStartTime\":\"2020-07-20T12:45:00Z\"}";
+        "{\"company\":\"Google\",\"job\":\"SWE\",\"utcStartTime\":\"2020-07-20T12:45:00Z\",\"position\":\"SOFTWARE_ENGINEER\"}";
     postRequest.setContent(jsonString.getBytes(StandardCharsets.UTF_8));
     scheduledInterviewServlet.doPost(postRequest, postResponse);
     List<ScheduledInterview> actual =
@@ -337,18 +337,18 @@ public final class ScheduledInterviewServletTest {
     availabilityDao.create(googleSWE1Avail2);
     availabilityDao.create(googleSWE1Avail3);
     availabilityDao.create(googleSWE1Avail4);
-    personDao.create(googleSWE2);
-    availabilityDao.create(googleSWE2Avail1);
-    availabilityDao.create(googleSWE2Avail2);
-    availabilityDao.create(googleSWE2Avail3);
-    availabilityDao.create(googleSWE2Avail4);
+    personDao.create(googleSWE2QualPMInterviewer);
+    availabilityDao.create(googleSWE2QualPMInterviewerAvail1);
+    availabilityDao.create(googleSWE2QualPMInterviewerAvail2);
+    availabilityDao.create(googleSWE2QualPMInterviewerAvail3);
+    availabilityDao.create(googleSWE2QualPMInterviewerAvail4);
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
     scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
     String jsonString =
-        "{\"company\":\"Google\",\"job\":\"SWE\",\"utcStartTime\":\"2020-07-20T12:45:00Z\"}";
+        "{\"company\":\"Google\",\"job\":\"SWE\",\"utcStartTime\":\"2020-07-20T12:45:00Z\",\"position\":\"SOFTWARE_ENGINEER\"}";
     postRequest.setContent(jsonString.getBytes(StandardCharsets.UTF_8));
     scheduledInterviewServlet.doPost(postRequest, postResponse);
     List<ScheduledInterview> actual =
@@ -368,7 +368,7 @@ public final class ScheduledInterviewServletTest {
             actual.get(0).id(),
             new TimeRange(
                 Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
-            googleSWE2.id(),
+            googleSWE2QualPMInterviewer.id(),
             emailToId("user@company.org"));
     boolean actualIsExpectedOneOrTwo =
         actual.get(0).equals(expected1) || actual.get(0).equals(expected2);
@@ -396,7 +396,7 @@ public final class ScheduledInterviewServletTest {
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
     String jsonString =
-        "{\"company\":\"Google\",\"job\":\"SWE\",\"utcStartTime\":\"2020-07-20T12:45:00Z\"}";
+        "{\"company\":\"Google\",\"job\":\"SWE\",\"utcStartTime\":\"2020-07-20T12:45:00Z\",\"position\":\"SOFTWARE_ENGINEER\"}";
     postRequest.setContent(jsonString.getBytes(StandardCharsets.UTF_8));
     scheduledInterviewServlet.doPost(postRequest, postResponse);
     boolean allAvailabilitiesAreScheduled = true;
@@ -431,7 +431,7 @@ public final class ScheduledInterviewServletTest {
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
     // No dash between 07 and 20
     String jsonString =
-        "{\"company\":\"Google\",\"job\":\"SWE\",\"utcStartTime\":\"2020-0720T12:45:00Z\"}";
+        "{\"company\":\"Google\",\"job\":\"SWE\",\"utcStartTime\":\"2020-0720T12:45:00Z\",\"position\":\"SOFTWARE_ENGINEER\"}";
     postRequest.setContent(jsonString.getBytes(StandardCharsets.UTF_8));
     scheduledInterviewServlet.doPost(postRequest, postResponse);
     Assert.assertEquals(400, postResponse.getStatus());
@@ -439,5 +439,41 @@ public final class ScheduledInterviewServletTest {
 
   private String emailToId(String email) {
     return String.format("%d", email.hashCode());
+  }
+
+  @Test
+  public void onlySchedulesWithQualifiedInterviewers() throws IOException {
+    personDao.create(googleSWE1);
+    availabilityDao.create(googleSWE1Avail1);
+    availabilityDao.create(googleSWE1Avail2);
+    availabilityDao.create(googleSWE1Avail3);
+    availabilityDao.create(googleSWE1Avail4);
+    personDao.create(googleSWE2QualPMInterviewer);
+    availabilityDao.create(googleSWE2QualPMInterviewerAvail1);
+    availabilityDao.create(googleSWE2QualPMInterviewerAvail2);
+    availabilityDao.create(googleSWE2QualPMInterviewerAvail3);
+    availabilityDao.create(googleSWE2QualPMInterviewerAvail4);
+    ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
+    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
+    helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
+    MockHttpServletRequest postRequest = new MockHttpServletRequest();
+    MockHttpServletResponse postResponse = new MockHttpServletResponse();
+    String jsonString =
+        "{\"company\":\"Google\",\"job\":\"SWE\",\"utcStartTime\":\"2020-07-20T12:45:00Z\",\"position\":\"PRODUCT_MANAGER\"}";
+    postRequest.setContent(jsonString.getBytes(StandardCharsets.UTF_8));
+    scheduledInterviewServlet.doPost(postRequest, postResponse);
+    List<ScheduledInterview> actual =
+        scheduledInterviewDao.getScheduledInterviewsInRangeForUser(
+            googleSWE2QualPMInterviewer.id(),
+            Instant.parse("2020-07-20T12:45:00Z"),
+            Instant.parse("2020-07-20T13:45:00Z"));
+    ScheduledInterview expected =
+        ScheduledInterview.create(
+            actual.get(0).id(),
+            new TimeRange(
+                Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
+            googleSWE2QualPMInterviewer.id(),
+            emailToId("user@company.org"));
+    Assert.assertEquals(expected, actual.get(0));
   }
 }
