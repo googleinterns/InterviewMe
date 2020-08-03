@@ -29,7 +29,7 @@ public abstract class ScheduledInterview {
 
   public abstract String meetLink();
 
-  public abstract String position();
+  public abstract Job position();
 
   /**
    * Creates a scheduled interview that contains a timerange, the date and the emails of the

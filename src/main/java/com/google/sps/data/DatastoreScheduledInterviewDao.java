@@ -134,7 +134,7 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
         (String) scheduledInterviewEntity.getProperty("interviewer"),
         (String) scheduledInterviewEntity.getProperty("interviewee"),
         (String) scheduledInterviewEntity.getProperty("meetLink"),
-        (String) scheduledInterviewEntity.getProperty("position"));
+        Job.valueOf((String) scheduledInterviewEntity.getProperty("position")));
   }
 
   /** Creates a scheduledInterview Entity from a scheduledInterview object. */
@@ -146,7 +146,7 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
     scheduledInterviewEntity.setProperty("interviewer", scheduledInterview.interviewerId());
     scheduledInterviewEntity.setProperty("interviewee", scheduledInterview.intervieweeId());
     scheduledInterviewEntity.setProperty("meetLink", scheduledInterview.meetLink());
-    scheduledInterviewEntity.setProperty("position", scheduledInterview.position());
+    scheduledInterviewEntity.setProperty("position", scheduledInterview.position().name());
     return scheduledInterviewEntity;
   }
 
@@ -159,7 +159,7 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
     scheduledInterviewEntity.setProperty("interviewer", scheduledInterview.interviewerId());
     scheduledInterviewEntity.setProperty("interviewee", scheduledInterview.intervieweeId());
     scheduledInterviewEntity.setProperty("meetLink", scheduledInterview.meetLink());
-    scheduledInterviewEntity.setProperty("position", scheduledInterview.position());
+    scheduledInterviewEntity.setProperty("position", scheduledInterview.position().name());
     return scheduledInterviewEntity;
   }
 
