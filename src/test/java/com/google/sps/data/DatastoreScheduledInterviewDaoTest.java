@@ -167,6 +167,126 @@ public class DatastoreScheduledInterviewDaoTest {
     Assert.assertEquals(expected, result);
   }
 
+  // TODO: FIX THIS TEST by adding position when position and meet link are added.
+  // Tests that only interviews without a shadow are returned.
+  @Test
+  public void getsInterviewsWithoutShadow() {
+    ScheduledInterview interviewWithAShadow =
+        ScheduledInterview.create(
+            /*id=*/ -1,
+            new TimeRange(
+                Instant.pase("2020-07-06T21:30:10Z"), Instant.parse("2020-07-06T22:30:10Z")),
+            "interviewer",
+            "interviewee",
+            "shadow");
+    ScheduledInterview interviewWithoutAShadow =
+        ScheduledInterview.create(
+            /*id=*/ -1,
+            new TimeRange(
+                Instant.pase("2020-07-06T22:30:10Z"), Instant.parse("2020-07-06T23:30:10Z")),
+            "interviewer",
+            "interviewee",
+            "");
+    dao.create(interviewWithAShadow);
+    dao.create(interviewWithoutAShadow);
+    List<ScheduledInterview> actual =
+        dao.getForPositionWithoutShadowInRange(
+            "shadowId",
+            Job.NETWORK_ENGINEER,
+            Instant.pase("2020-07-06T21:30:10Z"),
+            Instant.parse("2020-07-06T23:30:10Z"));
+    ScheduledInterview exceptedInterview =
+        ScheduledInterview.create(
+            actual.get(0).id(),
+            interviewWithoutAShadow.when(),
+            interviewWithoutAShadow.interviewerId(),
+            interviewWithoutAShadow.intervieweeId(),
+            interviewWithoutAShadow.shadowId());
+    List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
+    expected.add(expectedInterview);
+    Assert.assertEquals(expected, actual);
+  }
+
+  // TODO: Add positions so this test means something
+  // Tests that only interviews for the specified position are returned.
+  @Test
+  public void getsInterviewsForPosition() {
+    ScheduledInterview interviewWithRightPosition =
+        ScheduledInterview.create(
+            /*id=*/ -1,
+            new TimeRange(
+                Instant.pase("2020-07-06T22:30:10Z"), Instant.parse("2020-07-06T23:30:10Z")),
+            "interviewer",
+            "interviewee",
+            "");
+    ScheduledInterview interviewWithWrongPosition =
+        ScheduledInterview.create(
+            /*id=*/ -1,
+            new TimeRange(
+                Instant.pase("2020-07-06T22:30:10Z"), Instant.parse("2020-07-06T23:30:10Z")),
+            "interviewer",
+            "interviewee",
+            "");
+    dao.create(interviewWithRightPosition);
+    dao.create(interviewWithWrongPosition);
+    List<ScheduledInterview> actual =
+        dao.getForPositionWithoutShadowInRange(
+            "shadowId",
+            Job.NETWORK_ENGINEER,
+            Instant.pase("2020-07-06T21:30:10Z"),
+            Instant.parse("2020-07-06T23:30:10Z"));
+    ScheduledInterview exceptedInterview =
+        ScheduledInterview.create(
+            actual.get(0).id(),
+            interviewWithRightPosition.when(),
+            interviewWithRightPosition.interviewerId(),
+            interviewWithRightPosition.intervieweeId(),
+            interviewWithRightPosition.shadowId());
+    List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
+    expected.add(expectedInterview);
+    Assert.assertEquals(expected, actual);
+  }
+
+  // TODO: Add positions!!
+  // Tests that only interviews that the current user is not already a part of are returned.
+  @Test
+  public void getsInterviewsWithoutUser() {
+    ScheduledInterview interviewWithoutUser =
+        ScheduledInterview.create(
+            /*id=*/ -1,
+            new TimeRange(
+                Instant.pase("2020-07-06T22:30:10Z"), Instant.parse("2020-07-06T23:30:10Z")),
+            "interviewerId",
+            "intervieweeId",
+            "");
+    ScheduledInterview interviewWithUser =
+        ScheduledInterview.create(
+            /*id=*/ -1,
+            new TimeRange(
+                Instant.pase("2020-07-06T22:30:10Z"), Instant.parse("2020-07-06T23:30:10Z")),
+            "shadowId",
+            "intervieweeId",
+            "");
+    dao.create(interviewWithoutUser);
+    dao.create(interviewWithUser);
+    List<ScheduledInterview> actual =
+        dao.getForPositionWithoutShadowInRange(
+            "shadowId",
+            Job.NETWORK_ENGINEER,
+            Instant.pase("2020-07-06T21:30:10Z"),
+            Instant.parse("2020-07-06T23:30:10Z"));
+    ScheduledInterview exceptedInterview =
+        ScheduledInterview.create(
+            actual.get(0).id(),
+            interviewWithoutUser.when(),
+            interviewWithoutUser.interviewerId(),
+            interviewWithoutUser.intervieweeId(),
+            interviewWithoutUser.shadowId());
+    List<ScheduledInterview> expected = new ArrayList<ScheduledInterview>();
+    expected.add(expectedInterview);
+    Assert.assertEquals(expected, actual);
+  }
+
   // Tests deleting a user's scheduledInterview.
   @Test
   public void deletesScheduledInterview() {
