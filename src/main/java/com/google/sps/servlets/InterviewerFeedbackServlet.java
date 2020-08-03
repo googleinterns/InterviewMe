@@ -23,21 +23,13 @@ import com.google.sps.data.Person;
 import com.google.sps.data.PersonDao;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.ScheduledInterviewDao;
-import com.google.sps.data.TimeRange;
-import com.sendgrid.Response;
-import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -85,24 +77,24 @@ public class InterviewerFeedbackServlet extends HttpServlet {
       userId = String.format("%d", userEmail.hashCode());
     }
 
-    if (interviewExists(scheduledInterviewId)) {
-      answers.put("{{formatted_date}}", getDateString(scheduledInterviewId));
-      if (isInterviewee(scheduledInterviewId, userId)) {
-        try {
-          sendFeedback(getInterviewerEmail(scheduledInterviewId), answers);
-        } catch (Exception e) {
-          e.printStackTrace();
-          response.sendError(500);
-          return;
-        }
-        response.sendRedirect("/scheduled-interviews.html");
-        return;
-      } else {
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+    if (!interviewExists(scheduledInterviewId)) {
+      response.sendError(HttpServletResponse.SC_NOT_FOUND);
+      return;
+    }
+    ScheduledInterview scheduledInterview = getInterview(scheduledInterviewId);
+    answers.put("{{formatted_date}}", scheduledInterview.getDateString());
+    if (isInterviewee(scheduledInterview, userId)) {
+      try {
+        sendFeedback(getInterviewerEmail(scheduledInterview), answers);
+      } catch (Exception e) {
+        e.printStackTrace();
+        response.sendError(500);
         return;
       }
+      response.sendRedirect("/scheduled-interviews.html");
+      return;
     } else {
-      response.sendError(HttpServletResponse.SC_NOT_FOUND);
+      response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
       return;
     }
   }
@@ -111,26 +103,19 @@ public class InterviewerFeedbackServlet extends HttpServlet {
     return scheduledInterviewDao.get(scheduledInterviewId).isPresent();
   }
 
-  private boolean isInterviewee(long scheduledInterviewId, String userId) {
-    ScheduledInterview scheduledInterview = scheduledInterviewDao.get(scheduledInterviewId).get();
+  private ScheduledInterview getInterview(long scheduledInterviewId) {
+    return scheduledInterviewDao.get(scheduledInterviewId).get();
+  }
+
+  private boolean isInterviewee(ScheduledInterview scheduledInterview, String userId) {
     return scheduledInterview.intervieweeId().equals(userId);
   }
 
-  private String getInterviewerEmail(long scheduledInterviewId) {
-    ScheduledInterview scheduledInterview = scheduledInterviewDao.get(scheduledInterviewId).get();
+  private String getInterviewerEmail(ScheduledInterview scheduledInterview) {
     return personDao
         .get(scheduledInterview.interviewerId())
         .map(Person::email)
         .orElse("Email not found");
-  }
-
-  private String getDateString(long scheduledInterviewId) {
-    ScheduledInterview scheduledInterview = scheduledInterviewDao.get(scheduledInterviewId).get();
-    TimeRange when = scheduledInterview.when();
-    LocalDateTime start = LocalDateTime.ofInstant(when.start(), ZoneId.systemDefault());
-    String startTime = start.format(DateTimeFormatter.ofPattern("h:mm a"));
-    String day = start.format(DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy"));
-    return String.format("%s at %s UTC", day, startTime);
   }
 
   private void sendFeedback(String intervieweeEmail, HashMap<String, String> answers)
