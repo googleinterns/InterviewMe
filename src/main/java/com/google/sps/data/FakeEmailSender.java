@@ -43,18 +43,16 @@ public class FakeEmailSender implements EmailSender {
   private final Email sender;
   // private final SendGrid sg;
 
-  public FakeEmailSender(Email sender) throws Exception {
+  public FakeEmailSender(Email sender) throws IOException {
     this.sender = sender;
     // this.sg = "";
   }
 
   // Sends an email from the "from" Email to the "to" Email, with specified subject and content.
   @Override
-  public Response sendEmail(Email recipient, String subject, Content content)
+  public int sendEmail(Email recipient, String subject, Content content)
       throws IOException, Exception {
-    Response response;
-    response.setStatusCode(200);
-    return response;
+    return 200;
   }
 
   // Returns the contents of the file specified at filePath as a String. Useful for converting

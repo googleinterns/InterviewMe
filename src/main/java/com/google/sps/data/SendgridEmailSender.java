@@ -43,7 +43,7 @@ public class SendgridEmailSender implements EmailSender {
   private final Email sender;
   private final SendGrid sg;
 
-  public SendgridEmailSender(Email sender) {
+  public SendgridEmailSender(Email sender) throws IOException {
     this.sender = sender;
     this.sg =
         new SendGrid(
@@ -52,7 +52,7 @@ public class SendgridEmailSender implements EmailSender {
 
   // Sends an email from the "from" Email to the "to" Email, with specified subject and content.
   @Override
-  public Response sendEmail(Email recipient, String subject, Content content)
+  public int sendEmail(Email recipient, String subject, Content content)
       throws IOException, Exception {
     Mail mail = new Mail(sender, subject, recipient, content);
 
@@ -62,7 +62,7 @@ public class SendgridEmailSender implements EmailSender {
     request.setEndpoint("mail/send");
     request.setBody(mail.build());
     response = sg.api(request);
-    return response;
+    return response.getStatusCode();
   }
 
   // Returns the contents of the file specified at filePath as a String. Useful for converting

@@ -24,11 +24,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import com.google.sps.data.FakeEmailSender;
 import com.google.sps.data.FakeScheduledInterviewDao;
 import com.google.sps.data.FakePersonDao;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.TimeRange;
 import com.google.sps.servlets.InterviewerFeedbackServlet;
+import com.sendgrid.helpers.mail.objects.Email;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
@@ -53,6 +55,7 @@ public final class InterviewerFeedbackServletTest {
       new LocalServiceTestHelper(new LocalCapabilitiesServiceTestConfig());
   private FakeScheduledInterviewDao scheduledInterviewDao;
   private FakePersonDao personDao;
+  private FakeEmailSender emailSender;
   private final ScheduledInterview scheduledInterview =
       ScheduledInterview.create(
           /*id=*/ (long) -1,
@@ -64,6 +67,11 @@ public final class InterviewerFeedbackServletTest {
   @Before
   public void setUp() {
     helper.setUp();
+    try {
+      emailSender = new FakeEmailSender(new Email("interviewme.business@gmail.com"));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
     scheduledInterviewDao = new FakeScheduledInterviewDao();
     personDao = new FakePersonDao();
   }
@@ -78,7 +86,7 @@ public final class InterviewerFeedbackServletTest {
   public void interviewIdDoesNotExist() throws IOException {
     InterviewerFeedbackServlet interviewerFeedbackServlet = new InterviewerFeedbackServlet();
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
-    interviewerFeedbackServlet.init(scheduledInterviewDao, personDao);
+    interviewerFeedbackServlet.init(scheduledInterviewDao, personDao, emailSender);
     scheduledInterviewDao.create(scheduledInterview);
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
@@ -92,7 +100,7 @@ public final class InterviewerFeedbackServletTest {
   public void invalidUser() throws IOException {
     InterviewerFeedbackServlet interviewerFeedbackServlet = new InterviewerFeedbackServlet();
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
-    interviewerFeedbackServlet.init(scheduledInterviewDao, personDao);
+    interviewerFeedbackServlet.init(scheduledInterviewDao, personDao, emailSender);
     scheduledInterviewDao.create(scheduledInterview);
     List<ScheduledInterview> scheduledInterviews =
         scheduledInterviewDao.getForPerson(emailToId("user@company.org"));

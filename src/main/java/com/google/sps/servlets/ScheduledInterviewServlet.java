@@ -75,11 +75,17 @@ public class ScheduledInterviewServlet extends HttpServlet {
 
   @Override
   public void init() {
+    EmailSender emailer;
+    try {
+      emailer = new SendgridEmailSender(new Email("interviewme.business@gmail.com"));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
     init(
         new DatastoreScheduledInterviewDao(),
         new DatastoreAvailabilityDao(),
         new DatastorePersonDao(),
-        new SendgridEmailSender(new Email("interviewme.business@gmail.com")));
+        emailer);
   }
 
   public void init(

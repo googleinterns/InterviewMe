@@ -61,10 +61,13 @@ public class InterviewerFeedbackServlet extends HttpServlet {
 
   @Override
   public void init() {
-    init(
-        new DatastoreScheduledInterviewDao(),
-        new DatastorePersonDao(),
-        new SendgridEmailSender(new Email("interviewme.business@gmail.com")));
+    EmailSender emailer;
+    try {
+      emailer = new SendgridEmailSender(new Email("interviewme.business@gmail.com"));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    init(new DatastoreScheduledInterviewDao(), new DatastorePersonDao(), emailer);
   }
 
   public void init(

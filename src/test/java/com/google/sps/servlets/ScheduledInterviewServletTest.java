@@ -36,6 +36,7 @@ import com.google.sps.data.Job;
 import com.google.sps.data.Person;
 import com.google.sps.servlets.ScheduledInterviewServlet;
 import com.google.sps.data.PutAvailabilityRequest;
+import com.sendgrid.helpers.mail.objects.Email;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
@@ -185,6 +186,11 @@ public final class ScheduledInterviewServletTest {
   @Before
   public void setUp() {
     helper.setUp();
+    try {
+      emailSender = new FakeEmailSender(new Email("interviewme.business@gmail.com"));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
     scheduledInterviewDao = new FakeScheduledInterviewDao();
     availabilityDao = new FakeAvailabilityDao();
     personDao = new FakePersonDao();
@@ -199,7 +205,7 @@ public final class ScheduledInterviewServletTest {
   @Test
   public void returnsScheduledInterviewsForUser() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
+    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao, emailSender);
     helper.setEnvIsLoggedIn(true).setEnvEmail(googleSWE1.email()).setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -242,7 +248,7 @@ public final class ScheduledInterviewServletTest {
   @Test
   public void returnsScheduledInterviewsInOrder() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
+    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao, emailSender);
     helper.setEnvIsLoggedIn(true).setEnvEmail(googleSWE1.email()).setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -305,7 +311,7 @@ public final class ScheduledInterviewServletTest {
     availabilityDao.create(googlePMAvail3);
     availabilityDao.create(googlePMAvail4);
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
+    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao, emailSender);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
@@ -342,7 +348,7 @@ public final class ScheduledInterviewServletTest {
     availabilityDao.create(googleSWE2QualPMInterviewerAvail3);
     availabilityDao.create(googleSWE2QualPMInterviewerAvail4);
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
+    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao, emailSender);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
@@ -425,7 +431,7 @@ public final class ScheduledInterviewServletTest {
   @Test
   public void invalidInstant() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
+    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao, emailSender);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
@@ -454,7 +460,7 @@ public final class ScheduledInterviewServletTest {
     availabilityDao.create(googleSWE2QualPMInterviewerAvail3);
     availabilityDao.create(googleSWE2QualPMInterviewerAvail4);
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
+    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao, emailSender);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
