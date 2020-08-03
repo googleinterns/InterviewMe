@@ -41,8 +41,10 @@ import java.time.temporal.ChronoUnit;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -206,16 +208,25 @@ public class ScheduledInterviewServlet extends HttpServlet {
 
     List<ScheduledInterview> possibleInterviews =
         scheduledInterviewDao.getForPositionWithoutShadowInRange(
-            shadowId, selectedPosition, interviewRange.start(), interviewRange.end());
+            selectedPosition, interviewRange.start(), interviewRange.end());
+    Set<ScheduledInterview> notValidInterviews = new HashSet<ScheduledInterview>();
+    // We want to remove all interviews that the proposed shadow is already involved in,
+    // where either party does not want a shadow, or where the company or job does not match that
+    // specified in the request.
 
-    possibleInterviews.removeIf(
-        interview ->
-            !personDao.get(interview.intervieweeId()).get().okShadow()
-                || !personDao.get(interview.interviewerId()).get().okShadow());
-    possibleInterviews.removeIf(
-        interview ->
-            !personDao.get(interview.interviewerId()).get().company().equals(interviewerCompany)
-                || !personDao.get(interview.interviewerId()).get().job().equals(interviewerJob));
+    for (ScheduledInterview interview : possibleInterviews) {
+      if (interview.interviewerId().equals(shadowId)
+          || interview.intervieweeId().equals(shadowId)
+          || interview.shadowId().equals(shadowId)
+          || !personDao.get(interview.intervieweeId()).get().okShadow()
+          || !personDao.get(interview.interviewerId()).get().okShadow()
+          || !personDao.get(interview.interviewerId()).get().company().equals(interviewerCompany)
+          || !personDao.get(interview.interviewerId()).get().job().equals(interviewerJob)) {
+        notValidInterviews.add(interview);
+      }
+    }
+    possibleInterviews.removeAll(notValidInterviews);
+
     int randomNumber = (int) (Math.random() * possibleInterviews.size());
     ScheduledInterview selectedInterview = possibleInterviews.get(randomNumber);
     scheduledInterviewDao.update(selectedInterview.withShadow(shadowId));

@@ -75,13 +75,11 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
 
   /**
    * Returns a list, sorted by start time, of all ScheduledInterview objects ranging from minTime to
-   * maxTime that are for the selected position, do not include the proposed shadow, and do not
-   * already have a shadow.
+   * maxTime that are for the selected position and do not already have a shadow.
    */
   public List<ScheduledInterview> getForPositionWithoutShadowInRange(
-      String shadowId, Job position, Instant minTime, Instant maxTime) {
+      Job position, Instant minTime, Instant maxTime) {
     List<Filter> allFilters = new ArrayList<>();
-    allFilters.add(getNotUserFilter(shadowId));
     allFilters.add(getTimeFilter(minTime, maxTime));
     allFilters.add(new FilterPredicate("position", FilterOperator.EQUAL, position.name()));
     allFilters.add(new FilterPredicate("shadow", FilterOperator.EQUAL, ""));
@@ -126,14 +124,6 @@ public class DatastoreScheduledInterviewDao implements ScheduledInterviewDao {
     Filter shadowFilter = new FilterPredicate("shadow", FilterOperator.EQUAL, userId);
     return CompositeFilterOperator.or(
         CompositeFilterOperator.or(interviewerFilter, intervieweeFilter), shadowFilter);
-  }
-
-  private CompositeFilter getNotUserFilter(String userId) {
-    Filter interviewerFilter = new FilterPredicate("interviewer", FilterOperator.NOT_EQUAL, userId);
-    Filter intervieweeFilter = new FilterPredicate("interviewee", FilterOperator.NOT_EQUAL, userId);
-    Filter shadowFilter = new FilterPredicate("shadow", FilterOperator.NOT_EQUAL, userId);
-    return CompositeFilterOperator.and(
-        CompositeFilterOperator.and(interviewerFilter, intervieweeFilter), shadowFilter);
   }
 
   /** Returns a list of all scheduledInterviews ranging from minTime to maxTime of a user. */

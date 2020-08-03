@@ -87,19 +87,14 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
 
   /**
    * Returns a list, sorted by start time, of all ScheduledInterview objects ranging from minTime to
-   * maxTime that are for the selected position, do not include the proposed shadow, and do not
-   * already have a shadow.
+   * maxTime that are for the selected position and do not already have a shadow.
    */
   public List<ScheduledInterview> getForPositionWithoutShadowInRange(
-      String shadowId, Job position, Instant minTime, Instant maxTime) {
+      Job position, Instant minTime, Instant maxTime) {
     List<ScheduledInterview> interviewsInRange = getInRange(minTime, maxTime);
     Set<ScheduledInterview> notValidInterviews = new HashSet<ScheduledInterview>();
     for (ScheduledInterview interview : interviewsInRange) {
-      if (interview.intervieweeId().equals(shadowId)
-          || interview.interviewerId().equals(shadowId)
-          || interview.shadowId().equals(shadowId)
-          || !interview.position().equals(position)
-          || !interview.shadowId().equals("")) {
+      if (!interview.position().equals(position) || !interview.shadowId().equals("")) {
         notValidInterviews.add(interview);
       }
     }
