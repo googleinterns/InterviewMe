@@ -30,6 +30,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -82,6 +83,28 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
           return 1;
         });
     return scheduledInterviewsInRange;
+  }
+
+  /**
+   * Returns a list, sorted by start time, of all ScheduledInterview objects ranging from minTime to
+   * maxTime that are for the selected position, do not include the proposed shadow, and do not
+   * already have a shadow.
+   */
+  public List<ScheduledInterview> getForPositionWithoutShadowInRange(
+      String shadowId, Job position, Instant minTime, Instant maxTime) {
+    List<ScheduledInterview> interviewsInRange = getInRange(minTime, maxTime);
+    Set<ScheduledInterview> notValidInterviews = new HashSet<ScheduledInterview>();
+    for (ScheduledInterview interview : interviewsInRange) {
+      if (interview.intervieweeId().equals(shadowId)
+          || interview.interviewerId().equals(shadowId)
+          || interview.shadowId().equals(shadowId)
+          || !interview.position().equals(position)
+          || !interview.shadowId().equals("")) {
+        notValidInterviews.add(interview);
+      }
+    }
+    interviewsInRange.removeAll(notValidInterviews);
+    return interviewsInRange;
   }
 
   /**
