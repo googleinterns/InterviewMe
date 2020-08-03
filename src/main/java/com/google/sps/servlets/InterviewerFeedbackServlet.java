@@ -83,9 +83,14 @@ public class InterviewerFeedbackServlet extends HttpServlet {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
+    
     answers.put("{{formatted_date}}", scheduledInterview.getDateString());
-    if (isInterviewee(scheduledInterview, userId)) {
-      try {
+    if (!isInterviewee(scheduledInterview, userId)) {
+      response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+      return;
+    }
+    
+    try {
         sendFeedback(getInterviewerEmail(scheduledInterview), answers);
       } catch (Exception e) {
         e.printStackTrace();
@@ -94,10 +99,6 @@ public class InterviewerFeedbackServlet extends HttpServlet {
       }
       response.sendRedirect("/scheduled-interviews.html");
       return;
-    } else {
-      response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-      return;
-    }
   }
 
   private Optional<ScheduledInterview> getInterview(long scheduledInterviewId) {
