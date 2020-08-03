@@ -22,7 +22,6 @@
           <ul class="list-group list-group-flush">
             <li class="list-group-item">Interviewee: ${scheduledInterview.getInterviewee()}</li>
             <li class="list-group-item">Interviewer: ${scheduledInterview.getInterviewer()}</li>
-            <!-- TODO: make sure this looks right after we finish the shadow flow. -->
             <li class="list-group-item">Shadow: ${scheduledInterview.getShadow()}</li>
           </ul>
           <c:choose>

@@ -186,11 +186,11 @@ public final class ScheduledInterviewServletTest {
       Person.create(
           emailToId("shadow@gmail.com"),
           "shadow@gmail.com",
-          "Shadow_first_name",
-          "",
-          "",
-          "",
-          "",
+          "shadow_first_name",
+          "shadow_last_name",
+          "shadow_company",
+          "shadow_job",
+          "shadow_linkedIn",
           EnumSet.noneOf(Job.class),
           /*okShadow=*/ true);
 
@@ -234,7 +234,7 @@ public final class ScheduledInterviewServletTest {
                 Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
             googleSWE2QualPMInterviewer.id(),
             googlePM.id(),
-            ""));
+            /*shadowId=*/ ""));
     getRequest.addParameter("timeZone", "America/New_York");
     getRequest.addParameter("userTime", "2020-07-05T22:00:00Z");
     scheduledInterviewServlet.doGet(getRequest, getResponse);
@@ -272,7 +272,7 @@ public final class ScheduledInterviewServletTest {
                 Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
             googleSWE1.id(),
             googleSWE2QualPMInterviewer.id(),
-            ""));
+            /*shadowId=*/ ""));
     scheduledInterviewDao.create(
         ScheduledInterview.create(
             /*id=*/ -1,
@@ -280,7 +280,7 @@ public final class ScheduledInterviewServletTest {
                 Instant.parse("2020-07-05T20:00:00Z"), Instant.parse("2020-07-05T21:00:00Z")),
             googleSWE1.id(),
             googleSWE2QualPMInterviewer.id(),
-            ""));
+            /*shadowId=*/ ""));
     getRequest.addParameter("timeZone", "Etc/UCT");
     getRequest.addParameter("userTime", "2020-07-05T22:00:00Z");
     scheduledInterviewServlet.doGet(getRequest, getResponse);
@@ -345,7 +345,7 @@ public final class ScheduledInterviewServletTest {
                 Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
             googleSWE1.id(),
             emailToId("user@company.org"),
-            "");
+            /*shadowId=*/ "");
     Assert.assertEquals(expected, actual.get(0));
   }
 
@@ -383,7 +383,7 @@ public final class ScheduledInterviewServletTest {
                 Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
             googleSWE1.id(),
             emailToId("user@company.org"),
-            "");
+            /*shadowId=*/ "");
     ScheduledInterview expected2 =
         ScheduledInterview.create(
             actual.get(0).id(),
@@ -391,7 +391,7 @@ public final class ScheduledInterviewServletTest {
                 Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
             googleSWE2QualPMInterviewer.id(),
             emailToId("user@company.org"),
-            "");
+            /*shadowId=*/ "");
     boolean actualIsExpectedOneOrTwo =
         actual.get(0).equals(expected1) || actual.get(0).equals(expected2);
     Assert.assertTrue(actualIsExpectedOneOrTwo);
@@ -515,7 +515,7 @@ public final class ScheduledInterviewServletTest {
                 Instant.parse("2020-07-05T18:00:00Z"), Instant.parse("2020-07-05T19:00:00Z")),
             googleSWE1.id(),
             googleSWE2QualPMInterviewer.id(),
-            ""));
+            /*shadowId=*/ ""));
     getRequest.addParameter("timeZone", "America/New_York");
     getRequest.addParameter("userTime", "2020-07-05T22:00:00Z");
     scheduledInterviewServlet.doGet(getRequest, getResponse);
@@ -572,7 +572,7 @@ public final class ScheduledInterviewServletTest {
                 Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
             googleSWE2QualPMInterviewer.id(),
             emailToId("user@company.org"),
-            "");
+            /*shadowId=*/ "");
     Assert.assertEquals(expected, actual.get(0));
   }
 }
