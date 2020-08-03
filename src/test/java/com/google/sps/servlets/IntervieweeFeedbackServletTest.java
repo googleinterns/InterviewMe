@@ -83,6 +83,7 @@ public final class IntervieweeFeedbackServletTest {
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     postRequest.addParameter("interviewId", "1");
+    postRequest.addParameter("questionCount", "11");
     intervieweeFeedbackServlet.doPost(postRequest, postResponse);
     Assert.assertEquals(404, postResponse.getStatus());
   }
@@ -99,6 +100,7 @@ public final class IntervieweeFeedbackServletTest {
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
     postRequest.addParameter("interviewId", String.valueOf(scheduledInterviews.get(0).id()));
+    postRequest.addParameter("questionCount", "11");
     intervieweeFeedbackServlet.doPost(postRequest, postResponse);
     Assert.assertEquals(401, postResponse.getStatus());
   }

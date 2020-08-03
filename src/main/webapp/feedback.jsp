@@ -50,6 +50,7 @@
             <textarea rows="4" cols="50" class="form-control" id="question8" name="question8" required></textarea><br>
             <label for="question9">What is something that you think your interviewer could have done better?</label><br>
             <textarea rows="4" cols="50" class="form-control" id="question9" name="question9"></textarea><br>
+            <input type="hidden" id="questionCount" name="questionCount" value="9">
           </div>
           <div style="text-align: center">
             <button class="btn btn-primary" type="submit" style="text-align: center">Submit</button>
@@ -88,6 +89,7 @@
                 <textarea rows="4" cols="50" class="form-control" id="question10" name="question10" required></textarea><br>
                 <label for="question11">Notes:</label><br>
                 <textarea rows="4" cols="50" class="form-control" id="question11" name="question11" required></textarea><br>
+                <input type="hidden" id="questionCount" name="questionCount" value="11">
               </div>
               <div style="text-align: center">
                 <button class="btn btn-primary" type="submit" style="text-align: center">Submit</button>

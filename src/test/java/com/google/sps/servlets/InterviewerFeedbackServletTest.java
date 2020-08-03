@@ -83,6 +83,7 @@ public final class InterviewerFeedbackServletTest {
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
     postRequest.addParameter("interviewId", "1");
+    postRequest.addParameter("questionCount", "9");
     interviewerFeedbackServlet.doPost(postRequest, postResponse);
     Assert.assertEquals(404, postResponse.getStatus());
   }
@@ -99,6 +100,7 @@ public final class InterviewerFeedbackServletTest {
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
     postRequest.addParameter("interviewId", String.valueOf(scheduledInterviews.get(0).id()));
+    postRequest.addParameter("questionCount", "9");
     interviewerFeedbackServlet.doPost(postRequest, postResponse);
     Assert.assertEquals(401, postResponse.getStatus());
   }
