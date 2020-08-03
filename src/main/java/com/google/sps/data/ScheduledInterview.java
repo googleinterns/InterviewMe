@@ -41,7 +41,7 @@ public abstract class ScheduledInterview {
       String interviewerId,
       String intervieweeId,
       String meetLink,
-      String position) {
+      Job position) {
     return builder()
         .setId(id)
         .setWhen(when)
@@ -68,7 +68,7 @@ public abstract class ScheduledInterview {
 
     abstract Builder setMeetLink(String meetLink);
 
-    abstract Builder setPosition(String position);
+    abstract Builder setPosition(Job position);
 
     abstract ScheduledInterview build();
   }

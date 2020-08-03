@@ -300,7 +300,7 @@ public final class LoadInterviewsServletTest {
             "interviewerId",
             String.format("%d", userEmail.hashCode()),
             "meet_link",
-            "SOFTWARE_ENGINEER"));
+            Job.SOFTWARE_ENGINEER));
     // An unscheduled hour slot for an interviewer
     availabilityDao.create(qualifiedSWEAndNEAvail1);
     availabilityDao.create(qualifiedSWEAndNEAvail2);

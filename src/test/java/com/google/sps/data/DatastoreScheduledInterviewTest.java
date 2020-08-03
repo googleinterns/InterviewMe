@@ -49,7 +49,7 @@ public class DatastoreScheduledInterviewTest {
           "user@company.org",
           "user@mail.com",
           "meet_link",
-          "TECHNICAL_SALES");
+          Job.TECHNICAL_SALES);
 
   private final ScheduledInterview scheduledInterview2 =
       ScheduledInterview.create(
@@ -59,7 +59,7 @@ public class DatastoreScheduledInterviewTest {
           "user@company.org",
           "user2@mail.com",
           "meet_link",
-          "PRODUCT_MANAGER");
+          Job.PRODUCT_MANAGER);
 
   private final ScheduledInterview scheduledInterview3 =
       ScheduledInterview.create(
@@ -69,7 +69,7 @@ public class DatastoreScheduledInterviewTest {
           "user3@company.org",
           "user2@mail.com",
           "meet_link",
-          "PRODUCT_MANAGER");
+          Job.PRODUCT_MANAGER);
 
   private final ScheduledInterview scheduledInterview4 =
       ScheduledInterview.create(
@@ -79,7 +79,7 @@ public class DatastoreScheduledInterviewTest {
           "user@company.org",
           "user2@mail.com",
           "meet_link",
-          "PRODUCT_MANAGER");
+          Job.PRODUCT_MANAGER);
 
   private final ScheduledInterview scheduledInterview5 =
       ScheduledInterview.create(
@@ -89,7 +89,7 @@ public class DatastoreScheduledInterviewTest {
           "user@company.org",
           "user3@mail.com",
           "meet_link",
-          "SOFTWARE_ENGINEER");
+          Job.SOFTWARE_ENGINEER);
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(

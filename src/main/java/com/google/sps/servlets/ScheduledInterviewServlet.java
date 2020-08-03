@@ -139,10 +139,11 @@ public class ScheduledInterviewServlet extends HttpServlet {
     int randomNumber = (int) (Math.random() * possibleInterviewers.size());
     String interviewerId = possibleInterviewers.get(randomNumber);
 
-    String meetLink = "fake_meet_link"; // TODO: replace with real MeetLink from Calendar Access
+    // TODO: replace with real MeetLink from Calendar Access
+    String meetLink = "meet_link";
     scheduledInterviewDao.create(
         ScheduledInterview.create(
-            -1, interviewRange, interviewerId, intervieweeId, meetLink, position));
+            -1, interviewRange, interviewerId, intervieweeId, meetLink, Job.valueOf(position)));
 
     // Since an interview was scheduled, both parties' availabilities must be updated
     List<Availability> affectedAvailability = new ArrayList<Availability>();
@@ -221,7 +222,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     boolean hasStarted =
         scheduledInterview.when().start().minus(5, ChronoUnit.MINUTES).isBefore(userTime);
     String meetLink = scheduledInterview.meetLink();
-    String position = scheduledInterview.position();
+    String position = scheduledInterview.position().name();
     return new ScheduledInterviewRequest(
         scheduledInterview.id(),
         date,
