@@ -89,7 +89,7 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
         sendFeedback(getIntervieweeEmail(scheduledInterview), answers);
       } catch (Exception e) {
         e.printStackTrace();
-        response.sendError(HttpServletResponse.SC_REQUEST_TIMEOUT);
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         return;
       }
       response.sendRedirect("/scheduled-interviews.html");
