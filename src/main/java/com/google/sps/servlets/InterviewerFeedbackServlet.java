@@ -77,12 +77,12 @@ public class InterviewerFeedbackServlet extends HttpServlet {
     if (userId == null) {
       userId = String.format("%d", userEmail.hashCode());
     }
-
-    if (!interviewExists(scheduledInterviewId)) {
+    
+    Optional<ScheduledInterview> scheduledInterview = getInterview(scheduledInterviewId);
+    if (scheduledInterview.empty()) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
-    ScheduledInterview scheduledInterview = getInterview(scheduledInterviewId);
     answers.put("{{formatted_date}}", scheduledInterview.getDateString());
     if (isInterviewee(scheduledInterview, userId)) {
       try {
@@ -100,30 +100,24 @@ public class InterviewerFeedbackServlet extends HttpServlet {
     }
   }
 
-  private boolean interviewExists(long scheduledInterviewId) {
-    return scheduledInterviewDao.get(scheduledInterviewId).isPresent();
-  }
-
-  private ScheduledInterview getInterview(long scheduledInterviewId) {
-    return scheduledInterviewDao.get(scheduledInterviewId).get();
+  private Optional<ScheduledInterview> getInterview(long scheduledInterviewId) {
+    return scheduledInterviewDao.get(scheduledInterviewId);
   }
 
   private boolean isInterviewee(ScheduledInterview scheduledInterview, String userId) {
     return scheduledInterview.intervieweeId().equals(userId);
   }
 
-  private String getInterviewerEmail(ScheduledInterview scheduledInterview) {
+  private Optional<Person> getInterviewerEmail(ScheduledInterview scheduledInterview) {
     return personDao
-        .get(scheduledInterview.interviewerId())
-        .map(Person::email)
-        .orElse("Email not found");
+        .get(scheduledInterview.interviewerId()); 
   }
 
-  private void sendFeedback(String intervieweeEmail, HashMap<String, String> answers)
+  private void sendFeedback(String interviewerEmail, HashMap<String, String> answers)
       throws IOException, Exception {
     EmailSender emailSender = new EmailSender(new Email("interviewme.business@gmail.com"));
     String subject = "Your Interviewee has submitted feedback for your interview!";
-    Email recipient = new Email("grantflash@gmail.com");
+    Email recipient = new Email(interviewerEmail);
     String contentString =
         emailSender.fileContentToString(emailsPath + "/feedbackToInterviewer.txt");
     Content content =

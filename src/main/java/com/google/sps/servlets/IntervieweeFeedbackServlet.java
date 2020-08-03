@@ -77,16 +77,16 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
     if (userId == null) {
       userId = String.format("%d", userEmail.hashCode());
     }
-
-    if (!interviewExists(scheduledInterviewId)) {
+    
+    Optional<ScheduledInterview> scheduledInterview = getInterview(scheduledInterviewId);
+    if (scheduledInterview.empty()) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
-    ScheduledInterview scheduledInterview = getInterview(scheduledInterviewId);
-    answers.put("{{formatted_date}}", scheduledInterview.getDateString());
-    if (isInterviewer(scheduledInterview, userId)) {
+    answers.put("{{formatted_date}}", scheduledInterview.get().getDateString());
+    if (isInterviewer(scheduledInterview.get(), userId)) {
       try {
-        sendFeedback(getIntervieweeEmail(scheduledInterview), answers);
+        sendFeedback(getIntervieweeEmail(scheduledInterview.get()), answers);
       } catch (Exception e) {
         e.printStackTrace();
         response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -100,23 +100,17 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
     }
   }
 
-  private boolean interviewExists(long scheduledInterviewId) {
-    return scheduledInterviewDao.get(scheduledInterviewId).isPresent();
-  }
-
-  private ScheduledInterview getInterview(long scheduledInterviewId) {
-    return scheduledInterviewDao.get(scheduledInterviewId).get();
+  private Optional<ScheduledInterview> getInterview(long scheduledInterviewId) {
+    return scheduledInterviewDao.get(scheduledInterviewId);
   }
 
   private boolean isInterviewer(ScheduledInterview scheduledInterview, String userId) {
     return scheduledInterview.interviewerId().equals(userId);
   }
 
-  private String getIntervieweeEmail(ScheduledInterview scheduledInterview) {
+  private Optional<Person> getIntervieweeEmail(ScheduledInterview scheduledInterview) {
     return personDao
-        .get(scheduledInterview.intervieweeId())
-        .map(Person::email)
-        .orElse("Email not found");
+        .get(scheduledInterview.intervieweeId());
   }
 
   private void sendFeedback(String intervieweeEmail, HashMap<String, String> answers)
