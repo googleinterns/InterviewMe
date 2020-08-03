@@ -386,7 +386,7 @@ public final class ScheduledInterviewServletTest {
             googleSWE2QualPMInterviewer.id(),
             emailToId("user@company.org"),
             "meet_link",
-            Job.PRODUCT_MANAGER);
+            Job.SOFTWARE_ENGINEER);
     boolean actualIsExpectedOneOrTwo =
         actual.get(0).equals(expected1) || actual.get(0).equals(expected2);
     Assert.assertTrue(actualIsExpectedOneOrTwo);
