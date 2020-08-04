@@ -40,7 +40,7 @@
             </div>
             <div class="form-group form-inline">
               <label for="question6">I felt my interviewer came prepared:</label><br>
-              <input type="number" class="form-control"min="1" max="10" id="question6" name="question5" required><br>
+              <input type="number" class="form-control"min="1" max="10" id="question6" name="question6" required><br>
             </div>
             <div class="form-group form-inline">
               <label for="question7">This InterviewMe experience was helpful:</label><br>
@@ -51,6 +51,7 @@
             <label for="question9">What is something that you think your interviewer could have done better?</label><br>
             <textarea rows="4" cols="50" class="form-control" id="question9" name="question9"></textarea><br>
             <input type="hidden" id="questionCount" name="questionCount" value="9">
+            <input type="hidden" id="interviewId" name="interviewId" value="">
           </div>
           <div style="text-align: center">
             <button class="btn btn-primary" type="submit" style="text-align: center">Submit</button>
@@ -102,6 +103,7 @@
                 <label for="question11">Notes:</label><br>
                 <textarea rows="4" cols="50" class="form-control" id="question11" name="question11" required></textarea><br>
                 <input type="hidden" id="questionCount" name="questionCount" value="11">
+                <input type="hidden" id="interviewId" name="interviewId" value="">
               </div>
               <div style="text-align: center">
                 <button class="btn btn-primary" type="submit" style="text-align: center">Submit</button>
