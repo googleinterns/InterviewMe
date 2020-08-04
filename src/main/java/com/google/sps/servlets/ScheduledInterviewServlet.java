@@ -175,7 +175,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
         String.format(
             "http://interview-me-step-2020.appspot.com/feedback.html?interview=%s&role=interviewer",
             interviewId);
-    emailedDetails.put("{{formatted_date}}", getDateString(interviewRange));
+    emailedDetails.put("{{formatted_date}}", getEmailDateString(interviewRange));
     emailedDetails.put("{{interviewer_first_name}}", getFirstName(interviewerId));
     emailedDetails.put("{{interviewee_first_name}}", getFirstName(intervieweeId));
     emailedDetails.put("{{form_link}}", intervieweeFeedbackLink);
@@ -284,7 +284,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     return userId;
   }
 
-  private String getDateString(TimeRange when) {
+  private String getEmailDateString(TimeRange when) {
     LocalDateTime start = LocalDateTime.ofInstant(when.start(), ZoneId.systemDefault());
     String startTime = start.format(DateTimeFormatter.ofPattern("h:mm a"));
     String day = start.format(DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy"));
