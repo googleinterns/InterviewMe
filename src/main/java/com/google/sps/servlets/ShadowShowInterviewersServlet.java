@@ -86,22 +86,8 @@ public class ShadowShowInterviewersServlet extends HttpServlet {
     }
 
     List<ScheduledInterview> possibleInterviews =
-        scheduledInterviewDao.getForPositionWithoutShadowInRange(
-            selectedPosition, interviewTimeRange.start(), interviewTimeRange.end());
-
-    Set<ScheduledInterview> notValidInterviews = new HashSet<ScheduledInterview>();
-    // We want to remove all interviews that the proposed shadow is already involved in or
-    // where either party does not want a shadow.
-    for (ScheduledInterview interview : possibleInterviews) {
-      if (interview.interviewerId().equals(userId)
-          || interview.intervieweeId().equals(userId)
-          || interview.shadowId().equals(userId)
-          || !personDao.get(interview.intervieweeId()).get().okShadow()
-          || !personDao.get(interview.interviewerId()).get().okShadow()) {
-        notValidInterviews.add(interview);
-      }
-    }
-    possibleInterviews.removeAll(notValidInterviews);
+        ShadowLoadInterviewsServlet.getPossibleInterviews(
+            scheduledInterviewDao, selectedPosition, interviewTimeRange, personDao, userId);
 
     Set<PossibleInterviewer> possibleInterviewers = new HashSet<PossibleInterviewer>();
     for (ScheduledInterview interview : possibleInterviews) {

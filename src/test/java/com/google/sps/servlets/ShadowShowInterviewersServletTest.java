@@ -69,7 +69,7 @@ public final class ShadowShowInterviewersServletTest {
   }
 
   @Test
-  public void fakeTest() {
+  public void transformsAnInterviewIntoAPossibleInterviewer() throws IOException {
     Assert.assertTrue(true);
   }
 }

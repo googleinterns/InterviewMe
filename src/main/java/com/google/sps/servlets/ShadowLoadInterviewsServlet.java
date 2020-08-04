@@ -102,22 +102,8 @@ public class ShadowLoadInterviewsServlet extends HttpServlet {
     }
 
     List<ScheduledInterview> possibleInterviews =
-        scheduledInterviewDao.getForPositionWithoutShadowInRange(
-            selectedPosition, interviewSearchTimeRange.start(), interviewSearchTimeRange.end());
-
-    Set<ScheduledInterview> notValidInterviews = new HashSet<ScheduledInterview>();
-    // We want to remove all interviews that the proposed shadow is already involved in or
-    // where either party does not want a shadow.
-    for (ScheduledInterview interview : possibleInterviews) {
-      if (interview.interviewerId().equals(userId)
-          || interview.intervieweeId().equals(userId)
-          || interview.shadowId().equals(userId)
-          || !personDao.get(interview.intervieweeId()).get().okShadow()
-          || !personDao.get(interview.interviewerId()).get().okShadow()) {
-        notValidInterviews.add(interview);
-      }
-    }
-    possibleInterviews.removeAll(notValidInterviews);
+        getPossibleInterviews(
+            scheduledInterviewDao, selectedPosition, interviewSearchTimeRange, personDao, userId);
 
     List<PossibleInterviewSlot> possibleInterviewSlots =
         scheduledInterviewsToPossibleInterviewSlots(possibleInterviews, timezoneOffset);
@@ -147,6 +133,32 @@ public class ShadowLoadInterviewsServlet extends HttpServlet {
     } catch (ServletException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  static List<ScheduledInterview> getPossibleInterviews(
+      ScheduledInterviewDao scheduledInterviewDao,
+      Job position,
+      TimeRange range,
+      PersonDao personDao,
+      String userId) {
+    List<ScheduledInterview> possibleInterviews =
+        scheduledInterviewDao.getForPositionWithoutShadowInRange(
+            position, range.start(), range.end());
+
+    Set<ScheduledInterview> notValidInterviews = new HashSet<ScheduledInterview>();
+    // We want to remove all interviews that the proposed shadow is already involved in or
+    // where either party does not want a shadow.
+    for (ScheduledInterview interview : possibleInterviews) {
+      if (interview.interviewerId().equals(userId)
+          || interview.intervieweeId().equals(userId)
+          || interview.shadowId().equals(userId)
+          || !personDao.get(interview.intervieweeId()).get().okShadow()
+          || !personDao.get(interview.interviewerId()).get().okShadow()) {
+        notValidInterviews.add(interview);
+      }
+    }
+    possibleInterviews.removeAll(notValidInterviews);
+    return possibleInterviews;
   }
 
   // Uses an Instant and a timezoneOffset to create a ZonedDateTime instance.
