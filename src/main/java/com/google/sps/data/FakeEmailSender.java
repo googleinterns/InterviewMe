@@ -58,7 +58,11 @@ public class FakeEmailSender implements EmailSender {
   // predifined email templates to text.
   @Override
   public String fileContentToString(String filePath) throws IOException {
-    return "";
+    StringBuilder contentBuilder = new StringBuilder();
+    try (Stream<String> stream = Files.lines(Paths.get(filePath), StandardCharsets.UTF_8)) {
+      stream.forEach(s -> contentBuilder.append(s).append("\n"));
+    }
+    return contentBuilder.toString();
   }
 
   /**
@@ -70,6 +74,9 @@ public class FakeEmailSender implements EmailSender {
   // Returned: "You will be mock interviewing Tess on June 6, 2022."
   @Override
   public String replaceAllPairs(HashMap<String, String> toReplace, String str) {
-    return "";
+    for (Map.Entry<String, String> entry : toReplace.entrySet()) {
+      str = str.replace(entry.getKey(), entry.getValue());
+    }
+    return str;
   }
 }
