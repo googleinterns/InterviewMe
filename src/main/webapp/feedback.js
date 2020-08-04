@@ -17,7 +17,6 @@ function onFeedbackLoad() {
   loginInfo.then(supplyLogoutLinkOrRedirectHome); 
   loginInfo.then(getUserOrRedirectRegistration);
   loadFeedback(); 
-  document.onkeypress = stopRKey;
 }
 
 // Calls the feedback servlet which determines whether or not the feedback form is submitted or not.
@@ -42,11 +41,4 @@ function getRole() {
 // Adds the scheduledInterviewId to the request when the form is submitted.
 function addScheduledInterviewId() {
   document.feedbackForm.interviewId.value = getScheduledInterviewId();
-}
-
-// Prevents users from using enter key
-function stopRKey(evt) {
-  var evt = (evt) ? evt : ((event) ? event : null);
-  var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null);
-  if ((evt.keyCode == 13) && (node.type=="text"))  {return false;}
 }
