@@ -39,7 +39,6 @@ import java.net.URL;
 /** Mimics sending emails with Sendgrid. */
 @WebServlet("/email")
 public class FakeEmailSender implements EmailSender {
-  // The email messages are being sent from.
   private final Email sender;
 
   public FakeEmailSender(Email sender) throws IOException {
