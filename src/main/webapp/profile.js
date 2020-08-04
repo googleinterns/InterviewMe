@@ -34,7 +34,6 @@ function submitProfileForm(methodType, redirectUrl) {
       qualifiedJobs.push(job.getAttribute('data-enum-name'));
     }
   }
-  okShadow = document.getElementById('ok-shadow-check').checked;
   const personJson = {
     firstName: $('#first-name-field').val(),
     lastName: $('#last-name-field').val(),
@@ -42,7 +41,7 @@ function submitProfileForm(methodType, redirectUrl) {
     job: $('#job-field').val(),
     linkedIn: $('#linkedin-field').val(),
     qualifiedJobs: qualifiedJobs,
-    okShadow: okShadow
+    okShadow: $('#ok-shadow-check').prop('checked')
   };
   fetch('/person',{
     method: methodType,
