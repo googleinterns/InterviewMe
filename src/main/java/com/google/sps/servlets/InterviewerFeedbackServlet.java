@@ -86,11 +86,11 @@ public class InterviewerFeedbackServlet extends HttpServlet {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
-    
+
     ScheduledInterview scheduledInterview = scheduledInterviewOpt.get();
     Optional<Person> interviewerOpt = getInterviewer(scheduledInterview);
     answers.put("{{formatted_date}}", scheduledInterview.getDateString());
-    
+
     if (!isInterviewee(scheduledInterview, userId)) {
       response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
       return;
@@ -100,7 +100,7 @@ public class InterviewerFeedbackServlet extends HttpServlet {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
-    
+
     Person interviewer = interviewerOpt.get();
     try {
       sendFeedback(interviewer.email(), answers);

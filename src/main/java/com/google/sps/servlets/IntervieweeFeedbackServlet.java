@@ -81,16 +81,16 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
 
     Optional<ScheduledInterview> scheduledInterviewOpt =
         scheduledInterviewDao.get(scheduledInterviewId);
-        
+
     if (!scheduledInterviewOpt.isPresent()) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
-    
+
     ScheduledInterview scheduledInterview = scheduledInterviewOpt.get();
     Optional<Person> intervieweeOpt = getInterviewee(scheduledInterview);
     answers.put("{{formatted_date}}", scheduledInterview.getDateString());
-    
+
     if (!isInterviewer(scheduledInterview, userId)) {
       response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
       return;
@@ -100,7 +100,7 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
-    
+
     Person interviewee = intervieweeOpt.get();
     try {
       sendFeedback(interviewee.email(), answers);
