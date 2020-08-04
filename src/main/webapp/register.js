@@ -15,7 +15,6 @@
 function onRegisterLoad() {
   const loginInfo = getLoginInfo();
   loginInfo.then(redirectProfileIfRegistered);
-  loginInfo.then(supplyLogoutLinkOrRedirectHome); 
   loginInfo.then(autofillEmail);
 }
 

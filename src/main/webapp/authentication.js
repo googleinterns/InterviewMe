@@ -15,14 +15,26 @@
 // If user is logged in, returns a logout link. If not, redirects to home page.
 function supplyLogoutLinkOrRedirectHome(loginInfo) {
   if (loginInfo.loggedIn) {
-    document.getElementById('login-tab').href = loginInfo.changeLogInStatusURL;
+    // TODO: change name of this function
+    // document.getElementById('login-tab').href = loginInfo.changeLogInStatusURL;
   } else {
     window.location.replace('/');
   }
 }
 
 function getLoginInfo() {
-  return fetch('/login').then(response => response.json());
+  return fetch('/login').then(response => {
+    return response.json();
+  });
+}
+
+function logout(){
+  fetch('/logout').then(response => {
+    if(response.redirected) {
+      console.log('redirected ' + response.url);
+      window.location.href = response.url;
+    }
+  });
 }
 
 // Returns a Person if they registered in the past. If not, redirect to  
