@@ -44,7 +44,6 @@ import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.springframework.mock.web.MockServletContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -57,7 +56,6 @@ public final class LoadInterviewsServletTest {
   private FakeAvailabilityDao availabilityDao;
   private FakeScheduledInterviewDao scheduledInterviewDao;
   private FakePersonDao personDao;
-  private MockServletContext context;
 
   private final String qualifiedSWEAndNEEmail = "qualifiedSWEAndNE@mail.com";
   private final String qualifiedSWEAndNEId = String.format("%d", qualifiedSWEAndNEEmail.hashCode());
@@ -163,6 +161,7 @@ public final class LoadInterviewsServletTest {
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("timeZoneOffset", "740");
+    getRequest.addParameter("position", "SOFTWARE_ENGINEER");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
     Assertions.assertThrows(
         IllegalArgumentException.class,
@@ -178,6 +177,7 @@ public final class LoadInterviewsServletTest {
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@gmail.com").setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     getRequest.addParameter("timeZoneOffset", "-740");
+    getRequest.addParameter("position", "SOFTWARE_ENGINEER");
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
     Assertions.assertThrows(
         IllegalArgumentException.class,
