@@ -128,4 +128,11 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
   public void delete(long id) {
     data.remove(id);
   }
+
+  public void dumpToConsole() {
+    System.out.println("DEBUG: Dumping contents of FakeScheduledInterviewDAO");
+    for (ScheduledInterview si : data.values()) {
+      System.out.println(si);
+    }
+  }
 }

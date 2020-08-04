@@ -52,4 +52,11 @@ public class FakePersonDao implements PersonDao {
     }
     return Optional.empty();
   }
+
+  public void dumpToConsole() {
+    System.out.println("DEBUG: Dumping contents of FakePersonDAO");
+    for (Person p : storedObjects.values()) {
+      System.out.println(p);
+    }
+  }
 }
