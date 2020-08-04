@@ -89,25 +89,31 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
       userId = String.format("%d", userEmail.hashCode());
     }
 
-    Optional<ScheduledInterview> scheduledInterview = getInterview(scheduledInterviewId);
-    if (!scheduledInterview.isPresent()) {
+    Optional<ScheduledInterview> scheduledInterviewOpt =
+        scheduledInterviewDao.get(scheduledInterviewId);
+
+    if (!scheduledInterviewOpt.isPresent()) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
 
-    answers.put("{{formatted_date}}", scheduledInterview.get().getDateString());
-    if (!isInterviewer(scheduledInterview.get(), userId)) {
+    ScheduledInterview scheduledInterview = scheduledInterviewOpt.get();
+    Optional<Person> intervieweeOpt = getInterviewee(scheduledInterview);
+    answers.put("{{formatted_date}}", scheduledInterview.getDateString());
+
+    if (!isInterviewer(scheduledInterview, userId)) {
       response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
       return;
     }
 
-    if (!getIntervieweeEmail(scheduledInterview.get()).isPresent()) {
+    if (!intervieweeOpt.isPresent()) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
 
+    Person interviewee = intervieweeOpt.get();
     try {
-      sendFeedback(getIntervieweeEmail(scheduledInterview.get()).get().email(), answers);
+      sendFeedback(interviewee.email(), answers);
     } catch (Exception e) {
       e.printStackTrace();
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -117,15 +123,11 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
     return;
   }
 
-  private Optional<ScheduledInterview> getInterview(long scheduledInterviewId) {
-    return scheduledInterviewDao.get(scheduledInterviewId);
-  }
-
   private boolean isInterviewer(ScheduledInterview scheduledInterview, String userId) {
     return scheduledInterview.interviewerId().equals(userId);
   }
 
-  private Optional<Person> getIntervieweeEmail(ScheduledInterview scheduledInterview) {
+  private Optional<Person> getInterviewee(ScheduledInterview scheduledInterview) {
     return personDao.get(scheduledInterview.intervieweeId());
   }
 

@@ -68,16 +68,28 @@
                 <div class="form-group form-inline"> 
                   <label for="question1">The interviewee communicated their thought process as they went along:</label><br>
                   <input type="number" class="form-control" min="1" max="10" id="question1" name="question1" required><br>
+                </div>
+                <div class="form-group form-inline"> 
                   <label for="question2">The interviewee understood the time complexity of their solution:</label><br>
                   <input type="number" class="form-control" min="1" max="10" id="question2" name="question2" required><br>
+                </div>
+                <div class="form-group form-inline">
                   <label for="question3">The interviewee took the time to consider better solutions:</label><br>
                   <input type="number" class="form-control" min="1" max="10" id="question3" name="question3" required><br>
+                </div>
+                <div class="form-group form-inline">
                   <label for="question4">The interviewee came up with an example that they used to test their solution:</label><br>
                   <input type="number" class="form-control" min="1" max="10" id="question4" name="question4" required><br>
+                </div>
+                <div class="form-group form-inline">
                   <label for="question5">The interviewee listed a handful of edge cases and accounted for their behaviour:</label><br>
                   <input type="number" class="form-control" min="1" max="10" id="question5" name="question5" required><br>
+                </div>
+                <div class="form-group form-inline">
                   <label for="question6">The interviewee asked clarifying questions:</label><br>
                   <input type="number" class="form-control" min="1" max="10" id="question6" name="question6" required><br>
+                </div>
+                <div class="form-group form-inline">
                   <label for="question7">This InterviewMe experience was helpful:</label><br>
                   <input type="number" class="form-control" min="1" max="10" id="question7" name="question7" required><br>
                 </div>
