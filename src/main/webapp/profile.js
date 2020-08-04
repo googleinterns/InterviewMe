@@ -34,6 +34,7 @@ function submitProfileForm(methodType, redirectUrl) {
       qualifiedJobs.push(job.getAttribute('data-enum-name'));
     }
   }
+  okShadow = document.getElementById('ok-shadow-check').checked;
   const personJson = {
     firstName: $('#first-name-field').val(),
     lastName: $('#last-name-field').val(),
@@ -41,7 +42,7 @@ function submitProfileForm(methodType, redirectUrl) {
     job: $('#job-field').val(),
     linkedIn: $('#linkedin-field').val(),
     qualifiedJobs: qualifiedJobs,
-    okShadow: $('#ok-shadow-check').val()
+    okShadow: okShadow
   };
   fetch('/person',{
     method: methodType,
@@ -71,6 +72,7 @@ function autofillForm(person) {
   for (let qualifiedJob of person.qualifiedJobs) {
     document.getElementById(enumNameToId(qualifiedJob)).checked = true;
   }
+  document.getElementById('ok-shadow-check').checked = Boolean(person.okShadow);
 }
 
 function enumNameToId(enumName) {
