@@ -16,7 +16,14 @@
         <h1 class="text-center">Feedback</h1>
         <h4 class="text-center">Please submit your feedback for your interviewer below.</h4>
         <h5 class="text-center lead">Please select an option for each prompt.</h5>
-        <form name="feedbackForm" method="POST" onSubmit="addScheduledInterviewId()" action="/interviewer-feedback" class="needs-validation" onkeydown="return event.key != 'Enter';" novalidate>
+        <form
+          novalidate
+          name="feedbackForm" method="POST"
+          onSubmit="addScheduledInterviewId()"
+          action="/interviewer-feedback"
+          class="needs-validation"
+          onkeydown="return event.key != 'Enter';"
+        >
           <div class="form-group">
             <div class="form-group form-inline"> 
               <label for="question1">I was comfortable during the interview:</label><br>
@@ -106,7 +113,15 @@
             <h1 class="text-center">Feedback</h1>
             <h5 class="text-center">Please submit your feedback for your interviewee below.</h4>
             <h5 class="text-center lead">Please select an option for each prompt.</h5>
-            <form name="feedbackForm" method="POST" onSubmit="addScheduledInterviewId()" action="/interviewee-feedback" class="needs-validation" onkeydown="return event.key != 'Enter';" novalidate>
+            <form
+              novalidate
+              name="feedbackForm"
+              method="POST"
+              onSubmit="addScheduledInterviewId()"
+              action="/interviewee-feedback"
+              class="needs-validation"
+              onkeydown="return event.key != 'Enter';"
+            >
               <div class="form-group">
                 <div class="form-group form-inline"> 
                   <label for="question1">The interviewee communicated their thought process as they went along:</label><br>
