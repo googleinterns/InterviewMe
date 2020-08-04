@@ -53,7 +53,7 @@ import javax.servlet.ServletException;
 import javax.servlet.RequestDispatcher;
 import java.util.Optional;
 
-@WebServlet("/show-interviewers")
+@WebServlet("/shadow-show-interviewers")
 public class ShadowShowInterviewersServlet extends HttpServlet {
   private ScheduledInterviewDao scheduledInterviewDao;
   private PersonDao personDao;

@@ -89,7 +89,7 @@ function selectInterview(interviewer) {
         company: company,
         job: job,
         utcStartTime: utcStartTime,
-        position: selectedPosition()
+        position: selectedEnumPosition()
       };
       let requestBody = JSON.stringify(requestObject);
       let request = new Request('/scheduled-interviews', {method: 'POST', body: requestBody});
@@ -116,7 +116,7 @@ function selectInterview(interviewer) {
         company: company,
         job: job,
         utcStartTime: utcStartTime,
-        position: selectedPosition()
+        position: selectedEnumPosition()
       };
       let requestBody = JSON.stringify(requestObject);
       let request = new Request('/scheduled-interviews', {method: 'PUT', body: requestBody});
@@ -134,7 +134,7 @@ function showInterviewers(selectButton) {
   const utc = select.value;
   const role = selectedRole();
   if (role === 'Interviewee') {
-    fetch(`/show-interviewers?utcStartTime=${utc}&date=${date}&time=${reformattedTime}&position=${selectedPosition()}`)
+    fetch(`/show-interviewers?utcStartTime=${utc}&date=${date}&time=${reformattedTime}&position=${selectedEnumPosition()}`)
     .then(response => response.text())
     .then(interviewers => {
       $('#modal-body').html(interviewers);
@@ -144,7 +144,7 @@ function showInterviewers(selectButton) {
     });
   }
   if (role === 'Shadow') {
-    fetch(`/shadow-show-interviewers?utcStartTime=${utc}&date=${date}&time=${reformattedTime}&position=${selectedPosition()}`)
+    fetch(`/shadow-show-interviewers?utcStartTime=${utc}&date=${date}&time=${reformattedTime}&position=${selectedEnumPosition()}`)
     .then(response => response.text())
     .then(interviewers => {
       $('#modal-body').html(interviewers);
