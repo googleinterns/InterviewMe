@@ -54,14 +54,10 @@ public class FakeEmailSender implements EmailSender {
   }
 
   // Returns the contents of the file specified at filePath as a String. Useful for converting
-  // predifined email templates to text.
+  // predifined email templates to text. Is not tested due to user path being used.
   @Override
   public String fileContentToString(String filePath) throws IOException {
-    StringBuilder contentBuilder = new StringBuilder();
-    try (Stream<String> stream = Files.lines(Paths.get(filePath), StandardCharsets.UTF_8)) {
-      stream.forEach(s -> contentBuilder.append(s).append("\n"));
-    }
-    return contentBuilder.toString();
+    return "";
   }
 
   /**

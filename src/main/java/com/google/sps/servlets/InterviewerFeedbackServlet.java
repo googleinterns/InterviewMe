@@ -92,7 +92,6 @@ public class InterviewerFeedbackServlet extends HttpServlet {
     Optional<ScheduledInterview> scheduledInterviewOpt =
         scheduledInterviewDao.get(scheduledInterviewId);
     if (!scheduledInterviewOpt.isPresent()) {
-      System.out.println("Here Too");
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
