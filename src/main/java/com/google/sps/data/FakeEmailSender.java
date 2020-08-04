@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URL;
 
-// Handles sending emails.
+// /** Mimics sending emails with Sendgrid. */
 @WebServlet("/email")
 public class FakeEmailSender implements EmailSender {
   // The email messages are being sent from.
@@ -45,7 +45,6 @@ public class FakeEmailSender implements EmailSender {
 
   public FakeEmailSender(Email sender) throws IOException {
     this.sender = sender;
-    // this.sg = "";
   }
 
   // Sends an email from the "from" Email to the "to" Email, with specified subject and content.

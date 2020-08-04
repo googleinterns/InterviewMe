@@ -50,7 +50,7 @@ public class SendgridEmailSender implements EmailSender {
             new SecretFetcher("interview-me-step-2020").getSecretValue("SENDGRID_API_KEY"));
   }
 
-  // Sends an email from the "from" Email to the "to" Email, with specified subject and content.
+  // Sends an email from the "sender" Email to the "recipient" Email, with specified subject and content.
   @Override
   public int sendEmail(Email recipient, String subject, Content content)
       throws IOException, Exception {
