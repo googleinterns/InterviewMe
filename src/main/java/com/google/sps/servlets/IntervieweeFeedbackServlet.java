@@ -23,6 +23,7 @@ import com.google.sps.data.Person;
 import com.google.sps.data.PersonDao;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.ScheduledInterviewDao;
+import com.google.sps.data.SendgridEmailSender;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
@@ -46,18 +47,27 @@ import javax.servlet.ServletException;
 public class IntervieweeFeedbackServlet extends HttpServlet {
   private ScheduledInterviewDao scheduledInterviewDao;
   private PersonDao personDao;
+  private EmailSender emailSender;
   private Path emailsPath =
       Paths.get(
           System.getProperty("user.home") + "/InterviewMe/src/main/resources/templates/email");
 
   @Override
   public void init() {
-    init(new DatastoreScheduledInterviewDao(), new DatastorePersonDao());
+    EmailSender emailer;
+    try {
+      emailer = new SendgridEmailSender(new Email("interviewme.business@gmail.com"));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    init(new DatastoreScheduledInterviewDao(), new DatastorePersonDao(), emailer);
   }
 
-  public void init(ScheduledInterviewDao scheduledInterviewDao, PersonDao personDao) {
+  public void init(
+      ScheduledInterviewDao scheduledInterviewDao, PersonDao personDao, EmailSender emailSender) {
     this.scheduledInterviewDao = scheduledInterviewDao;
     this.personDao = personDao;
+    this.emailSender = emailSender;
   }
 
   @Override
@@ -79,25 +89,27 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
       userId = String.format("%d", userEmail.hashCode());
     }
 
-    Optional<ScheduledInterview> scheduledInterview = getInterview(scheduledInterviewId);
-    if (!scheduledInterview.isPresent()) {
+    Optional<ScheduledInterview> scheduledInterviewOpt =
+        scheduledInterviewDao.get(scheduledInterviewId);
+    if (!scheduledInterviewOpt.isPresent()) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
-
-    answers.put("{{formatted_date}}", scheduledInterview.get().getDateString());
-    if (!isInterviewer(scheduledInterview.get(), userId)) {
+    ScheduledInterview scheduledInterview = scheduledInterviewOpt.get();
+    Optional<Person> intervieweeOpt = getInterviewee(scheduledInterview);
+    answers.put("{{formatted_date}}", scheduledInterview.getDateString());
+    if (!isInterviewer(scheduledInterview, userId)) {
       response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
       return;
     }
 
-    if (!getIntervieweeEmail(scheduledInterview.get()).isPresent()) {
+    if (!intervieweeOpt.isPresent()) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
-
+    Person interviewee = intervieweeOpt.get();
     try {
-      sendFeedback(getIntervieweeEmail(scheduledInterview.get()).get().email(), answers);
+      sendFeedback(interviewee.email(), answers);
     } catch (Exception e) {
       e.printStackTrace();
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -107,21 +119,16 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
     return;
   }
 
-  private Optional<ScheduledInterview> getInterview(long scheduledInterviewId) {
-    return scheduledInterviewDao.get(scheduledInterviewId);
-  }
-
   private boolean isInterviewer(ScheduledInterview scheduledInterview, String userId) {
     return scheduledInterview.interviewerId().equals(userId);
   }
 
-  private Optional<Person> getIntervieweeEmail(ScheduledInterview scheduledInterview) {
+  private Optional<Person> getInterviewee(ScheduledInterview scheduledInterview) {
     return personDao.get(scheduledInterview.intervieweeId());
   }
 
   private void sendFeedback(String intervieweeEmail, HashMap<String, String> answers)
       throws IOException, Exception {
-    EmailSender emailSender = new EmailSender(new Email("interviewme.business@gmail.com"));
     String subject = "Your Interviewer has submitted feedback for your interview!";
     Email recipient = new Email(intervieweeEmail);
     String contentString =
