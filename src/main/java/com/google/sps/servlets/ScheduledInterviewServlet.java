@@ -193,7 +193,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
       sendInterviewerEmail(interviewerId, emailedDetails);
     } catch (Exception e) {
       response.sendError(500);
-      System.out.println("here!");
       return;
     }
 
