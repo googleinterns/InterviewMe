@@ -36,7 +36,7 @@ public class LogInServlet extends HttpServlet {
   // Represents the logged in status of the site.
   public static class LoginInfo {
     public boolean loggedIn;
-    public final String changeLogInStatusURL;
+    public final String changeLogInStatusURL; // TODO: change and use cases to loginUrl
     public final String email;
 
     public LoginInfo(boolean loggedIn, String changeLogInStatusURL, String email) {

@@ -13,11 +13,8 @@
 // limitations under the License.
 
 // If user is logged in, returns a logout link. If not, redirects to home page.
-function supplyLogoutLinkOrRedirectHome(loginInfo) {
-  if (loginInfo.loggedIn) {
-    // TODO: change name of this function
-    // document.getElementById('login-tab').href = loginInfo.changeLogInStatusURL;
-  } else {
+function ifLoggedOutRedirectHome(loginInfo) {
+  if (!loginInfo.loggedIn) {
     window.location.replace('/');
   }
 }
