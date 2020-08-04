@@ -166,7 +166,13 @@ public class ScheduledInterviewServlet extends HttpServlet {
         ScheduledInterview.create(-1, interviewRange, interviewerId, intervieweeId));
 
     HashMap<String, String> emailedDetails = new HashMap<String, String>();
-    String interviewId = getScheduledInterviewId(intervieweeId, interviewRange);
+    String interviewId =
+        String.valueOf(
+            scheduledInterviewDao
+                .getScheduledInterviewsInRangeForUser(
+                    intervieweeId, interviewRange.start(), interviewRange.end())
+                .get(0)
+                .id());
     String intervieweeFeedbackLink =
         String.format(
             "http://interview-me-step-2020.appspot.com/feedback.html?interview=%s&role=interviewee",
@@ -191,7 +197,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
       return;
     }
 
-    // Since an interview was scheduled, both parties' availabilities must be updated
+    // Since an interview was scheduled, both parties' availabilities must be updated.
     List<Availability> affectedAvailability = new ArrayList<Availability>();
     List<Availability> intervieweeAffectedAvailability =
         availabilityDao.getInRangeForUser(
@@ -240,6 +246,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     return requestObjects;
   }
 
+  // Gets the formatted date for the string that is shown on the scheduledInterviews page.
   private String getDateString(TimeRange when, ZoneId timeZoneId) {
     LocalDateTime start = LocalDateTime.ofInstant(when.start(), timeZoneId);
     LocalDateTime end = LocalDateTime.ofInstant(when.end(), timeZoneId);
@@ -284,6 +291,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     return userId;
   }
 
+  // Gets formatted date for the string that is used in the email sent to users
   private String getEmailDateString(TimeRange when) {
     LocalDateTime start = LocalDateTime.ofInstant(when.start(), ZoneId.systemDefault());
     String startTime = start.format(DateTimeFormatter.ofPattern("h:mm a"));
@@ -301,7 +309,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
 
   private void sendInterviewerEmail(String interviewerId, HashMap<String, String> emailedDetails)
       throws IOException, Exception {
-    // EmailSender emailSender = new EmailSender(new Email("interviewme.business@gmail.com"));
     String subject = "You have been requested to conduct a mock interview!";
     Email recipient = new Email(getEmail(interviewerId));
     String contentString =
@@ -313,7 +320,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
 
   private void sendIntervieweeEmail(String intervieweeId, HashMap<String, String> emailedDetails)
       throws IOException, Exception {
-    // EmailSender emailSender = new EmailSender(new Email("interviewme.business@gmail.com"));
     String subject = "You have been registered for a mock interview!";
     Email recipient = new Email(getEmail(intervieweeId));
     String contentString =
@@ -321,16 +327,5 @@ public class ScheduledInterviewServlet extends HttpServlet {
     Content content =
         new Content("text/plain", emailSender.replaceAllPairs(emailedDetails, contentString));
     emailSender.sendEmail(recipient, subject, content);
-  }
-
-  private String getScheduledInterviewId(String userId, TimeRange range) {
-    List<ScheduledInterview> possibleInterviews = scheduledInterviewDao.getForPerson(userId);
-    for (ScheduledInterview scheduledInterview : possibleInterviews) {
-      if (userId.equals(scheduledInterview.intervieweeId())
-          && scheduledInterview.when().equals(range)) {
-        return String.valueOf(scheduledInterview.id());
-      }
-    }
-    return "";
   }
 }
