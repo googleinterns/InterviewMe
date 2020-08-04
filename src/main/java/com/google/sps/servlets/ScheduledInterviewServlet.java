@@ -181,11 +181,12 @@ public class ScheduledInterviewServlet extends HttpServlet {
         String.format(
             "http://interview-me-step-2020.appspot.com/feedback.html?interview=%s&role=interviewer",
             interviewId);
+
     emailedDetails.put("{{formatted_date}}", getEmailDateString(interviewRange));
     emailedDetails.put("{{interviewer_first_name}}", getFirstName(interviewerId));
     emailedDetails.put("{{interviewee_first_name}}", getFirstName(intervieweeId));
     emailedDetails.put("{{form_link}}", intervieweeFeedbackLink);
-    emailedDetails.put("{{position}}", position);
+    emailedDetails.put("{{position}}", formatPositionString(position));
 
     try {
       sendIntervieweeEmail(intervieweeId, emailedDetails);
@@ -326,5 +327,14 @@ public class ScheduledInterviewServlet extends HttpServlet {
     Content content =
         new Content("text/plain", emailSender.replaceAllPairs(emailedDetails, contentString));
     emailSender.sendEmail(recipient, subject, content);
+  }
+
+  static String formatPositionString(String str) {
+    String splitString[] = str.split("_", 0);
+    String formattedPositionString = "";
+    for (String s : splitString) {
+      formattedPositionString += s.substring(0, 1) + s.substring(1).toLowerCase() + " ";
+    }
+    return formattedPositionString;
   }
 }
