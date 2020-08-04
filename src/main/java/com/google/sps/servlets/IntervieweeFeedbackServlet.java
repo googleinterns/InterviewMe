@@ -31,8 +31,8 @@ import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
@@ -42,9 +42,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 
-// Servlet that gets the feedback from an interviwer and sends it to an interviewee.
-@WebServlet("/interviewee-feedback")
-public class IntervieweeFeedbackServlet extends HttpServlet {
+// Servlet that gets the feedback from an interviewee and sends it to an interviewer.
+@WebServlet("/interviewer-feedback")
+public class InterviewerFeedbackServlet extends HttpServlet {
   private ScheduledInterviewDao scheduledInterviewDao;
   private PersonDao personDao;
   private EmailSender emailSender;
@@ -92,24 +92,25 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
     Optional<ScheduledInterview> scheduledInterviewOpt =
         scheduledInterviewDao.get(scheduledInterviewId);
     if (!scheduledInterviewOpt.isPresent()) {
+      System.out.println("Here Too");
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
     ScheduledInterview scheduledInterview = scheduledInterviewOpt.get();
-    Optional<Person> intervieweeOpt = getInterviewee(scheduledInterview);
+    Optional<Person> interviewerOpt = getInterviewer(scheduledInterview);
     answers.put("{{formatted_date}}", scheduledInterview.getDateString());
-    if (!isInterviewer(scheduledInterview, userId)) {
+    if (!isInterviewee(scheduledInterview, userId)) {
       response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
       return;
     }
 
-    if (!intervieweeOpt.isPresent()) {
+    if (!interviewerOpt.isPresent()) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
-    Person interviewee = intervieweeOpt.get();
+    Person interviewer = interviewerOpt.get();
     try {
-      sendFeedback(interviewee.email(), answers);
+      sendFeedback(interviewer.email(), answers);
     } catch (Exception e) {
       e.printStackTrace();
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -119,20 +120,20 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
     return;
   }
 
-  private boolean isInterviewer(ScheduledInterview scheduledInterview, String userId) {
-    return scheduledInterview.interviewerId().equals(userId);
+  private boolean isInterviewee(ScheduledInterview scheduledInterview, String userId) {
+    return scheduledInterview.intervieweeId().equals(userId);
   }
 
-  private Optional<Person> getInterviewee(ScheduledInterview scheduledInterview) {
-    return personDao.get(scheduledInterview.intervieweeId());
+  private Optional<Person> getInterviewer(ScheduledInterview scheduledInterview) {
+    return personDao.get(scheduledInterview.interviewerId());
   }
 
-  private void sendFeedback(String intervieweeEmail, HashMap<String, String> answers)
+  private void sendFeedback(String interviewerEmail, HashMap<String, String> answers)
       throws IOException, Exception {
-    String subject = "Your Interviewer has submitted feedback for your interview!";
-    Email recipient = new Email(intervieweeEmail);
+    String subject = "Your Interviewee has submitted feedback for your interview!";
+    Email recipient = new Email(interviewerEmail);
     String contentString =
-        emailSender.fileContentToString(emailsPath + "/feedbackToInterviewee.txt");
+        emailSender.fileContentToString(emailsPath + "/feedbackToInterviewer.txt");
     Content content =
         new Content("text/plain", emailSender.replaceAllPairs(answers, contentString));
     emailSender.sendEmail(recipient, subject, content);
