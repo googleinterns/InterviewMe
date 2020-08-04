@@ -28,10 +28,12 @@ import com.google.appengine.api.utils.SystemProperty;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
-/** Servlet that invalidates the user's session after they log out. */
+/** Servlet that handles logout. */
 @WebServlet("/logout")
 public class LogoutServlet extends HttpServlet {
 
+  // Unsets the "logged in" cookies to "log the user out" of our site without logging them out of
+  // Gmail.
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Cookie[] cookies = request.getCookies();
@@ -47,15 +49,12 @@ public class LogoutServlet extends HttpServlet {
       // out of Google completely.
       // Reference: http://ptspts.blogspot.com/2011/12/how-to-log-out-from-appengine-app-only.html
       if (cookiesToUnset.contains(cookie.getName())) {
-        System.out.println(cookie.getName());
         cookie.setValue("");
         cookie.setMaxAge(0);
         response.addCookie(cookie);
       }
     }
-
     response.sendRedirect("/");
     return;
   }
 }
-// TODO: about page, home page think more about
