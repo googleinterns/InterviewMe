@@ -19,10 +19,12 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import com.google.sps.data.Availability;
 import com.google.sps.data.AvailabilityDao;
+import com.google.sps.data.CalendarAccess;
 import com.google.sps.data.DatastoreAvailabilityDao;
 import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
 import com.google.sps.data.EmailSender;
+import com.google.sps.data.GoogleCalendarAccess;
 import com.google.sps.data.InterviewPostRequest;
 import com.google.sps.data.Job;
 import com.google.sps.data.Person;
@@ -68,6 +70,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
   private AvailabilityDao availabilityDao;
   private PersonDao personDao;
   private EmailSender emailSender;
+  private CalendarAccess calendarAccess; 
   private final UserService userService = UserServiceFactory.getUserService();
   private Path emailsPath =
       Paths.get(
@@ -92,11 +95,12 @@ public class ScheduledInterviewServlet extends HttpServlet {
       ScheduledInterviewDao scheduledInterviewDao,
       AvailabilityDao availabilityDao,
       PersonDao personDao,
-      EmailSender emailSender) {
+      EmailSender emailSender, CalendarAccess calendarAccess) {
     this.scheduledInterviewDao = scheduledInterviewDao;
     this.availabilityDao = availabilityDao;
     this.personDao = personDao;
     this.emailSender = emailSender;
+    this.calendarAccess = calendarAccess; 
   }
 
   // Gets the current user's email and returns the ScheduledInterviews for that person.
@@ -177,13 +181,12 @@ public class ScheduledInterviewServlet extends HttpServlet {
             /*shadowId=*/ ""));
 
     HashMap<String, String> emailedDetails = new HashMap<String, String>();
-    String interviewId =
-        String.valueOf(
-            scheduledInterviewDao
+    ScheduledInterview scheduledInterview = scheduledInterviewDao
                 .getScheduledInterviewsInRangeForUser(
                     intervieweeId, interviewRange.start(), interviewRange.end())
-                .get(0)
-                .id());
+                .get(0); 
+    String interviewId =
+        String.valueOf(scheduledInterview.id());
     String intervieweeFeedbackLink =
         String.format(
             "http://interview-me-step-2020.appspot.com/feedback.html?interview=%s&role=interviewee",
@@ -192,12 +195,15 @@ public class ScheduledInterviewServlet extends HttpServlet {
         String.format(
             "http://interview-me-step-2020.appspot.com/feedback.html?interview=%s&role=interviewer",
             interviewId);
-
+    meetLink = GoogleCalendarAccess.getMeetLink(scheduledInterview); 
+    scheduledInterview.meetLink() = meetLink; 
+    scheduledInterviewDao.update(scheduledInterview); 
     emailedDetails.put("{{formatted_date}}", getEmailDateString(interviewRange));
     emailedDetails.put("{{interviewer_first_name}}", getFirstName(interviewerId));
     emailedDetails.put("{{interviewee_first_name}}", getFirstName(intervieweeId));
     emailedDetails.put("{{form_link}}", intervieweeFeedbackLink);
     emailedDetails.put("{{position}}", formatPositionString(position));
+    emailedDetails.put("{{chat_link}}", meetLink);
 
     try {
       sendIntervieweeEmail(intervieweeId, emailedDetails);
