@@ -20,9 +20,7 @@ import com.sendgrid.helpers.mail.objects.Email;
 import java.io.IOException;
 import java.util.HashMap;
 
-/**
- * EmailSenderInterface includes the basic methods anything managing sending emails must support.
- */
+/** EmailSender includes the basic methods anything managing sending emails must support. */
 public interface EmailSender {
 
   // Sends an email from the "from" Email to the "to" Email, with specified subject and content.
