@@ -71,8 +71,7 @@ public final class GoogleCalendarAccessTest {
 
     CreateConferenceRequest expCreateRequest = new CreateConferenceRequest();
     expCreateRequest.setRequestId(String.valueOf(interview1.id()));
-    expCreateRequest.setConferenceSolutionKey(new
-ConferenceSolutionKey().setType("hangoutsMeet"));
+    expCreateRequest.setConferenceSolutionKey(new ConferenceSolutionKey().setType("hangoutsMeet"));
     Assert.assertEquals(
         observed.getConferenceData(), new ConferenceData().setCreateRequest(expCreateRequest));
   }
