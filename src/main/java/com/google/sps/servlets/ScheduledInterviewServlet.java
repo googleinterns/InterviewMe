@@ -162,8 +162,19 @@ public class ScheduledInterviewServlet extends HttpServlet {
     int randomNumber = (int) (Math.random() * possibleInterviewers.size());
     String interviewerId = possibleInterviewers.get(randomNumber);
 
+    // TODO: replace with real MeetLink from Calendar Access
+    String meetLink = "meet_link";
+    // Shadow is empty because when an interview is first made, only interviewee and
+    // interviewer are involved.
     scheduledInterviewDao.create(
-        ScheduledInterview.create(-1, interviewRange, interviewerId, intervieweeId));
+        ScheduledInterview.create(
+            -1,
+            interviewRange,
+            interviewerId,
+            intervieweeId,
+            meetLink,
+            Job.valueOf(position),
+            /*shadowId=*/ ""));
 
     HashMap<String, String> emailedDetails = new HashMap<String, String>();
     String interviewId =
@@ -263,12 +274,22 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String date = getDateString(scheduledInterview.when(), timeZoneId);
     String interviewer = getFirstName(scheduledInterview.interviewerId());
     String interviewee = getFirstName(scheduledInterview.intervieweeId());
+    String shadow = getFirstName(scheduledInterview.shadowId()); 
     String role = getUserRole(scheduledInterview, userId);
     boolean hasStarted =
         scheduledInterview.when().start().minus(5, ChronoUnit.MINUTES).isBefore(userTime);
-
+    String meetLink = scheduledInterview.meetLink();
+    String position = scheduledInterview.position().name();
     return new ScheduledInterviewRequest(
-        scheduledInterview.id(), date, interviewer, interviewee, role, hasStarted);
+        scheduledInterview.id(),
+        date,
+        interviewer,
+        interviewee,
+        role,
+        hasStarted,
+        meetLink,
+        position,
+        shadow);
   }
 
   static String getUserRole(ScheduledInterview scheduledInterview, String userId) {
@@ -277,6 +298,9 @@ public class ScheduledInterviewServlet extends HttpServlet {
     }
     if (userId.equals(scheduledInterview.intervieweeId())) {
       return "Interviewee";
+    }
+    if (userId.equals(scheduledInterview.shadowId())) {
+      return "Shadow";
     }
     return "unknown";
   }

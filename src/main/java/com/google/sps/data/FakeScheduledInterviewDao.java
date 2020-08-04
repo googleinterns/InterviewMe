@@ -59,6 +59,32 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
   }
 
   /**
+   * Returns a list, sorted by start time, of all scheduled ScheduledInterview objects whose
+   * startTime is between minTime and maxTime.
+   */
+  public List<ScheduledInterview> getInRange(Instant minTime, Instant maxTime) {
+    TimeRange range = new TimeRange(minTime, maxTime);
+    List<ScheduledInterview> scheduledInterviewsInRange = new ArrayList<>();
+    List<ScheduledInterview> scheduledInterviews = new ArrayList<ScheduledInterview>(data.values());
+    for (ScheduledInterview scheduledInterview : scheduledInterviews) {
+      if (range.contains(scheduledInterview.when())) {
+        scheduledInterviewsInRange.add(scheduledInterview);
+      }
+    }
+    scheduledInterviewsInRange.sort(
+        (ScheduledInterview s1, ScheduledInterview s2) -> {
+          if (s1.when().start().equals(s2.when().start())) {
+            return 0;
+          }
+          if (s1.when().start().isBefore(s2.when().start())) {
+            return -1;
+          }
+          return 1;
+        });
+    return scheduledInterviewsInRange;
+  }
+
+  /**
    * Retrieves all scheduledInterview entities from storage that involve a particular user and
    * returns them as a list of ScheduledInterview objects in the order in which they occur.
    */
@@ -79,7 +105,8 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
 
     for (ScheduledInterview scheduledInterview : scheduledInterviews) {
       if (userId.equals(scheduledInterview.interviewerId())
-          || userId.equals(scheduledInterview.intervieweeId())) {
+          || userId.equals(scheduledInterview.intervieweeId())
+          || userId.equals(scheduledInterview.shadowId())) {
         relevantInterviews.add(scheduledInterview);
       }
     }
@@ -113,7 +140,10 @@ public class FakeScheduledInterviewDao implements ScheduledInterviewDao {
             generatedId,
             scheduledInterview.when(),
             scheduledInterview.interviewerId(),
-            scheduledInterview.intervieweeId());
+            scheduledInterview.intervieweeId(),
+            scheduledInterview.meetLink(),
+            scheduledInterview.position(),
+            scheduledInterview.shadowId());
     data.put(generatedId, storedScheduledInterview);
   }
 

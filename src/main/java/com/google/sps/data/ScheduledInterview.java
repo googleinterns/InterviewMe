@@ -30,17 +30,32 @@ public abstract class ScheduledInterview {
 
   public abstract String intervieweeId();
 
+  public abstract String meetLink();
+
+  public abstract Job position();
+
+  public abstract String shadowId();
+
   /**
    * Creates a scheduled interview that contains a timerange, the date and the emails of the
    * attendees.
    */
   public static ScheduledInterview create(
-      long id, TimeRange when, String interviewerId, String intervieweeId) {
+      long id,
+      TimeRange when,
+      String interviewerId,
+      String intervieweeId,
+      String meetLink,
+      Job position,
+      String shadowId) {
     return builder()
         .setId(id)
         .setWhen(when)
         .setInterviewerId(interviewerId)
         .setIntervieweeId(intervieweeId)
+        .setMeetLink(meetLink)
+        .setPosition(position)
+        .setShadowId(shadowId)
         .build();
   }
 
@@ -57,6 +72,12 @@ public abstract class ScheduledInterview {
     abstract Builder setInterviewerId(String interviewerId);
 
     abstract Builder setIntervieweeId(String intervieweeId);
+
+    abstract Builder setMeetLink(String meetLink);
+
+    abstract Builder setPosition(Job position);
+
+    abstract Builder setShadowId(String shadowId);
 
     abstract ScheduledInterview build();
   }
