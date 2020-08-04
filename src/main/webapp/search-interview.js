@@ -24,20 +24,18 @@ function loadInterviews() {
   const searchResultsDiv = document.getElementById('search-results');
   searchResultsDiv.removeAttribute('hidden');
   const role = selectedRole();
+  let servlet = '';
   if (role === 'Interviewee') {
-    fetch(`/load-interviews?timeZoneOffset=${browserTimezoneOffset()}&position=${selectedEnumPosition()}`)
+    servlet = 'load-interviews';
+  }
+  if (role === 'Shadow') {
+    servlet = 'shadow-load-interviews';
+  }
+  fetch(`/${servlet}?timeZoneOffset=${browserTimezoneOffset()}&position=${selectedEnumPosition()}`)
     .then(response => response.text())
     .then(interviewTimes => {
       interviewTimesDiv().innerHTML = interviewTimes;
     });
-  }
-  if (role === 'Shadow') {
-    fetch(`/shadow-load-interviews?timeZoneOffset=${browserTimezoneOffset()}&position=${selectedEnumPosition()}`)
-    .then(response => response.text())
-    .then(interviewTimes => {
-      interviewTimesDiv().innerHTML = interviewTimes;
-    })
-  }
 }
 
 function selectedRole() {
@@ -133,18 +131,14 @@ function showInterviewers(selectButton) {
   const reformattedTime = time.replace('-', 'to');
   const utc = select.value;
   const role = selectedRole();
+  let servlet = '';
   if (role === 'Interviewee') {
-    fetch(`/show-interviewers?utcStartTime=${utc}&date=${date}&time=${reformattedTime}&position=${selectedEnumPosition()}`)
-    .then(response => response.text())
-    .then(interviewers => {
-      $('#modal-body').html(interviewers);
-      $('#modal-title').text(`Qualified Interviewers Information for ${date} from ${reformattedTime}`);
-      $('#interviewer-modal').modal('show');
-      checkIfSpecified();
-    });
+    servlet = 'show-interviewers';
   }
   if (role === 'Shadow') {
-    fetch(`/shadow-show-interviewers?utcStartTime=${utc}&date=${date}&time=${reformattedTime}&position=${selectedEnumPosition()}`)
+    servlet = 'shadow-show-interviewers';
+  }
+  fetch(`/${servlet}?utcStartTime=${utc}&date=${date}&time=${reformattedTime}&position=${selectedEnumPosition()}`)
     .then(response => response.text())
     .then(interviewers => {
       $('#modal-body').html(interviewers);
@@ -152,7 +146,6 @@ function showInterviewers(selectButton) {
       $('#interviewer-modal').modal('show');
       checkIfSpecified();
     });
-  }
 }
 
 function checkIfSpecified() {
