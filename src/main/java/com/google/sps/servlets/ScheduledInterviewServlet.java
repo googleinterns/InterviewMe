@@ -172,7 +172,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
   }
 
   // Send the request's contents to Datastore in the form of an updated ScheduledInterview object.
-  // Adds a shadow.
+  // Adds the current user as a shadow.
   @Override
   public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String shadowEmail = userService.getCurrentUser().getEmail();
