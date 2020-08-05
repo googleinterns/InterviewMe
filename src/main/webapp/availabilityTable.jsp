@@ -31,6 +31,7 @@
       <tr>
         <c:forEach items = "${pageScope.list}" var = "day">
           <td onmouseenter="event.preventDefault(); toggleTile(this);" 
+              onmousedown="event.preventDefault(); markMouseDown(); toggleTile(this);"
               data-utc="${day.get(i).utcEncoding()}" 
               class="${day.get(i).getClassList()}">
             ${day.get(i).time()}
