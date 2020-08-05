@@ -37,19 +37,7 @@ function loadAvailabilityTable(tableDiv, timezoneOffset) {
     .then(response => response.text())
     .then(tableContents => {
       tableDiv.innerHTML = tableContents;
-      makeEmptyRowsShort();
     });
-}
-
-function makeEmptyRowsShort() {
-  let rows = document.getElementsByTagName('tr');
-  for (let row of rows) {
-    if (row.firstElementChild.innerHTML === '') {
-      row.classList = 'short';
-    } else {
-      row.classList = 'tall';
-    }
-  }
 }
 
 function availabilityTableDiv() {
@@ -61,7 +49,7 @@ function updateAvailability(reload) {
   let scheduledSlots = document.getElementsByClassName('scheduled-time-slot');
   let markedSlots = Array.from(selectedSlots).concat(Array.from(scheduledSlots));
   let firstSlot = document.getElementsByTagName('tbody').item(0)
-    .firstElementChild.firstElementChild.getAttribute('data-utc');
+    .firstElementChild.firstElementChild.nextElementSibling.getAttribute('data-utc');
   let lastSlot = document.getElementsByTagName('tbody').item(0)
     .lastElementChild.lastElementChild.getAttribute('data-utc');
   let requestObject = {

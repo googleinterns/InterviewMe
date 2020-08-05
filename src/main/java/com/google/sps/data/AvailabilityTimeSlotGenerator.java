@@ -180,10 +180,8 @@ public class AvailabilityTimeSlotGenerator {
       if (hour > 12) {
         standardHour = hour - 12;
       }
-      String formattedTime = "";
-      if (minute == 0) {
-        formattedTime = String.format("%d:%02d %s", standardHour, minute, hour < 12 ? "AM" : "PM");
-      }
+      String formattedTime =
+          String.format("%d:%02d %s", standardHour, minute, hour < 12 ? "AM" : "PM");
       timeSlots.add(
           AvailabilityTimeSlot.create(
               formattedUTCTime,

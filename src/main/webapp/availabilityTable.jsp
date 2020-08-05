@@ -28,16 +28,29 @@
   </thead>
   <tbody>
     <!-- TODO: Allow clicking and scrolling over multiple slots to select them.-->
-    <!-- TODO: Change page format so that it is vertically condensed.-->
     <c:forEach var = "i" begin = "0" end = "${pageScope.list.get(0).size() - 1}">
-      <tr>
-        <td>${pageScope.list.get(0).get(i).time()}</td>
-        <c:forEach items = "${pageScope.list}" var = "day">
-          <td onclick="toggleTile(this)" data-utc="${day.get(i).utcEncoding()}" 
-              class="${day.get(i).getClassList()}">
-          </td>
-        </c:forEach>
-      </tr>
+      <c:choose>
+        <c:when test="${i%4 == 0}">
+          <tr class='tall'>
+            <td>${pageScope.list.get(0).get(i).time()}</td>
+            <c:forEach items = "${pageScope.list}" var = "day">
+              <td onclick="toggleTile(this)" data-utc="${day.get(i).utcEncoding()}" 
+                  class="${day.get(i).getClassList()}">
+              </td>
+            </c:forEach>
+          </tr>
+        </c:when>
+        <c:otherwise>
+          <tr class='short'>
+            <td></td>
+            <c:forEach items = "${pageScope.list}" var = "day">
+              <td onclick="toggleTile(this)" data-utc="${day.get(i).utcEncoding()}" 
+                  class="${day.get(i).getClassList()}">
+              </td>
+            </c:forEach>
+          </tr>
+        </c:otherwise>
+      </c:choose>
     </c:forEach>
   </tbody>
 </table>
