@@ -17,7 +17,7 @@
 %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<table class="table table-sm text-center" >
+<table class="table table-sm text-center">
   <thead>
     <tr>
       <c:forEach items = "${pageScope.list}" var = "day">
