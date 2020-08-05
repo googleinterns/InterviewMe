@@ -223,6 +223,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     emailedDetails.put("{{formatted_date}}", getEmailDateString(interviewRange));
     emailedDetails.put("{{interviewer_first_name}}", getFirstName(interviewerId));
     emailedDetails.put("{{interviewee_first_name}}", getFirstName(intervieweeId));
+    emailedDetails.put("{{shadow_first_name}}", getFirstName(scheduledInterview.shadowId()));
     emailedDetails.put("{{form_link}}", intervieweeFeedbackLink);
     emailedDetails.put("{{position}}", formatPositionString(position));
     emailedDetails.put("{{chat_link}}", meetLink);
@@ -231,7 +232,9 @@ public class ScheduledInterviewServlet extends HttpServlet {
       sendParticipantEmail(intervieweeId, emailedDetails);
       emailedDetails.put("{{form_link}}", interviewerFeedbackLink);
       sendParticipantEmail(interviewerId, emailedDetails);
-      sendShadowEmail(shadowId, emailedDetails);
+      if (!scheduledInterview.shadowId().equals("")) {
+        sendShadowEmail(scheduledInterview.shadowId(), emailedDetails);
+      }
     } catch (Exception e) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
