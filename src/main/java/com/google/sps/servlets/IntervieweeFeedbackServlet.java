@@ -48,15 +48,16 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
   private ScheduledInterviewDao scheduledInterviewDao;
   private PersonDao personDao;
   private EmailSender emailSender;
+  static final Email sender = new Email("interviewme.business@gmail.com");
   private Path emailsPath =
       Paths.get(
           System.getProperty("user.home") + "/InterviewMe/src/main/resources/templates/email");
 
   @Override
   public void init() {
-    final EmailSender emailSender;
+    EmailSender emailSender;
     try {
-      emailSender = new SendgridEmailSender(new Email("interviewme.business@gmail.com"));
+      emailSender = new SendgridEmailSender(sender);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

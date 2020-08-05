@@ -69,15 +69,16 @@ public class ScheduledInterviewServlet extends HttpServlet {
   private PersonDao personDao;
   private EmailSender emailSender;
   private final UserService userService = UserServiceFactory.getUserService();
+  static final Email sender = new Email("interviewme.business@gmail.com");
   private Path emailsPath =
       Paths.get(
           System.getProperty("user.home") + "/InterviewMe/src/main/resources/templates/email");
 
   @Override
   public void init() {
-    final EmailSender emailSender;
+    EmailSender emailSender;
     try {
-      emailSender = new SendgridEmailSender(new Email("interviewme.business@gmail.com"));
+      emailSender = new SendgridEmailSender(sender);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
