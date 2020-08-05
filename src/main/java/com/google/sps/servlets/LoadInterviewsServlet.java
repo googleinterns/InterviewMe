@@ -21,7 +21,6 @@ import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.sps.data.Availability;
 import com.google.sps.data.AvailabilityDao;
-import com.google.sps.data.AvailabilityTimeSlotGenerator;
 import com.google.sps.data.DatastoreAvailabilityDao;
 import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
@@ -31,6 +30,7 @@ import com.google.sps.data.PossibleInterviewSlot;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.ScheduledInterviewDao;
 import com.google.sps.data.TimeRange;
+import com.google.sps.data.TimeUtils;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.lang.Integer;
@@ -94,9 +94,8 @@ public class LoadInterviewsServlet extends HttpServlet {
         maxTimezoneOffsetMinutes,
         maxTimezoneOffsetHours,
         timezoneOffsetMinutes);
-    ZoneOffset timezoneOffset =
-        AvailabilityTimeSlotGenerator.convertIntToOffset(timezoneOffsetMinutes);
-    ZonedDateTime day = generateDay(currentTime, timezoneOffset);
+    ZoneOffset timezoneOffset = TimeUtils.convertIntToOffset(timezoneOffsetMinutes);
+    ZonedDateTime day = TimeUtils.generateDay(currentTime, timezoneOffsetMinutes);
     ZonedDateTime utcTime = day.withZoneSameInstant(ZoneOffset.UTC);
     // The user will be shown available interview times for the next four weeks, starting from the
     // current time.
@@ -191,8 +190,8 @@ public class LoadInterviewsServlet extends HttpServlet {
         possibleInterviewSlotsForPerson.add(
             PossibleInterviewSlot.create(
                 availabilities.get(i).when().start().toString(),
-                getDate(availabilities.get(i).when().start(), timezoneOffset),
-                getTime(availabilities.get(i).when().start(), timezoneOffset)));
+                TimeUtils.getDate(availabilities.get(i).when().start(), timezoneOffset),
+                TimeUtils.getTime(availabilities.get(i).when().start(), timezoneOffset)));
       }
     }
     return possibleInterviewSlotsForPerson;
@@ -208,35 +207,6 @@ public class LoadInterviewsServlet extends HttpServlet {
         .start()
         .plus(45, ChronoUnit.MINUTES)
         .equals(availabilities.get(index + numberOfSlotsAfterFirstInAnHour).when().start());
-  }
-
-  // Uses an Instant and a timezoneOffset to create a ZonedDateTime instance.
-  static ZonedDateTime generateDay(Instant instant, ZoneOffset timezoneOffset) {
-    return instant.atZone(ZoneId.ofOffset("UTC", timezoneOffset));
-  }
-
-  static String getDate(Instant instant, ZoneOffset timezoneOffset) {
-    ZonedDateTime day = instant.atZone(ZoneId.ofOffset("UTC", timezoneOffset));
-    String dayOfWeek = day.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.US);
-    int month = day.getMonthValue();
-    int dayOfMonth = day.getDayOfMonth();
-    return String.format("%s %d/%d", dayOfWeek, month, dayOfMonth);
-  }
-
-  static String getTime(Instant instant, ZoneOffset timezoneOffset) {
-    ZonedDateTime startTime = instant.atZone(ZoneId.ofOffset("UTC", timezoneOffset));
-    ZonedDateTime endTime = startTime.plus(1, ChronoUnit.HOURS);
-    return String.format("%s - %s", formatTime(startTime), formatTime(endTime));
-  }
-
-  static String formatTime(ZonedDateTime time) {
-    int hour = time.getHour();
-    int minute = time.getMinute();
-    int standardHour = hour;
-    if (hour > 12) {
-      standardHour = hour - 12;
-    }
-    return String.format("%d:%02d %s", standardHour, minute, hour < 12 ? "AM" : "PM");
   }
 
   private void sortInterviews(List<PossibleInterviewSlot> possibleInterviewSlots) {

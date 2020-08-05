@@ -21,7 +21,6 @@ import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.sps.data.Availability;
 import com.google.sps.data.AvailabilityDao;
-import com.google.sps.data.AvailabilityTimeSlotGenerator;
 import com.google.sps.data.DatastoreAvailabilityDao;
 import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
@@ -31,6 +30,7 @@ import com.google.sps.data.PossibleInterviewSlot;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.ScheduledInterviewDao;
 import com.google.sps.data.TimeRange;
+import com.google.sps.data.TimeUtils;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.lang.Integer;
@@ -84,9 +84,8 @@ public class ShadowLoadInterviewsServlet extends HttpServlet {
         maxTimezoneOffsetMinutes,
         maxTimezoneOffsetHours,
         timezoneOffsetMinutes);
-    ZoneOffset timezoneOffset =
-        AvailabilityTimeSlotGenerator.convertIntToOffset(timezoneOffsetMinutes);
-    ZonedDateTime day = LoadInterviewsServlet.generateDay(currentTime, timezoneOffset);
+    ZoneOffset timezoneOffset = TimeUtils.convertIntToOffset(timezoneOffsetMinutes);
+    ZonedDateTime day = TimeUtils.generateDay(currentTime, timezoneOffsetMinutes);
     ZonedDateTime utcTime = day.withZoneSameInstant(ZoneOffset.UTC);
     // The user will be shown available interview times for the next four weeks, starting from the
     // current time.
@@ -170,8 +169,8 @@ public class ShadowLoadInterviewsServlet extends HttpServlet {
       possibleInterviewSlots.add(
           PossibleInterviewSlot.create(
               interview.when().start().toString(),
-              LoadInterviewsServlet.getDate(interview.when().start(), timezoneOffset),
-              LoadInterviewsServlet.getTime(interview.when().start(), timezoneOffset)));
+              TimeUtils.getDate(interview.when().start(), timezoneOffset),
+              TimeUtils.getTime(interview.when().start(), timezoneOffset)));
     }
     return possibleInterviewSlots;
   }
