@@ -228,9 +228,10 @@ public class ScheduledInterviewServlet extends HttpServlet {
     emailedDetails.put("{{chat_link}}", meetLink);
 
     try {
-      sendIntervieweeEmail(intervieweeId, emailedDetails);
+      sendParticipantEmail(intervieweeId, emailedDetails);
       emailedDetails.put("{{form_link}}", interviewerFeedbackLink);
-      sendInterviewerEmail(interviewerId, emailedDetails);
+      sendParticipantEmail(interviewerId, emailedDetails);
+      sendShadowEmail(shadowId, emailedDetails);
     } catch (Exception e) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
@@ -302,7 +303,11 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String date = getDateString(scheduledInterview.when(), timeZoneId);
     String interviewer = getFirstName(scheduledInterview.interviewerId());
     String interviewee = getFirstName(scheduledInterview.intervieweeId());
-    String shadow = getFirstName(scheduledInterview.shadowId());
+    String shadowId = scheduledInterview.shadowId();
+    String shadow = "None";
+    if (!scheduledInterview.shadowId().equals("")) {
+      shadow = getFirstName(scheduledInterview.shadowId());
+    }
     String role = getUserRole(scheduledInterview, userId);
     boolean hasStarted =
         scheduledInterview.when().start().minus(5, ChronoUnit.MINUTES).isBefore(userTime);
@@ -359,23 +364,27 @@ public class ScheduledInterviewServlet extends HttpServlet {
     return personDao.get(participantId).map(Person::firstName).orElse("None");
   }
 
-  private void sendInterviewerEmail(String interviewerId, HashMap<String, String> emailedDetails)
+  private void sendParticipantEmail(String participantId, HashMap<String, String> emailedDetails)
       throws IOException, Exception {
     String subject = "You have been requested to conduct a mock interview!";
-    Email recipient = new Email(getEmail(interviewerId));
     String contentString =
         emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewer.txt");
+    if (participantId.equals(getUserId())) {
+      subject = "You have been registered for a mock interview!";
+      contentString = emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewee.txt");
+    }
+
+    Email recipient = new Email(getEmail(participantId));
     Content content =
         new Content("text/plain", emailSender.replaceAllPairs(emailedDetails, contentString));
     emailSender.sendEmail(recipient, subject, content);
   }
 
-  private void sendIntervieweeEmail(String intervieweeId, HashMap<String, String> emailedDetails)
+  private void sendShadowEmail(String shadowId, HashMap<String, String> emailedDetails)
       throws IOException, Exception {
     String subject = "You have been registered for a mock interview!";
-    Email recipient = new Email(getEmail(intervieweeId));
-    String contentString =
-        emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewee.txt");
+    String contentString = emailSender.fileContentToString(emailsPath + "/NewInterview_Shadow.txt");
+    Email recipient = new Email(getEmail(shadowId));
     Content content =
         new Content("text/plain", emailSender.replaceAllPairs(emailedDetails, contentString));
     emailSender.sendEmail(recipient, subject, content);
@@ -399,6 +408,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
         previousInterviewObject.intervieweeId(),
         meetLink,
         previousInterviewObject.position(),
-        /*shadowId=*/ "");
+        previousInterviewObject.shadowId());
   }
 }
