@@ -290,8 +290,10 @@ public class ScheduledInterviewServlet extends HttpServlet {
             .get(scheduledInterview.intervieweeId())
             .map(Person::firstName)
             .orElse("Nonexistent User");
-    String shadow =
-        personDao.get(scheduledInterview.shadowId()).map(Person::firstName).orElse("None");
+    String shadow = "None";
+    if (!scheduledInterview.shadowId().equals("")) {
+      shadow = personDao.get(scheduledInterview.shadowId()).map(Person::firstName).orElse("None");
+    }
     String role = getUserRole(scheduledInterview, userId);
     boolean hasStarted =
         scheduledInterview.when().start().minus(5, ChronoUnit.MINUTES).isBefore(userTime);
