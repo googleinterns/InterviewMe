@@ -37,7 +37,19 @@ function loadAvailabilityTable(tableDiv, timezoneOffset) {
     .then(response => response.text())
     .then(tableContents => {
       tableDiv.innerHTML = tableContents;
+      makeEmptyRowsShort();
     });
+}
+
+function makeEmptyRowsShort() {
+  let rows = document.getElementsByTagName('tr');
+  for (let row of rows) {
+    if (row.firstElementChild.innerHTML === '') {
+      row.classList = 'short';
+    } else {
+      row.classList = 'tall';
+    }
+  }
 }
 
 function availabilityTableDiv() {

@@ -15,3 +15,26 @@
   margin-left: 5px;
   width: 130px;
 }
+
+.table td {
+  border-left: 1px solid #dee2e6;
+  border-right: 1px solid #dee2e6;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.table-sm td {
+  padding: 0px;
+}
+
+.table th {
+  border-left: 1px solid #dee2e6;
+  border-right: 1px solid #dee2e6;
+}
+
+.short {
+  height: 10px;
+}
+
+.tall {
+  height: 24.35px;
+}

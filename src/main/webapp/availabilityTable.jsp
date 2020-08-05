@@ -20,6 +20,7 @@
 <table class="table table-sm text-center">
   <thead>
     <tr>
+      <th scope="col"></th>
       <c:forEach items = "${pageScope.list}" var = "day">
         <th scope="col">${day.get(0).date()}</th>
       </c:forEach>
@@ -30,10 +31,10 @@
     <!-- TODO: Change page format so that it is vertically condensed.-->
     <c:forEach var = "i" begin = "0" end = "${pageScope.list.get(0).size() - 1}">
       <tr>
+        <td>${pageScope.list.get(0).get(i).time()}</td>
         <c:forEach items = "${pageScope.list}" var = "day">
           <td onclick="toggleTile(this)" data-utc="${day.get(i).utcEncoding()}" 
               class="${day.get(i).getClassList()}">
-            ${day.get(i).time()}
           </td>
         </c:forEach>
       </tr>
