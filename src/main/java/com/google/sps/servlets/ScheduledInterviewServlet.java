@@ -26,7 +26,7 @@ import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
 import com.google.sps.data.EmailSender;
 import com.google.sps.data.GoogleCalendarAccess;
-import com.google.sps.data.InterviewPostRequest;
+import com.google.sps.data.InterviewPostOrPutRequest;
 import com.google.sps.data.Job;
 import com.google.sps.data.Person;
 import com.google.sps.data.PersonDao;
@@ -56,8 +56,10 @@ import java.time.temporal.ChronoUnit;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -147,9 +149,9 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String intervieweeEmail = userService.getCurrentUser().getEmail();
     String intervieweeId = getUserId();
 
-    InterviewPostRequest postRequest;
+    InterviewPostOrPutRequest postRequest;
     try {
-      postRequest = new Gson().fromJson(getJsonString(request), InterviewPostRequest.class);
+      postRequest = new Gson().fromJson(getJsonString(request), InterviewPostOrPutRequest.class);
     } catch (Exception JsonSyntaxException) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST);
       return;
@@ -195,7 +197,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
             interviewerId,
             intervieweeId,
             meetLink,
-            Job.valueOf(position),
+            selectedPosition,
             /*shadowId=*/ ""));
 
     HashMap<String, String> emailedDetails = new HashMap<String, String>();
@@ -219,23 +221,19 @@ public class ScheduledInterviewServlet extends HttpServlet {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
     }
-    scheduledInterviewDao.update(updatedMeetLinkField(meetLink, scheduledInterview));
+    scheduledInterviewDao.update(scheduledInterview.withMeetLink(meetLink));
     emailedDetails.put("{{formatted_date}}", getEmailDateString(interviewRange));
     emailedDetails.put("{{interviewer_first_name}}", getFirstName(interviewerId));
     emailedDetails.put("{{interviewee_first_name}}", getFirstName(intervieweeId));
-    emailedDetails.put("{{shadow_first_name}}", getFirstName(scheduledInterview.shadowId()));
     emailedDetails.put("{{form_link}}", intervieweeFeedbackLink);
     emailedDetails.put("{{position}}", formatPositionString(position));
     emailedDetails.put("{{chat_link}}", meetLink);
 
     try {
-      sendParticipantEmail(intervieweeId, emailedDetails);
+      sendParticipantEmail(scheduledInterview, intervieweeId, emailedDetails);
       emailedDetails.put("{{form_link}}", interviewerFeedbackLink);
-      sendParticipantEmail(interviewerId, emailedDetails);
-      if (!scheduledInterview.shadowId().equals("")) {
-        sendShadowEmail(scheduledInterview.shadowId(), emailedDetails);
-      }
-    } catch (Exception e) {
+      sendParticipantEmail(scheduledInterview, interviewerId, emailedDetails);
+    } catch (IOException e) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
     }
@@ -253,6 +251,82 @@ public class ScheduledInterviewServlet extends HttpServlet {
 
     for (Availability avail : affectedAvailability) {
       availabilityDao.update(avail.withScheduled(true));
+    }
+  }
+
+  // Send the request's contents to Datastore in the form of an updated ScheduledInterview object.
+  // Adds the current user as a shadow.
+  @Override
+  public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String shadowEmail = userService.getCurrentUser().getEmail();
+    String shadowId = getUserId();
+
+    InterviewPostOrPutRequest putRequest;
+    try {
+      putRequest = new Gson().fromJson(getJsonString(request), InterviewPostOrPutRequest.class);
+    } catch (Exception JsonSyntaxException) {
+      response.sendError(400);
+      return;
+    }
+    if (!putRequest.allFieldsPopulated()) {
+      response.sendError(400);
+      return;
+    }
+
+    String interviewerCompany = putRequest.getCompany();
+    String interviewerJob = putRequest.getJob();
+    String utcStartTime = putRequest.getUtcStartTime();
+    String position = putRequest.getPosition();
+    Job selectedPosition = Job.valueOf(Job.class, position);
+    TimeRange interviewRange;
+
+    try {
+      interviewRange =
+          new TimeRange(
+              Instant.parse(utcStartTime), Instant.parse(utcStartTime).plus(1, ChronoUnit.HOURS));
+    } catch (DateTimeParseException e) {
+      response.sendError(400, e.getMessage());
+      return;
+    }
+
+    List<ScheduledInterview> possibleInterviews =
+        ShadowLoadInterviewsServlet.getPossibleInterviews(
+            scheduledInterviewDao, selectedPosition, interviewRange, personDao, shadowId);
+
+    Set<ScheduledInterview> notValidInterviews = new HashSet<ScheduledInterview>();
+    // We want to remove all interviews where the company or job does not match that
+    // specified in the request.
+    for (ScheduledInterview interview : possibleInterviews) {
+      if (!personDao.get(interview.interviewerId()).get().company().equals(interviewerCompany)
+          || !personDao.get(interview.interviewerId()).get().job().equals(interviewerJob)) {
+        notValidInterviews.add(interview);
+      }
+    }
+    possibleInterviews.removeAll(notValidInterviews);
+
+    int randomNumber = (int) (Math.random() * possibleInterviews.size());
+    ScheduledInterview selectedInterview = possibleInterviews.get(randomNumber);
+    scheduledInterviewDao.update(selectedInterview.withShadow(shadowId));
+
+    // Since the shadow commited to this interview, their availabilities must be updated
+    List<Availability> affectedAvailability =
+        availabilityDao.getInRangeForUser(shadowId, interviewRange.start(), interviewRange.end());
+    for (Availability avail : affectedAvailability) {
+      availabilityDao.update(avail.withScheduled(true));
+    }
+
+    ScheduledInterview scheduledInterview = scheduledInterviewDao.get(selectedInterview.id()).get();
+    HashMap<String, String> emailedDetails = new HashMap<String, String>();
+    emailedDetails.put("{{formatted_date}}", getEmailDateString(interviewRange));
+    emailedDetails.put("{{shadow_first_name}}", getFirstName(shadowId));
+    emailedDetails.put("{{chat_link}}", scheduledInterview.meetLink());
+    emailedDetails.put("{{position}}", formatPositionString(position));
+
+    try {
+      sendParticipantEmail(scheduledInterview, shadowId, emailedDetails);
+    } catch (IOException e) {
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      return;
     }
   }
 
@@ -367,27 +441,25 @@ public class ScheduledInterviewServlet extends HttpServlet {
     return personDao.get(participantId).map(Person::firstName).orElse("None");
   }
 
-  private void sendParticipantEmail(String participantId, HashMap<String, String> emailedDetails)
-      throws IOException, Exception {
+  private void sendParticipantEmail(
+      ScheduledInterview scheduledInterview,
+      String participantId,
+      HashMap<String, String> emailedDetails)
+      throws IOException {
     String subject = "You have been requested to conduct a mock interview!";
     String contentString =
         emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewer.txt");
-    if (participantId.equals(getUserId())) {
+    if (participantId.equals(scheduledInterview.intervieweeId())) {
       subject = "You have been registered for a mock interview!";
       contentString = emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewee.txt");
     }
 
-    Email recipient = new Email(getEmail(participantId));
-    Content content =
-        new Content("text/plain", emailSender.replaceAllPairs(emailedDetails, contentString));
-    emailSender.sendEmail(recipient, subject, content);
-  }
+    if (participantId.equals(scheduledInterview.shadowId())) {
+      subject = "You have been registered for a mock interview!";
+      contentString = emailSender.fileContentToString(emailsPath + "/NewInterview_Shadow.txt");
+    }
 
-  private void sendShadowEmail(String shadowId, HashMap<String, String> emailedDetails)
-      throws IOException, Exception {
-    String subject = "You have been registered for a mock interview!";
-    String contentString = emailSender.fileContentToString(emailsPath + "/NewInterview_Shadow.txt");
-    Email recipient = new Email(getEmail(shadowId));
+    Email recipient = new Email(getEmail(participantId));
     Content content =
         new Content("text/plain", emailSender.replaceAllPairs(emailedDetails, contentString));
     emailSender.sendEmail(recipient, subject, content);
@@ -397,9 +469,9 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String splitString[] = str.split("_", 0);
     String formattedPositionString = "";
     for (String s : splitString) {
-      formattedPositionString += s.substring(0, 1) + s.substring(1).toLowerCase() + " ";
+      formattedPositionString += s.substring(0, 1) + s.substring(1).toLowerCase();
     }
-    return formattedPositionString;
+    return formattedPositionString.trim();
   }
 
   private ScheduledInterview updatedMeetLinkField(

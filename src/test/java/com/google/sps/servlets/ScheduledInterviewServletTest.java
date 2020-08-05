@@ -627,4 +627,85 @@ public final class ScheduledInterviewServletTest {
             /*shadowId=*/ "");
     Assert.assertEquals(expected, actual.get(0));
   }
+
+  @Test
+  public void shadowIsAddedToAViableInterview() throws IOException {
+    Person interviewer =
+        Person.create(
+            "interviewer",
+            "interviewer@mail.com",
+            "firstName",
+            "lastName",
+            "company",
+            "job",
+            "linkedIn",
+            EnumSet.of(Job.NETWORK_ENGINEER),
+            /*okShadow=*/ true);
+    Person interviewee =
+        Person.create(
+            "interviewee",
+            "interviewee@mail.com",
+            "firstName",
+            "lastName",
+            "company",
+            "job",
+            "linkedIn",
+            EnumSet.of(Job.NETWORK_ENGINEER),
+            /*okShadow=*/ true);
+    Person shadow =
+        Person.create(
+            String.format("%d", "shadow@mail.com".hashCode()),
+            "shadow@mail.com",
+            "firstName",
+            "lastName",
+            "company",
+            "job",
+            "linkedIn",
+            EnumSet.of(Job.NETWORK_ENGINEER),
+            /*okShadow=*/ true);
+    ScheduledInterview possibleInterview1 =
+        ScheduledInterview.create(
+            /*id=*/ -1,
+            new TimeRange(
+                Instant.parse("2020-07-07T16:00:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
+            interviewer.id(),
+            interviewee.id(),
+            "meet_link",
+            Job.NETWORK_ENGINEER,
+            /*shadowId=*/ "");
+    ScheduledInterview possibleInterview2 =
+        ScheduledInterview.create(
+            /*id=*/ -1,
+            new TimeRange(
+                Instant.parse("2020-07-07T16:00:00Z"), Instant.parse("2020-07-07T17:00:00Z")),
+            interviewer.id(),
+            interviewee.id(),
+            "meet_link",
+            Job.NETWORK_ENGINEER,
+            /*shadowId=*/ "");
+    personDao.create(interviewer);
+    personDao.create(interviewee);
+    personDao.create(shadow);
+    scheduledInterviewDao.create(possibleInterview1);
+    scheduledInterviewDao.create(possibleInterview2);
+
+    ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
+    scheduledInterviewServlet.init(
+        scheduledInterviewDao, availabilityDao, personDao, calendarAccess, emailSender);
+    helper.setEnvIsLoggedIn(true).setEnvEmail(shadow.email()).setEnvAuthDomain("auth");
+    MockHttpServletRequest putRequest = new MockHttpServletRequest();
+    MockHttpServletResponse putResponse = new MockHttpServletResponse();
+    String jsonString =
+        "{\"company\":\"company\",\"job\":\"job\",\"utcStartTime\":\"2020-07-07T16:00:00Z\",\"position\":\"NETWORK_ENGINEER\"}";
+    putRequest.setContent(jsonString.getBytes(StandardCharsets.UTF_8));
+    scheduledInterviewServlet.doPut(putRequest, putResponse);
+    List<ScheduledInterview> possibleInterviews =
+        scheduledInterviewDao.getInRange(
+            Instant.parse("2020-07-07T16:00:00Z"), Instant.parse("2020-07-07T17:00:00Z"));
+    // The XOR operation is used to make sure the shadow is not added to both interviews.
+    boolean oneOfTheInterviewsHasTheShadow =
+        possibleInterviews.get(0).shadowId().equals(shadow.id())
+            ^ possibleInterviews.get(1).shadowId().equals(shadow.id());
+    Assert.assertTrue(oneOfTheInterviewsHasTheShadow);
+  }
 }

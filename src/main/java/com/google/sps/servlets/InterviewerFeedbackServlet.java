@@ -132,7 +132,7 @@ public class InterviewerFeedbackServlet extends HttpServlet {
   }
 
   private void sendFeedback(String interviewerEmail, HashMap<String, String> answers)
-      throws IOException, Exception {
+      throws IOException {
     String subject = "Your Interviewee has submitted feedback for your interview!";
     Email recipient = new Email(interviewerEmail);
     String contentString =

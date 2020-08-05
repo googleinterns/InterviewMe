@@ -24,8 +24,7 @@ import java.util.HashMap;
 public interface EmailSender {
 
   // Sends an email from the "from" Email to the "to" Email, with specified subject and content.
-  public int sendEmail(Email recipient, String subject, Content content)
-      throws IOException, Exception;
+  public int sendEmail(Email recipient, String subject, Content content) throws IOException;
 
   // Returns the contents of the file specified at filePath as a String. Useful for converting
   // predifined email templates to text.
