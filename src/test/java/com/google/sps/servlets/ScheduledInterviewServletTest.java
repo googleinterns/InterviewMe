@@ -24,7 +24,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.sps.data.Availability;
+import com.google.sps.data.CalendarAccess;
 import com.google.sps.data.FakeAvailabilityDao;
+import com.google.sps.data.FakeCalendarAccess;
 import com.google.sps.data.FakeEmailSender;
 import com.google.sps.data.FakePersonDao;
 import com.google.sps.data.FakeScheduledInterviewDao;
@@ -64,6 +66,7 @@ public final class ScheduledInterviewServletTest {
   private FakeScheduledInterviewDao scheduledInterviewDao;
   private FakeAvailabilityDao availabilityDao;
   private FakePersonDao personDao;
+  private FakeCalendarAccess calendarAccess;
   private FakeEmailSender emailSender;
 
   private final Person googleSWE1 =
@@ -208,6 +211,7 @@ public final class ScheduledInterviewServletTest {
     scheduledInterviewDao = new FakeScheduledInterviewDao();
     availabilityDao = new FakeAvailabilityDao();
     personDao = new FakePersonDao();
+    calendarAccess = new FakeCalendarAccess();
   }
 
   @After
@@ -219,7 +223,8 @@ public final class ScheduledInterviewServletTest {
   @Test
   public void returnsScheduledInterviewsForUser() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao, emailSender);
+    scheduledInterviewServlet.init(
+        scheduledInterviewDao, availabilityDao, personDao, calendarAccess, emailSender);
     helper.setEnvIsLoggedIn(true).setEnvEmail(googleSWE1.email()).setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -272,7 +277,8 @@ public final class ScheduledInterviewServletTest {
   @Test
   public void returnsScheduledInterviewsInOrder() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao, emailSender);
+    scheduledInterviewServlet.init(
+        scheduledInterviewDao, availabilityDao, personDao, calendarAccess, emailSender);
     helper.setEnvIsLoggedIn(true).setEnvEmail(googleSWE1.email()).setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -347,7 +353,8 @@ public final class ScheduledInterviewServletTest {
     availabilityDao.create(googlePMAvail3);
     availabilityDao.create(googlePMAvail4);
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao, emailSender);
+    scheduledInterviewServlet.init(
+        scheduledInterviewDao, availabilityDao, personDao, calendarAccess, emailSender);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
@@ -367,7 +374,7 @@ public final class ScheduledInterviewServletTest {
                 Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
             googleSWE1.id(),
             emailToId("user@company.org"),
-            "meet_link",
+            String.valueOf(actual.get(0).id()),
             Job.SOFTWARE_ENGINEER,
             /*shadowId=*/ "");
     Assert.assertEquals(expected, actual.get(0));
@@ -387,7 +394,8 @@ public final class ScheduledInterviewServletTest {
     availabilityDao.create(googleSWE2QualPMInterviewerAvail3);
     availabilityDao.create(googleSWE2QualPMInterviewerAvail4);
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao, emailSender);
+    scheduledInterviewServlet.init(
+        scheduledInterviewDao, availabilityDao, personDao, calendarAccess, emailSender);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
@@ -407,7 +415,7 @@ public final class ScheduledInterviewServletTest {
                 Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
             googleSWE1.id(),
             emailToId("user@company.org"),
-            "meet_link",
+            String.valueOf(actual.get(0).id()),
             Job.SOFTWARE_ENGINEER,
             /*shadowId=*/ "");
     ScheduledInterview expected2 =
@@ -417,7 +425,7 @@ public final class ScheduledInterviewServletTest {
                 Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
             googleSWE2QualPMInterviewer.id(),
             emailToId("user@company.org"),
-            "meet_link",
+            String.valueOf(actual.get(0).id()),
             Job.SOFTWARE_ENGINEER,
             /*shadowId=*/ "");
     boolean actualIsExpectedOneOrTwo =
@@ -442,7 +450,8 @@ public final class ScheduledInterviewServletTest {
             false));
 
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao, emailSender);
+    scheduledInterviewServlet.init(
+        scheduledInterviewDao, availabilityDao, personDao, calendarAccess, emailSender);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
@@ -476,7 +485,8 @@ public final class ScheduledInterviewServletTest {
   @Test
   public void invalidInstant() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao, emailSender);
+    scheduledInterviewServlet.init(
+        scheduledInterviewDao, availabilityDao, personDao, calendarAccess, emailSender);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
@@ -492,7 +502,8 @@ public final class ScheduledInterviewServletTest {
   @Test
   public void getShadowName() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
+    scheduledInterviewServlet.init(
+        scheduledInterviewDao, availabilityDao, personDao, calendarAccess, emailSender);
     helper.setEnvIsLoggedIn(true).setEnvEmail(googleSWE1.email()).setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -534,7 +545,8 @@ public final class ScheduledInterviewServletTest {
   @Test
   public void noShadow() throws IOException {
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao);
+    scheduledInterviewServlet.init(
+        scheduledInterviewDao, availabilityDao, personDao, calendarAccess, emailSender);
     helper.setEnvIsLoggedIn(true).setEnvEmail(googleSWE1.email()).setEnvAuthDomain("auth");
     MockHttpServletRequest getRequest = new MockHttpServletRequest();
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
@@ -589,7 +601,8 @@ public final class ScheduledInterviewServletTest {
     availabilityDao.create(googleSWE2QualPMInterviewerAvail3);
     availabilityDao.create(googleSWE2QualPMInterviewerAvail4);
     ScheduledInterviewServlet scheduledInterviewServlet = new ScheduledInterviewServlet();
-    scheduledInterviewServlet.init(scheduledInterviewDao, availabilityDao, personDao, emailSender);
+    scheduledInterviewServlet.init(
+        scheduledInterviewDao, availabilityDao, personDao, calendarAccess, emailSender);
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
@@ -609,7 +622,7 @@ public final class ScheduledInterviewServletTest {
                 Instant.parse("2020-07-20T12:45:00Z"), Instant.parse("2020-07-20T13:45:00Z")),
             googleSWE2QualPMInterviewer.id(),
             emailToId("user@company.org"),
-            "meet_link",
+            String.valueOf(actual.get(0).id()),
             Job.PRODUCT_MANAGER,
             /*shadowId=*/ "");
     Assert.assertEquals(expected, actual.get(0));
