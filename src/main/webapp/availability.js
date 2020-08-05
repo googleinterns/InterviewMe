@@ -29,7 +29,6 @@ function markMouseUp() {
   mousedown = false;
 }
 
-
 // Toggles a tile from selected (green) to un-selected (white) and vice versa when clicked.
 // Scheduled tiles (red) remain unaffected.
 function toggleTile(tile) {
