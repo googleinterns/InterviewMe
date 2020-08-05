@@ -21,7 +21,7 @@ function onAvailabilityLoad() {
   loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset());
 }
 
-function markMouseDown() {
+function markMouseDown(tile) {
   mousedown = true;
 }
 
@@ -41,7 +41,7 @@ function toggleTile(tile) {
     classList.remove('table-success', 'selected-time-slot');
     return;
   }
-  if (! classList.contains('scheduled-time-slot')) {
+  if(!classList.contains('scheduled-time-slot')) {
     classList.add('table-success', 'selected-time-slot');
   }
 }
