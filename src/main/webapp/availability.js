@@ -44,7 +44,7 @@ function availabilityTableDiv() {
   return document.getElementById('table-container');
 }
 
-function updateAvailability(buttonType) {
+function updateAvailability(reload) {
   let selectedSlots = document.getElementsByClassName('selected-time-slot');
   let scheduledSlots = document.getElementsByClassName('scheduled-time-slot');
   let markedSlots = Array.from(selectedSlots).concat(Array.from(scheduledSlots));
@@ -60,10 +60,7 @@ function updateAvailability(buttonType) {
   let requestBody = JSON.stringify(requestObject);
   let request = new Request('/availability', {method: 'PUT', body: requestBody});
   fetch(request).then(() => {
-      // This check is necessary because we only want to reload the page when the
-      // Update button is clicked. When a Next or Previous Week button is clicked
-      // we only want to load the new table.
-      if (buttonType === 'updateButton') {
+      if (reload) {
         location.reload();
       }
     }).catch((error) => {
@@ -80,7 +77,7 @@ function goBack() {
     page = 0;
     return;
   }
-  updateAvailability('weekButton');
+  updateAvailability(false);
   page -= 1;
   loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset());
 }
@@ -90,7 +87,7 @@ function goForward() {
     page = maxWeeksAhead;
     return;
   }
-  updateAvailability('weekButton');
+  updateAvailability(false);
   page += 1;
   loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset());
 }
