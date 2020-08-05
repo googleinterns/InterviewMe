@@ -77,21 +77,7 @@ function selectInterview(interviewer) {
         ` from ${time} with a ${company} ` +
         `${job}. Check your email for more ` +
         `information.`);
-      if (company === '<Not specified>') {
-        company = '';
-      }
-      if (job === '<Not specified>') {
-        job = '';
-      }
-      let requestObject = {
-        company: company,
-        job: job,
-        utcStartTime: utcStartTime,
-        position: selectedEnumPosition()
-      };
-      let requestBody = JSON.stringify(requestObject);
-      let request = new Request('/scheduled-interviews', {method: 'POST', body: requestBody});
-      fetch(request).then(() => {window.location.replace('/scheduled-interviews.html');});
+      updateDatastore('POST', company, job, utcStartTime);
     }
   }
   if (role === 'Shadow') {
@@ -104,23 +90,27 @@ function selectInterview(interviewer) {
         ` from ${time} with a ${company} ` +
         `${job}. Check your email for more ` +
         `information.`);
-      if (company === '<Not specified>') {
-        company = '';
-      }
-      if (job === '<Not specified>') {
-        job = '';
-      }
-      let requestObject = {
-        company: company,
-        job: job,
-        utcStartTime: utcStartTime,
-        position: selectedEnumPosition()
-      };
-      let requestBody = JSON.stringify(requestObject);
-      let request = new Request('/scheduled-interviews', {method: 'PUT', body: requestBody});
-      fetch(request).then(() => {window.location.replace('/scheduled-interviews.html');});
+      updateDatastore('PUT', company, job, utcStartTime);
     }
   }
+}
+
+function updateDatastore(method, company, job, utcStartTime) {
+  if (company === '<Not specified>') {
+    company = '';
+  }
+  if (job === '<Not specified>') {
+    job = '';
+  }
+  let requestObject = {
+    company: company,
+    job: job,
+    utcStartTime: utcStartTime,
+    position: selectedEnumPosition()
+  };
+  let requestBody = JSON.stringify(requestObject);
+  let request = new Request('/scheduled-interviews', {method: method, body: requestBody});
+  fetch(request).then(() => {window.location.replace('/scheduled-interviews.html');});
 }
 
 // Fills in the modal with interviewer info from Datastore and shows it.
