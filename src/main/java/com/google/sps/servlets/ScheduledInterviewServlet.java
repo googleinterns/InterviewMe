@@ -78,15 +78,16 @@ public class ScheduledInterviewServlet extends HttpServlet {
   private CalendarAccess calendarAccess;
   private Calendar service;
   private final UserService userService = UserServiceFactory.getUserService();
+  static final Email sender = new Email("interviewme.business@gmail.com");
   private Path emailsPath =
       Paths.get(
           System.getProperty("user.home") + "/InterviewMe/src/main/resources/templates/email");
 
   @Override
   public void init() {
-    EmailSender emailer;
+    EmailSender emailSender;
     try {
-      emailer = new SendgridEmailSender(new Email("interviewme.business@gmail.com"));
+      emailSender = new SendgridEmailSender(sender);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -106,8 +107,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
         new DatastoreScheduledInterviewDao(),
         new DatastoreAvailabilityDao(),
         new DatastorePersonDao(),
-        calendar,
-        emailer);
+        emailSender);
   }
 
   public void init(
@@ -446,26 +446,35 @@ public class ScheduledInterviewServlet extends HttpServlet {
       String participantId,
       HashMap<String, String> emailedDetails)
       throws IOException {
+    String recipientEmail = getEmail(participantId);
+
+    if (recipientEmail.equals("Nonexistent User")) {
+      return;
+    }
+
     String subject = "You have been requested to conduct a mock interview!";
     String contentString =
         emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewer.txt");
+
     if (participantId.equals(scheduledInterview.intervieweeId())) {
       subject = "You have been registered for a mock interview!";
       contentString = emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewee.txt");
     }
-
+    
     if (participantId.equals(scheduledInterview.shadowId())) {
       subject = "You have been registered for a mock interview!";
       contentString = emailSender.fileContentToString(emailsPath + "/NewInterview_Shadow.txt");
     }
 
-    Email recipient = new Email(getEmail(participantId));
+    Email recipient = new Email(recipientEmail);
     Content content =
         new Content("text/plain", emailSender.replaceAllPairs(emailedDetails, contentString));
     emailSender.sendEmail(recipient, subject, content);
   }
 
-  static String formatPositionString(String str) {
+  // Formats the position string that is sent in an email. For example SOFTWARE_ENGINEER -> Software
+  // Engineer.
+  private static String formatPositionString(String str) {
     String splitString[] = str.split("_", 0);
     String formattedPositionString = "";
     for (String s : splitString) {

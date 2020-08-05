@@ -48,19 +48,20 @@ public class InterviewerFeedbackServlet extends HttpServlet {
   private ScheduledInterviewDao scheduledInterviewDao;
   private PersonDao personDao;
   private EmailSender emailSender;
+  static final Email sender = new Email("interviewme.business@gmail.com");
   private Path emailsPath =
       Paths.get(
           System.getProperty("user.home") + "/InterviewMe/src/main/resources/templates/email");
 
   @Override
   public void init() {
-    EmailSender emailer;
+    EmailSender emailSender;
     try {
-      emailer = new SendgridEmailSender(new Email("interviewme.business@gmail.com"));
+      emailSender = new SendgridEmailSender(sender);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-    init(new DatastoreScheduledInterviewDao(), new DatastorePersonDao(), emailer);
+    init(new DatastoreScheduledInterviewDao(), new DatastorePersonDao(), emailSender);
   }
 
   public void init(
@@ -92,7 +93,6 @@ public class InterviewerFeedbackServlet extends HttpServlet {
     Optional<ScheduledInterview> scheduledInterviewOpt =
         scheduledInterviewDao.get(scheduledInterviewId);
     if (!scheduledInterviewOpt.isPresent()) {
-      System.out.println("Here Too");
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }

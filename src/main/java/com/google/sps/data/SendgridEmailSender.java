@@ -50,7 +50,7 @@ public class SendgridEmailSender implements EmailSender {
   }
 
   // Sends an email from the "sender" Email to the "recipient" Email, with specified subject and
-  // content.
+  // content. Returns a response from the sendgrid email sending service.
   @Override
   public int sendEmail(Email recipient, String subject, Content content) throws IOException {
     Mail mail = new Mail(sender, subject, recipient, content);
@@ -65,7 +65,7 @@ public class SendgridEmailSender implements EmailSender {
   }
 
   // Returns the contents of the file specified at filePath as a String. Useful for converting
-  // predifined email templates to text.
+  // predefined email templates to text.
   @Override
   public String fileContentToString(String filePath) throws IOException {
     StringBuilder contentBuilder = new StringBuilder();
