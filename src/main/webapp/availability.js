@@ -60,6 +60,9 @@ function updateAvailability(buttonType) {
   let requestBody = JSON.stringify(requestObject);
   let request = new Request('/availability', {method: 'PUT', body: requestBody});
   fetch(request).then(() => {
+      // This check is necessary because we only want to reload the page when the
+      // Update button is clicked. When a Next or Previous Week button is clicked
+      // we only want to load the new table.
       if (buttonType === 'updateButton') {
         location.reload();
       }
