@@ -78,14 +78,13 @@ public class GoogleCalendarAccess implements CalendarAccess {
   public String getMeetLink(ScheduledInterview interview)
       throws IOException, GeneralSecurityException {
     Event event = makeEvent(interview);
-    System.out.println("DEBUG: " + CALENDAR_ID);
     event = service.events().insert(CALENDAR_ID, event).setConferenceDataVersion(1).execute();
     return event.getConferenceData().getEntryPoints().get(0).getUri();
   }
 
   // Makes a Calendar service.
   public static Calendar MakeCalendar(SecretFetcher secretFetcher)
-      throws GeneralSecurityException, IOException, Exception {
+      throws GeneralSecurityException, IOException {
     String key = secretFetcher.getSecretValue("SERVICE_ACCT_KEY");
     return new Calendar.Builder(
             GoogleNetHttpTransport.newTrustedTransport(),

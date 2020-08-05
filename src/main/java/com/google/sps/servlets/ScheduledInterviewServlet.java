@@ -98,8 +98,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
       throw new RuntimeException(e);
     } catch (IOException e) {
       throw new RuntimeException(e);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
     }
 
     init(
@@ -153,11 +151,11 @@ public class ScheduledInterviewServlet extends HttpServlet {
     try {
       postRequest = new Gson().fromJson(getJsonString(request), InterviewPostRequest.class);
     } catch (Exception JsonSyntaxException) {
-      response.sendError(400);
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
     if (!postRequest.allFieldsPopulated()) {
-      response.sendError(400);
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
 
@@ -173,7 +171,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
           new TimeRange(
               Instant.parse(utcStartTime), Instant.parse(utcStartTime).plus(1, ChronoUnit.HOURS));
     } catch (DateTimeParseException e) {
-      response.sendError(400, e.getMessage());
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
       return;
     }
 
@@ -185,9 +183,9 @@ public class ScheduledInterviewServlet extends HttpServlet {
 
     int randomNumber = (int) (Math.random() * possibleInterviewers.size());
     String interviewerId = possibleInterviewers.get(randomNumber);
-
-    // TODO: replace with real MeetLink from Calendar Access
-    String meetLink = "meet_link";
+    
+    // Meet link is empty because we need a scheduledInterview before the link can be created
+    String meetLink = " ";
     // Shadow is empty because when an interview is first made, only interviewee and
     // interviewer are involved.
     scheduledInterviewDao.create(
@@ -218,11 +216,10 @@ public class ScheduledInterviewServlet extends HttpServlet {
     try {
       meetLink = calendarAccess.getMeetLink(scheduledInterview);
     } catch (GeneralSecurityException e) {
-      response.sendError(500);
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
     }
     scheduledInterviewDao.update(updatedMeetLinkField(meetLink, scheduledInterview));
-    System.out.println(meetLink);
     emailedDetails.put("{{formatted_date}}", getEmailDateString(interviewRange));
     emailedDetails.put("{{interviewer_first_name}}", getFirstName(interviewerId));
     emailedDetails.put("{{interviewee_first_name}}", getFirstName(intervieweeId));
@@ -235,7 +232,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
       emailedDetails.put("{{form_link}}", interviewerFeedbackLink);
       sendInterviewerEmail(interviewerId, emailedDetails);
     } catch (Exception e) {
-      response.sendError(500);
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
     }
 
