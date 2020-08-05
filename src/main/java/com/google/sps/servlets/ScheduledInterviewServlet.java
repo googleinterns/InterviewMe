@@ -189,9 +189,9 @@ public class ScheduledInterviewServlet extends HttpServlet {
     emailedDetails.put("{{position}}", formatPositionString(position));
 
     try {
-      sendIntervieweeEmail(intervieweeId, emailedDetails);
+      sendParticipantEmail(intervieweeId, emailedDetails);
       emailedDetails.put("{{form_link}}", interviewerFeedbackLink);
-      sendInterviewerEmail(interviewerId, emailedDetails);
+      sendParticipantEmail(interviewerId, emailedDetails);
     } catch (Exception e) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
@@ -307,23 +307,17 @@ public class ScheduledInterviewServlet extends HttpServlet {
     return personDao.get(participantId).map(Person::firstName).orElse("Nonexistent User");
   }
 
-  private void sendInterviewerEmail(String interviewerId, HashMap<String, String> emailedDetails)
+  private void sendParticipantEmail(String participantId, HashMap<String, String> emailedDetails)
       throws IOException, Exception {
     String subject = "You have been requested to conduct a mock interview!";
-    Email recipient = new Email(getEmail(interviewerId));
     String contentString =
         emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewer.txt");
-    Content content =
-        new Content("text/plain", emailSender.replaceAllPairs(emailedDetails, contentString));
-    emailSender.sendEmail(recipient, subject, content);
-  }
+    if (participantId.equals(getUserId())) {
+      subject = "You have been registered for a mock interview!";
+      contentString = emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewee.txt");
+    }
 
-  private void sendIntervieweeEmail(String intervieweeId, HashMap<String, String> emailedDetails)
-      throws IOException, Exception {
-    String subject = "You have been registered for a mock interview!";
-    Email recipient = new Email(getEmail(intervieweeId));
-    String contentString =
-        emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewee.txt");
+    Email recipient = new Email(getEmail(participantId));
     Content content =
         new Content("text/plain", emailSender.replaceAllPairs(emailedDetails, contentString));
     emailSender.sendEmail(recipient, subject, content);
@@ -335,6 +329,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
     for (String s : splitString) {
       formattedPositionString += s.substring(0, 1) + s.substring(1).toLowerCase() + " ";
     }
-    return formattedPositionString;
+    return formattedPositionString.trim();
   }
 }
