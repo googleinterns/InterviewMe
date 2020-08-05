@@ -33,6 +33,7 @@ import com.google.sps.data.PersonDao;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.ScheduledInterviewDao;
 import com.google.sps.data.ScheduledInterviewRequest;
+import com.google.sps.data.SecretFetcher;
 import com.google.sps.data.SendgridEmailSender;
 import com.google.sps.data.TimeRange;
 import com.sendgrid.Response;
@@ -87,11 +88,25 @@ public class ScheduledInterviewServlet extends HttpServlet {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+
+    CalendarAccess calendar;
+    try {
+      calendar =
+          new GoogleCalendarAccess(
+              GoogleCalendarAccess.MakeCalendar(new SecretFetcher("interview-me-step-2020")));
+    } catch (GeneralSecurityException e) {
+      throw new RuntimeException(e);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+
     init(
         new DatastoreScheduledInterviewDao(),
         new DatastoreAvailabilityDao(),
         new DatastorePersonDao(),
-        new GoogleCalendarAccess(service),
+        calendar,
         emailer);
   }
 
