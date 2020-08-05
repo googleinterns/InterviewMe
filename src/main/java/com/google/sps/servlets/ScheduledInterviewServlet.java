@@ -107,6 +107,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
         new DatastoreScheduledInterviewDao(),
         new DatastoreAvailabilityDao(),
         new DatastorePersonDao(),
+        calendar,
         emailSender);
   }
 
@@ -460,7 +461,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
       subject = "You have been registered for a mock interview!";
       contentString = emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewee.txt");
     }
-    
+
     if (participantId.equals(scheduledInterview.shadowId())) {
       subject = "You have been registered for a mock interview!";
       contentString = emailSender.fileContentToString(emailsPath + "/NewInterview_Shadow.txt");
