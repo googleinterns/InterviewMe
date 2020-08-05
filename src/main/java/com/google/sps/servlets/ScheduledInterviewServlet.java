@@ -290,6 +290,9 @@ public class ScheduledInterviewServlet extends HttpServlet {
             .get(scheduledInterview.intervieweeId())
             .map(Person::firstName)
             .orElse("Nonexistent User");
+    // When an interview is first scheduled, the shadowId is set to an empty string. Since this
+    // behaviour is expected, here we prevent a null or empty name exception with creating keys
+    // in datastore.
     String shadow = "None";
     if (!scheduledInterview.shadowId().equals("")) {
       shadow = personDao.get(scheduledInterview.shadowId()).map(Person::firstName).orElse("None");
