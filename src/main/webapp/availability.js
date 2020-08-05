@@ -21,7 +21,7 @@ function onAvailabilityLoad() {
   loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset());
 }
 
-function markMouseDown(tile) {
+function markMouseDown() {
   mousedown = true;
 }
 
