@@ -34,6 +34,7 @@ public class TimeUtils {
     return ZoneOffset.ofHoursMinutes((timezoneOffsetMinutes / 60), (timezoneOffsetMinutes % 60));
   }
 
+  /** Returns a formatted date String in the specified timezone of the Instant. Ex: Wed 8/12 */
   public static String getDate(Instant instant, ZoneOffset timezoneOffset) {
     ZonedDateTime day = instant.atZone(ZoneId.ofOffset("UTC", timezoneOffset));
     String dayOfWeek = day.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.US);
@@ -42,13 +43,17 @@ public class TimeUtils {
     return String.format("%s %d/%d", dayOfWeek, month, dayOfMonth);
   }
 
+  /**
+   * Returns a formatted time String of an hour in the specified timezone starting at the Instant.
+   * Ex: 4:00 PM - 5:00 PM
+   */
   public static String getTime(Instant instant, ZoneOffset timezoneOffset) {
     ZonedDateTime startTime = instant.atZone(ZoneId.ofOffset("UTC", timezoneOffset));
     ZonedDateTime endTime = startTime.plus(1, ChronoUnit.HOURS);
     return String.format("%s - %s", formatTime(startTime), formatTime(endTime));
   }
 
-  public static String formatTime(ZonedDateTime time) {
+  private static String formatTime(ZonedDateTime time) {
     int hour = time.getHour();
     int minute = time.getMinute();
     int standardHour = hour;
