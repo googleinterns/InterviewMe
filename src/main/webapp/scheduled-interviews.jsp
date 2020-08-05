@@ -23,6 +23,7 @@
             <li class="list-group-item">Interviewee: ${scheduledInterview.getInterviewee()}</li>
             <li class="list-group-item">Interviewer: ${scheduledInterview.getInterviewer()}</li>
             <li class="list-group-item">Shadow: ${scheduledInterview.getShadow()}</li>
+            <li class="list-group-item">MeetLink: <a href= ${scheduledInterview.getMeetLink()}>Interview Now</a></li>
           </ul>
           <c:choose>
             <c:when test= "${scheduledInterview.getHasStarted()}">
