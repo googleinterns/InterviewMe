@@ -44,6 +44,7 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -295,7 +296,11 @@ public class ScheduledInterviewServlet extends HttpServlet {
     // in datastore.
     String shadow = "None";
     if (!scheduledInterview.shadowId().equals("")) {
-      shadow = personDao.get(scheduledInterview.shadowId()).map(Person::firstName).orElse("None");
+      Optional<String> firstName =
+          personDao.get(scheduledInterview.shadowId()).map(Person::firstName);
+      if (firstName.isPresent()) {
+        shadow = firstName.get();
+      }
     }
     String role = getUserRole(scheduledInterview, userId);
     boolean hasStarted =
