@@ -183,9 +183,9 @@ public class ScheduledInterviewServlet extends HttpServlet {
 
     int randomNumber = (int) (Math.random() * possibleInterviewers.size());
     String interviewerId = possibleInterviewers.get(randomNumber);
-    
+
     // Meet link is empty because we need a scheduledInterview before the link can be created
-    String meetLink = " ";
+    String meetLink = "";
     // Shadow is empty because when an interview is first made, only interviewee and
     // interviewer are involved.
     scheduledInterviewDao.create(
