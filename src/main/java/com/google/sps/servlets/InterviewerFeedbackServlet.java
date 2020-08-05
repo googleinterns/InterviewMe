@@ -19,12 +19,13 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
 import com.google.sps.data.EmailSender;
-import com.google.sps.data.EmailUtils;
 import com.google.sps.data.Person;
 import com.google.sps.data.PersonDao;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.ScheduledInterviewDao;
 import com.google.sps.data.SendgridEmailSender;
+import com.google.sps.utils.EmailUtils;
+import com.google.sps.utils.SendgridEmailUtils;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
@@ -49,6 +50,7 @@ public class InterviewerFeedbackServlet extends HttpServlet {
   private ScheduledInterviewDao scheduledInterviewDao;
   private PersonDao personDao;
   private EmailSender emailSender;
+  private EmailUtils emailUtils;
   static final Email sender = new Email("interviewme.business@gmail.com");
   private Path emailsPath =
       Paths.get(
@@ -62,14 +64,22 @@ public class InterviewerFeedbackServlet extends HttpServlet {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-    init(new DatastoreScheduledInterviewDao(), new DatastorePersonDao(), emailSender);
+    init(
+        new DatastoreScheduledInterviewDao(),
+        new DatastorePersonDao(),
+        emailSender,
+        new SendgridEmailUtils());
   }
 
   public void init(
-      ScheduledInterviewDao scheduledInterviewDao, PersonDao personDao, EmailSender emailSender) {
+      ScheduledInterviewDao scheduledInterviewDao,
+      PersonDao personDao,
+      EmailSender emailSender,
+      EmailUtils emailUtils) {
     this.scheduledInterviewDao = scheduledInterviewDao;
     this.personDao = personDao;
     this.emailSender = emailSender;
+    this.emailUtils = emailUtils;
   }
 
   @Override
@@ -137,8 +147,8 @@ public class InterviewerFeedbackServlet extends HttpServlet {
     String subject = "Your Interviewee has submitted feedback for your interview!";
     Email recipient = new Email(interviewerEmail);
     String contentString =
-        EmailUtils.fileContentToString(emailsPath + "/feedbackToInterviewer.txt");
-    Content content = new Content("text/plain", EmailUtils.replaceAllPairs(answers, contentString));
+        emailUtils.fileContentToString(emailsPath + "/feedbackToInterviewer.txt");
+    Content content = new Content("text/plain", emailUtils.replaceAllPairs(answers, contentString));
     emailSender.sendEmail(recipient, subject, content);
   }
 }

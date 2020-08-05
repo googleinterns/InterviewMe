@@ -30,6 +30,8 @@ import com.google.sps.data.FakeScheduledInterviewDao;
 import com.google.sps.data.FakePersonDao;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.TimeRange;
+import com.google.sps.utils.EmailUtils;
+import com.google.sps.utils.FakeEmailUtils;
 import com.google.sps.servlets.InterviewerFeedbackServlet;
 import com.sendgrid.helpers.mail.objects.Email;
 import java.io.IOException;
@@ -56,6 +58,7 @@ public final class InterviewerFeedbackServletTest {
   private FakeScheduledInterviewDao scheduledInterviewDao;
   private FakePersonDao personDao;
   private FakeEmailSender emailSender;
+  private FakeEmailUtils emailUtils;
   private final ScheduledInterview scheduledInterview =
       ScheduledInterview.create(
           /*id=*/ (long) -1,
@@ -74,6 +77,7 @@ public final class InterviewerFeedbackServletTest {
     }
     scheduledInterviewDao = new FakeScheduledInterviewDao();
     personDao = new FakePersonDao();
+    emailUtils = new FakeEmailUtils();
   }
 
   @After
@@ -86,7 +90,7 @@ public final class InterviewerFeedbackServletTest {
   public void interviewIdDoesNotExist() throws IOException {
     InterviewerFeedbackServlet interviewerFeedbackServlet = new InterviewerFeedbackServlet();
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
-    interviewerFeedbackServlet.init(scheduledInterviewDao, personDao, emailSender);
+    interviewerFeedbackServlet.init(scheduledInterviewDao, personDao, emailSender, emailUtils);
     scheduledInterviewDao.create(scheduledInterview);
     MockHttpServletRequest postRequest = new MockHttpServletRequest();
     MockHttpServletResponse postResponse = new MockHttpServletResponse();
@@ -101,7 +105,7 @@ public final class InterviewerFeedbackServletTest {
   public void invalidUser() throws IOException {
     InterviewerFeedbackServlet interviewerFeedbackServlet = new InterviewerFeedbackServlet();
     helper.setEnvIsLoggedIn(true).setEnvEmail("user@company.org").setEnvAuthDomain("auth");
-    interviewerFeedbackServlet.init(scheduledInterviewDao, personDao, emailSender);
+    interviewerFeedbackServlet.init(scheduledInterviewDao, personDao, emailSender, emailUtils);
     scheduledInterviewDao.create(scheduledInterview);
     List<ScheduledInterview> scheduledInterviews =
         scheduledInterviewDao.getForPerson(emailToId("user@company.org"));

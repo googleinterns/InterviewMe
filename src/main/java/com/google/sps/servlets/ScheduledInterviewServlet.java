@@ -23,7 +23,6 @@ import com.google.sps.data.DatastoreAvailabilityDao;
 import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
 import com.google.sps.data.EmailSender;
-import com.google.sps.data.EmailUtils;
 import com.google.sps.data.InterviewPostRequest;
 import com.google.sps.data.Job;
 import com.google.sps.data.Person;
@@ -33,6 +32,8 @@ import com.google.sps.data.ScheduledInterviewDao;
 import com.google.sps.data.ScheduledInterviewRequest;
 import com.google.sps.data.SendgridEmailSender;
 import com.google.sps.data.TimeRange;
+import com.google.sps.utils.EmailUtils;
+import com.google.sps.utils.SendgridEmailUtils;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
@@ -69,6 +70,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
   private AvailabilityDao availabilityDao;
   private PersonDao personDao;
   private EmailSender emailSender;
+  private EmailUtils emailUtils;
   private final UserService userService = UserServiceFactory.getUserService();
   static final Email sender = new Email("interviewme.business@gmail.com");
   private Path emailsPath =
@@ -87,18 +89,21 @@ public class ScheduledInterviewServlet extends HttpServlet {
         new DatastoreScheduledInterviewDao(),
         new DatastoreAvailabilityDao(),
         new DatastorePersonDao(),
-        emailSender);
+        emailSender,
+        new SendgridEmailUtils());
   }
 
   public void init(
       ScheduledInterviewDao scheduledInterviewDao,
       AvailabilityDao availabilityDao,
       PersonDao personDao,
-      EmailSender emailSender) {
+      EmailSender emailSender,
+      EmailUtils emailUtils) {
     this.scheduledInterviewDao = scheduledInterviewDao;
     this.availabilityDao = availabilityDao;
     this.personDao = personDao;
     this.emailSender = emailSender;
+    this.emailUtils = emailUtils;
   }
 
   // Gets the current user's email and returns the ScheduledInterviews for that person.
@@ -321,16 +326,16 @@ public class ScheduledInterviewServlet extends HttpServlet {
 
     String subject = "You have been requested to conduct a mock interview!";
     String contentString =
-        EmailUtils.fileContentToString(emailsPath + "/NewInterview_Interviewer.txt");
+        emailUtils.fileContentToString(emailsPath + "/NewInterview_Interviewer.txt");
 
     if (participantId.equals(scheduledInterview.intervieweeId())) {
       subject = "You have been registered for a mock interview!";
-      contentString = EmailUtils.fileContentToString(emailsPath + "/NewInterview_Interviewee.txt");
+      contentString = emailUtils.fileContentToString(emailsPath + "/NewInterview_Interviewee.txt");
     }
 
     Email recipient = new Email(recipientEmail);
     Content content =
-        new Content("text/plain", EmailUtils.replaceAllPairs(emailedDetails, contentString));
+        new Content("text/plain", emailUtils.replaceAllPairs(emailedDetails, contentString));
     emailSender.sendEmail(recipient, subject, content);
   }
 
