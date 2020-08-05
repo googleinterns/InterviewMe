@@ -12,17 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function onScheduledInterviewsLoad() {
-  const loginInfo = getLoginInfo();
-  loginInfo.then(ifLoggedOutRedirectHome); 
-  loginInfo.then(getUserOrRedirectRegistration);
-  loadScheduledInterviewCards(); 
-}
+package com.google.sps.data;
 
-function loadScheduledInterviewCards() {
-  fetch(`/scheduled-interviews?timeZone=${getBrowserTimeZone()}&userTime=${getCurrentTime()}`)
-    .then(response => response.text())
-    .then(listOfCards => {
-      document.getElementById('scheduled-interviews-cards').innerHTML = listOfCards;
-    });
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+// Handles all things Calendar (for now just getting a Meet link).
+public interface CalendarAccess {
+
+  // Creates an event in the calendar CALENDAR_ID and returns the Meet Link associated with that
+  // event.
+  public String getMeetLink(ScheduledInterview interview)
+      throws IOException, GeneralSecurityException;
 }
