@@ -31,13 +31,13 @@ function checkLogin() {
       // If not registered, redirect to registration.
       let loginInfo = getLoginInfo();
       loginInfo.then(getUserOrRedirectRegistration);
-      document.getElementById('login-tab').href = status.loginUrl;
     } else {
       restrictedTabs = document.getElementsByClassName('restricted-tab');
       for(let element of restrictedTabs) {
         element.classList.add('disabled');
       }
       document.getElementById('login-tab').removeAttribute('hidden');
+      document.getElementById('login-tab').href = status.loginUrl;
     }
   });
 }

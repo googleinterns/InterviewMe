@@ -28,7 +28,6 @@ function getLoginInfo() {
 function logout(){
   fetch('/logout').then(response => {
     if(response.redirected) {
-      console.log('redirected ' + response.url);
       window.location.href = response.url;
     }
   });
