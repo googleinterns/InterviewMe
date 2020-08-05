@@ -24,9 +24,8 @@
             <li class="list-group-item">Interviewer: ${scheduledInterview.getInterviewer()}</li>
             <li class="list-group-item">Shadow: ${scheduledInterview.getShadow()}</li>
             <li class="list-group-item">
-              MeetLink: 
               <a href=${scheduledInterview.getMeetLink()} target="_blank">
-                ${scheduledInterview.getMeetLink()}
+                MeetLink
               </a>
             </li>
           </ul>
