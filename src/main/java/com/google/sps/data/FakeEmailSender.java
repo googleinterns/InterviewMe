@@ -56,11 +56,7 @@ public class FakeEmailSender implements EmailSender {
   // predifined email templates to text.
   @Override
   public String fileContentToString(String filePath) throws IOException {
-    StringBuilder contentBuilder = new StringBuilder();
-    try (Stream<String> stream = Files.lines(Paths.get(filePath), StandardCharsets.UTF_8)) {
-      stream.forEach(s -> contentBuilder.append(s).append("\n"));
-    }
-    return contentBuilder.toString();
+    return ""; 
   }
 
   /**
