@@ -192,7 +192,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
       sendParticipantEmail(intervieweeId, emailedDetails);
       emailedDetails.put("{{form_link}}", interviewerFeedbackLink);
       sendParticipantEmail(interviewerId, emailedDetails);
-    } catch (Exception e) {
+    } catch (IOException e) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
     }
@@ -308,7 +308,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
   }
 
   private void sendParticipantEmail(String participantId, HashMap<String, String> emailedDetails)
-      throws IOException, Exception {
+      throws IOException {
     String subject = "You have been requested to conduct a mock interview!";
     String contentString =
         emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewer.txt");

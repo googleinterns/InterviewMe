@@ -48,8 +48,7 @@ public class FakeEmailSender implements EmailSender {
   // Sends an email from the "sender" Email to the "recipient" Email, with specified subject and
   // content.
   @Override
-  public int sendEmail(Email recipient, String subject, Content content)
-      throws IOException, Exception {
+  public int sendEmail(Email recipient, String subject, Content content) throws IOException {
     return 200;
   }
 

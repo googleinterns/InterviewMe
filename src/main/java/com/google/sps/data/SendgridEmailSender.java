@@ -52,8 +52,7 @@ public class SendgridEmailSender implements EmailSender {
   // Sends an email from the "sender" Email to the "recipient" Email, with specified subject and
   // content.
   @Override
-  public int sendEmail(Email recipient, String subject, Content content)
-      throws IOException, Exception {
+  public int sendEmail(Email recipient, String subject, Content content) throws IOException {
     Mail mail = new Mail(sender, subject, recipient, content);
 
     Request request = new Request();
