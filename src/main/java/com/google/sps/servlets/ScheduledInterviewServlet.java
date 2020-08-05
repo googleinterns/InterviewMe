@@ -129,11 +129,11 @@ public class ScheduledInterviewServlet extends HttpServlet {
     try {
       postRequest = new Gson().fromJson(getJsonString(request), InterviewPostRequest.class);
     } catch (Exception JsonSyntaxException) {
-      response.sendError(400);
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
     if (!postRequest.allFieldsPopulated()) {
-      response.sendError(400);
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
 
@@ -149,7 +149,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
           new TimeRange(
               Instant.parse(utcStartTime), Instant.parse(utcStartTime).plus(1, ChronoUnit.HOURS));
     } catch (DateTimeParseException e) {
-      response.sendError(400, e.getMessage());
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
       return;
     }
 
@@ -193,7 +193,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
       emailedDetails.put("{{form_link}}", interviewerFeedbackLink);
       sendInterviewerEmail(interviewerId, emailedDetails);
     } catch (Exception e) {
-      response.sendError(500);
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
     }
 
