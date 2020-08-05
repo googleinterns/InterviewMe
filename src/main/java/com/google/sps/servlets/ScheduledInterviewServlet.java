@@ -75,9 +75,9 @@ public class ScheduledInterviewServlet extends HttpServlet {
 
   @Override
   public void init() {
-    EmailSender emailer;
+    final EmailSender emailSender;
     try {
-      emailer = new SendgridEmailSender(new Email("interviewme.business@gmail.com"));
+      emailSender = new SendgridEmailSender(new Email("interviewme.business@gmail.com"));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -85,7 +85,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
         new DatastoreScheduledInterviewDao(),
         new DatastoreAvailabilityDao(),
         new DatastorePersonDao(),
-        emailer);
+        emailSender);
   }
 
   public void init(
@@ -166,13 +166,12 @@ public class ScheduledInterviewServlet extends HttpServlet {
         ScheduledInterview.create(-1, interviewRange, interviewerId, intervieweeId));
 
     HashMap<String, String> emailedDetails = new HashMap<String, String>();
-    String interviewId =
-        String.valueOf(
-            scheduledInterviewDao
-                .getScheduledInterviewsInRangeForUser(
-                    intervieweeId, interviewRange.start(), interviewRange.end())
-                .get(0)
-                .id());
+    ScheduledInterview scheduledInterview =
+        scheduledInterviewDao
+            .getScheduledInterviewsInRangeForUser(
+                intervieweeId, interviewRange.start(), interviewRange.end())
+            .get(0);
+    String interviewId = String.valueOf(scheduledInterview.id());
     String intervieweeFeedbackLink =
         String.format(
             "http://interview-me-step-2020.appspot.com/feedback.html?interview=%s&role=interviewee",
@@ -189,9 +188,9 @@ public class ScheduledInterviewServlet extends HttpServlet {
     emailedDetails.put("{{position}}", formatPositionString(position));
 
     try {
-      sendParticipantEmail(intervieweeId, emailedDetails);
+      sendParticipantEmail(scheduledInterview, intervieweeId, emailedDetails);
       emailedDetails.put("{{form_link}}", interviewerFeedbackLink);
-      sendParticipantEmail(interviewerId, emailedDetails);
+      sendParticipantEmail(scheduledInterview, interviewerId, emailedDetails);
     } catch (IOException e) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
@@ -307,23 +306,35 @@ public class ScheduledInterviewServlet extends HttpServlet {
     return personDao.get(participantId).map(Person::firstName).orElse("Nonexistent User");
   }
 
-  private void sendParticipantEmail(String participantId, HashMap<String, String> emailedDetails)
+  private void sendParticipantEmail(
+      ScheduledInterview scheduledInterview,
+      String participantId,
+      HashMap<String, String> emailedDetails)
       throws IOException {
+    String recipientEmail = getEmail(participantId);
+
+    if (recipientEmail.equals("Nonexistent User")) {
+      return;
+    }
+
     String subject = "You have been requested to conduct a mock interview!";
     String contentString =
         emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewer.txt");
-    if (participantId.equals(getUserId())) {
+
+    if (participantId.equals(scheduledInterview.intervieweeId())) {
       subject = "You have been registered for a mock interview!";
       contentString = emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewee.txt");
     }
 
-    Email recipient = new Email(getEmail(participantId));
+    Email recipient = new Email(recipientEmail);
     Content content =
         new Content("text/plain", emailSender.replaceAllPairs(emailedDetails, contentString));
     emailSender.sendEmail(recipient, subject, content);
   }
 
-  static String formatPositionString(String str) {
+  // Formats the position string that is sent in an email. For example SOFTWARE_ENGINEER -> Software
+  // Engineer.
+  private static String formatPositionString(String str) {
     String splitString[] = str.split("_", 0);
     String formattedPositionString = "";
     for (String s : splitString) {

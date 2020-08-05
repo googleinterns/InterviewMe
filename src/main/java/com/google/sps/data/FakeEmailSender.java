@@ -46,14 +46,14 @@ public class FakeEmailSender implements EmailSender {
   }
 
   // Sends an email from the "sender" Email to the "recipient" Email, with specified subject and
-  // content.
+  // content. Returns a response from the sendgrid email sending service.
   @Override
   public int sendEmail(Email recipient, String subject, Content content) throws IOException {
     return 200;
   }
 
   // Returns the contents of the file specified at filePath as a String. Useful for converting
-  // predifined email templates to text. Is not tested due to user path being used.
+  // predefined email templates to text. Is not tested due to user path being used.
   @Override
   public String fileContentToString(String filePath) throws IOException {
     return "";

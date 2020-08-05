@@ -23,11 +23,13 @@ import java.util.HashMap;
 /** EmailSender includes the basic methods anything managing sending emails must support. */
 public interface EmailSender {
 
-  // Sends an email to the "recipient" Email, with specified subject and content.
+  // Sends an email to the "recipient" Email, with specified subject and content. Returns a response
+  // from the sendgrid email sending service.
+
   public int sendEmail(Email recipient, String subject, Content content) throws IOException;
 
   // Returns the contents of the file specified at filePath as a String. Useful for converting
-  // predifined email templates to text.
+  // predefined email templates to text.
   public String fileContentToString(String filePath) throws IOException;
 
   /**
