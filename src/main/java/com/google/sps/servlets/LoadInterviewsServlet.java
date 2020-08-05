@@ -21,6 +21,7 @@ import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.sps.data.Availability;
 import com.google.sps.data.AvailabilityDao;
+import com.google.sps.data.AvailabilityTimeSlotGenerator;
 import com.google.sps.data.DatastoreAvailabilityDao;
 import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
@@ -93,7 +94,8 @@ public class LoadInterviewsServlet extends HttpServlet {
         maxTimezoneOffsetMinutes,
         maxTimezoneOffsetHours,
         timezoneOffsetMinutes);
-    ZoneOffset timezoneOffset = convertIntToOffset(timezoneOffsetMinutes);
+    ZoneOffset timezoneOffset =
+        AvailabilityTimeSlotGenerator.convertIntToOffset(timezoneOffsetMinutes);
     ZonedDateTime day = generateDay(currentTime, timezoneOffset);
     ZonedDateTime utcTime = day.withZoneSameInstant(ZoneOffset.UTC);
     // The user will be shown available interview times for the next four weeks, starting from the
@@ -130,16 +132,6 @@ public class LoadInterviewsServlet extends HttpServlet {
     } catch (ServletException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  // Uses an Instant and a timezoneOffset to create a ZonedDateTime instance.
-  private static ZonedDateTime generateDay(Instant instant, ZoneOffset timezoneOffset) {
-    return instant.atZone(ZoneId.ofOffset("UTC", timezoneOffset));
-  }
-
-  // Converts the timezoneOffsetMinutes int into a proper ZoneOffset instance.
-  private static ZoneOffset convertIntToOffset(int timezoneOffsetMinutes) {
-    return ZoneOffset.ofHoursMinutes((timezoneOffsetMinutes / 60), (timezoneOffsetMinutes % 60));
   }
 
   private List<PossibleInterviewSlot> getPossibleInterviewSlots(
@@ -218,7 +210,12 @@ public class LoadInterviewsServlet extends HttpServlet {
         .equals(availabilities.get(index + numberOfSlotsAfterFirstInAnHour).when().start());
   }
 
-  private String getDate(Instant instant, ZoneOffset timezoneOffset) {
+  // Uses an Instant and a timezoneOffset to create a ZonedDateTime instance.
+  static ZonedDateTime generateDay(Instant instant, ZoneOffset timezoneOffset) {
+    return instant.atZone(ZoneId.ofOffset("UTC", timezoneOffset));
+  }
+
+  static String getDate(Instant instant, ZoneOffset timezoneOffset) {
     ZonedDateTime day = instant.atZone(ZoneId.ofOffset("UTC", timezoneOffset));
     String dayOfWeek = day.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.US);
     int month = day.getMonthValue();
@@ -226,13 +223,13 @@ public class LoadInterviewsServlet extends HttpServlet {
     return String.format("%s %d/%d", dayOfWeek, month, dayOfMonth);
   }
 
-  private String getTime(Instant instant, ZoneOffset timezoneOffset) {
+  static String getTime(Instant instant, ZoneOffset timezoneOffset) {
     ZonedDateTime startTime = instant.atZone(ZoneId.ofOffset("UTC", timezoneOffset));
     ZonedDateTime endTime = startTime.plus(1, ChronoUnit.HOURS);
     return String.format("%s - %s", formatTime(startTime), formatTime(endTime));
   }
 
-  private String formatTime(ZonedDateTime time) {
+  static String formatTime(ZonedDateTime time) {
     int hour = time.getHour();
     int minute = time.getMinute();
     int standardHour = hour;

@@ -196,12 +196,12 @@ public class AvailabilityTimeSlotGenerator {
   }
 
   // Uses an Instant and a timezoneOffsetMinutes int to create a ZonedDateTime instance.
-  private static ZonedDateTime generateDay(Instant instant, int timezoneOffsetMinutes) {
+  public static ZonedDateTime generateDay(Instant instant, int timezoneOffsetMinutes) {
     return instant.atZone(ZoneId.ofOffset("UTC", convertIntToOffset(timezoneOffsetMinutes)));
   }
 
   // Converts the timezoneOffsetMinutes int into a proper ZoneOffset instance.
-  private static ZoneOffset convertIntToOffset(int timezoneOffsetMinutes) {
+  public static ZoneOffset convertIntToOffset(int timezoneOffsetMinutes) {
     return ZoneOffset.ofHoursMinutes((timezoneOffsetMinutes / 60), (timezoneOffsetMinutes % 60));
   }
 

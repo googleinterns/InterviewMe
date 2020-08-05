@@ -21,6 +21,7 @@ import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.sps.data.Availability;
 import com.google.sps.data.AvailabilityDao;
+import com.google.sps.data.AvailabilityTimeSlotGenerator;
 import com.google.sps.data.DatastoreAvailabilityDao;
 import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
@@ -83,8 +84,9 @@ public class ShadowLoadInterviewsServlet extends HttpServlet {
         maxTimezoneOffsetMinutes,
         maxTimezoneOffsetHours,
         timezoneOffsetMinutes);
-    ZoneOffset timezoneOffset = convertIntToOffset(timezoneOffsetMinutes);
-    ZonedDateTime day = generateDay(currentTime, timezoneOffset);
+    ZoneOffset timezoneOffset =
+        AvailabilityTimeSlotGenerator.convertIntToOffset(timezoneOffsetMinutes);
+    ZonedDateTime day = LoadInterviewsServlet.generateDay(currentTime, timezoneOffset);
     ZonedDateTime utcTime = day.withZoneSameInstant(ZoneOffset.UTC);
     // The user will be shown available interview times for the next four weeks, starting from the
     // current time.
@@ -161,16 +163,6 @@ public class ShadowLoadInterviewsServlet extends HttpServlet {
     return possibleInterviews;
   }
 
-  // Uses an Instant and a timezoneOffset to create a ZonedDateTime instance.
-  private static ZonedDateTime generateDay(Instant instant, ZoneOffset timezoneOffset) {
-    return instant.atZone(ZoneId.ofOffset("UTC", timezoneOffset));
-  }
-
-  // Converts the timezoneOffsetMinutes int into a proper ZoneOffset instance.
-  private static ZoneOffset convertIntToOffset(int timezoneOffsetMinutes) {
-    return ZoneOffset.ofHoursMinutes((timezoneOffsetMinutes / 60), (timezoneOffsetMinutes % 60));
-  }
-
   private List<PossibleInterviewSlot> scheduledInterviewsToPossibleInterviewSlots(
       List<ScheduledInterview> interviews, ZoneOffset timezoneOffset) {
     List<PossibleInterviewSlot> possibleInterviewSlots = new ArrayList<PossibleInterviewSlot>();
@@ -178,33 +170,9 @@ public class ShadowLoadInterviewsServlet extends HttpServlet {
       possibleInterviewSlots.add(
           PossibleInterviewSlot.create(
               interview.when().start().toString(),
-              getDate(interview.when().start(), timezoneOffset),
-              getTime(interview.when().start(), timezoneOffset)));
+              LoadInterviewsServlet.getDate(interview.when().start(), timezoneOffset),
+              LoadInterviewsServlet.getTime(interview.when().start(), timezoneOffset)));
     }
     return possibleInterviewSlots;
-  }
-
-  private String getDate(Instant instant, ZoneOffset timezoneOffset) {
-    ZonedDateTime day = instant.atZone(ZoneId.ofOffset("UTC", timezoneOffset));
-    String dayOfWeek = day.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.US);
-    int month = day.getMonthValue();
-    int dayOfMonth = day.getDayOfMonth();
-    return String.format("%s %d/%d", dayOfWeek, month, dayOfMonth);
-  }
-
-  private String getTime(Instant instant, ZoneOffset timezoneOffset) {
-    ZonedDateTime startTime = instant.atZone(ZoneId.ofOffset("UTC", timezoneOffset));
-    ZonedDateTime endTime = startTime.plus(1, ChronoUnit.HOURS);
-    return String.format("%s - %s", formatTime(startTime), formatTime(endTime));
-  }
-
-  private String formatTime(ZonedDateTime time) {
-    int hour = time.getHour();
-    int minute = time.getMinute();
-    int standardHour = hour;
-    if (hour > 12) {
-      standardHour = hour - 12;
-    }
-    return String.format("%d:%02d %s", standardHour, minute, hour < 12 ? "AM" : "PM");
   }
 }
