@@ -26,14 +26,14 @@
     </tr>
   </thead>
   <tbody>
-    <!-- TODO: Allow clicking and scrolling over multiple slots to select them.-->
     <!-- TODO: Change page format so that it is vertically condensed.-->
     <c:forEach var = "i" begin = "0" end = "${pageScope.list.get(0).size() - 1}">
       <tr>
         <c:forEach items = "${pageScope.list}" var = "day">
-          <td onmouseenter="event.preventDefault(); toggleTile(this);" " data-utc="${day.get(i).utcEncoding()}" 
+          <td onmouseenter="event.preventDefault(); toggleTile(this);" 
+              data-utc="${day.get(i).utcEncoding()}" 
               class="${day.get(i).getClassList()}">
-            <span>${day.get(i).time()}</span>
+            ${day.get(i).time()}
           </td>
         </c:forEach>
       </tr>
