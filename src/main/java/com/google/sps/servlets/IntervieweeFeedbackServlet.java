@@ -19,6 +19,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
 import com.google.sps.data.EmailSender;
+import com.google.sps.data.EmailUtils;
 import com.google.sps.data.Person;
 import com.google.sps.data.PersonDao;
 import com.google.sps.data.ScheduledInterview;
@@ -137,9 +138,8 @@ public class IntervieweeFeedbackServlet extends HttpServlet {
     String subject = "Your Interviewer has submitted feedback for your interview!";
     Email recipient = new Email(intervieweeEmail);
     String contentString =
-        emailSender.fileContentToString(emailsPath + "/feedbackToInterviewee.txt");
-    Content content =
-        new Content("text/plain", emailSender.replaceAllPairs(answers, contentString));
+        EmailUtils.fileContentToString(emailsPath + "/feedbackToInterviewee.txt");
+    Content content = new Content("text/plain", EmailUtils.replaceAllPairs(answers, contentString));
     emailSender.sendEmail(recipient, subject, content);
   }
 }

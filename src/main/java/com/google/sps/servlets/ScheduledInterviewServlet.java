@@ -23,6 +23,7 @@ import com.google.sps.data.DatastoreAvailabilityDao;
 import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
 import com.google.sps.data.EmailSender;
+import com.google.sps.data.EmailUtils;
 import com.google.sps.data.InterviewPostRequest;
 import com.google.sps.data.Job;
 import com.google.sps.data.Person;
@@ -320,16 +321,16 @@ public class ScheduledInterviewServlet extends HttpServlet {
 
     String subject = "You have been requested to conduct a mock interview!";
     String contentString =
-        emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewer.txt");
+        EmailUtils.fileContentToString(emailsPath + "/NewInterview_Interviewer.txt");
 
     if (participantId.equals(scheduledInterview.intervieweeId())) {
       subject = "You have been registered for a mock interview!";
-      contentString = emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewee.txt");
+      contentString = EmailUtils.fileContentToString(emailsPath + "/NewInterview_Interviewee.txt");
     }
 
     Email recipient = new Email(recipientEmail);
     Content content =
-        new Content("text/plain", emailSender.replaceAllPairs(emailedDetails, contentString));
+        new Content("text/plain", EmailUtils.replaceAllPairs(emailedDetails, contentString));
     emailSender.sendEmail(recipient, subject, content);
   }
 

@@ -25,19 +25,5 @@ public interface EmailSender {
 
   // Sends an email to the "recipient" Email, with specified subject and content. Returns a response
   // from the sendgrid email sending service.
-
   public int sendEmail(Email recipient, String subject, Content content) throws IOException;
-
-  // Returns the contents of the file specified at filePath as a String. Useful for converting
-  // predefined email templates to text.
-  public String fileContentToString(String filePath) throws IOException;
-
-  /**
-   * Modifies and returns @param str. Replaces all occurences in @param str of each key in @param
-   * toReplace with its corresponding value.
-   */
-  // Ex. str = "You will be mock interviewing {{interviewee_full_name}} on {{formatted_date}}."
-  // toReplace = { ("{{interviewee_full_name}}","Tess"), ("{{formatted_date}}", "June 6, 2022") }
-  // Returned: "You will be mock interviewing Tess on June 6, 2022."
-  public String replaceAllPairs(HashMap<String, String> toReplace, String str);
 }
