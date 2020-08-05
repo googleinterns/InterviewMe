@@ -17,7 +17,7 @@
 %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<table class="table table-sm text-center">
+<table class="table table-sm text-center" onmousedown="markMouseDown();" onmouseup="markMouseUp();" >
   <thead>
     <tr>
       <c:forEach items = "${pageScope.list}" var = "day">
@@ -31,7 +31,7 @@
     <c:forEach var = "i" begin = "0" end = "${pageScope.list.get(0).size() - 1}">
       <tr>
         <c:forEach items = "${pageScope.list}" var = "day">
-          <td onclick="toggleTile(this)" data-utc="${day.get(i).utcEncoding()}" 
+          <td onmouseover="toggleTile(this)" data-utc="${day.get(i).utcEncoding()}" 
               class="${day.get(i).getClassList()}">
             ${day.get(i).time()}
           </td>

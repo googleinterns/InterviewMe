@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+let mousedown = false;
+
 function onAvailabilityLoad() {
   const loginInfo = getLoginInfo();
   loginInfo.then(supplyLogoutLinkOrRedirectHome); 
@@ -19,9 +21,22 @@ function onAvailabilityLoad() {
   loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset());
 }
 
+function markMouseDown() {
+  mousedown = true;
+}
+
+function markMouseUp() {
+  mousedown = false;
+}
+
+
 // Toggles a tile from selected (green) to un-selected (white) and vice versa when clicked.
 // Scheduled tiles (red) remain unaffected.
 function toggleTile(tile) {
+  // Should only toggle if the mouse is down and is on this tile.
+  if(!mousedown) {
+    return;
+  }
   let classList = tile.classList;
   if (classList.contains('selected-time-slot')) {
     classList.remove('table-success', 'selected-time-slot');
