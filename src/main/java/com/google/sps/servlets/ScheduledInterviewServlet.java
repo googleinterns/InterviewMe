@@ -276,13 +276,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
       return;
     }
 
-    String interviewerCompany = putRequest.getCompany();
-    String interviewerJob = putRequest.getJob();
     String utcStartTime = putRequest.getUtcStartTime();
-    String position = putRequest.getPosition();
-    Job selectedPosition = Job.valueOf(Job.class, position);
     TimeRange interviewRange;
-
     try {
       interviewRange =
           new TimeRange(
@@ -292,6 +287,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
       return;
     }
 
+    String position = putRequest.getPosition();
+    Job selectedPosition = Job.valueOf(Job.class, position);
     List<ScheduledInterview> possibleInterviews =
         ShadowLoadInterviewsServlet.getPossibleInterviews(
             scheduledInterviewDao, selectedPosition, interviewRange, personDao, shadowId);
@@ -299,6 +296,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
     Set<ScheduledInterview> notValidInterviews = new HashSet<ScheduledInterview>();
     // We want to remove all interviews where the company or job does not match that
     // specified in the request.
+    String interviewerCompany = putRequest.getCompany();
+    String interviewerJob = putRequest.getJob();
     for (ScheduledInterview interview : possibleInterviews) {
       if (!personDao.get(interview.interviewerId()).get().company().equals(interviewerCompany)
           || !personDao.get(interview.interviewerId()).get().job().equals(interviewerJob)) {
