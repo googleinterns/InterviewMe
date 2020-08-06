@@ -267,7 +267,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     InterviewPostOrPutRequest putRequest;
     try {
       putRequest = new Gson().fromJson(getJsonString(request), InterviewPostOrPutRequest.class);
-    } catch (Exception JsonSyntaxException) {
+    } catch (JsonSyntaxException jse) {
       response.sendError(400);
       return;
     }
