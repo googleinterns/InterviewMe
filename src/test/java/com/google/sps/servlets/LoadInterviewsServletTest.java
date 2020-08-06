@@ -249,7 +249,7 @@ public final class LoadInterviewsServletTest {
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
     servlet.doGet(getRequest, getResponse);
     List<List<PossibleInterviewSlot>> possibleInterviewSlots =
-        (List<List<PossibleInterviewSlot>>) getRequest.getAttribute("weekList");
+        (List<List<PossibleInterviewSlot>>) getRequest.getAttribute("monthList");
     ImmutableList.Builder<List<PossibleInterviewSlot>> expected = ImmutableList.builder();
     List<PossibleInterviewSlot> day = new ArrayList<PossibleInterviewSlot>();
     PossibleInterviewSlot slot =
@@ -278,7 +278,7 @@ public final class LoadInterviewsServletTest {
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
     servlet.doGet(getRequest, getResponse);
     List<List<PossibleInterviewSlot>> possibleInterviewSlots =
-        (List<List<PossibleInterviewSlot>>) getRequest.getAttribute("weekList");
+        (List<List<PossibleInterviewSlot>>) getRequest.getAttribute("monthList");
     ImmutableList.Builder<List<PossibleInterviewSlot>> expected = ImmutableList.builder();
     List<List<PossibleInterviewSlot>> expectedInterviewSlots = expected.build();
     Assert.assertEquals(expectedInterviewSlots, possibleInterviewSlots);
@@ -315,7 +315,7 @@ public final class LoadInterviewsServletTest {
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
     servlet.doGet(getRequest, getResponse);
     List<List<PossibleInterviewSlot>> possibleInterviewSlots =
-        (List<List<PossibleInterviewSlot>>) getRequest.getAttribute("weekList");
+        (List<List<PossibleInterviewSlot>>) getRequest.getAttribute("monthList");
     ImmutableList.Builder<List<PossibleInterviewSlot>> expected = ImmutableList.builder();
     List<List<PossibleInterviewSlot>> expectedInterviewSlots = expected.build();
     Assert.assertEquals(expectedInterviewSlots, possibleInterviewSlots);
@@ -339,7 +339,7 @@ public final class LoadInterviewsServletTest {
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
     servlet.doGet(getRequest, getResponse);
     List<List<PossibleInterviewSlot>> possibleInterviewSlots =
-        (List<List<PossibleInterviewSlot>>) getRequest.getAttribute("weekList");
+        (List<List<PossibleInterviewSlot>>) getRequest.getAttribute("monthList");
     ImmutableList.Builder<List<PossibleInterviewSlot>> expected = ImmutableList.builder();
     List<List<PossibleInterviewSlot>> expectedInterviewSlots = expected.build();
     Assert.assertEquals(expectedInterviewSlots, possibleInterviewSlots);
@@ -370,7 +370,7 @@ public final class LoadInterviewsServletTest {
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
     servlet.doGet(getRequest, getResponse);
     List<ArrayList<PossibleInterviewSlot>> possibleInterviewSlots =
-        (List<ArrayList<PossibleInterviewSlot>>) getRequest.getAttribute("weekList");
+        (List<ArrayList<PossibleInterviewSlot>>) getRequest.getAttribute("monthList");
     List<ArrayList<PossibleInterviewSlot>> expected =
         new ArrayList<ArrayList<PossibleInterviewSlot>>();
     PossibleInterviewSlot slot1 =
@@ -408,7 +408,7 @@ public final class LoadInterviewsServletTest {
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
     servlet.doGet(getRequest, getResponse);
     List<ArrayList<PossibleInterviewSlot>> possibleInterviewSlots =
-        (List<ArrayList<PossibleInterviewSlot>>) getRequest.getAttribute("weekList");
+        (List<ArrayList<PossibleInterviewSlot>>) getRequest.getAttribute("monthList");
     List<ArrayList<PossibleInterviewSlot>> expected =
         new ArrayList<ArrayList<PossibleInterviewSlot>>();
     PossibleInterviewSlot slot1 =
@@ -446,7 +446,7 @@ public final class LoadInterviewsServletTest {
     MockHttpServletResponse getResponse = new MockHttpServletResponse();
     servlet.doGet(getRequest, getResponse);
     List<ArrayList<PossibleInterviewSlot>> possibleInterviewSlots =
-        (List<ArrayList<PossibleInterviewSlot>>) getRequest.getAttribute("weekList");
+        (List<ArrayList<PossibleInterviewSlot>>) getRequest.getAttribute("monthList");
     List<ArrayList<PossibleInterviewSlot>> expected =
         new ArrayList<ArrayList<PossibleInterviewSlot>>();
     PossibleInterviewSlot slot =

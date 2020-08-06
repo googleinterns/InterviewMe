@@ -30,6 +30,7 @@ import com.google.sps.data.PossibleInterviewSlot;
 import com.google.sps.data.ScheduledInterview;
 import com.google.sps.data.ScheduledInterviewDao;
 import com.google.sps.data.TimeRange;
+import com.google.sps.data.TimeUtils;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.lang.Integer;
@@ -83,15 +84,14 @@ public class ShadowLoadInterviewsServlet extends HttpServlet {
         maxTimezoneOffsetMinutes,
         maxTimezoneOffsetHours,
         timezoneOffsetMinutes);
-    ZoneOffset timezoneOffset = convertIntToOffset(timezoneOffsetMinutes);
-    ZonedDateTime day = generateDay(currentTime, timezoneOffset);
-    ZonedDateTime utcTime = day.withZoneSameInstant(ZoneOffset.UTC);
+    ZoneOffset timezoneOffset = TimeUtils.convertIntToOffset(timezoneOffsetMinutes);
+    ZonedDateTime utcTime =
+        TimeUtils.generateDay(currentTime, timezoneOffsetMinutes)
+            .withZoneSameInstant(ZoneOffset.UTC);
     // The user will be shown available interview times for the next four weeks, starting from the
     // current time.
     TimeRange interviewSearchTimeRange =
         new TimeRange(utcTime.toInstant(), utcTime.toInstant().plus(27, ChronoUnit.DAYS));
-    String position = request.getParameter("position");
-    Job selectedPosition = Job.valueOf(Job.class, position);
     UserService userService = UserServiceFactory.getUserService();
     String userEmail = userService.getCurrentUser().getEmail();
     String userId = userService.getCurrentUser().getUserId();
@@ -100,34 +100,17 @@ public class ShadowLoadInterviewsServlet extends HttpServlet {
     if (userId == null) {
       userId = String.format("%d", userEmail.hashCode());
     }
-
+    String position = request.getParameter("position");
+    Job selectedPosition = Job.valueOf(Job.class, position);
     List<ScheduledInterview> possibleInterviews =
         getPossibleInterviews(
             scheduledInterviewDao, selectedPosition, interviewSearchTimeRange, personDao, userId);
-
     List<PossibleInterviewSlot> possibleInterviewSlots =
         scheduledInterviewsToPossibleInterviewSlots(possibleInterviews, timezoneOffset);
-
-    String date = possibleInterviewSlots.isEmpty() ? "" : possibleInterviewSlots.get(0).date();
-    List<ArrayList<PossibleInterviewSlot>> possibleInterviewsForWeek =
-        new ArrayList<ArrayList<PossibleInterviewSlot>>();
-
-    if (!possibleInterviewSlots.isEmpty()) {
-      ArrayList<PossibleInterviewSlot> dayOfSlots = new ArrayList<PossibleInterviewSlot>();
-      for (PossibleInterviewSlot possibleInterview : possibleInterviewSlots) {
-        if (!possibleInterview.date().equals(date)) {
-          possibleInterviewsForWeek.add(dayOfSlots);
-          dayOfSlots = new ArrayList<PossibleInterviewSlot>();
-          date = possibleInterview.date();
-        }
-        dayOfSlots.add(possibleInterview);
-      }
-      possibleInterviewsForWeek.add(dayOfSlots);
-    }
-
-    request.setAttribute("weekList", possibleInterviewsForWeek);
+    List<ArrayList<PossibleInterviewSlot>> possibleInterviewsForMonth =
+        LoadInterviewsServlet.orderPossibleInterviewSlotsIntoDays(possibleInterviewSlots);
+    request.setAttribute("monthList", possibleInterviewsForMonth);
     RequestDispatcher rd = request.getRequestDispatcher("/possibleInterviewTimes.jsp");
-
     try {
       rd.forward(request, response);
     } catch (ServletException e) {
@@ -144,7 +127,6 @@ public class ShadowLoadInterviewsServlet extends HttpServlet {
     List<ScheduledInterview> possibleInterviews =
         scheduledInterviewDao.getForPositionWithoutShadowInRange(
             position, range.start(), range.end());
-
     Set<ScheduledInterview> notValidInterviews = new HashSet<ScheduledInterview>();
     // We want to remove all interviews that the proposed shadow is already involved in or
     // where either party does not want a shadow.
@@ -161,16 +143,6 @@ public class ShadowLoadInterviewsServlet extends HttpServlet {
     return possibleInterviews;
   }
 
-  // Uses an Instant and a timezoneOffset to create a ZonedDateTime instance.
-  private static ZonedDateTime generateDay(Instant instant, ZoneOffset timezoneOffset) {
-    return instant.atZone(ZoneId.ofOffset("UTC", timezoneOffset));
-  }
-
-  // Converts the timezoneOffsetMinutes int into a proper ZoneOffset instance.
-  private static ZoneOffset convertIntToOffset(int timezoneOffsetMinutes) {
-    return ZoneOffset.ofHoursMinutes((timezoneOffsetMinutes / 60), (timezoneOffsetMinutes % 60));
-  }
-
   private List<PossibleInterviewSlot> scheduledInterviewsToPossibleInterviewSlots(
       List<ScheduledInterview> interviews, ZoneOffset timezoneOffset) {
     List<PossibleInterviewSlot> possibleInterviewSlots = new ArrayList<PossibleInterviewSlot>();
@@ -178,33 +150,9 @@ public class ShadowLoadInterviewsServlet extends HttpServlet {
       possibleInterviewSlots.add(
           PossibleInterviewSlot.create(
               interview.when().start().toString(),
-              getDate(interview.when().start(), timezoneOffset),
-              getTime(interview.when().start(), timezoneOffset)));
+              TimeUtils.getDate(interview.when().start(), timezoneOffset),
+              TimeUtils.getTime(interview.when().start(), timezoneOffset)));
     }
     return possibleInterviewSlots;
-  }
-
-  private String getDate(Instant instant, ZoneOffset timezoneOffset) {
-    ZonedDateTime day = instant.atZone(ZoneId.ofOffset("UTC", timezoneOffset));
-    String dayOfWeek = day.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.US);
-    int month = day.getMonthValue();
-    int dayOfMonth = day.getDayOfMonth();
-    return String.format("%s %d/%d", dayOfWeek, month, dayOfMonth);
-  }
-
-  private String getTime(Instant instant, ZoneOffset timezoneOffset) {
-    ZonedDateTime startTime = instant.atZone(ZoneId.ofOffset("UTC", timezoneOffset));
-    ZonedDateTime endTime = startTime.plus(1, ChronoUnit.HOURS);
-    return String.format("%s - %s", formatTime(startTime), formatTime(endTime));
-  }
-
-  private String formatTime(ZonedDateTime time) {
-    int hour = time.getHour();
-    int minute = time.getMinute();
-    int standardHour = hour;
-    if (hour > 12) {
-      standardHour = hour - 12;
-    }
-    return String.format("%d:%02d %s", standardHour, minute, hour < 12 ? "AM" : "PM");
   }
 }

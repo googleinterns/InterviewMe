@@ -27,8 +27,7 @@ function loadInterviews() {
   let servlet = '';
   if (role === 'Interviewee') {
     servlet = 'load-interviews';
-  }
-  if (role === 'Shadow') {
+  } else if (role === 'Shadow') {
     servlet = 'shadow-load-interviews';
   }
   fetch(`/${servlet}?timeZoneOffset=${browserTimezoneOffset()}&position=${selectedEnumPosition()}`)
@@ -79,8 +78,7 @@ function selectInterview(interviewer) {
         `information.`);
       updateDatastore('POST', company, job, utcStartTime);
     }
-  }
-  if (role === 'Shadow') {
+  } else if (role === 'Shadow') {
     if (confirm(
         `You selected: ${date} from ${time} with a ` +
         `${company} ${job}. ` +
@@ -124,8 +122,7 @@ function showInterviewers(selectButton) {
   let servlet = '';
   if (role === 'Interviewee') {
     servlet = 'show-interviewers';
-  }
-  if (role === 'Shadow') {
+  } else if (role === 'Shadow') {
     servlet = 'shadow-show-interviewers';
   }
   fetch(`/${servlet}?utcStartTime=${utc}&date=${date}&time=${reformattedTime}&position=${selectedEnumPosition()}`)

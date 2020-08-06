@@ -18,6 +18,7 @@ import com.google.api.services.calendar.Calendar;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.sps.data.Availability;
 import com.google.sps.data.AvailabilityDao;
 import com.google.sps.data.CalendarAccess;
@@ -59,6 +60,7 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -131,7 +133,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String userTime = request.getParameter("userTime");
     String userEmail = userService.getCurrentUser().getEmail();
     String userId = getUserId();
-
     List<ScheduledInterviewRequest> scheduledInterviews =
         scheduledInterviewsToRequestObjects(
             scheduledInterviewDao.getForPerson(userId), timeZoneId, userTime);
@@ -149,26 +150,19 @@ public class ScheduledInterviewServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String intervieweeEmail = userService.getCurrentUser().getEmail();
     String intervieweeId = getUserId();
-
     InterviewPostOrPutRequest postRequest;
     try {
       postRequest = new Gson().fromJson(getJsonString(request), InterviewPostOrPutRequest.class);
-    } catch (Exception JsonSyntaxException) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+    } catch (JsonSyntaxException jse) {
+      response.sendError(400);
       return;
     }
     if (!postRequest.allFieldsPopulated()) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
-
-    String interviewerCompany = postRequest.getCompany();
-    String interviewerJob = postRequest.getJob();
     String utcStartTime = postRequest.getUtcStartTime();
-    String position = postRequest.getPosition();
-    Job selectedPosition = Job.valueOf(Job.class, position);
     TimeRange interviewRange;
-
     try {
       interviewRange =
           new TimeRange(
@@ -177,18 +171,21 @@ public class ScheduledInterviewServlet extends HttpServlet {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
       return;
     }
-
+    String position = postRequest.getPosition();
+    Job selectedPosition = Job.valueOf(Job.class, position);
     List<Person> allAvailableInterviewers =
         ShowInterviewersServlet.getPossiblePeople(
             personDao, availabilityDao, selectedPosition, interviewRange);
+    String interviewerCompany = postRequest.getCompany();
+    String interviewerJob = postRequest.getJob();
     List<String> possibleInterviewers =
         getPossibleInterviewerIds(allAvailableInterviewers, interviewerCompany, interviewerJob);
-
     int randomNumber = (int) (Math.random() * possibleInterviewers.size());
     String interviewerId = possibleInterviewers.get(randomNumber);
 
     // Meet link is empty because we need a scheduledInterview before the link can be created
     String meetLink = "";
+
     // Shadow is empty because when an interview is first made, only interviewee and
     // interviewer are involved.
     scheduledInterviewDao.create(
@@ -249,7 +246,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
             interviewerId, interviewRange.start(), interviewRange.end());
     affectedAvailability.addAll(intervieweeAffectedAvailability);
     affectedAvailability.addAll(interviewerAffectedAvailability);
-
     for (Availability avail : affectedAvailability) {
       availabilityDao.update(avail.withScheduled(true));
     }
@@ -382,6 +378,9 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String interviewer = getFirstName(scheduledInterview.interviewerId());
     String interviewee = getFirstName(scheduledInterview.intervieweeId());
     String shadowId = scheduledInterview.shadowId();
+    // When an interview is first scheduled, the shadowId is set to an empty string. Since this
+    // behaviour is expected, here we prevent a null or empty name exception with creating keys
+    // in datastore.
     String shadow = "None";
     if (!scheduledInterview.shadowId().equals("")) {
       shadow = getFirstName(scheduledInterview.shadowId());
