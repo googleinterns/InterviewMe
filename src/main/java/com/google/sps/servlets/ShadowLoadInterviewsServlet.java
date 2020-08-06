@@ -85,8 +85,9 @@ public class ShadowLoadInterviewsServlet extends HttpServlet {
         maxTimezoneOffsetHours,
         timezoneOffsetMinutes);
     ZoneOffset timezoneOffset = TimeUtils.convertIntToOffset(timezoneOffsetMinutes);
-    ZonedDateTime day = TimeUtils.generateDay(currentTime, timezoneOffsetMinutes);
-    ZonedDateTime utcTime = day.withZoneSameInstant(ZoneOffset.UTC);
+    ZonedDateTime utcTime =
+        TimeUtils.generateDay(currentTime, timezoneOffsetMinutes)
+            .withZoneSameInstant(ZoneOffset.UTC);
     // The user will be shown available interview times for the next four weeks, starting from the
     // current time.
     TimeRange interviewSearchTimeRange =
