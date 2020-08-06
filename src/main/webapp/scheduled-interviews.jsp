@@ -25,7 +25,7 @@
             <li class="list-group-item">Shadow: ${scheduledInterview.getShadow()}</li>
             <li class="list-group-item">
               <a href=${scheduledInterview.getMeetLink()} target="_blank">
-                MeetLink
+                Meet Link
               </a>
             </li>
           </ul>
