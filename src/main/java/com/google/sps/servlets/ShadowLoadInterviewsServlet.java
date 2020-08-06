@@ -107,22 +107,9 @@ public class ShadowLoadInterviewsServlet extends HttpServlet {
             scheduledInterviewDao, selectedPosition, interviewSearchTimeRange, personDao, userId);
     List<PossibleInterviewSlot> possibleInterviewSlots =
         scheduledInterviewsToPossibleInterviewSlots(possibleInterviews, timezoneOffset);
-    String date = possibleInterviewSlots.isEmpty() ? "" : possibleInterviewSlots.get(0).date();
-    List<ArrayList<PossibleInterviewSlot>> possibleInterviewsForWeek =
-        new ArrayList<ArrayList<PossibleInterviewSlot>>();
-    if (!possibleInterviewSlots.isEmpty()) {
-      ArrayList<PossibleInterviewSlot> dayOfSlots = new ArrayList<PossibleInterviewSlot>();
-      for (PossibleInterviewSlot possibleInterview : possibleInterviewSlots) {
-        if (!possibleInterview.date().equals(date)) {
-          possibleInterviewsForWeek.add(dayOfSlots);
-          dayOfSlots = new ArrayList<PossibleInterviewSlot>();
-          date = possibleInterview.date();
-        }
-        dayOfSlots.add(possibleInterview);
-      }
-      possibleInterviewsForWeek.add(dayOfSlots);
-    }
-    request.setAttribute("weekList", possibleInterviewsForWeek);
+    List<ArrayList<PossibleInterviewSlot>> possibleInterviewsForMonth =
+        LoadInterviewsServlet.orderPossibleInterviewSlotsIntoDays(possibleInterviewSlots);
+    request.setAttribute("monthList", possibleInterviewsForMonth);
     RequestDispatcher rd = request.getRequestDispatcher("/possibleInterviewTimes.jsp");
     try {
       rd.forward(request, response);

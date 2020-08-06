@@ -105,27 +105,10 @@ public class LoadInterviewsServlet extends HttpServlet {
     Job selectedPosition = Job.valueOf(Job.class, position);
     List<PossibleInterviewSlot> possibleInterviews =
         getPossibleInterviewSlots(selectedPosition, interviewSearchTimeRange, timezoneOffset);
-
-    String date = possibleInterviews.isEmpty() ? "" : possibleInterviews.get(0).date();
-    List<ArrayList<PossibleInterviewSlot>> possibleInterviewsForWeek =
-        new ArrayList<ArrayList<PossibleInterviewSlot>>();
-
-    if (!possibleInterviews.isEmpty()) {
-      ArrayList<PossibleInterviewSlot> dayOfSlots = new ArrayList<PossibleInterviewSlot>();
-      for (PossibleInterviewSlot possibleInterview : possibleInterviews) {
-        if (!possibleInterview.date().equals(date)) {
-          possibleInterviewsForWeek.add(dayOfSlots);
-          dayOfSlots = new ArrayList<PossibleInterviewSlot>();
-          date = possibleInterview.date();
-        }
-        dayOfSlots.add(possibleInterview);
-      }
-      possibleInterviewsForWeek.add(dayOfSlots);
-    }
-
-    request.setAttribute("weekList", possibleInterviewsForWeek);
+    List<ArrayList<PossibleInterviewSlot>> possibleInterviewsForMonth =
+        orderPossibleInterviewSlotsIntoDays(possibleInterviews);
+    request.setAttribute("monthList", possibleInterviewsForMonth);
     RequestDispatcher rd = request.getRequestDispatcher("/possibleInterviewTimes.jsp");
-
     try {
       rd.forward(request, response);
     } catch (ServletException e) {
@@ -222,5 +205,27 @@ public class LoadInterviewsServlet extends HttpServlet {
           }
           return 1;
         });
+  }
+
+  static List<ArrayList<PossibleInterviewSlot>> orderPossibleInterviewSlotsIntoDays(
+      List<PossibleInterviewSlot> possibleInterviews) {
+    String date = possibleInterviews.isEmpty() ? "" : possibleInterviews.get(0).date();
+    List<ArrayList<PossibleInterviewSlot>> possibleInterviewsForMonth =
+        new ArrayList<ArrayList<PossibleInterviewSlot>>();
+    // In order to separate the time slots by day, when the date changes a new dayOfSlots is
+    // created and the previous dayOfSlots is added to possibleInterviewsForMonth.
+    if (!possibleInterviews.isEmpty()) {
+      ArrayList<PossibleInterviewSlot> dayOfSlots = new ArrayList<PossibleInterviewSlot>();
+      for (PossibleInterviewSlot possibleInterview : possibleInterviews) {
+        if (!possibleInterview.date().equals(date)) {
+          possibleInterviewsForMonth.add(dayOfSlots);
+          dayOfSlots = new ArrayList<PossibleInterviewSlot>();
+          date = possibleInterview.date();
+        }
+        dayOfSlots.add(possibleInterview);
+      }
+      possibleInterviewsForMonth.add(dayOfSlots);
+    }
+    return possibleInterviewsForMonth;
   }
 }
