@@ -50,6 +50,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import java.time.format.DateTimeParseException;
+import org.owasp.html.Sanitizers;
+import org.owasp.html.PolicyFactory;
 
 @WebServlet("/scheduled-interviews")
 public class ScheduledInterviewServlet extends HttpServlet {
@@ -71,6 +73,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
       ScheduledInterviewDao scheduledInterviewDao,
       AvailabilityDao availabilityDao,
       PersonDao personDao) {
+    sanitizer =
+        Sanitizers.FORMATTING.and(Sanitizers.BLOCKS).and(Sanitizers.STYLES).and(Sanitizers.LINKS);
     this.scheduledInterviewDao = scheduledInterviewDao;
     this.availabilityDao = availabilityDao;
     this.personDao = personDao;
