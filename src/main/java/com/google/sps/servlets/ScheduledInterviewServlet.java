@@ -87,7 +87,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String userTime = request.getParameter("userTime");
     String userEmail = userService.getCurrentUser().getEmail();
     String userId = getUserId();
-
     List<ScheduledInterviewRequest> scheduledInterviews =
         scheduledInterviewsToRequestObjects(
             scheduledInterviewDao.getForPerson(userId), timeZoneId, userTime);
@@ -105,7 +104,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String intervieweeEmail = userService.getCurrentUser().getEmail();
     String intervieweeId = getUserId();
-
     InterviewPostOrPutRequest postRequest;
     try {
       postRequest = new Gson().fromJson(getJsonString(request), InterviewPostOrPutRequest.class);
@@ -117,14 +115,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
       response.sendError(400);
       return;
     }
-
-    String interviewerCompany = postRequest.getCompany();
-    String interviewerJob = postRequest.getJob();
     String utcStartTime = postRequest.getUtcStartTime();
-    String position = postRequest.getPosition();
-    Job selectedPosition = Job.valueOf(Job.class, position);
     TimeRange interviewRange;
-
     try {
       interviewRange =
           new TimeRange(
@@ -133,16 +125,17 @@ public class ScheduledInterviewServlet extends HttpServlet {
       response.sendError(400, e.getMessage());
       return;
     }
-
+    String position = postRequest.getPosition();
+    Job selectedPosition = Job.valueOf(Job.class, position);
     List<Person> allAvailableInterviewers =
         ShowInterviewersServlet.getPossiblePeople(
             personDao, availabilityDao, selectedPosition, interviewRange);
+    String interviewerCompany = postRequest.getCompany();
+    String interviewerJob = postRequest.getJob();
     List<String> possibleInterviewers =
         getPossibleInterviewerIds(allAvailableInterviewers, interviewerCompany, interviewerJob);
-
     int randomNumber = (int) (Math.random() * possibleInterviewers.size());
     String interviewerId = possibleInterviewers.get(randomNumber);
-
     // TODO: replace with real MeetLink from Calendar Access
     String meetLink = "meet_link";
     // Shadow is empty because when an interview is first made, only interviewee and
@@ -156,7 +149,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
             meetLink,
             selectedPosition,
             /*shadowId=*/ ""));
-
     // Since an interview was scheduled, both parties' availabilities must be updated
     List<Availability> affectedAvailability = new ArrayList<Availability>();
     List<Availability> intervieweeAffectedAvailability =
@@ -167,7 +159,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
             interviewerId, interviewRange.start(), interviewRange.end());
     affectedAvailability.addAll(intervieweeAffectedAvailability);
     affectedAvailability.addAll(interviewerAffectedAvailability);
-
     for (Availability avail : affectedAvailability) {
       availabilityDao.update(avail.withScheduled(true));
     }
@@ -179,7 +170,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
   public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String shadowEmail = userService.getCurrentUser().getEmail();
     String shadowId = getUserId();
-
     InterviewPostOrPutRequest putRequest;
     try {
       putRequest = new Gson().fromJson(getJsonString(request), InterviewPostOrPutRequest.class);
@@ -191,7 +181,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
       response.sendError(400);
       return;
     }
-
     String utcStartTime = putRequest.getUtcStartTime();
     TimeRange interviewRange;
     try {
@@ -202,13 +191,11 @@ public class ScheduledInterviewServlet extends HttpServlet {
       response.sendError(400, e.getMessage());
       return;
     }
-
     String position = putRequest.getPosition();
     Job selectedPosition = Job.valueOf(Job.class, position);
     List<ScheduledInterview> possibleInterviews =
         ShadowLoadInterviewsServlet.getPossibleInterviews(
             scheduledInterviewDao, selectedPosition, interviewRange, personDao, shadowId);
-
     Set<ScheduledInterview> notValidInterviews = new HashSet<ScheduledInterview>();
     // We want to remove all interviews where the company or job does not match that
     // specified in the request.
@@ -221,11 +208,9 @@ public class ScheduledInterviewServlet extends HttpServlet {
       }
     }
     possibleInterviews.removeAll(notValidInterviews);
-
     int randomNumber = (int) (Math.random() * possibleInterviews.size());
     ScheduledInterview selectedInterview = possibleInterviews.get(randomNumber);
     scheduledInterviewDao.update(selectedInterview.withShadow(shadowId));
-
     // Since the shadow commited to this interview, their availabilities must be updated
     List<Availability> affectedAvailability =
         availabilityDao.getInRangeForUser(shadowId, interviewRange.start(), interviewRange.end());

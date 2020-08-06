@@ -87,14 +87,12 @@ public class ShadowShowInterviewersServlet extends HttpServlet {
     List<ScheduledInterview> possibleInterviews =
         ShadowLoadInterviewsServlet.getPossibleInterviews(
             scheduledInterviewDao, selectedPosition, interviewTimeRange, personDao, userId);
-
     Set<PossibleInterviewer> possibleInterviewers = new HashSet<PossibleInterviewer>();
     for (ScheduledInterview interview : possibleInterviews) {
       String company = personDao.get(interview.interviewerId()).get().company();
       String job = personDao.get(interview.interviewerId()).get().job();
       possibleInterviewers.add(PossibleInterviewer.create(company, job));
     }
-
     request.setAttribute("interviewers", possibleInterviewers);
     RequestDispatcher rd = request.getRequestDispatcher("/possibleInterviewers.jsp");
     try {

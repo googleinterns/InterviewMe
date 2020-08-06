@@ -104,14 +104,11 @@ public class ShadowLoadInterviewsServlet extends HttpServlet {
     List<ScheduledInterview> possibleInterviews =
         getPossibleInterviews(
             scheduledInterviewDao, selectedPosition, interviewSearchTimeRange, personDao, userId);
-
     List<PossibleInterviewSlot> possibleInterviewSlots =
         scheduledInterviewsToPossibleInterviewSlots(possibleInterviews, timezoneOffset);
-
     String date = possibleInterviewSlots.isEmpty() ? "" : possibleInterviewSlots.get(0).date();
     List<ArrayList<PossibleInterviewSlot>> possibleInterviewsForWeek =
         new ArrayList<ArrayList<PossibleInterviewSlot>>();
-
     if (!possibleInterviewSlots.isEmpty()) {
       ArrayList<PossibleInterviewSlot> dayOfSlots = new ArrayList<PossibleInterviewSlot>();
       for (PossibleInterviewSlot possibleInterview : possibleInterviewSlots) {
@@ -124,10 +121,8 @@ public class ShadowLoadInterviewsServlet extends HttpServlet {
       }
       possibleInterviewsForWeek.add(dayOfSlots);
     }
-
     request.setAttribute("weekList", possibleInterviewsForWeek);
     RequestDispatcher rd = request.getRequestDispatcher("/possibleInterviewTimes.jsp");
-
     try {
       rd.forward(request, response);
     } catch (ServletException e) {
@@ -144,7 +139,6 @@ public class ShadowLoadInterviewsServlet extends HttpServlet {
     List<ScheduledInterview> possibleInterviews =
         scheduledInterviewDao.getForPositionWithoutShadowInRange(
             position, range.start(), range.end());
-
     Set<ScheduledInterview> notValidInterviews = new HashSet<ScheduledInterview>();
     // We want to remove all interviews that the proposed shadow is already involved in or
     // where either party does not want a shadow.
