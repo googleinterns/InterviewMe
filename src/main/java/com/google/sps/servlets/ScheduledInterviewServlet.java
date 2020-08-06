@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.sps.data.Availability;
 import com.google.sps.data.AvailabilityDao;
 import com.google.sps.data.DatastoreAvailabilityDao;
@@ -108,7 +109,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     InterviewPostOrPutRequest postRequest;
     try {
       postRequest = new Gson().fromJson(getJsonString(request), InterviewPostOrPutRequest.class);
-    } catch (Exception JsonSyntaxException) {
+    } catch (JsonSyntaxException jse) {
       response.sendError(400);
       return;
     }
@@ -182,7 +183,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     InterviewPostOrPutRequest putRequest;
     try {
       putRequest = new Gson().fromJson(getJsonString(request), InterviewPostOrPutRequest.class);
-    } catch (Exception JsonSyntaxException) {
+    } catch (JsonSyntaxException jse) {
       response.sendError(400);
       return;
     }
