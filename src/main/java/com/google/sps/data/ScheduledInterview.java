@@ -66,6 +66,11 @@ public abstract class ScheduledInterview {
     return toBuilder().setShadowId(shadowId).build();
   }
 
+  // Returns a new ScheduledInterview with the old information plus an added meetlink.
+  public ScheduledInterview withMeetLink(String meetLink) {
+    return toBuilder().setMeetLink(meetLink).build();
+  }
+
   static Builder builder() {
     return new AutoValue_ScheduledInterview.Builder();
   }
