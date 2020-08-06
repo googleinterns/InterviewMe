@@ -37,6 +37,8 @@ import com.google.sps.data.ScheduledInterviewRequest;
 import com.google.sps.data.SecretFetcher;
 import com.google.sps.data.SendgridEmailSender;
 import com.google.sps.data.TimeRange;
+import com.google.sps.utils.EmailUtils;
+import com.google.sps.utils.SendgridEmailUtils;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
@@ -79,6 +81,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
   private EmailSender emailSender;
   private CalendarAccess calendarAccess;
   private Calendar service;
+  private EmailUtils emailUtils;
   private final UserService userService = UserServiceFactory.getUserService();
   static final Email sender = new Email("interviewme.business@gmail.com");
   private Path emailsPath =
@@ -110,7 +113,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
         new DatastoreAvailabilityDao(),
         new DatastorePersonDao(),
         calendar,
-        emailSender);
+        emailSender,
+        new SendgridEmailUtils());
   }
 
   public void init(
@@ -118,12 +122,14 @@ public class ScheduledInterviewServlet extends HttpServlet {
       AvailabilityDao availabilityDao,
       PersonDao personDao,
       CalendarAccess calendarAccess,
-      EmailSender emailSender) {
+      EmailSender emailSender,
+      EmailUtils emailUtils) {
     this.scheduledInterviewDao = scheduledInterviewDao;
     this.availabilityDao = availabilityDao;
     this.personDao = personDao;
     this.calendarAccess = calendarAccess;
     this.emailSender = emailSender;
+    this.emailUtils = emailUtils;
   }
 
   // Gets the current user's email and returns the ScheduledInterviews for that person.
@@ -154,7 +160,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     try {
       postRequest = new Gson().fromJson(getJsonString(request), InterviewPostOrPutRequest.class);
     } catch (JsonSyntaxException jse) {
-      response.sendError(400);
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
     if (!postRequest.allFieldsPopulated()) {
@@ -454,21 +460,21 @@ public class ScheduledInterviewServlet extends HttpServlet {
 
     String subject = "You have been requested to conduct a mock interview!";
     String contentString =
-        emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewer.txt");
+        emailUtils.fileContentToString(emailsPath + "/NewInterview_Interviewer.txt");
 
     if (participantId.equals(scheduledInterview.intervieweeId())) {
       subject = "You have been registered for a mock interview!";
-      contentString = emailSender.fileContentToString(emailsPath + "/NewInterview_Interviewee.txt");
+      contentString = emailUtils.fileContentToString(emailsPath + "/NewInterview_Interviewee.txt");
     }
 
     if (participantId.equals(scheduledInterview.shadowId())) {
       subject = "You have been registered for a mock interview!";
-      contentString = emailSender.fileContentToString(emailsPath + "/NewInterview_Shadow.txt");
+      contentString = emailUtils.fileContentToString(emailsPath + "/NewInterview_Shadow.txt");
     }
 
     Email recipient = new Email(recipientEmail);
     Content content =
-        new Content("text/plain", emailSender.replaceAllPairs(emailedDetails, contentString));
+        new Content("text/plain", emailUtils.replaceAllPairs(emailedDetails, contentString));
     emailSender.sendEmail(recipient, subject, content);
   }
 

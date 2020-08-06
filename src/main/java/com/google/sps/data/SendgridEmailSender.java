@@ -63,30 +63,4 @@ public class SendgridEmailSender implements EmailSender {
     response = sg.api(request);
     return response.getStatusCode();
   }
-
-  // Returns the contents of the file specified at filePath as a String. Useful for converting
-  // predefined email templates to text.
-  @Override
-  public String fileContentToString(String filePath) throws IOException {
-    StringBuilder contentBuilder = new StringBuilder();
-    try (Stream<String> stream = Files.lines(Paths.get(filePath), StandardCharsets.UTF_8)) {
-      stream.forEach(s -> contentBuilder.append(s).append("\n"));
-    }
-    return contentBuilder.toString();
-  }
-
-  /**
-   * Modifies and returns @param str. Replaces all occurences in @param str of each key in @param
-   * toReplace with its corresponding value.
-   */
-  // Ex. str = "You will be mock interviewing {{interviewee_full_name}} on {{formatted_date}}."
-  // toReplace = { ("{{interviewee_full_name}}","Tess"), ("{{formatted_date}}", "June 6, 2022") }
-  // Returned: "You will be mock interviewing Tess on June 6, 2022."
-  @Override
-  public String replaceAllPairs(HashMap<String, String> toReplace, String str) {
-    for (Map.Entry<String, String> entry : toReplace.entrySet()) {
-      str = str.replace(entry.getKey(), entry.getValue());
-    }
-    return str;
-  }
 }

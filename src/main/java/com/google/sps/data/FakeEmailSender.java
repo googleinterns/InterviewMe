@@ -24,12 +24,6 @@ import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.stream.Stream;
-import java.util.Map;
-import java.util.HashMap;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -50,27 +44,5 @@ public class FakeEmailSender implements EmailSender {
   @Override
   public int sendEmail(Email recipient, String subject, Content content) throws IOException {
     return 200;
-  }
-
-  // Returns the contents of the file specified at filePath as a String. Useful for converting
-  // predefined email templates to text. Is not tested due to user path being used.
-  @Override
-  public String fileContentToString(String filePath) throws IOException {
-    return "";
-  }
-
-  /**
-   * Modifies and returns @param str. Replaces all occurences in @param str of each key in @param
-   * toReplace with its corresponding value.
-   */
-  // Ex. str = "You will be mock interviewing {{interviewee_full_name}} on {{formatted_date}}."
-  // toReplace = { ("{{interviewee_full_name}}","Tess"), ("{{formatted_date}}", "June 6, 2022") }
-  // Returned: "You will be mock interviewing Tess on June 6, 2022."
-  @Override
-  public String replaceAllPairs(HashMap<String, String> toReplace, String str) {
-    for (Map.Entry<String, String> entry : toReplace.entrySet()) {
-      str = str.replace(entry.getKey(), entry.getValue());
-    }
-    return str;
   }
 }
