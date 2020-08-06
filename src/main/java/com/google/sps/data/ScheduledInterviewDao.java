@@ -30,6 +30,11 @@ public interface ScheduledInterviewDao {
   // minTime to maxTime.
   public List<ScheduledInterview> getInRange(Instant minTime, Instant maxTime);
 
+  // Returns a list, sorted by start time, of all ScheduledInterview objects ranging from
+  // minTime to maxTime that are for the selected position and do not already have a shadow.
+  public List<ScheduledInterview> getForPositionWithoutShadowInRange(
+      Job position, Instant minTime, Instant maxTime);
+
   // Returns a list of the ScheduledInterview objects that the user participates in.
   public List<ScheduledInterview> getForPerson(String userId);
 

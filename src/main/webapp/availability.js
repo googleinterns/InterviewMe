@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+let mousedown = false;
+
 function onAvailabilityLoad() {
   const loginInfo = getLoginInfo();
   loginInfo.then(ifLoggedOutRedirectHome); 
@@ -19,15 +21,27 @@ function onAvailabilityLoad() {
   loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset());
 }
 
+function markMouseDown() {
+  mousedown = true;
+}
+
+function markMouseUp() {
+  mousedown = false;
+}
+
 // Toggles a tile from selected (green) to un-selected (white) and vice versa when clicked.
 // Scheduled tiles (red) remain unaffected.
 function toggleTile(tile) {
+  // Should only toggle if the mouse is down and is on this tile.
+  if (!mousedown) {
+    return;
+  }
   let classList = tile.classList;
   if (classList.contains('selected-time-slot')) {
     classList.remove('table-success', 'selected-time-slot');
     return;
   }
-  if (! classList.contains('scheduled-time-slot')) {
+  if (!classList.contains('scheduled-time-slot')) {
     classList.add('table-success', 'selected-time-slot');
   }
 }
@@ -59,8 +73,11 @@ function updateAvailability(reload) {
   };
   let requestBody = JSON.stringify(requestObject);
   let request = new Request('/availability', {method: 'PUT', body: requestBody});
-  fetch(request).then(() => {
+  fetch(request)
+    .then(() => {
       if (reload) {
+        // Reloads the page to show the user their availability was updated when 
+        // they clicked the Update buton.
         location.reload();
       }
     }).catch((error) => {
@@ -77,7 +94,7 @@ function goBack() {
     page = 0;
     return;
   }
-  updateAvailability(false);
+  updateAvailability(/*reload=*/ false);
   page -= 1;
   loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset());
 }
@@ -87,7 +104,7 @@ function goForward() {
     page = maxWeeksAhead;
     return;
   }
-  updateAvailability(false);
+  updateAvailability(/*reload=*/ false);
   page += 1;
   loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset());
 }
