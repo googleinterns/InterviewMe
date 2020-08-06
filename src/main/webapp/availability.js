@@ -73,7 +73,8 @@ function updateAvailability(reload) {
   };
   let requestBody = JSON.stringify(requestObject);
   let request = new Request('/availability', {method: 'PUT', body: requestBody});
-  fetch(request).then(() => {
+  fetch(request)
+    .then(() => {
       if (reload) {
         location.reload();
       }
