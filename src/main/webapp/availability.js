@@ -92,7 +92,7 @@ function goBack() {
     page = 0;
     return;
   }
-  updateAvailability(false);
+  updateAvailability(/*reload=*/ false);
   page -= 1;
   loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset());
 }
@@ -102,7 +102,7 @@ function goForward() {
     page = maxWeeksAhead;
     return;
   }
-  updateAvailability(false);
+  updateAvailability(/*reload=*/ false);
   page += 1;
   loadAvailabilityTable(availabilityTableDiv(), browserTimezoneOffset());
 }
