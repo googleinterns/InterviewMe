@@ -76,6 +76,8 @@ function updateAvailability(reload) {
   fetch(request)
     .then(() => {
       if (reload) {
+        // Reloads the page to show the user their availability was updated when 
+        // they clicked the Update buton.
         location.reload();
       }
     }).catch((error) => {
