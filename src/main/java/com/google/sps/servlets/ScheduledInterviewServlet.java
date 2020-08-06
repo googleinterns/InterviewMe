@@ -17,12 +17,13 @@ package com.google.sps.servlets;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.sps.data.Availability;
 import com.google.sps.data.AvailabilityDao;
 import com.google.sps.data.DatastoreAvailabilityDao;
 import com.google.sps.data.DatastorePersonDao;
 import com.google.sps.data.DatastoreScheduledInterviewDao;
-import com.google.sps.data.InterviewPostRequest;
+import com.google.sps.data.InterviewPostOrPutRequest;
 import com.google.sps.data.Job;
 import com.google.sps.data.Person;
 import com.google.sps.data.PersonDao;
@@ -41,8 +42,11 @@ import java.time.temporal.ChronoUnit;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
+import java.util.Set;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -83,7 +87,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
     String userTime = request.getParameter("userTime");
     String userEmail = userService.getCurrentUser().getEmail();
     String userId = getUserId();
-
     List<ScheduledInterviewRequest> scheduledInterviews =
         scheduledInterviewsToRequestObjects(
             scheduledInterviewDao.getForPerson(userId), timeZoneId, userTime);
@@ -101,11 +104,10 @@ public class ScheduledInterviewServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String intervieweeEmail = userService.getCurrentUser().getEmail();
     String intervieweeId = getUserId();
-
-    InterviewPostRequest postRequest;
+    InterviewPostOrPutRequest postRequest;
     try {
-      postRequest = new Gson().fromJson(getJsonString(request), InterviewPostRequest.class);
-    } catch (Exception JsonSyntaxException) {
+      postRequest = new Gson().fromJson(getJsonString(request), InterviewPostOrPutRequest.class);
+    } catch (JsonSyntaxException jse) {
       response.sendError(400);
       return;
     }
@@ -113,14 +115,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
       response.sendError(400);
       return;
     }
-
-    String interviewerCompany = postRequest.getCompany();
-    String interviewerJob = postRequest.getJob();
     String utcStartTime = postRequest.getUtcStartTime();
-    String position = postRequest.getPosition();
-    Job selectedPosition = Job.valueOf(Job.class, position);
     TimeRange interviewRange;
-
     try {
       interviewRange =
           new TimeRange(
@@ -129,16 +125,17 @@ public class ScheduledInterviewServlet extends HttpServlet {
       response.sendError(400, e.getMessage());
       return;
     }
-
+    String position = postRequest.getPosition();
+    Job selectedPosition = Job.valueOf(Job.class, position);
     List<Person> allAvailableInterviewers =
         ShowInterviewersServlet.getPossiblePeople(
             personDao, availabilityDao, selectedPosition, interviewRange);
+    String interviewerCompany = postRequest.getCompany();
+    String interviewerJob = postRequest.getJob();
     List<String> possibleInterviewers =
         getPossibleInterviewerIds(allAvailableInterviewers, interviewerCompany, interviewerJob);
-
     int randomNumber = (int) (Math.random() * possibleInterviewers.size());
     String interviewerId = possibleInterviewers.get(randomNumber);
-
     // TODO: replace with real MeetLink from Calendar Access
     String meetLink = "meet_link";
     // Shadow is empty because when an interview is first made, only interviewee and
@@ -150,9 +147,8 @@ public class ScheduledInterviewServlet extends HttpServlet {
             interviewerId,
             intervieweeId,
             meetLink,
-            Job.valueOf(position),
+            selectedPosition,
             /*shadowId=*/ ""));
-
     // Since an interview was scheduled, both parties' availabilities must be updated
     List<Availability> affectedAvailability = new ArrayList<Availability>();
     List<Availability> intervieweeAffectedAvailability =
@@ -163,7 +159,61 @@ public class ScheduledInterviewServlet extends HttpServlet {
             interviewerId, interviewRange.start(), interviewRange.end());
     affectedAvailability.addAll(intervieweeAffectedAvailability);
     affectedAvailability.addAll(interviewerAffectedAvailability);
+    for (Availability avail : affectedAvailability) {
+      availabilityDao.update(avail.withScheduled(true));
+    }
+  }
 
+  // Send the request's contents to Datastore in the form of an updated ScheduledInterview object.
+  // Adds the current user as a shadow.
+  @Override
+  public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String shadowEmail = userService.getCurrentUser().getEmail();
+    String shadowId = getUserId();
+    InterviewPostOrPutRequest putRequest;
+    try {
+      putRequest = new Gson().fromJson(getJsonString(request), InterviewPostOrPutRequest.class);
+    } catch (JsonSyntaxException jse) {
+      response.sendError(400);
+      return;
+    }
+    if (!putRequest.allFieldsPopulated()) {
+      response.sendError(400);
+      return;
+    }
+    String utcStartTime = putRequest.getUtcStartTime();
+    TimeRange interviewRange;
+    try {
+      interviewRange =
+          new TimeRange(
+              Instant.parse(utcStartTime), Instant.parse(utcStartTime).plus(1, ChronoUnit.HOURS));
+    } catch (DateTimeParseException e) {
+      response.sendError(400, e.getMessage());
+      return;
+    }
+    String position = putRequest.getPosition();
+    Job selectedPosition = Job.valueOf(Job.class, position);
+    List<ScheduledInterview> possibleInterviews =
+        ShadowLoadInterviewsServlet.getPossibleInterviews(
+            scheduledInterviewDao, selectedPosition, interviewRange, personDao, shadowId);
+    Set<ScheduledInterview> notValidInterviews = new HashSet<ScheduledInterview>();
+    // We want to remove all interviews where the company or job does not match that
+    // specified in the request.
+    String interviewerCompany = putRequest.getCompany();
+    String interviewerJob = putRequest.getJob();
+    for (ScheduledInterview interview : possibleInterviews) {
+      if (!personDao.get(interview.interviewerId()).get().company().equals(interviewerCompany)
+          || !personDao.get(interview.interviewerId()).get().job().equals(interviewerJob)) {
+        notValidInterviews.add(interview);
+      }
+    }
+    possibleInterviews.removeAll(notValidInterviews);
+    int randomNumber = (int) (Math.random() * possibleInterviews.size());
+    ScheduledInterview selectedInterview = possibleInterviews.get(randomNumber);
+    scheduledInterviewDao.update(selectedInterview.withShadow(shadowId));
+    // Since the shadow commited to this interview, their availabilities must be updated
+    List<Availability> affectedAvailability =
+        availabilityDao.getInRangeForUser(shadowId, interviewRange.start(), interviewRange.end());
     for (Availability avail : affectedAvailability) {
       availabilityDao.update(avail.withScheduled(true));
     }
@@ -226,8 +276,17 @@ public class ScheduledInterviewServlet extends HttpServlet {
             .get(scheduledInterview.intervieweeId())
             .map(Person::firstName)
             .orElse("Nonexistent User");
-    String shadow =
-        personDao.get(scheduledInterview.shadowId()).map(Person::firstName).orElse("None");
+    // When an interview is first scheduled, the shadowId is set to an empty string. Since this
+    // behaviour is expected, here we prevent a null or empty name exception with creating keys
+    // in datastore.
+    String shadow = "None";
+    if (!scheduledInterview.shadowId().equals("")) {
+      Optional<String> firstName =
+          personDao.get(scheduledInterview.shadowId()).map(Person::firstName);
+      if (firstName.isPresent()) {
+        shadow = firstName.get();
+      }
+    }
     String role = getUserRole(scheduledInterview, userId);
     boolean hasStarted =
         scheduledInterview.when().start().minus(5, ChronoUnit.MINUTES).isBefore(userTime);
