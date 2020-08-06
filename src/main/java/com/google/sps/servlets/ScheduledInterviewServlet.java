@@ -488,16 +488,4 @@ public class ScheduledInterviewServlet extends HttpServlet {
     }
     return formattedPositionString.trim();
   }
-
-  private ScheduledInterview updatedMeetLinkField(
-      String meetLink, ScheduledInterview previousInterviewObject) {
-    return ScheduledInterview.create(
-        previousInterviewObject.id(),
-        previousInterviewObject.when(),
-        previousInterviewObject.interviewerId(),
-        previousInterviewObject.intervieweeId(),
-        meetLink,
-        previousInterviewObject.position(),
-        previousInterviewObject.shadowId());
-  }
 }
