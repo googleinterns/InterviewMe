@@ -74,8 +74,6 @@ public class ShadowShowInterviewersServlet extends HttpServlet {
     TimeRange interviewTimeRange =
         new TimeRange(
             Instant.parse(utcStartTime), Instant.parse(utcStartTime).plus(1, ChronoUnit.HOURS));
-    String position = request.getParameter("position");
-    Job selectedPosition = Job.valueOf(Job.class, position);
     UserService userService = UserServiceFactory.getUserService();
     String userEmail = userService.getCurrentUser().getEmail();
     String userId = userService.getCurrentUser().getUserId();
@@ -84,7 +82,8 @@ public class ShadowShowInterviewersServlet extends HttpServlet {
     if (userId == null) {
       userId = String.format("%d", userEmail.hashCode());
     }
-
+    String position = request.getParameter("position");
+    Job selectedPosition = Job.valueOf(Job.class, position);
     List<ScheduledInterview> possibleInterviews =
         ShadowLoadInterviewsServlet.getPossibleInterviews(
             scheduledInterviewDao, selectedPosition, interviewTimeRange, personDao, userId);
