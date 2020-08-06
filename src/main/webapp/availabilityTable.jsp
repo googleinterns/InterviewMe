@@ -27,14 +27,15 @@
     </tr>
   </thead>
   <tbody>
-    <!-- TODO: Allow clicking and scrolling over multiple slots to select them.-->
     <c:forEach var = "i" begin = "0" end = "${pageScope.list.get(0).size() - 1}">
       <c:choose>
         <c:when test="${i % 4 == 0}">
           <tr class='tall'>
             <td>${pageScope.list.get(0).get(i).time()}</td>
             <c:forEach items = "${pageScope.list}" var = "day">
-              <td onclick="toggleTile(this)" data-utc="${day.get(i).utcEncoding()}" 
+              <td onmouseenter="event.preventDefault(); toggleTile(this);"
+                  onmousedown="event.preventDefault(); markMouseDown(); toggleTile(this);"
+                  data-utc="${day.get(i).utcEncoding()}" 
                   class="${day.get(i).getClassList()}">
               </td>
             </c:forEach>
@@ -44,7 +45,9 @@
           <tr class='short'>
             <td></td>
             <c:forEach items = "${pageScope.list}" var = "day">
-              <td onclick="toggleTile(this)" data-utc="${day.get(i).utcEncoding()}" 
+              <td onmouseenter="event.preventDefault(); toggleTile(this);"
+                  onmousedown="event.preventDefault(); markMouseDown(); toggleTile(this);"
+                  data-utc="${day.get(i).utcEncoding()}" 
                   class="${day.get(i).getClassList()}">
               </td>
             </c:forEach>
