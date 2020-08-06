@@ -189,9 +189,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
     int randomNumber = (int) (Math.random() * possibleInterviewers.size());
     String interviewerId = possibleInterviewers.get(randomNumber);
 
-    // Meet link is empty because we need a scheduledInterview before the link can be created
-    String meetLink = "";
-
     // Shadow is empty because when an interview is first made, only interviewee and
     // interviewer are involved.
     scheduledInterviewDao.create(
@@ -200,7 +197,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
             interviewRange,
             interviewerId,
             intervieweeId,
-            meetLink,
+            /*meetLink*/ "",
             selectedPosition,
             /*shadowId=*/ ""));
 
@@ -220,18 +217,18 @@ public class ScheduledInterviewServlet extends HttpServlet {
             "http://interview-me-step-2020.appspot.com/feedback.html?interview=%s&role=interviewer",
             interviewId);
     try {
-      meetLink = calendarAccess.getMeetLink(scheduledInterview);
+      scheduledInterviewDao.update(
+          scheduledInterview.withMeetLink(calendarAccess.getMeetLink(scheduledInterview)));
     } catch (GeneralSecurityException e) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
     }
-    scheduledInterviewDao.update(scheduledInterview.withMeetLink(meetLink));
     emailedDetails.put("{{formatted_date}}", getEmailDateString(interviewRange));
     emailedDetails.put("{{interviewer_first_name}}", getFirstName(interviewerId));
     emailedDetails.put("{{interviewee_first_name}}", getFirstName(intervieweeId));
     emailedDetails.put("{{form_link}}", intervieweeFeedbackLink);
     emailedDetails.put("{{position}}", formatPositionString(position));
-    emailedDetails.put("{{chat_link}}", meetLink);
+    emailedDetails.put("{{chat_link}}", scheduledInterview.meetLink());
 
     try {
       sendParticipantEmail(scheduledInterview, intervieweeId, emailedDetails);
