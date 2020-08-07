@@ -23,3 +23,9 @@ indexes:
     direction: asc
   - name: "startTime"
     direction: asc
+- kind: "ScheduledInterview"
+  properties:
+  - name: "shadow"
+    direction: asc
+  - name: "startTime"
+    direction: asc
