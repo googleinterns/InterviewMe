@@ -15,7 +15,6 @@
 package com.google.sps.data;
 
 import java.util.EnumSet;
-import com.google.sps.utils.Sanitizer;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
