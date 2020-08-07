@@ -25,7 +25,6 @@ public class ScheduledInterviewRequest {
   private String meetLink;
   private String position;
   private String shadow;
-  // TODO: display meetLink and position in JSP page
 
   public ScheduledInterviewRequest(
       long id,
