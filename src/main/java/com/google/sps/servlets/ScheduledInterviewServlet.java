@@ -71,8 +71,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import java.time.format.DateTimeParseException;
-import org.owasp.html.Sanitizers;
-import org.owasp.html.PolicyFactory;
 
 @WebServlet("/scheduled-interviews")
 public class ScheduledInterviewServlet extends HttpServlet {
@@ -80,7 +78,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
   private ScheduledInterviewDao scheduledInterviewDao;
   private AvailabilityDao availabilityDao;
   private PersonDao personDao;
-  private PolicyFactory sanitizer;
   private EmailSender emailSender;
   private CalendarAccess calendarAccess;
   private Calendar service;
@@ -127,8 +124,6 @@ public class ScheduledInterviewServlet extends HttpServlet {
       CalendarAccess calendarAccess,
       EmailSender emailSender,
       EmailUtils emailUtils) {
-    sanitizer =
-        Sanitizers.FORMATTING.and(Sanitizers.BLOCKS).and(Sanitizers.STYLES).and(Sanitizers.LINKS);
     this.scheduledInterviewDao = scheduledInterviewDao;
     this.availabilityDao = availabilityDao;
     this.personDao = personDao;
@@ -382,7 +377,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
     // in datastore.
     String shadow = "None";
     if (!scheduledInterview.shadowId().equals("")) {
-      shadow = sanitizer.sanitize(getFirstName(scheduledInterview.shadowId()));
+      shadow = getFirstName(scheduledInterview.shadowId());
     }
     String role = getUserRole(scheduledInterview, userId);
     boolean hasStarted =
@@ -437,7 +432,7 @@ public class ScheduledInterviewServlet extends HttpServlet {
   }
 
   private String getFirstName(String participantId) {
-    return sanitizer.sanitize(personDao.get(participantId).map(Person::firstName).orElse("None"));
+    return personDao.get(participantId).map(Person::firstName).orElse("None");
   }
 
   private void sendParticipantEmail(

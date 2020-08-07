@@ -43,15 +43,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import org.owasp.html.Sanitizers;
-import org.owasp.html.PolicyFactory;
 
 // Servlet that gets the feedback from an interviewee and sends it to an interviewer.
 @WebServlet("/interviewer-feedback")
 public class InterviewerFeedbackServlet extends HttpServlet {
   private ScheduledInterviewDao scheduledInterviewDao;
   private PersonDao personDao;
-  private PolicyFactory sanitizer;
   private EmailSender emailSender;
   private EmailUtils emailUtils;
   static final Email sender = new Email("interviewme.business@gmail.com");
@@ -79,8 +76,6 @@ public class InterviewerFeedbackServlet extends HttpServlet {
       PersonDao personDao,
       EmailSender emailSender,
       EmailUtils emailUtils) {
-    sanitizer =
-        Sanitizers.FORMATTING.and(Sanitizers.BLOCKS).and(Sanitizers.STYLES).and(Sanitizers.LINKS);
     this.scheduledInterviewDao = scheduledInterviewDao;
     this.personDao = personDao;
     this.emailSender = emailSender;
@@ -95,7 +90,7 @@ public class InterviewerFeedbackServlet extends HttpServlet {
     for (int i = 1; i <= numberOfQuestions; i++) {
       String template = String.format("{{question_%s}}", i);
       String param = String.format("question%s", i);
-      answers.put(template, sanitizer.sanitize(request.getParameter(param)));
+      answers.put(template, request.getParameter(param));
     }
 
     String userEmail = UserServiceFactory.getUserService().getCurrentUser().getEmail();

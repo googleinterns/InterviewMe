@@ -15,6 +15,9 @@
 package com.google.sps.data;
 
 import java.util.EnumSet;
+import com.google.sps.utils.Sanitizer;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 
 /** Represents the data sent in a put or post request to the Person Servlet. */
 public class PersonRequest {
@@ -44,15 +47,15 @@ public class PersonRequest {
   }
 
   public String getFirstName() {
-    return firstName;
+    return Jsoup.clean(firstName, Whitelist.basic());
   }
 
   public String getLastName() {
-    return lastName;
+    return Jsoup.clean(lastName, Whitelist.basic());
   }
 
   public String getCompany() {
-    return company;
+    return Jsoup.clean(company, Whitelist.basic());
   }
 
   public String getJob() {
