@@ -39,10 +39,9 @@ public class EmailUtils {
   // predefined email templates to text.
   public static String fileContentToString(String fileName) throws IOException {
     StringBuilder contentBuilder = new StringBuilder();
-    try (Stream<String> stream =
-        Files.lines(Paths.get(getEmailTemplateResource(fileName)), StandardCharsets.UTF_8)) {
-      stream.forEach(s -> contentBuilder.append(s).append("\n"));
-    }
+    Stream<String> stream =
+        Files.lines(Paths.get(getEmailTemplateResource(fileName)), StandardCharsets.UTF_8);
+    stream.forEach(s -> contentBuilder.append(s).append("\n"));
     return contentBuilder.toString();
   }
 
@@ -62,8 +61,6 @@ public class EmailUtils {
 
   private static URI getEmailTemplateResource(String fileName) {
     URL resource = EmailUtils.class.getResource("/templates/email/" + fileName);
-    System.out.println("DEBUG:");
-    System.out.println(resource);
     URI result;
     try {
       result = resource.toURI();
