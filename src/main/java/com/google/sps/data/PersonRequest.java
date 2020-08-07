@@ -46,15 +46,15 @@ public class PersonRequest {
   }
 
   public String getFirstName() {
-    return Jsoup.clean(firstName, Whitelist.basic())
+    return Jsoup.clean(firstName, Whitelist.basic());
   }
 
   public String getLastName() {
-    return Jsoup.clean(lastName, Whitelist.basic())
+    return Jsoup.clean(lastName, Whitelist.basic());
   }
 
   public String getCompany() {
-    return Jsoup.clean(company, Whitelist.basic())
+    return Jsoup.clean(company, Whitelist.basic());
   }
 
   public String getJob() {
